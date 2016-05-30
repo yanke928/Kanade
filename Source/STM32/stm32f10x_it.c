@@ -23,137 +23,129 @@
   /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 
-/** @addtogroup Template_Project
+/** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */
 
-  /* Private typedef -----------------------------------------------------------*/
-  /* Private define ------------------------------------------------------------*/
-  /* Private macro -------------------------------------------------------------*/
-  /* Private variables ---------------------------------------------------------*/
-  /* Private function prototypes -----------------------------------------------*/
-  /* Private functions ---------------------------------------------------------*/
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+/* Private functions ---------------------------------------------------------*/
 
-  /******************************************************************************/
-  /*            Cortex-M3 Processor Exceptions Handlers                         */
-  /******************************************************************************/
+/******************************************************************************/
+/*            Cortex-M3 Processor Exceptions Handlers                         */
+/******************************************************************************/
 
-//void ShowSystemHalted(char string1[])
-//{
-//	DialogueBoxConfigurationStruct dialogueBoxConfig;
-//	strcpy(dialogueBoxConfig.TitleString, "System Halted!!!");
-//	strcpy(dialogueBoxConfig.SubString1, string1);
-//	strcpy(dialogueBoxConfig.SubString2, "Occurred!!");
-//	dialogueBoxConfig.LastingTime = HALT;
-//	dialogueBoxConfig.OccupyThread=true;
-//	ShowDialogue(dialogueBoxConfig); 
-//}
-
-  /**
-	* @brief  This function handles NMI exception.
-	* @param  None
-	* @retval : None
-	*/
+/**
+  * @brief  This function handles NMI exception.
+  * @param  None
+  * @retval None
+  */
 void NMI_Handler(void)
 {
-//	ShowSystemHalted("A NMI Fault");
 }
-
 
 /**
   * @brief  This function handles Hard Fault exception.
   * @param  None
-  * @retval : None
+  * @retval None
   */
 void HardFault_Handler(void)
 {
-//	#if DEBUG_EN
-//	char tempString[20];
-//	sprintf(tempString,"A HardFault(%02d)",FaultDebug);
-//	ShowSystemHalted(tempString);
-//	#else
-//	ShowSystemHalted("A HardFault");
-//	#endif
+  /* Go to infinite loop when Hard Fault exception occurs */
+  while (1)
+  {
+  }
 }
 
 /**
   * @brief  This function handles Memory Manage exception.
   * @param  None
-  * @retval : None
+  * @retval None
   */
 void MemManage_Handler(void)
 {
-//	ShowSystemHalted("An MMU Fault");
+  /* Go to infinite loop when Memory Manage exception occurs */
+  while (1)
+  {
+  }
 }
 
 /**
   * @brief  This function handles Bus Fault exception.
   * @param  None
-  * @retval : None
+  * @retval None
   */
 void BusFault_Handler(void)
 {
-//	ShowSystemHalted("A BusFault");
+  /* Go to infinite loop when Bus Fault exception occurs */
+  while (1)
+  {
+  }
 }
 
 /**
   * @brief  This function handles Usage Fault exception.
   * @param  None
-  * @retval : None
+  * @retval None
   */
 void UsageFault_Handler(void)
 {
-//	ShowSystemHalted("A Usage Fault");
+  /* Go to infinite loop when Usage Fault exception occurs */
+  while (1)
+  {
+  }
 }
 
 /**
   * @brief  This function handles SVCall exception.
   * @param  None
-  * @retval : None
+  * @retval None
   */
-void SVC_Handler(void)
-{
-//	ShowSystemHalted("An SVCall Fault");
-}
+//void SVC_Handler(void)
+//{
+//}
 
 /**
   * @brief  This function handles Debug Monitor exception.
   * @param  None
-  * @retval : None
+  * @retval None
   */
 void DebugMon_Handler(void)
 {
-	while (1);
 }
+
 
 /**
   * @brief  This function handles PendSVC exception.
   * @param  None
   * @retval : None
   */
-void PendSV_Handler(void)
-{
-}
+//void PendSV_Handler(void)
+//{
+//}
 
 /**
   * @brief  This function handles SysTick Handler.
   * @param  None
   * @retval : None
   */
-void SysTick_Handler(void)
-{
+//void SysTick_Handler(void)
+//{
 
-}
+//}
 
 /**
   * @brief  This function handles USB inquiry.
   * @param  None
   * @retval : None
   */
-void USB_LP_CAN1_RX0_IRQHandler(void)
-{
-//	__USBCDC_ISR();
-}
+//void USB_LP_CAN1_RX0_IRQHandler(void)
+//{
+////	__USBCDC_ISR();
+//}
 
 
 

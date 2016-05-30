@@ -361,7 +361,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD,USE_STM3210B_EVAL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\App\Main;..\Source\App\Music;..\Source\App\SystemSetup;..\Source\App\TransferMode;..\Source\App\Virtual_Clock;..\Source\Debug;..\Source\Main;..\Source\Misc;..\Source\Peripherals\Bluetooth;..\Source\Peripherals\Buzzer;..\Source\Peripherals\Key;..\Source\Peripherals\LED;..\Source\Peripherals\RTC;..\Source\Peripherals\EBD_Protocol;..\Source\Peripherals\Timers;..\Source\Peripherals\PC_Protocol;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Usart;..\Source\STM32;..\Source\System\SystemBeats;..\Source\System\UI_Framework;..\Source\App\SmallGame;..\Source\App\Main\StepUp_Test;..\Source\App\Main\Utilities;..\Source\App\Main\System_Scan;..\Source\App\Main\System_Info;..\Source\App\Main\FastCharge_Cheat;..\Source\App\Main\Benchmark;..\Source\App\Main\EBD_Record;..\Source\App\Main\Legacy_Test;..\Source\App\Main\Settings</IncludePath>
+              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -508,6 +508,46 @@
               <FileName>stm32f10x_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\STM32\stm32f10x_it.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FreeRTOS</GroupName>
+          <Files>
+            <File>
+              <FileName>port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3\port.c</FilePath>
+            </File>
+            <File>
+              <FileName>heap_2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\FreeRTOS\Source\portable\MemMang\heap_2.c</FilePath>
+            </File>
+            <File>
+              <FileName>list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\FreeRTOS\Source\list.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\FreeRTOS\Source\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>tasks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\FreeRTOS\Source\tasks.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Peripherals</GroupName>
+          <Files>
+            <File>
+              <FileName>LED.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Peripherals\LED\LED.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -26,5 +26,6 @@ SET CPU_CLOCK=0x044AA200
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\list.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\queue.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\tasks.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\led.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmLink" --Via "..\Output\Kanade.lnp"
 "C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe" "..\Output\Kanade.axf" --i32combined --output "..\Output\Kanade.hex"

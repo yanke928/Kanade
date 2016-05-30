@@ -29,7 +29,7 @@
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Stack_Size      EQU     0x00000800
+Stack_Size      EQU     0x00000500
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
@@ -40,7 +40,7 @@ __initial_sp
 ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Heap_Size       EQU     0x00000a00
+Heap_Size       EQU     0x00000500
 
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
 __heap_base
@@ -49,13 +49,18 @@ __heap_limit
 
                 PRESERVE8
                 THUMB
+				
+				;修改相关中断服务函数由FreeRTOS管理
+				IMPORT  xPortPendSVHandler
+				IMPORT  xPortSysTickHandler
+				IMPORT  vPortSVCHandler
 
 
 ; Vector Table Mapped to Address 0 at Reset
                 AREA    RESET, DATA, READONLY
-                IMPORT  xPortPendSVHandler
-                IMPORT  xPortSysTickHandler
-                IMPORT  vPortSVCHandler
+                EXPORT  __Vectors
+                EXPORT  __Vectors_End
+                EXPORT  __Vectors_Size
 
 __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     Reset_Handler             ; Reset Handler
@@ -68,14 +73,15 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     0                         ; Reserved
                 DCD     0                         ; Reserved
                 DCD     0                         ; Reserved
-;                DCD     SVC_Handler               ; SVCall Handler
-                DCD     xPortPendSVHandler   
-                DCD     DebugMon_Handler          ; Debug Monitor Handler
-                DCD     0                         ; Reserved
-;                DCD     PendSV_Handler            ; PendSV Handler
-;                DCD     SysTick_Handler           ; SysTick Handler
-                DCD     vPortSVCHandler  
-                DCD     xPortSysTickHandler  
+;                DCD     SVC_Handler                ; SVCall Handler
+				DCD     vPortSVCHandler;由FreeRTOS管理
+                DCD     DebugMon_Handler           ; Debug Monitor Handler
+                DCD     0                          ; Reserved
+;                DCD     PendSV_Handler             ; PendSV Handler
+;                DCD     SysTick_Handler            ; SysTick Handler
+				DCD     xPortPendSVHandler;
+				DCD     xPortSysTickHandler;
+
                 ; External Interrupts
                 DCD     WWDG_IRQHandler           ; Window Watchdog
                 DCD     PVD_IRQHandler            ; PVD through EXTI Line detect
