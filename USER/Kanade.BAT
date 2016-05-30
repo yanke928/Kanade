@@ -1,0 +1,30 @@
+SET PATH=C:\Keil_v5\ARM\ARMCC\bin\;C:\Program Files (x86)\STMicroelectronics\st_toolset\asm;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Users\yanke\.dnx\bin;C:\Program Files\Microsoft DNX\Dnvm\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\TortoiseGit\bin
+SET CPU_TYPE=STM32F103CB
+SET CPU_VENDOR=STMicroelectronics
+SET UV2_TARGET=Kanade
+SET CPU_CLOCK=0x044AA200
+"C:\Keil_v5\ARM\ARMCC\bin\ArmAsm" --Via "..\output\startup_stm32f10x_md._ia"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_gpio.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_rcc.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_usart.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_tim.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\misc.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_exti.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_flash.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_adc.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_dma.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_spi.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_rtc.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_bkp.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_pwr.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\core_cm3.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\system_stm32f10x.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\main.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_it.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\port.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\heap_2.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\list.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\queue.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\tasks.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmLink" --Via "..\Output\Kanade.lnp"
+"C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe" "..\Output\Kanade.axf" --i32combined --output "..\Output\Kanade.hex"

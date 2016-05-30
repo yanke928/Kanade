@@ -1,0 +1,8 @@
+/Output/*
+/Listing/*
+/Utilities/DFU_images/*
+/USER/*
+!Kanade.uvproj
+!Kanade.uvopt
+!Kanade_Kanade.dep
+!Kanade.bat
