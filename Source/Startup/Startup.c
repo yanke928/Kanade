@@ -10,6 +10,7 @@
 #include "Keys.h"
 #include "TempSensors.h"
 #include "SSD1306.h"
+#include "Music.h"
 
 #include "Startup.h"
 
@@ -74,10 +75,11 @@ void LogoHandler(void *pvParameters)
 	while (1)
 	{
 		xQueueReceive(InitAnimatePosHandle, &LoadingAddr, 0);
-		taskENTER_CRITICAL();
-#if OLED_REFRESH_OPTIMIZE_EN
+		if(xSemaphoreTake( OLEDRelatedMutex, 0 )!=pdPASS)
+		{
+		 goto Wait;
+		}
 		UpdateOLEDJustNow = true;
-#endif
 		/*If it's drawing's turn,draw the respective line at respective verticalAddr*/
 		if (DrawOrUnDraw)
 			for (m = 0; m < 4; m++)
@@ -113,10 +115,9 @@ void LogoHandler(void *pvParameters)
 		OLED_FillRect(LoadingAddr + 7, 39, LoadingAddr + 11, 44, !(n & 2));
 		OLED_FillRect(LoadingAddr + 7, 45, LoadingAddr + 11, 50, !(n & 4));
 		OLED_FillRect(LoadingAddr, 45, LoadingAddr + 5, 50, !(n & 8));
-#if OLED_REFRESH_OPTIMIZE_EN
 		UpdateOLEDJustNow = false;
-#endif
-		taskEXIT_CRITICAL();
+		xSemaphoreGive(OLEDRelatedMutex);
+		Wait:
 		vTaskDelayUntil(&xLastWakeTime, 8 / portTICK_RATE_MS);
 	}
 }
@@ -167,27 +168,25 @@ void InitStatusUpdateHandler(void *pvParameters)
 	u8 stringLength;
 	u8 loadingAddr;
 	u8 outOfDateLoadingAddr;
-	xTaskHandle logoHandle = (xTaskHandle*)pvParameters;
 	char initStatus[30];
 	while (1)
 	{
 		while (xQueueReceive(InitStatusMsg, &initStatus, portMAX_DELAY) != pdPASS);
-		vTaskSuspend(logoHandle);
 		/*Get the length of the string to calculate the central position*/
 		stringLength = GetStringLength(initStatus);
 		/*Calculate central addr*/
 		startAddr = GetCentralPosition(0, 127, stringLength);
 		/*Make room for "blocks animation"*/
 		startAddr = startAddr + 9;
+		xSemaphoreTake(OLEDRelatedMutex,portMAX_DELAY);
 		/*Clear the area that last initString occupies*/
 		OLED_FillRect(0, 39, 127, 55, 0);
 		/*Show the new initString*/
 		OLED_ShowSelectionString(startAddr, 39, (unsigned char *)initStatus, false, 12);
-#if OLED_REFRESH_OPTIMIZE_EN
 		UpdateOLEDJustNow = true;
 		OLED_Refresh_Gram();
 		UpdateOLEDJustNow = false;
-#endif
+		xSemaphoreGive(OLEDRelatedMutex);
 		/*Adjust the position of "blocks animation"(loadingAnimation)*/
 		loadingAddr = startAddr - 16;
 		if (xQueueSend(InitAnimatePosHandle, &loadingAddr, 100 / portTICK_RATE_MS) != pdPASS)
@@ -196,7 +195,6 @@ void InitStatusUpdateHandler(void *pvParameters)
 			xQueueReceive(InitAnimatePosHandle, &outOfDateLoadingAddr, 10);
 			xQueueSend(InitAnimatePosHandle, &loadingAddr, 100 / portTICK_RATE_MS);
 		}
-		vTaskResume(logoHandle);
 	}
 }
 
@@ -209,7 +207,7 @@ xTaskHandle Logo_Init()
 {
 	xTaskHandle logoHandle;
 	xTaskCreate(LogoHandler, "Logo handler",
-		128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &logoHandle);
+		32, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &logoHandle);
 	InitAnimatePosHandle = xQueueCreate(1, sizeof(u8));
 	return(logoHandle);
 }
@@ -220,11 +218,11 @@ xTaskHandle Logo_Init()
 
 	  @retval None
   */
-xTaskHandle InitStatusHandler_Init(xTaskHandle logoHandle)
+xTaskHandle InitStatusHandler_Init(void)
 {
 	xTaskHandle initStatusHandle;
 	xTaskCreate(InitStatusUpdateHandler, "Init Status Handler",
-		128, logoHandle, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &initStatusHandle);
+		128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &initStatusHandle);
 	InitStatusMsg = xQueueCreate(1, 30);
 	return(initStatusHandle);
 }
@@ -244,9 +242,10 @@ void SystemStartup(void *pvParameters)
 	Key_Init();
 	RTC_Init();
 	logoHandle = Logo_Init();
-	initStatusUpdateHandle = InitStatusHandler_Init(logoHandle);
+	initStatusUpdateHandle = InitStatusHandler_Init();
 	xQueueSend(InitStatusMsg, "System Init...", 0);
 	TemperatureSensors_Init();
+	SoundStart();
 	while (1)
 	{
 		vTaskDelay(100 / portTICK_RATE_MS);	

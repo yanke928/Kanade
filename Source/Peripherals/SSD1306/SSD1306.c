@@ -7,14 +7,18 @@
 #include "stm32f10x_tim.h"
 #include "stm32f10x.h"
 #include "stm32f10x_spi.h"
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
-#include "string.h"
+#include "semphr.h"  
 
+#include <string.h>
 #include <stdio.h>
 
 #define OLED_REFRESH_PRIORITY tskIDLE_PRIORITY+2
+
+xSemaphoreHandle OLEDRelatedMutex=NULL;
 
 //#include "delay.h"
 
@@ -639,9 +643,9 @@ void OLED_Refresh_Handler(void *pvParameters)
 			if (GRAM_Changing == false)
 			{
 				GRAM_Changed = false;
-				taskENTER_CRITICAL();
+				xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
 				OLED_Refresh_Gram();
-				taskEXIT_CRITICAL();
+				xSemaphoreGive(OLEDRelatedMutex);
 			}
 			else
 			{
@@ -704,17 +708,12 @@ void OLED_Init(void)
 	OLED_WR_Byte(0xA4, OLED_CMD); //全局显示开启;bit0:1,开启;0,关闭;(白屏/黑屏)
 	OLED_WR_Byte(0xA6, OLED_CMD); //设置显示方式;bit0:1,反相显示;0,正常显示	    						   
 	OLED_WR_Byte(0xAF, OLED_CMD); //开启显示	 
-#if OLED_REFRESH_OPTIMIZE_EN
 	UpdateOLEDJustNow = true;
-#endif	
 	OLED_Clear();
-#if OLED_REFRESH_OPTIMIZE_EN
 	UpdateOLEDJustNow = false;
   xTaskCreate(OLED_Refresh_Handler,"OLED Refresh Handler",
 	configMINIMAL_STACK_SIZE,NULL,OLED_REFRESH_PRIORITY,NULL);
-	//OLED_Update_Timer_Init();
-#endif
-	//SendLogString("SSD1306 Initialized\n\n");
+	OLEDRelatedMutex=xSemaphoreCreateMutex();
 }
 
 

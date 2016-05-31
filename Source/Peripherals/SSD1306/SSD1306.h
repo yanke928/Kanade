@@ -4,6 +4,11 @@
 #include "misc.h"
 #include "stdbool.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"  
+
 #define OLED_REFRESH_OPTIMIZE_EN 1
 
 #define SSD1306 0
@@ -34,8 +39,6 @@ typedef struct
 #define OLED_CMD  0	
 #define OLED_DATA 1	
 
-#if OLED_REFRESH_OPTIMIZE_EN
-
 extern volatile bool UpdateOLEDJustNow;
 
 extern volatile bool GRAM_Changing;
@@ -44,7 +47,7 @@ extern volatile bool GRAM_Changed;
 
 extern volatile bool GRAM_No_Change_Timeout;
 
-#endif
+extern xSemaphoreHandle OLEDRelatedMutex;
 
 //see .c for details
 void OLED_WR_Byte(unsigned char  dat, unsigned char  cmd);
