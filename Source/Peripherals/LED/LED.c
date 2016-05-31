@@ -14,7 +14,7 @@ LEDAnimateSliceStruct* LEDAnimatePointer=NULL;
 
 xTaskHandle LEDAnimateTaskHandle;
 
-LEDAnimateSliceStruct LEDAnimation_Startup[3] =
+LEDAnimateSliceStruct LEDAnimation_Startup[] =
 {
  {Cyan,200,6,false},//Cyan with brightness of 2
  {KanadeC,200,6,false},//Kanade with brightness of 2

@@ -57,7 +57,7 @@ enum
  Pink=7,
 };
 
-extern LEDAnimateSliceStruct LEDAnimation_Startup[3];
+extern LEDAnimateSliceStruct LEDAnimation_Startup[];
 
 //see .c for details
 void LED_GPIO_Init(void);

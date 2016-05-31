@@ -245,7 +245,7 @@ void SystemStartup(void *pvParameters)
 	initStatusUpdateHandle = InitStatusHandler_Init();
 	xQueueSend(InitStatusMsg, "System Init...", 0);
 	TemperatureSensors_Init();
-	SoundStart();
+	SoundStart(Alarm);
 	while (1)
 	{
 		vTaskDelay(100 / portTICK_RATE_MS);	

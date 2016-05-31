@@ -37,8 +37,12 @@ typedef struct
 	u8  BeatTimeDivide;
 }SingleToneStruct;
 
+extern SingleToneStruct Tori_No_Uta[];
+
+extern SingleToneStruct Alarm[];
+
 //see .c for details
-void SoundStart(void);
+void SoundStart(SingleToneStruct sound[]);
 
 //see .c for details
 void SoundStop(void);

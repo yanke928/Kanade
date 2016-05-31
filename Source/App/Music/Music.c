@@ -15,7 +15,7 @@
 
 xTaskHandle SoundPlayerHandle;
 
-const SingleToneStruct MyScore[] =
+SingleToneStruct Tori_No_Uta[] =
 {
  {750,0},
  // {STOP,4},{M5,4},{M6,4},{H1,4},{M7,1},{STOP,4},{M5,4},
@@ -69,6 +69,14 @@ const SingleToneStruct MyScore[] =
    {0,0}
 };
 
+SingleToneStruct Alarm[]=
+{
+ {750,0},
+ {M7,8},
+ {STOP,8}, 
+ {0,0}
+};
+
 /**
   * @brief  Play sound
   * @retval : None
@@ -82,21 +90,22 @@ void SoundPlayer(void *pvParameters)
 	int nextFREQ;
 	int nextTime;
 	int addr;
+	SingleToneStruct * sound=pvParameters;
 	addr=0;
+	xLastWakeTime=xTaskGetTickCount();
 	while(1)
 	{
-	if (MyScore[addr].ToneFREQ != 0) //If it is not the end of the score
+	if (sound[addr].ToneFREQ != 0) //If it is not the end of the score
 	{
-		nextFREQ = MyScore[addr].ToneFREQ;//Get the FREQ of the tone in the next pitch
-		nextTime = MyScore[0].ToneFREQ / MyScore[addr].BeatTimeDivide;//Calculate the time of the next tone 
+		nextFREQ = sound[addr].ToneFREQ;//Get the FREQ of the tone in the next pitch
+		nextTime = sound[0].ToneFREQ / sound[addr].BeatTimeDivide;//Calculate the time of the next tone 
 	}
 	else
 	{
-		nextFREQ = MyScore[1].ToneFREQ;//Go to the start of the score
-		nextTime = MyScore[0].ToneFREQ / MyScore[1].BeatTimeDivide;//The first pitch of the score
+		nextFREQ = sound[1].ToneFREQ;//Go to the start of the score
+		nextTime = sound[0].ToneFREQ / sound[1].BeatTimeDivide;//The first pitch of the score
 		addr = 1;
 	}
-	taskENTER_CRITICAL();
 	TIM_Cmd(TIM4, DISABLE);//Turn off the timer for safety
 	TIM4_TimeBaseStructure.TIM_Prescaler = 10;
 	TIM4_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
@@ -111,8 +120,7 @@ void SoundPlayer(void *pvParameters)
 	TimOCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OC1Init(TIM4, &TimOCInitStructure);
 	TIM_CtrlPWMOutputs(TIM4, ENABLE);
-	taskEXIT_CRITICAL();
-	if (MyScore[addr].ToneFREQ != STOP)
+	if (sound[addr].ToneFREQ != STOP)
 		TIM_Cmd(TIM4, ENABLE);
 	addr++;
   vTaskDelayUntil(&xLastWakeTime, nextTime / portTICK_RATE_MS);
@@ -125,7 +133,7 @@ void SoundPlayer(void *pvParameters)
 
   * @retval : TimerNo for kanade
   */
-void SoundStart(void)
+void SoundStart(SingleToneStruct sound[])
 {
 	BuzzerConfig();
 	if(SoundPlayerHandle!=NULL)
@@ -133,7 +141,7 @@ void SoundStart(void)
 		vTaskDelete(SoundPlayerHandle);
 	}
 	xTaskCreate(SoundPlayer, "Sound Player",
-		128, NULL, SOUND_PLAYER_PRIORITY, &SoundPlayerHandle);	
+		256, sound, SOUND_PLAYER_PRIORITY, &SoundPlayerHandle);	
 }
 
 /**
