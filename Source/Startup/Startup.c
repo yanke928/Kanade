@@ -8,6 +8,7 @@
 #include "rtc.h"
 #include "LED.h"
 #include "Keys.h"
+#include "TempSensors.h"
 #include "SSD1306.h"
 
 #include "Startup.h"
@@ -245,9 +246,10 @@ void SystemStartup(void *pvParameters)
 	logoHandle = Logo_Init();
 	initStatusUpdateHandle = InitStatusHandler_Init(logoHandle);
 	xQueueSend(InitStatusMsg, "System Init...", 0);
+	TemperatureSensors_Init();
 	while (1)
 	{
-		vTaskDelay(100 / portTICK_RATE_MS);
+		vTaskDelay(100 / portTICK_RATE_MS);	
 	}
 }
 
