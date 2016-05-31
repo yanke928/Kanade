@@ -235,6 +235,7 @@ xTaskHandle InitStatusHandler_Init(xTaskHandle logoHandle)
   */
 void SystemStartup(void *pvParameters)
 {
+  char tempString[20];
 	xTaskHandle logoHandle;
 	xTaskHandle initStatusUpdateHandle;
 	LED_Animate_Init(LEDAnimation_Startup);
@@ -243,7 +244,7 @@ void SystemStartup(void *pvParameters)
 	RTC_Init();
 	logoHandle = Logo_Init();
 	initStatusUpdateHandle = InitStatusHandler_Init(logoHandle);
-	xQueueSend(InitStatusMsg, "Hello World!", 100 / portTICK_RATE_MS);
+	xQueueSend(InitStatusMsg, "System Init...", 0);
 	while (1)
 	{
 		vTaskDelay(100 / portTICK_RATE_MS);

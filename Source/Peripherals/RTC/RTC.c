@@ -13,15 +13,13 @@
 #include "queue.h"
 #include "semphr.h"
 
-#define RTC_UPDATE_PRIORITY tskIDLE_PRIORITY+2 
+#define RTC_UPDATE_PRIORITY tskIDLE_PRIORITY+2
 
 volatile struct Data_Time RTCTime;  //定义一个时间结构体变量
 
 void(*RTCUpdateFunctions[3])(void);
 
 bool RTCUpdateExecute[3]={false,false};
-
-SemaphoreHandle_t RTCSemaphore;
 
 /**
   * @brief  Init hardware of RTC
@@ -242,24 +240,12 @@ u8 Is_Leap_Year(u16 year)
   */
 void RTC_IRQHandler(void)
 {							    
-	BaseType_t pxHigherPriorityTaskWoken;
 	if(RTC_GetITStatus(RTC_IT_ALR))			//Alarm interrupt		
 	{
 		RTC_ClearITPendingBit(RTC_IT_ALR);//Clear alarm interrupt						 				
 	}
 	RTC_ClearITPendingBit(RTC_IT_SEC);
 	RTC_WaitForLastTask();//Wait for RTC register operation
-	/*If an RTC second interrupt takes place*/
-	if(RTC_GetITStatus(RTC_IT_SEC))	
-	{			
-		/*Give Semaphore*/
-    xSemaphoreGiveFromISR(RTCSemaphore,&pxHigherPriorityTaskWoken);
-		if(pxHigherPriorityTaskWoken==pdTRUE)
-		{
-		  /*Switch to RTCUpdate at once*/
-	    portYIELD_FROM_ISR(pxHigherPriorityTaskWoken);
-		}
-	}
 }
 
 /**
@@ -368,8 +354,8 @@ void RTCUpdateHandler(void *pvParameters)
 {
  while(1)
  {
-  xSemaphoreTake(RTCSemaphore,10000/portTICK_RATE_MS);
-	Time_Get();
+	 vTaskDelay(900/portTICK_RATE_MS);
+	 Time_Get();
  }
 }
 
@@ -383,7 +369,6 @@ void RTCUpdateHandler(void *pvParameters)
 void RTC_Init(void)
 {
  RTC_Hardware_Init();
- RTCSemaphore=xSemaphoreCreateBinary();
  xTaskCreate(RTCUpdateHandler,"RTC Update Handler",
-	32,NULL,RTC_UPDATE_PRIORITY,NULL);
+	64,NULL,RTC_UPDATE_PRIORITY,NULL);
 }
