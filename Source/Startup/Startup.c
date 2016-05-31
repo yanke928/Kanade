@@ -4,6 +4,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+
+#include "rtc.h"
 #include "LED.h"
 #include "Keys.h"
 #include "SSD1306.h"
@@ -11,8 +13,11 @@
 #include "Startup.h"
 
 #define SYSTEM_STARTUP_PRIORITY tskIDLE_PRIORITY+4
+#define SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY tskIDLE_PRIORITY+3
 
-xQueueHandle InitAnimatePosHandle; 
+xQueueHandle InitAnimatePosHandle;
+
+xQueueHandle InitStatusMsg;
 
 const unsigned char logo[128][4] =
 {
@@ -67,7 +72,8 @@ void LogoHandler(void *pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	while (1)
 	{
-		xQueueReceive(InitAnimatePosHandle, & VerticalAddr, 0 );
+		xQueueReceive(InitAnimatePosHandle, &LoadingAddr, 0);
+		taskENTER_CRITICAL();
 #if OLED_REFRESH_OPTIMIZE_EN
 		UpdateOLEDJustNow = true;
 #endif
@@ -109,17 +115,117 @@ void LogoHandler(void *pvParameters)
 #if OLED_REFRESH_OPTIMIZE_EN
 		UpdateOLEDJustNow = false;
 #endif
+		taskEXIT_CRITICAL();
 		vTaskDelayUntil(&xLastWakeTime, 8 / portTICK_RATE_MS);
 	}
 }
 
+/**
+  * @brief  Get central position(Start Position) of the string between x1,x2
+
+  * @param  startPos:Position of start grid
+
+			endPos:  Position of end grid
+
+			stringLength:Length of the string
+
+	  @retval Start position of the target string
+  */
+u8 GetCentralPosition(u8 startPos, u8 endPos, u8 stringLength)
+{
+	u8 pos;
+	pos = startPos + (endPos - startPos) / 2;
+	pos = pos - stringLength * 3;
+	return(pos);
+}
+
+/**
+  * @brief  Get length of given string
+
+  * @param  string[]:Given string
+
+	  @retval Length of given string
+  */
+u8 GetStringLength(char string[])
+{
+	u8 length;
+	for (length = 0; string[length] != 0; length++);
+	return(length);
+}
+
+/**
+  * @brief  Task which update the initStatus
+
+	@param  None
+
+  * @retval None
+  */
+void InitStatusUpdateHandler(void *pvParameters)
+{
+	u8 startAddr;
+	u8 stringLength;
+	u8 loadingAddr;
+	u8 outOfDateLoadingAddr;
+	xTaskHandle logoHandle = (xTaskHandle*)pvParameters;
+	char initStatus[30];
+	while (1)
+	{
+		while (xQueueReceive(InitStatusMsg, &initStatus, portMAX_DELAY) != pdPASS);
+		vTaskSuspend(logoHandle);
+		/*Get the length of the string to calculate the central position*/
+		stringLength = GetStringLength(initStatus);
+		/*Calculate central addr*/
+		startAddr = GetCentralPosition(0, 127, stringLength);
+		/*Make room for "blocks animation"*/
+		startAddr = startAddr + 9;
+		/*Clear the area that last initString occupies*/
+		OLED_FillRect(0, 39, 127, 55, 0);
+		/*Show the new initString*/
+		OLED_ShowSelectionString(startAddr, 39, (unsigned char *)initStatus, false, 12);
+#if OLED_REFRESH_OPTIMIZE_EN
+		UpdateOLEDJustNow = true;
+		OLED_Refresh_Gram();
+		UpdateOLEDJustNow = false;
+#endif
+		/*Adjust the position of "blocks animation"(loadingAnimation)*/
+		loadingAddr = startAddr - 16;
+		if (xQueueSend(InitAnimatePosHandle, &loadingAddr, 100 / portTICK_RATE_MS) != pdPASS)
+		{
+			/*Clear the queue and resend the message*/
+			xQueueReceive(InitAnimatePosHandle, &outOfDateLoadingAddr, 10);
+			xQueueSend(InitAnimatePosHandle, &loadingAddr, 100 / portTICK_RATE_MS);
+		}
+		vTaskResume(logoHandle);
+	}
+}
+
+/**
+  * @brief  Init Logo
+
+	  @retval None
+  */
 xTaskHandle Logo_Init()
 {
-  xTaskHandle logoHandle;
+	xTaskHandle logoHandle;
 	xTaskCreate(LogoHandler, "Logo handler",
-		32, NULL, SYSTEM_STARTUP_PRIORITY, &logoHandle);
-  InitAnimatePosHandle=xQueueCreate(1, sizeof(u8));
-  return(logoHandle);
+		128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &logoHandle);
+	InitAnimatePosHandle = xQueueCreate(1, sizeof(u8));
+	return(logoHandle);
+}
+
+
+/**
+  * @brief  Init Logo
+
+	  @retval None
+  */
+xTaskHandle InitStatusHandler_Init(xTaskHandle logoHandle)
+{
+	xTaskHandle initStatusHandle;
+	xTaskCreate(InitStatusUpdateHandler, "Init Status Handler",
+		128, logoHandle, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &initStatusHandle);
+	InitStatusMsg = xQueueCreate(1, 30);
+	return(initStatusHandle);
 }
 
 /**
@@ -129,11 +235,15 @@ xTaskHandle Logo_Init()
   */
 void SystemStartup(void *pvParameters)
 {
-  xTaskHandle logoHandle;
+	xTaskHandle logoHandle;
+	xTaskHandle initStatusUpdateHandle;
 	LED_Animate_Init(LEDAnimation_Startup);
 	OLED_Init();
 	Key_Init();
-	logoHandle=Logo_Init();
+	RTC_Init();
+	logoHandle = Logo_Init();
+	initStatusUpdateHandle = InitStatusHandler_Init(logoHandle);
+	xQueueSend(InitStatusMsg, "Hello World!", 100 / portTICK_RATE_MS);
 	while (1)
 	{
 		vTaskDelay(100 / portTICK_RATE_MS);
