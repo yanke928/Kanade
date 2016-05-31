@@ -224,21 +224,35 @@ void KeyEvents(void)
 	}
 }
 
+/**
+  * @brief  KeyEvent handler(task)
+  * @retval : None
+  */
 void KeyEventHandler(void *pvParameters)
 {
  Key_Message_Struct message;
+ Key_Message_Struct outOfDateMessage;
  while(1)
  {
+	/*Get status of keys*/
   KeyEvents();
+	/*If a key event takes place*/
 	if(KeyEvent!=0||(AdvancedKeyEvent!=0&&ContinousPressBeats!=0))
 	{
+	 /*Handle advanced key event priorly*/
 	 if(AdvancedKeyEvent!=0)
 	 {
 	  message.KeyEvent=0;
 		message.AdvancedKeyEvent=AdvancedKeyEvent;
 		ContinousPressBeats=0;
 		KeyEvent=0;
-		xQueueSend(Key_Message , & message, portMAX_DELAY ); 
+		/*Try to send a new message to the queue,at least 100ms is given for the receiver to handle the last event*/
+		if (xQueueSend(Key_Message , & message, 100/portTICK_RATE_MS)!=pdPASS)
+		{
+		 /*Clear the queue and resend the message*/
+		 xQueueReceive(Key_Message, & outOfDateMessage, 0 );
+		 xQueueSend(Key_Message , & message, 100/portTICK_RATE_MS);
+		}
 	 }
 	 else
 	 {
@@ -246,13 +260,23 @@ void KeyEventHandler(void *pvParameters)
 		message.AdvancedKeyEvent=0;	
 		ContinousPressBeats=0;
 		KeyEvent=0;		 
-		xQueueSend(Key_Message , & message, portMAX_DELAY ); 		 
+		/*Try to send a new message to the queue,at least 100ms is given for the receiver to handle the last event*/
+		if (xQueueSend(Key_Message , & message, 100/portTICK_RATE_MS)!=pdPASS)
+		{
+		 /*Clear the queue and resend the message*/
+		 xQueueReceive(Key_Message, & outOfDateMessage, 10 );
+		 xQueueSend(Key_Message , & message, 100/portTICK_RATE_MS);
+		}	 
 	 }
 	}
 	vTaskDelay(10/portTICK_RATE_MS);
  }
 }
 
+/**
+  * @brief  Key debug handler(task)
+  * @retval : None
+  */
 void KeyDebugHandler(void *pvParameters)
 {
  Key_Message_Struct message;
@@ -284,14 +308,22 @@ void KeyDebugHandler(void *pvParameters)
  }
 }
 
+/**
+  * @brief  Init keyEvent task
+  * @retval : None
+  */
 void Key_Init(void)
 {
  Keys_GPIO_Init();
- Key_Message=xQueueCreate(2, sizeof(Key_Message_Struct));
+ Key_Message=xQueueCreate(1, sizeof(Key_Message_Struct));
  xTaskCreate(KeyEventHandler,"Key Event Handler",
 	32,NULL,KEY_EVENT_HANDLER_PRIORITY,NULL); 
 }
 
+/**
+  * @brief  Init keyEvent debug task
+  * @retval : None
+  */
 void Key_Debug_Init(void)
 {
  Key_Init(); 

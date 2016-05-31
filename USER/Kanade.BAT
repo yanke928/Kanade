@@ -4,6 +4,7 @@ SET CPU_VENDOR=STMicroelectronics
 SET UV2_TARGET=Kanade
 SET CPU_CLOCK=0x044AA200
 "C:\Keil_v5\ARM\ARMCC\bin\ArmAsm" --Via "..\output\startup_stm32f10x_md._ia"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\startup.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_gpio.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_rcc.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\stm32f10x_usart.__i"
@@ -28,5 +29,6 @@ SET CPU_CLOCK=0x044AA200
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\tasks.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\led.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\ssd1306.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\keys.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmLink" --Via "..\Output\Kanade.lnp"
 "C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe" "..\Output\Kanade.axf" --i32combined --output "..\Output\Kanade.hex"

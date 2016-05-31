@@ -4,12 +4,15 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+
 #include "LED.h"
 
 #define SYS_CLOCK 72
 #define LED_ANIMATION_PRIORITY tskIDLE_PRIORITY+2
 
 LEDAnimateSliceStruct* LEDAnimatePointer=NULL;
+
+xTaskHandle LEDAnimateTaskHandle;
 
 LEDAnimateSliceStruct LEDAnimation_Startup[3] =
 {
@@ -167,11 +170,13 @@ void LEDAnimateHandler(void *pvParameters)
  
   * @retval None
   */
-void LEDAnimateInit(LEDAnimateSliceStruct animate[])
+void LED_Animate_Init(LEDAnimateSliceStruct animate[])
 {
  LED_GPIO_Init();
+ if(LEDAnimateTaskHandle!=NULL)
+ vTaskDelete(LEDAnimateTaskHandle);
  xTaskCreate(LEDAnimateHandler,"LED Animation Handler",
-	configMINIMAL_STACK_SIZE,animate,LED_ANIMATION_PRIORITY,NULL);
+	32,animate,LED_ANIMATION_PRIORITY,&LEDAnimateTaskHandle);
 }
 
 /**
@@ -181,11 +186,11 @@ void LEDAnimateInit(LEDAnimateSliceStruct animate[])
  
   * @retval None
   */
-void LEDAnimateDeInit(void)
+void LED_Animate_DeInit(void)
 {
   LEDColorStruct dark={0,0,0};
   SetLEDColor(dark);
-	vTaskDelete(LEDAnimateInit);
+	vTaskDelete(LEDAnimateTaskHandle);
 }
 
 

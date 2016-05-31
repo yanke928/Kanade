@@ -639,7 +639,9 @@ void OLED_Refresh_Handler(void *pvParameters)
 			if (GRAM_Changing == false)
 			{
 				GRAM_Changed = false;
+				taskENTER_CRITICAL();
 				OLED_Refresh_Gram();
+				taskEXIT_CRITICAL();
 			}
 			else
 			{
@@ -647,7 +649,7 @@ void OLED_Refresh_Handler(void *pvParameters)
 			}
 		}	 
 	}
-	vTaskDelay(30);
+	vTaskDelay(30/portTICK_RATE_MS);
  }
 }
 #endif

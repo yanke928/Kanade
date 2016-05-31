@@ -70,10 +70,11 @@ void DisplayBasicColor(u8 color,u8 brightness);
 
 //see .c for details
 void LEDAnimateHandler(void *pvParameters);
-//see .c fof details
-void LEDAnimateInit(LEDAnimateSliceStruct animate[]);
 
 //see .c for details
-void LEDAnimateDeInit(void);
+void LED_Animate_Init(LEDAnimateSliceStruct animate[]);
+
+//see .c for details
+void LED_Animate_DeInit(void);
 
 #endif /* __LED_H */
