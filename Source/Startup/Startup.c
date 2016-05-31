@@ -12,6 +12,8 @@
 
 #define SYSTEM_STARTUP_PRIORITY tskIDLE_PRIORITY+4
 
+xQueueHandle InitAnimatePosHandle; 
+
 const unsigned char logo[128][4] =
 {
 0x00,0x00,0x18,0x00,0x00,0x00,0x18,0x00,0x00,0x00,0x18,0x00,0x00,0x00,0x18,0x00,
@@ -49,15 +51,13 @@ const unsigned char logo[128][4] =
 };
 
 /**
-  * @brief  Called by SystemBeats
-
-			Display the logo animation
+  * @brief  Task which displays the logo animation
 
   * @param  lesex:Useless rubbish
 
   * @retval None
   */
-void AnimateHandler(void *pvParameters)
+void LogoHandler(void *pvParameters)
 {
 	portTickType xLastWakeTime;
 	unsigned char VerticalAddr = 0;
@@ -67,6 +67,7 @@ void AnimateHandler(void *pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	while (1)
 	{
+		xQueueReceive(InitAnimatePosHandle, & VerticalAddr, 0 );
 #if OLED_REFRESH_OPTIMIZE_EN
 		UpdateOLEDJustNow = true;
 #endif
@@ -112,6 +113,15 @@ void AnimateHandler(void *pvParameters)
 	}
 }
 
+xTaskHandle Logo_Init()
+{
+  xTaskHandle logoHandle;
+	xTaskCreate(LogoHandler, "Logo handler",
+		32, NULL, SYSTEM_STARTUP_PRIORITY, &logoHandle);
+  InitAnimatePosHandle=xQueueCreate(1, sizeof(u8));
+  return(logoHandle);
+}
+
 /**
   * @brief  System startup task
 
@@ -119,9 +129,11 @@ void AnimateHandler(void *pvParameters)
   */
 void SystemStartup(void *pvParameters)
 {
+  xTaskHandle logoHandle;
 	LED_Animate_Init(LEDAnimation_Startup);
 	OLED_Init();
 	Key_Init();
+	logoHandle=Logo_Init();
 	while (1)
 	{
 		vTaskDelay(100 / portTICK_RATE_MS);
