@@ -22,6 +22,13 @@
 
   /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
+#include "stm32f10x_dma.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
+#include "Startup.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
@@ -115,7 +122,16 @@ void UsageFault_Handler(void)
   */
 void DebugMon_Handler(void)
 {
+	
 }
+
+void DMA1_Channel4_IRQHandler(void)  
+{  
+	portBASE_TYPE xHigherPriorityTaskWoken = pdPASS;
+    DMA_ClearFlag(DMA1_FLAG_TC4);  
+    DMA_Cmd(DMA1_Channel4,DISABLE);  
+  xQueueSendFromISR(InitStatusMsg, "DGD", &xHigherPriorityTaskWoken);
+}  
 
 
 /**

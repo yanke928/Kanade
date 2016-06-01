@@ -11,6 +11,7 @@
 #include "TempSensors.h"
 #include "SSD1306.h"
 #include "Music.h"
+#include "EBProtocol.h"
 
 #include "Startup.h"
 
@@ -75,9 +76,9 @@ void LogoHandler(void *pvParameters)
 	while (1)
 	{
 		xQueueReceive(InitAnimatePosHandle, &LoadingAddr, 0);
-		if(xSemaphoreTake( OLEDRelatedMutex, 0 )!=pdPASS)
+		if (xSemaphoreTake(OLEDRelatedMutex, 0) != pdPASS)
 		{
-		 goto Wait;
+			goto Wait;
 		}
 		UpdateOLEDJustNow = true;
 		/*If it's drawing's turn,draw the respective line at respective verticalAddr*/
@@ -117,7 +118,7 @@ void LogoHandler(void *pvParameters)
 		OLED_FillRect(LoadingAddr, 45, LoadingAddr + 5, 50, !(n & 8));
 		UpdateOLEDJustNow = false;
 		xSemaphoreGive(OLEDRelatedMutex);
-		Wait:
+	Wait:
 		vTaskDelayUntil(&xLastWakeTime, 8 / portTICK_RATE_MS);
 	}
 }
@@ -178,7 +179,7 @@ void InitStatusUpdateHandler(void *pvParameters)
 		startAddr = GetCentralPosition(0, 127, stringLength);
 		/*Make room for "blocks animation"*/
 		startAddr = startAddr + 9;
-		xSemaphoreTake(OLEDRelatedMutex,portMAX_DELAY);
+		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		/*Clear the area that last initString occupies*/
 		OLED_FillRect(0, 39, 127, 55, 0);
 		/*Show the new initString*/
@@ -207,7 +208,7 @@ xTaskHandle Logo_Init()
 {
 	xTaskHandle logoHandle;
 	xTaskCreate(LogoHandler, "Logo handler",
-		32, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &logoHandle);
+		64, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &logoHandle);
 	InitAnimatePosHandle = xQueueCreate(1, sizeof(u8));
 	return(logoHandle);
 }
@@ -222,7 +223,7 @@ xTaskHandle InitStatusHandler_Init(void)
 {
 	xTaskHandle initStatusHandle;
 	xTaskCreate(InitStatusUpdateHandler, "Init Status Handler",
-		128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &initStatusHandle);
+		64, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &initStatusHandle);
 	InitStatusMsg = xQueueCreate(1, 30);
 	return(initStatusHandle);
 }
@@ -234,7 +235,7 @@ xTaskHandle InitStatusHandler_Init(void)
   */
 void SystemStartup(void *pvParameters)
 {
-  char tempString[20];
+	char tempString[20];
 	xTaskHandle logoHandle;
 	xTaskHandle initStatusUpdateHandle;
 	LED_Animate_Init(LEDAnimation_Startup);
@@ -244,11 +245,11 @@ void SystemStartup(void *pvParameters)
 	logoHandle = Logo_Init();
 	initStatusUpdateHandle = InitStatusHandler_Init();
 	xQueueSend(InitStatusMsg, "System Init...", 0);
-	TemperatureSensors_Init();
-	SoundStart(Alarm);
+	//TemperatureSensors_Init();
+	EBD_Init();
 	while (1)
 	{
-		vTaskDelay(100 / portTICK_RATE_MS);	
+		vTaskDelay(100 / portTICK_RATE_MS);
 	}
 }
 

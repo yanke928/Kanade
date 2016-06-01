@@ -141,7 +141,7 @@ void SoundStart(SingleToneStruct sound[])
 		vTaskDelete(SoundPlayerHandle);
 	}
 	xTaskCreate(SoundPlayer, "Sound Player",
-		256, sound, SOUND_PLAYER_PRIORITY, &SoundPlayerHandle);	
+		32, sound, SOUND_PLAYER_PRIORITY, &SoundPlayerHandle);	
 }
 
 /**
