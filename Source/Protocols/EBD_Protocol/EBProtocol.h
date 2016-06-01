@@ -4,6 +4,10 @@
 #include "stm32f10x.h"
 #include "stdbool.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
 //EBD CommandSet,ignore if not needed
 #define EBD_STOP_BYTE       0xf8
 #define EBD_COMMAND_LENGTH  10
@@ -31,7 +35,9 @@
 #define EBD_LOAD_RUNNING_COMMAND       0x50
 #define EBD_LOAD_START_COMMAND         0x01
 #define EBD_LOAD_STOP_COMMAND          0x02
-#define EBD_LOAD_KEEP_COMMAND          0x07;
+#define EBD_LOAD_KEEP_COMMAND          0x07
+
+extern xQueueHandle EBDTxDataMsg;
 
 extern unsigned char EBDBackPacket[EBD_PACKET_LENGTH + 1];
 

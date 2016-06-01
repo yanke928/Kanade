@@ -1,6 +1,6 @@
 Dependencies for Project 'Kanade', Target 'Kanade': (DO NOT MODIFY !)
 F (..\CMSIS\startup\startup_stm32f10x_md.s)(0x574C2386)(--cpu Cortex-M3 -g --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include--list ..\listing\startup_stm32f10x_md.lst --xref -o ..\output\startup_stm32f10x_md.o --depend ..\output\startup_stm32f10x_md.d)
-F (..\Source\Startup\Startup.c)(0x574E5170)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\startup.o --omf_browse ..\output\startup.crf --depend ..\output\startup.d)
+F (..\Source\Startup\Startup.c)(0x574E5451)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\startup.o --omf_browse ..\output\startup.crf --depend ..\output\startup.d)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
@@ -29,7 +29,7 @@ I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x574D6A64)
 I (..\FWlib\inc\misc.h)(0x4BBD6D10)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
 I (..\Source\Apps\Music\Music.h)(0x574D73EF)
-I (..\Source\Protocols\EBD_Protocol\EBProtocol.h)(0x574E5168)
+I (..\Source\Protocols\EBD_Protocol\EBProtocol.h)(0x574E58BA)
 I (..\Source\Startup\Startup.h)(0x574D7E70)
 F (..\FWlib\src\stm32f10x_gpio.c)(0x4BBD6D12)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\stm32f10x_gpio.o --omf_browse ..\output\stm32f10x_gpio.crf --depend ..\output\stm32f10x_gpio.d)
 I (..\FWlib\inc\stm32f10x_gpio.h)(0x4BBD6D12)
@@ -190,7 +190,7 @@ I (..\Source\FreeRTOS\Source\include\task.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\Startup\Startup.h)(0x574D7E70)
-F (..\Source\STM32\stm32f10x_it.c)(0x574DA5D5)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\stm32f10x_it.o --omf_browse ..\output\stm32f10x_it.crf --depend ..\output\stm32f10x_it.d)
+F (..\Source\STM32\stm32f10x_it.c)(0x574E5215)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\stm32f10x_it.o --omf_browse ..\output\stm32f10x_it.crf --depend ..\output\stm32f10x_it.d)
 I (..\Source\STM32\stm32f10x_it.h)(0x49D96964)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
 I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
@@ -427,8 +427,8 @@ I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_tim.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
-F (..\Source\Peripherals\Usarts\Usarts.c)(0x574E5155)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\usarts.o --omf_browse ..\output\usarts.crf --depend ..\output\usarts.d)
-I (..\Source\Peripherals\Usarts\Usarts.h)(0x574E515C)
+F (..\Source\Peripherals\Usarts\Usarts.c)(0x574E5B9A)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\usarts.o --omf_browse ..\output\usarts.crf --depend ..\output\usarts.d)
+I (..\Source\Peripherals\Usarts\Usarts.h)(0x574E5ABB)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
 I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
@@ -451,7 +451,7 @@ I (..\Source\FreeRTOS\Source\include\mpu_wrappers.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\task.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
-I (..\Source\Protocols\EBD_Protocol\EBProtocol.h)(0x574E5168)
+I (..\Source\Protocols\EBD_Protocol\EBProtocol.h)(0x574E58BA)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\FWlib\inc\stm32f10x_dma.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x52FDD27E)
@@ -479,7 +479,7 @@ I (..\Source\FreeRTOS\Source\include\mpu_wrappers.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\task.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
-F (..\Source\Protocols\EBD_Protocol\EBProtocol.c)(0x574E5164)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ebprotocol.o --omf_browse ..\output\ebprotocol.crf --depend ..\output\ebprotocol.d)
+F (..\Source\Protocols\EBD_Protocol\EBProtocol.c)(0x574E611F)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ebprotocol.o --omf_browse ..\output\ebprotocol.crf --depend ..\output\ebprotocol.d)
 I (..\FWlib\inc\stm32f10x_gpio.h)(0x4BBD6D12)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
 I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
@@ -491,10 +491,10 @@ I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_tim.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_dma.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
-I (..\Source\Peripherals\Usarts\USARTS.h)(0x574E515C)
+I (..\Source\Peripherals\Usarts\USARTS.h)(0x574E5ABB)
 I (..\FWlib\inc\misc.h)(0x4BBD6D10)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
-I (..\Source\Protocols\EBD_Protocol\EBProtocol.h)(0x574E5168)
+I (..\Source\Protocols\EBD_Protocol\EBProtocol.h)(0x574E58BA)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x574D676A)

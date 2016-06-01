@@ -17,6 +17,8 @@
 
 #define EBD_PACKET_RECEIVER_PRIORITY tskIDLE_PRIORITY+5
 
+#define EBD_PACKET_TRANSMITTER_PRIORITY tskIDLE_PRIORITY+5
+
 //EBD command string example
 unsigned char EBDUSBStandardString[8] = { 0xfa,0x05,0x00,0x00,0x00,0x00,0x00,0x00 };
 
@@ -31,9 +33,6 @@ u8 EBDBackPacket[EBD_PACKET_LENGTH + 1];
 
 //Relative addr in EBDBackPacket,used to receive packet byte by byte
 unsigned char ReceiveAddr = 0;
-
-//Receive timeout count,used to judge if a packet has been fully-received
-unsigned char ReceiveTimeOut = 0;
 
 //ReceivingFlag,used to judge if a packet has been fully-received
 bool EBDPacketReceivingFlag = false;
@@ -62,6 +61,8 @@ USBMeterStruct CurrentMeterData;
 SumupStruct    CurrentSumUpData;
 
 xQueueHandle EBDTxDataMsg;
+
+xQueueHandle EBDRxDataMsg;
 
 /**
   * @brief   To keep the communications between EBD-USB and PC,
@@ -144,7 +145,7 @@ void EBDUSB_LinkStart(bool setupHandler)
 /**
   * @brief   This is the interrupt processing function for USART1
   *          This function receive the EBD-USB packet from USART1
-  *          Work with EBDPacketHandler to deal with the receiving error
+  *          Work with EBDPacketReceiver to deal with the receiving error
   * @retval : VerifyByte
   */
 void USART1_IRQHandler(void)
@@ -162,54 +163,6 @@ void USART1_IRQHandler(void)
 		ReceiveAddr++;
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
 	}
-}
-
-/**
-  * @brief   Called by SystemBeats
-			 Used to change ebdNewPacketHandleOnegai for other
-			 process which needs to update new data in the new
-			 packet
-			 When flag "EBDPacketReceivingFlag"keeps false for
-			 10 times(about 50ms),delt with a timeout, if the
-			 new packet passed the check,ebdNewPacketHandleOnegai
-			 will be true(a data refresh onegai triggerred)
-  * @retval : VerifyByte
-  */
-
-void EBDPacketHandler(short lese, short lese2, unsigned char lese3)
-{
-	if (lese)  lese = 0;
-	if (lese2) lese2 = 0;
-	if (lese3) lese3 = 0;//Throw the rubbish
-	if ((EBDPacketReceivingFlag == false) && (EBDPacketReceivedFlag == true))
-		//If a new packet is being(or is)received
-	{
-		ReceiveTimeOut++;
-		if (ReceiveTimeOut >= 10)
-			//If "EBDPacketReceivingFlag" kept false for 15 times(at least 50ms)
-		{
-			ReceiveTimeOut = 0;//Clear Timeout
-			EBDPacketReceivedFlag = false;//Clear ReceivedFlag
-			if (BadPacketReceivedFlag == true)//If it is a bad packet
-			{
-				EBDNewPacketHandleOnegai = false;//Do not onegai
-				BadPacketReceivedFlag = false;//Clear badFlag
-				return;
-			}
-			EBDWatchCount = 0;//Clear WatchDog
-			ReceiveAddr = 0;//Clear ReceiveAddr for the next packet
-			EBDNewPacketHandleOnegai = true;//Trigger a newPacketHandleOnegai
-		}
-	}
-	if (EBDPacketReceivingFlag == true)
-		//If  "EBDPacketReceivingFlag" is reset to true by USART1_IRQHandler()
-		//,means the receiving process is still active
-	{
-		ReceiveTimeOut = 0;//Clear TimeOut
-	}
-	EBDPacketReceivingFlag = false;
-	//Make "EBDPacketReceivingFlag" false to detect if USART1_IRQHandler()
-	//is active
 }
 
 /**
@@ -295,7 +248,7 @@ void EBDSendFastChargeCommand(unsigned char command)
 	TxStart();
 	for (i = 0; i < EBD_COMMAND_LENGTH; i++)
 	{
-		UART1SendByte(EBDCommandStringCache[i]);
+		//UART1SendByte(EBDCommandStringCache[i]);
 	}
 	TxStop();
 }
@@ -363,12 +316,7 @@ void EBDSendLoadCommand(u16 current, u8 mode)
 		EBD_STOP_BYTE;
 	EBDCommandStringCache[EBD_COMMAND_END_OF_ADDR] = 0;
 	/*Send Command*/
-	TxStart();
-	for (i = 0; i < EBD_COMMAND_LENGTH; i++)
-	{
-		UART1SendByte(EBDCommandStringCache[i]);
-	}
-	TxStop();
+	xQueueSend(EBDTxDataMsg, &i, 100 / portTICK_RATE_MS);
 }
 
 /**
@@ -396,6 +344,11 @@ void EBDWatchingDogHandler(short lese, short lese2, unsigned char lese3)
 	}
 }
 
+/**
+  * @brief   Task which transmit a packet to EBD when a queue triggers
+
+  * @retval : None
+  */
 void EBDPacketTransmitter(void *pvParameters)
 {
 	u8 i;
@@ -404,9 +357,61 @@ void EBDPacketTransmitter(void *pvParameters)
 		while (xQueueReceive(EBDTxDataMsg, &i, portMAX_DELAY) != pdPASS);
 		TxStart();
 		vTaskDelay(1 / portTICK_RATE_MS);
+		DMA1_Channel4->CNDTR = EBD_COMMAND_LENGTH;
 		USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
 		DMA_Cmd(DMA1_Channel4, ENABLE);
-		vTaskDelay(1 / portTICK_RATE_MS);
+		vTaskDelay(100 / portTICK_RATE_MS);
+		TxStop();
+	}
+}
+
+/**
+  * @brief   Called by SystemBeats
+			 Used to change ebdNewPacketHandleOnegai for other
+			 process which needs to update new data in the new
+			 packet
+			 When flag "EBDPacketReceivingFlag"keeps false for
+			 10 times(about 50ms),delt with a timeout, if the
+			 new packet passed the check,ebdNewPacketHandleOnegai
+			 will be true(a data refresh onegai triggerred)
+  * @retval : VerifyByte
+  */
+void EBDPacketReceiver(void *pvParameters)
+{
+	u8 i;
+	u8 ReceiveTimeOut=0;
+	while (1)
+	{
+		//If a new packet is being(or is)received
+		if ((EBDPacketReceivingFlag == false) && (EBDPacketReceivedFlag == true))
+		{
+			ReceiveTimeOut++;
+			//If "EBDPacketReceivingFlag" kept false for 10 times(at least 50ms)
+			if (ReceiveTimeOut >= 5)
+			{
+				ReceiveTimeOut = 0;//Clear Timeout
+				EBDPacketReceivedFlag = false;//Clear ReceivedFlag
+				if (BadPacketReceivedFlag == true)//If it is a bad packet
+				{
+					EBDNewPacketHandleOnegai = false;//Do not onegai
+					BadPacketReceivedFlag = false;//Clear badFlag
+					return;
+				}
+				EBDWatchCount = 0;//Clear WatchDog
+				ReceiveAddr = 0;//Clear ReceiveAddr for the next packet
+				xQueueSend(EBDRxDataMsg, &i, 100 / portTICK_RATE_MS);
+			}
+		}
+		if (EBDPacketReceivingFlag == true)
+		//If  "EBDPacketReceivingFlag" is reset to true by USART1_IRQHandler()
+		//,means the receiving process is still active
+		{
+			ReceiveTimeOut = 0;//Clear TimeOut
+		}
+		EBDPacketReceivingFlag = false;
+		//Make "EBDPacketReceivingFlag" false to detect if USART1_IRQHandler()
+		//is active
+		vTaskDelay(10 / portTICK_RATE_MS);
 	}
 }
 
@@ -422,14 +427,22 @@ void EBDWatchingDogSetup(void)
 
 void EBD_Init(void)
 {
+	u8 i;
 	xQueueSend(InitStatusMsg, "Waiting for EBD...", 100 / portTICK_RATE_MS);
 	EBDTxDataMsg = xQueueCreate(1, sizeof(u8));
+	EBDRxDataMsg = xQueueCreate(1, sizeof(u8));
 	xTaskCreate(EBDPacketTransmitter, "EBD Packet Transmitter",
+		128, NULL, EBD_PACKET_TRANSMITTER_PRIORITY, NULL);
+	xTaskCreate(EBDPacketReceiver, "EBD Packet Receiver",
 		128, NULL, EBD_PACKET_RECEIVER_PRIORITY, NULL);
 	taskENTER_CRITICAL();
 	USART1_TX_DMA_Init();
 	USART1_Init();
 	taskEXIT_CRITICAL();
+	vTaskDelay(100 / portTICK_RATE_MS);
 	EBDUSB_LinkStart(true);
+	xQueueSend(InitStatusMsg, "Waiting for EBD...", 0);
+	while (xQueueReceive(EBDRxDataMsg, &i, portMAX_DELAY) != pdPASS);	
+	xQueueSend(InitStatusMsg, "EBD Connected", 0);
 }
 

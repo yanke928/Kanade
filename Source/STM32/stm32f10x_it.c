@@ -125,15 +125,6 @@ void DebugMon_Handler(void)
 	
 }
 
-void DMA1_Channel4_IRQHandler(void)  
-{  
-	portBASE_TYPE xHigherPriorityTaskWoken = pdPASS;
-    DMA_ClearFlag(DMA1_FLAG_TC4);  
-    DMA_Cmd(DMA1_Channel4,DISABLE);  
-  xQueueSendFromISR(InitStatusMsg, "DGD", &xHigherPriorityTaskWoken);
-}  
-
-
 /**
   * @brief  This function handles PendSVC exception.
   * @param  None

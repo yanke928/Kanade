@@ -1,4 +1,4 @@
-//File Name   ：Usart1.c
+//File Name   ：Usarts.c
 //Description ：Configure Usart1        
 
 #include "Usarts.h"
@@ -32,6 +32,7 @@ void USART1_Init(void)
 	USART_InitStructure.USART_BaudRate = 9600;
 	USART_Init(USART1, &USART_InitStructure);
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+	USART_ClearFlag(USART2, USART_FLAG_TC); 
 
 	/*Usart1 NVIC configurations*/
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_3);
@@ -44,7 +45,7 @@ void USART1_Init(void)
 	USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
 	USART_Cmd(USART1, ENABLE);//Enable Usart1
 
-				/*Usart1 GPIO configurations*/
+	/*Usart1 GPIO configurations*/
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
@@ -86,7 +87,7 @@ void USART1_TX_DMA_Init()
 
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST; //PeripheralDST
 
-	DMA_InitStructure.DMA_BufferSize = 20;//Buffer length
+	DMA_InitStructure.DMA_BufferSize =EBD_COMMAND_LENGTH;//Buffer length
 
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;//Memory increse mode
@@ -102,28 +103,10 @@ void USART1_TX_DMA_Init()
 	DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
 }
 
-/*发送一个字节数据*/
-void UART1SendByte(unsigned char SendData)
-{
-	USART_SendData(USART1, SendData);
-	while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
-}
-
-/*接收一个字节数据*/
-unsigned char UART1GetByte(unsigned char* GetData)
-{
-	if (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == RESET)
-	{
-		return 0;//没有收到数据 
-	}
-	*GetData = USART_ReceiveData(USART1);
-	return 1;//收到数据
-}
-void USART1SendString(char *s)
-{
-	while (*s)                  //检测字符串结束标志
-	{
-		UART1SendByte(*s++);         //发送当前字符
-	}
-}
-
+void DMA1_Channel4_IRQHandler(void)  
+{  
+	//portBASE_TYPE xHigherPriorityTaskWoken = pdPASS;
+  DMA_ClearFlag(DMA1_FLAG_TC4);  
+  DMA_Cmd(DMA1_Channel4,DISABLE);  
+ // xQueueSendFromISR(InitStatusMsg, "DGD", &xHigherPriorityTaskWoken);
+}  
