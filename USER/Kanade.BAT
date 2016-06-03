@@ -37,6 +37,8 @@ SET CPU_CLOCK=0x044AA200
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\sdcard.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\sdcardff.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\music.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\usbmeter.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\virtualrtc.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\ebprotocol.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\ff.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via "..\output\diskio.__i"

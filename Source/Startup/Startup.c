@@ -13,6 +13,7 @@
 #include "Music.h"
 #include "sdcard.h"
 #include "EBProtocol.h"
+#include "USBMeter.h"
 
 #include "Startup.h"
 
@@ -252,10 +253,12 @@ void SystemStartup(void *pvParameters)
 	vTaskDelay(100 / portTICK_RATE_MS);
 	ShowCurrentTempSensor();
 	CheckEBDDirectories();
-	while (1)
-	{
-		vTaskDelay(100 / portTICK_RATE_MS);
-	}
+	LED_Animate_DeInit();
+	vTaskDelete(initStatusUpdateHandle);
+	vTaskDelete(logoHandle);
+	OLED_Clear();
+	USBMeter_Init(USBMETER_ONLY);
+	vTaskDelete(NULL);
 }
 
 /**

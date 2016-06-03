@@ -246,6 +246,7 @@ u8 SD_SendCommand_NoDeassert(u8 cmd, u32 arg, u8 crc);
 u8 SDHC_Init(void);                               //SDHC¿¨³õÊ¼»¯
 u32 SD_GetSectorCount(void);
 void sdcard_Init(void);
+void CheckEBDDirectories(void);
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>end of  code<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 

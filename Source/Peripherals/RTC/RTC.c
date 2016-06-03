@@ -353,7 +353,7 @@ void RTCUpdateHandler(void *pvParameters)
 {
  while(1)
  {
-	 vTaskDelay(900/portTICK_RATE_MS);
+	 vTaskDelay(500/portTICK_RATE_MS);
 	 Time_Get();
  }
 }

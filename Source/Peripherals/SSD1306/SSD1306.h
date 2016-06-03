@@ -49,6 +49,8 @@ extern volatile bool GRAM_No_Change_Timeout;
 
 extern xSemaphoreHandle OLEDRelatedMutex;
 
+enum { OnSelect = true, NotOnSelect = false };
+
 //see .c for details
 void OLED_WR_Byte(unsigned char  dat, unsigned char  cmd);
 void OLED_Display_On(void);
