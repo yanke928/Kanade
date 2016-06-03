@@ -14,7 +14,15 @@
 *******************************************************************************/
 /* Includes ------------------------------------------------------------------*/
 #include "SDCard.h"
+#include "SDCardff.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
+#include "startup.h"
+
+#include <stdio.h>
 
 extern vu8 SD_Card_Ready;//SD卡初始化成功标志，在diskio.c中
 /* Private typedef -----------------------------------------------------------*/
@@ -731,7 +739,7 @@ u8 MSD_GetDataResponse(void)
 *******************************************************************************/
 u8 MSD_GetResponse(u8 Response)
 {
-  u32 Count = 0xFFF;
+  u32 Count = 0xFF;
 
   /* Check if response is got or a timeout is happen */
   while ((MSD_ReadByte() != Response) && Count)
@@ -1188,4 +1196,30 @@ u32 SD_GetSectorCount(void)
     }
     return Capacity;
 }
+
+/**
+  * @brief  Sdcard init task
+
+	  @retval None
+  */
+void sdcard_Init()
+{
+ u32 sd_capacity;
+ char tempString[20];
+ xQueueSend(InitStatusMsg, "Detecting SD...", 0);
+ MSD_Init();
+ vTaskDelay(100 / portTICK_RATE_MS);
+ MSD_Init();
+ sd_capacity=SDCardFSInit();
+ if(sd_capacity)
+ {
+	 sprintf(tempString,"Capcity:%dMB",sd_capacity);
+	 xQueueSend(InitStatusMsg, tempString, 0);
+ } 
+ else
+ {
+ 	 xQueueSend(InitStatusMsg, "No SDCard", 0); 
+ }
+}
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>end of  code<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

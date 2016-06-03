@@ -37,9 +37,6 @@ unsigned char ReceiveAddr = 0;
 //ReceivingFlag,used to judge if a packet has been fully-received
 bool EBDPacketReceivingFlag = false;
 
-//An onegaiFlag indicates if a new packet has been received
-volatile bool EBDNewPacketHandleOnegai = false;
-
 bool IgnoreNextEBDErr = false;
 
 bool EBDPacketReceivedFlag = false;
@@ -366,15 +363,14 @@ void EBDPacketTransmitter(void *pvParameters)
 }
 
 /**
-  * @brief   Called by SystemBeats
-			 Used to change ebdNewPacketHandleOnegai for other
-			 process which needs to update new data in the new
-			 packet
+  * @brief   
+			 Send a message to EBDRxDataMsg to notice other apps
+       that a new EBD packet was fully received
 			 When flag "EBDPacketReceivingFlag"keeps false for
-			 10 times(about 50ms),delt with a timeout, if the
+			 5 times(about 50ms),delt with a timeout, if the
 			 new packet passed the check,ebdNewPacketHandleOnegai
 			 will be true(a data refresh onegai triggerred)
-  * @retval : VerifyByte
+  * @retval : None
   */
 void EBDPacketReceiver(void *pvParameters)
 {
@@ -393,7 +389,6 @@ void EBDPacketReceiver(void *pvParameters)
 				EBDPacketReceivedFlag = false;//Clear ReceivedFlag
 				if (BadPacketReceivedFlag == true)//If it is a bad packet
 				{
-					EBDNewPacketHandleOnegai = false;//Do not onegai
 					BadPacketReceivedFlag = false;//Clear badFlag
 					return;
 				}
@@ -428,21 +423,32 @@ void EBDWatchingDogSetup(void)
 void EBD_Init(void)
 {
 	u8 i;
+	/*Send a new status to InitStatus*/
 	xQueueSend(InitStatusMsg, "Waiting for EBD...", 100 / portTICK_RATE_MS);
+	/*Init EBD messages*/
 	EBDTxDataMsg = xQueueCreate(1, sizeof(u8));
 	EBDRxDataMsg = xQueueCreate(1, sizeof(u8));
+	/*Create tasks for transmitter and receiver*/
 	xTaskCreate(EBDPacketTransmitter, "EBD Packet Transmitter",
 		128, NULL, EBD_PACKET_TRANSMITTER_PRIORITY, NULL);
 	xTaskCreate(EBDPacketReceiver, "EBD Packet Receiver",
 		128, NULL, EBD_PACKET_RECEIVER_PRIORITY, NULL);
+	/*Init usart*/
 	taskENTER_CRITICAL();
 	USART1_TX_DMA_Init();
 	USART1_Init();
 	taskEXIT_CRITICAL();
+	/*Send connection start string to EBD*/
 	vTaskDelay(100 / portTICK_RATE_MS);
 	EBDUSB_LinkStart(true);
+	/*Keep waiting until EBD responses*/
 	xQueueSend(InitStatusMsg, "Waiting for EBD...", 0);
-	while (xQueueReceive(EBDRxDataMsg, &i, portMAX_DELAY) != pdPASS);	
+	while (xQueueReceive(EBDRxDataMsg, &i, 3000/ portTICK_RATE_MS) != pdPASS)
+	{
+	 EBDUSB_LinkStart(true);
+	}		
+	/*Update initStatus*/
 	xQueueSend(InitStatusMsg, "EBD Connected", 0);
+	return;
 }
 

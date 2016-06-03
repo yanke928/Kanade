@@ -11,6 +11,7 @@
 #include "TempSensors.h"
 #include "SSD1306.h"
 #include "Music.h"
+#include "sdcard.h"
 #include "EBProtocol.h"
 
 #include "Startup.h"
@@ -245,8 +246,10 @@ void SystemStartup(void *pvParameters)
 	logoHandle = Logo_Init();
 	initStatusUpdateHandle = InitStatusHandler_Init();
 	xQueueSend(InitStatusMsg, "System Init...", 0);
-	//TemperatureSensors_Init();
+	TemperatureSensors_Init();
 	EBD_Init();
+	vTaskDelay(100 / portTICK_RATE_MS);
+	sdcard_Init();
 	while (1)
 	{
 		vTaskDelay(100 / portTICK_RATE_MS);

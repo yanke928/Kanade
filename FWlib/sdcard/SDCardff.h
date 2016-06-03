@@ -9,7 +9,7 @@ extern bool SDCardMountStatus;
 
 extern bool SDExist;
 
-bool SDCardFSInit(u8 timerNo);
+u32 SDCardFSInit(void);
 
 extern FATFS fatfs; 
 

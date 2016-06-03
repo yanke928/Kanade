@@ -24,7 +24,6 @@
 /* Includes ------------------------------------------------------------------*/
 //#include "stm32f10x_map.h"
 #include "misc.h"
-#include "SystemSetup.h"
 #include "stm32f10x_spi.h"
 
 #define  XING_DO  1  //使能我所添加的一些代码,最好打开
@@ -216,7 +215,7 @@ void SD_SPI_HightSpeed(void);  //提高SD卡的读写速度
 //说明  : 以下加入的代码是为了使系统支持高速SDHC卡
 //------------------------------------------------
 
-#define RE_TRY_CNT	    60	 //操作不成功时的重试次数
+#define RE_TRY_CNT	    5	 //操作不成功时的重试次数
 
 /* SD卡类型定义 */
 #define SD_TYPE_MMC     0
@@ -246,7 +245,7 @@ u8 SD_SendCommand(u8 cmd, u32 arg, u8 crc);     //SD卡发送一个命令
 u8 SD_SendCommand_NoDeassert(u8 cmd, u32 arg, u8 crc);
 u8 SDHC_Init(void);                               //SDHC卡初始化
 u32 SD_GetSectorCount(void);
-  
+void sdcard_Init(void);
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>end of  code<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 

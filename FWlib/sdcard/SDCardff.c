@@ -1,14 +1,10 @@
 #include <SDCardff.h>
 #include <SDCard.h>
-#include <USARTS.h>
 #include "SDCard.h"
 #include "stdio.h"
 #include "string.h"
 #include "SSD1306.h"
-#include "SystemSetup.h"
 #include "stm32f10x_spi.h"
-#include "SystemBeats.h"
-#include "USBCDC.h"
 #include "stm32f10x.h"
 #include "core_cm3.h"
 #include "platform_config.h"
@@ -72,13 +68,12 @@ FRESULT scan_files (
 	return res;
 }
 
-bool SDCardFSInit(u8 timerNo)
+u32 SDCardFSInit()
 { 
 	u32 SD_capp;
-	char tempString[17];
 	if(SDCardMountStatus == false)
 	{
-		if(f_mount(0,&fatfs) == FR_OK)		//≥ı ºªØSD;
+		if(f_mount(0,&fatfs) == FR_OK)//Try to mount sdcard
 		{
 			SDCardMountStatus = true;
 		}
@@ -90,24 +85,16 @@ bool SDCardFSInit(u8 timerNo)
 	if(SD_capp)
 	{
    SD_Capacity=SD_capp;
-	 sprintf(tempString,"Capacity:%dMB",SD_capp);
-	 SendLogString(tempString);
-	 USBCDC_SendString("\n");
-	 ShowInitString(tempString,timerNo);
 	 SDExist=true;		
 	}
 	else
 	{
-	 SendLogString("No SD Found!!\n");
-	 ShowInitString("No SD Found!!",timerNo);	 
    SDExist=false;		
 	}
 	}
 	else
 	{
-  SendLogString("No SD Found!!\n");
-	ShowInitString("No SD Found!!",timerNo);		
+	 SDExist=false;		
 	}
-  SendLogString("SD_Card Initialized\n\n");	
-	return(SDCardMountStatus);
+	return(SD_capp);
 }

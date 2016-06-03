@@ -49,8 +49,6 @@ extern unsigned char ReceiveTimeOut;
 
 extern bool EBDPacketReceivingFlag;
 
-extern volatile bool EBDNewPacketHandleOnegai;
-
 extern bool EBDPacketReceiveEnable;
 
 extern bool BadPacketReceivedFlag;

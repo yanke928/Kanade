@@ -361,7 +361,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD,USE_STM3210B_EVAL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol</IncludePath>
+              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol;..\Source\Peripherals;..\FWlib\sdcard;..\FWlib\fatfs;..\FWlib\usb</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -584,6 +584,16 @@
               <FileType>1</FileType>
               <FilePath>..\Source\Peripherals\Usarts\Usarts.c</FilePath>
             </File>
+            <File>
+              <FileName>SDCard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\sdcard\SDCard.c</FilePath>
+            </File>
+            <File>
+              <FileName>SDCardff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\sdcard\SDCardff.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -603,6 +613,26 @@
               <FileName>EBProtocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Protocols\EBD_Protocol\EBProtocol.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>fatfs</GroupName>
+          <Files>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\fatfs\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\fatfs\diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>ccsbcs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\fatfs\ccsbcs.c</FilePath>
             </File>
           </Files>
         </Group>
