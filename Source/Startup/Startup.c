@@ -236,7 +236,6 @@ xTaskHandle InitStatusHandler_Init(void)
   */
 void SystemStartup(void *pvParameters)
 {
-	char tempString[20];
 	xTaskHandle logoHandle;
 	xTaskHandle initStatusUpdateHandle;
 	LED_Animate_Init(LEDAnimation_Startup);
@@ -250,6 +249,8 @@ void SystemStartup(void *pvParameters)
 	EBD_Init();
 	vTaskDelay(100 / portTICK_RATE_MS);
 	sdcard_Init();
+	vTaskDelay(100 / portTICK_RATE_MS);
+	ShowCurrentTempSensor();
 	while (1)
 	{
 		vTaskDelay(100 / portTICK_RATE_MS);

@@ -53,4 +53,7 @@ bool TemperatureSensorDetect(bool init);
 //see .c for details
 void TemperatureSensors_Init(void);
 
+//see .c for details
+void ShowCurrentTempSensor(void);
+
 #endif /* __TEMPSENSORS_H */

@@ -739,7 +739,7 @@ u8 MSD_GetDataResponse(void)
 *******************************************************************************/
 u8 MSD_GetResponse(u8 Response)
 {
-  u32 Count = 0xFF;
+  u32 Count = 0xff;
 
   /* Check if response is got or a timeout is happen */
   while ((MSD_ReadByte() != Response) && Count)

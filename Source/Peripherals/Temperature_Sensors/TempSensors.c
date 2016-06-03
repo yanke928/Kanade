@@ -9,6 +9,7 @@
 #include "math.h"
 
 #include "TempSensors.h"
+#include "startup.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -170,7 +171,7 @@ void TemperatureHandler(void *pvParameters)
 				ADCConvertedValue[m];
 		}
 	}
-	if (FilteredADCValue[2] >= 200)
+	if (SecondLevelADCFilterTank[2][0] >= 200)
 	{
 	 CurrentTemperatureSensor=External;
 	}
@@ -309,5 +310,23 @@ void CalculateExtTemp(void)
 			ExternalTemperature = TempTab[i] - (k*(ResistTab[i] - Rtemp));
 			return;
 		}
+	}
+}
+
+
+/**
+  * @brief    Show current selected temperature sensor
+
+  * @retval : None
+  */
+void ShowCurrentTempSensor(void)
+{
+	if(CurrentTemperatureSensor==Internal)
+	{
+	 xQueueSend(InitStatusMsg, "No Ext.Sensor", 0);
+	}
+	else
+	{
+	 xQueueSend(InitStatusMsg, "Ext.Sensor Plugged", 0);
 	}
 }
