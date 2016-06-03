@@ -37,6 +37,10 @@
 #define EBD_LOAD_STOP_COMMAND          0x02
 #define EBD_LOAD_KEEP_COMMAND          0x07
 
+#define EBD_MAIN_VOLATGE_ADDR          0x04
+#define EBD_DP_VOLATGE_ADDR            0x06
+#define EBD_DM_VOLATGE_ADDR            0x08
+
 extern xQueueHandle EBDTxDataMsg;
 
 extern unsigned char EBDBackPacket[EBD_PACKET_LENGTH + 1];
@@ -58,8 +62,6 @@ extern bool EBDPacketReceivedFlag;
 extern bool SumUpInProgress;
 
 extern bool EBDExceptionHandleOnegaiFlag;
-
-extern bool IgnoreNextEBDErr;
 
 enum { StopTest = 0, KeepTest = 1, StartTest = 2 };
 

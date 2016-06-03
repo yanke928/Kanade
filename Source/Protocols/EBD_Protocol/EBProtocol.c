@@ -37,8 +37,6 @@ unsigned char ReceiveAddr = 0;
 //ReceivingFlag,used to judge if a packet has been fully-received
 bool EBDPacketReceivingFlag = false;
 
-bool IgnoreNextEBDErr = false;
-
 bool EBDPacketReceivedFlag = false;
 
 bool EBDPacketReceiveEnable = false;
@@ -162,49 +160,37 @@ void USART1_IRQHandler(void)
 	}
 }
 
+float DecodeVoltage(u8 startAddr)
+{
+ float voltage;
+ voltage=(float)((EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr+1] - 320) -
+		((int)(EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr+1]) - 5120) / 256 * 16) / 1000;
+	if (EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr+1] < 5120)
+	{
+		voltage = (float)((EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr+1] - 320) +
+			((int)5376 - (EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr+1])) / 256 * 16) / 1000;
+	}
+	if (voltage< 0.1) voltage= 0; 
+ return(voltage);
+}
+
 /**
-  * @brief   Decode the voltage data
+  * @brief   Decode the EBD data
   * @retval : Changes in struct CurrentMeterData
   */
 void PacketDecode(void)
 {
 	u8 i;
 	i = GenerateVerifyByte(EBDBackPacket, 1, 16);
-	if (i !=
-		EBDBackPacket[EBD_PACKET_VERIFY_BYTE_ADDR] && i < 240 &&
-		IgnoreNextEBDErr == false)
+	if (i != EBDBackPacket[EBD_PACKET_VERIFY_BYTE_ADDR] && i < 240)
 	{
 		return;
 	}
-	IgnoreNextEBDErr = true;
-
-	CurrentMeterData.Voltage = (float)((EBDBackPacket[4] * 256 + EBDBackPacket[5] - 320) -
-		((int)(EBDBackPacket[4] * 256 + EBDBackPacket[5]) - 5120) / 256 * 16) / 1000;
-	if (EBDBackPacket[4] * 256 + EBDBackPacket[5] < 5120)
-	{
-		CurrentMeterData.Voltage = (float)((EBDBackPacket[4] * 256 + EBDBackPacket[5] - 320) +
-			((int)5376 - (EBDBackPacket[4] * 256 + EBDBackPacket[5])) / 256 * 16) / 1000;
-	}
-	if (CurrentMeterData.Voltage < 0.1) CurrentMeterData.Voltage = 0;
-
-	CurrentMeterData.VoltageDP = (float)((EBDBackPacket[6] * 256 + EBDBackPacket[7] - 320) -
-		((int)(EBDBackPacket[6] * 256 + EBDBackPacket[7]) - 5120) / 256 * 16) / 1000;
-	if (EBDBackPacket[4] * 256 + EBDBackPacket[5] < 5120)
-	{
-		CurrentMeterData.VoltageDP = (float)((EBDBackPacket[6] * 256 + EBDBackPacket[7] - 320) +
-			((int)5376 - (EBDBackPacket[6] * 256 + EBDBackPacket[7])) / 256 * 16) / 1000;
-	}
-	if (CurrentMeterData.VoltageDP < 0) CurrentMeterData.VoltageDP = 0;
-
-	CurrentMeterData.VoltageDM = (float)((EBDBackPacket[8] * 256 + EBDBackPacket[9] - 320) -
-		((int)(EBDBackPacket[8] * 256 + EBDBackPacket[9]) - 5120) / 256 * 16) / 1000;
-	if (EBDBackPacket[8] * 256 + EBDBackPacket[9] < 5120)
-	{
-		CurrentMeterData.VoltageDM = (float)((EBDBackPacket[8] * 256 + EBDBackPacket[9] - 320) +
-			((int)5376 - (EBDBackPacket[8] * 256 + EBDBackPacket[9])) / 256 * 16) / 1000;
-	}
-	if (CurrentMeterData.VoltageDM < 0) CurrentMeterData.VoltageDM = 0;
-
+	
+	CurrentMeterData.Voltage = DecodeVoltage(EBD_MAIN_VOLATGE_ADDR);
+	CurrentMeterData.VoltageDP=DecodeVoltage(EBD_DP_VOLATGE_ADDR);
+	CurrentMeterData.VoltageDM=DecodeVoltage(EBD_DM_VOLATGE_ADDR);
+	
 	CurrentMeterData.Current = (float)((EBDBackPacket[2] * 256 + EBDBackPacket[3]) -
 		(EBDBackPacket[2] * 256 + EBDBackPacket[3]) / 256 * 16) / 10000;
 
@@ -242,12 +228,7 @@ void EBDSendFastChargeCommand(unsigned char command)
 	EBDCommandStringCache[EBD_COMMAND_VERIFY_BYTE_ADDR] = i;
 	EBDCommandStringCache[EBD_COMMAND_STOP_BYTE_ADDR] = EBD_STOP_BYTE;
 	EBDCommandStringCache[EBD_COMMAND_END_OF_ADDR] = 0;
-	TxStart();
-	for (i = 0; i < EBD_COMMAND_LENGTH; i++)
-	{
-		//UART1SendByte(EBDCommandStringCache[i]);
-	}
-	TxStop();
+	xQueueSend(EBDTxDataMsg, &i, 100 / portTICK_RATE_MS);
 }
 
 /**
@@ -394,7 +375,8 @@ void EBDPacketReceiver(void *pvParameters)
 				}
 				EBDWatchCount = 0;//Clear WatchDog
 				ReceiveAddr = 0;//Clear ReceiveAddr for the next packet
-				xQueueSend(EBDRxDataMsg, &i, 100 / portTICK_RATE_MS);
+				PacketDecode();
+				xQueueSend(EBDRxDataMsg, &i, 100 / portTICK_RATE_MS);			
 			}
 		}
 		if (EBDPacketReceivingFlag == true)

@@ -251,6 +251,7 @@ void SystemStartup(void *pvParameters)
 	sdcard_Init();
 	vTaskDelay(100 / portTICK_RATE_MS);
 	ShowCurrentTempSensor();
+	CheckEBDDirectories();
 	while (1)
 	{
 		vTaskDelay(100 / portTICK_RATE_MS);
