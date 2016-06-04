@@ -15,6 +15,7 @@
 #include "sdcard.h"
 #include "EBProtocol.h"
 #include "USBMeter.h"
+#include "BadApplePlayer.h"
 #include "USBCDC.h"
 
 #include "Startup.h"
@@ -252,15 +253,21 @@ void SystemStartup(void *pvParameters)
 	xQueueSend(InitStatusMsg, "System Init...", 0);
 	TemperatureSensors_Init();
 	EBD_Init();
-	//vTaskDelay(100 / portTICK_RATE_MS);
 	sdcard_Init();
-	//vTaskDelay(100 / portTICK_RATE_MS);
+	vTaskDelay(200 / portTICK_RATE_MS);
 	ShowCurrentTempSensor();
 	CheckEBDDirectories();
 	LED_Animate_DeInit();
 	vTaskDelete(initStatusUpdateHandle);
 	vTaskDelete(logoHandle);
+	xSemaphoreGive(OLEDRelatedMutex);
+	UpdateOLEDJustNow=false;
 	OLED_Clear();
+	if(LEFT_KEY==KEY_ON)
+	{
+	 BadApplePlayer_Init();	
+	}
+	else
 	USBMeter_Init(USBMETER_ONLY);
 	vTaskDelete(NULL);
 }

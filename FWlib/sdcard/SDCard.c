@@ -1206,9 +1206,6 @@ void sdcard_Init()
 {
  u32 sd_capacity;
  char tempString[20];
- xQueueSend(InitStatusMsg, "Detecting SD...", 0);
- MSD_Init();
- vTaskDelay(100 / portTICK_RATE_MS);
  MSD_Init();
  sd_capacity=SDCardFSInit();
  if(sd_capacity)

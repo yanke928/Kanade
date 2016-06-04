@@ -136,5 +136,5 @@ void DisplayRecordData(char tempString[])
 void USBMeter_Init(u8 status)
 {
  xTaskCreate(USBMeter,"USBMeter",
-	256,&status,USB_METER_PRIORITY,NULL);
+	300,&status,USB_METER_PRIORITY,NULL);
 }

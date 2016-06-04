@@ -39,6 +39,8 @@ typedef struct
 #define OLED_CMD  0	
 #define OLED_DATA 1	
 
+extern unsigned char  OLED_GRAM[128][8];
+
 extern volatile bool UpdateOLEDJustNow;
 
 extern volatile bool GRAM_Changing;
