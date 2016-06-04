@@ -20,8 +20,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usb_type.h"
 
-#define USART_RX_DATA_SIZE   2048
-#define USART_TX_DATA_SIZE   2048
+#define USART_RX_DATA_SIZE   512
+#define USART_TX_DATA_SIZE   512
 
 extern uint8_t  USART_Rx_Buffer [USART_RX_DATA_SIZE]; 
 extern uint32_t USART_Rx_ptr_in;

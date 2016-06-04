@@ -1,5 +1,8 @@
 //USBCDC for STM32
 
+
+#include <stdio.h>
+
 #include "USBCDC.h"
 #include "hw_config.h"
 #include "usb_lib.h"
@@ -8,7 +11,7 @@
 #include "usb_desc.h"
 #include "usb_pwr.h"
 #include "usb_istr.h"
-#include "BasicUI.h"
+#include "startup.h"
 
 extern LINE_CODING linecoding;
 
@@ -72,6 +75,21 @@ void USBCDC_senddata(uint8 *data,uint16 length)
     }
 }
 
+void USBCDC_putc(u8 chr)
+{
+ USART_Rx_Buffer[USART_Rx_ptr_in] = chr;
+ USART_Rx_ptr_in++;
+ if(USART_Rx_ptr_in == USART_RX_DATA_SIZE) USART_Rx_ptr_in = 0;
+}
+
+u8 USBCDC_getc(u8* chr)
+{
+ if(USART_Tx_ptr_in == USART_Tx_ptr_out) return 0;
+ *chr = USART_Tx_Buffer[USART_Tx_ptr_out];
+ USART_Tx_ptr_out++;
+ return 1;
+}
+
 /*USB CDC virtual COM port receive data */
 uint16 USBCDC_recvdata(uint8 *pdata,uint16 limit)
 {
@@ -107,7 +125,7 @@ uint16 USBCDC_recvdata(uint8 *pdata,uint16 limit)
 
 void USBCDC_SendString(char string[])
 {
- u8 length=GetStringLength(string);
+ u8 length=strlen(string);
  USBCDC_senddata((u8*)string,length);
 }
 

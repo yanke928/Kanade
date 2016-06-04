@@ -24,6 +24,8 @@
 #include "stm32f10x_it.h"
 #include "stm32f10x_dma.h"
 
+#include "USBCDC.h"
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -149,10 +151,10 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval : None
   */
-//void USB_LP_CAN1_RX0_IRQHandler(void)
-//{
-////	__USBCDC_ISR();
-//}
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+	__USBCDC_ISR();
+}
 
 
 

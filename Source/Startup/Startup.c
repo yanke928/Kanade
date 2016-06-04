@@ -4,6 +4,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+#include "FreeRTOS_Cli.h"
 
 #include "rtc.h"
 #include "LED.h"
@@ -14,6 +15,7 @@
 #include "sdcard.h"
 #include "EBProtocol.h"
 #include "USBMeter.h"
+#include "USBCDC.h"
 
 #include "Startup.h"
 
@@ -239,6 +241,8 @@ void SystemStartup(void *pvParameters)
 {
 	xTaskHandle logoHandle;
 	xTaskHandle initStatusUpdateHandle;
+	USBCDC_Init();
+	CommandLine_Init();
 	LED_Animate_Init(LEDAnimation_Startup);
 	OLED_Init();
 	Key_Init();
@@ -248,9 +252,9 @@ void SystemStartup(void *pvParameters)
 	xQueueSend(InitStatusMsg, "System Init...", 0);
 	TemperatureSensors_Init();
 	EBD_Init();
-	vTaskDelay(100 / portTICK_RATE_MS);
+	//vTaskDelay(100 / portTICK_RATE_MS);
 	sdcard_Init();
-	vTaskDelay(100 / portTICK_RATE_MS);
+	//vTaskDelay(100 / portTICK_RATE_MS);
 	ShowCurrentTempSensor();
 	CheckEBDDirectories();
 	LED_Animate_DeInit();

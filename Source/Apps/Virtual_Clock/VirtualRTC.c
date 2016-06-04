@@ -73,6 +73,11 @@ void VirtualRTC_DeInit(void)
  vTaskDelete(VirtualRTCHandle);
 }
 
+
+/**
+  * @brief   Init virtualRTC
+  * @retval : None
+  */
 void VirtualRTC_Init(void)
 {
   StartSecondNum = RTC_GetCounter(); 

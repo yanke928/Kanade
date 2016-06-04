@@ -361,7 +361,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD,USE_STM3210B_EVAL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol;..\Source\Peripherals;..\FWlib\sdcard;..\FWlib\fatfs;..\FWlib\usb</IncludePath>
+              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol;..\Source\Peripherals;..\FWlib\sdcard;..\FWlib\fatfs;..\FWlib\usb;..\Source\Apps\USBMeter;..\Source\Apps\Virtual_Clock;..\Source\FreeRTOS_CLI;..\FWlib\usb\inc;..\Source\FreeRTOS_IO\Include;..\Source\Apps\CommandLines</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -544,6 +544,11 @@
               <FileType>1</FileType>
               <FilePath>..\Source\FreeRTOS\Source\tasks.c</FilePath>
             </File>
+            <File>
+              <FileName>FreeRTOS_CLI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\FreeRTOS_CLI\FreeRTOS_CLI.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -604,6 +609,21 @@
               <FileType>1</FileType>
               <FilePath>..\Source\Apps\Music\Music.c</FilePath>
             </File>
+            <File>
+              <FileName>USBMeter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Apps\USBMeter\USBMeter.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualRTC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Apps\Virtual_Clock\VirtualRTC.c</FilePath>
+            </File>
+            <File>
+              <FileName>Command.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Apps\CommandLines\Command.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -633,6 +653,76 @@
               <FileName>ccsbcs.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\FWlib\fatfs\ccsbcs.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USBVirtualSerial</GroupName>
+          <Files>
+            <File>
+              <FileName>hw_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\usb\src\hw_config.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_desc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\usb\src\usb_desc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_endp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\usb\src\usb_endp.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_istr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\usb\src\usb_istr.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_prop.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\usb\src\usb_prop.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\usb\src\usb_pwr.c</FilePath>
+            </File>
+            <File>
+              <FileName>USBCDC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\usb\src\USBCDC.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\src\usb_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\src\usb_init.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_int.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\src\usb_int.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_mem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\src\usb_mem.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_regs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\src\usb_regs.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_sil.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\src\usb_sil.c</FilePath>
             </File>
           </Files>
         </Group>

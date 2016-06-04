@@ -10,5 +10,7 @@ extern xQueueHandle InitStatusMsg;
 //see .c for details
 void SystemStart(void);
 
+u8 GetStringLength(char string[]);
+
 #endif
 

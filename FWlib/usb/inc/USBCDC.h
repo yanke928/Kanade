@@ -22,4 +22,8 @@ void __USBCDC_ISR(void);//USB中断发生时调用
 
 void USBCDC_SendString(char string[]);
 
+u8 USBCDC_getc(uint8 *data);
+
+void USBCDC_putc(u8 chr);
+
 #endif
