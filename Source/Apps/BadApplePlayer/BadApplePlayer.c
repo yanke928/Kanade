@@ -1,6 +1,9 @@
 //File Name   £ºBadApplePlayer.c
 //Description : BadApplePlayer 
 
+#include <string.h>
+#include <stdio.h>
+
 #include "BadApplePlayer.h"
 
 #include "FreeRTOS.h"
@@ -14,6 +17,7 @@
 #include "FreeRTOS_CLI.h"
 
 #include "SSD1306.h"
+#include "CPU_Usage.h" 
 
 #define BAD_APPLE_PLAYER_PRIORITY tskIDLE_PRIORITY+5
 
@@ -26,7 +30,7 @@ void BadApplePlayer(void *pvParameters)
  u32 maxAddr;
  u32 fileSize;
  u32 dataRead=0;
- char tempString[5];
+ char tempString[7];
  u8 frame[1024];
  res = f_open(&video, "0:/BadApple.bin", FA_READ);
  if(res!=FR_OK)
@@ -38,19 +42,34 @@ void BadApplePlayer(void *pvParameters)
  maxAddr=fileSize/1024;
  xLastWakeTime=xTaskGetTickCount();
  UpdateOLEDJustNow=true;
- OLED_WR_Byte(0xa0, OLED_CMD);
- OLED_WR_Byte(0xc8, OLED_CMD);
+ SD_SPI_HightSpeed();
  while(1)
  {
 	for(currentAddr=0;currentAddr<maxAddr;currentAddr++)	
 	{
-		res=f_read(&video, frame, 1023, &dataRead);
-		if(res!=FR_OK) goto ReadFileFailed;
-//		res=f_read(&video, OLED_GRAM+512, 512, &dataRead);
-//		if(res!=FR_OK) goto ReadFileFailed;
+	  ReRead:
+		res=f_read(&video, frame, 512, &dataRead);
+		if (res != FR_OK) goto Retry;
+		res=f_read(&video, frame + 512, 512, &dataRead);
+		if (res != FR_OK)
+		{
+		  Retry:
+			f_close(&video);
+			f_open(&video, "0:/BadApple.bin", FA_READ);
+			f_lseek(&video, currentAddr*1024);
+			goto ReRead;
+		}
 		Draw_BMP(0,0,128,7,frame);
+		if(CPU_Stat_Running==true)
+		{
+		 if(OSCPUUsage<100)
+		 sprintf(tempString,"%04.1f%%",OSCPUUsage);
+		 else
+		 strcpy(tempString,"FULL");
+		 OLED_ShowSelectionString(0,0,(unsigned char *)tempString,NotOnSelect,12);
+		}
 		f_lseek(&video,currentAddr*1024);
-		vTaskDelayUntil(&xLastWakeTime, 33 / portTICK_RATE_MS);
+		vTaskDelayUntil(&xLastWakeTime, 30 / portTICK_RATE_MS);
 	} 
 	f_lseek(&video,0);
 	dataRead=0;
@@ -65,7 +84,7 @@ void BadApplePlayer(void *pvParameters)
 void BadApplePlayer_Init()
 {
   xTaskCreate(BadApplePlayer,"Bad Apple Player",
-	600,NULL,BAD_APPLE_PLAYER_PRIORITY,NULL); 
+	512,NULL,BAD_APPLE_PLAYER_PRIORITY,NULL); 
 }
 
 

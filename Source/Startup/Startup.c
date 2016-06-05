@@ -16,6 +16,7 @@
 #include "EBProtocol.h"
 #include "USBMeter.h"
 #include "BadApplePlayer.h"
+#include "CPU_Usage.h"
 #include "USBCDC.h"
 
 #include "Startup.h"
@@ -242,11 +243,15 @@ void SystemStartup(void *pvParameters)
 {
 	xTaskHandle logoHandle;
 	xTaskHandle initStatusUpdateHandle;
+	Key_Init();
+	OLED_Init();
+	if(RIGHT_KEY==KEY_ON)
+	{
+	 OSStatInit();	
+	}
 	USBCDC_Init();
 	CommandLine_Init();
 	LED_Animate_Init(LEDAnimation_Startup);
-	OLED_Init();
-	Key_Init();
 	RTC_Init();
 	logoHandle = Logo_Init();
 	initStatusUpdateHandle = InitStatusHandler_Init();

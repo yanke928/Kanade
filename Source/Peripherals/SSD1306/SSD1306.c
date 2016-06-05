@@ -718,9 +718,9 @@ void OLED_Init(void)
 
 void Draw_BMP(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,unsigned char bmp[])
 { 	
-  unsigned int ii=1023;
+  unsigned int ii=0;
   unsigned char x,y;
-  
+  unsigned char c;
   if(y1%8==0) 
   y=y1/8;      
   else 
@@ -730,7 +730,11 @@ void Draw_BMP(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y
 		LCD_Set_Pos(x0,y*8);	
     for(x=x0;x<x1;x++)
 	    {      
-	    	OLED_WR_Byte(bmp[ii--],OLED_DATA);	    	
+				c=bmp[ii++];
+        c = ( c & 0x55 ) << 1 | ( c & 0xAA ) >> 1;
+        c = ( c & 0x33 ) << 2 | ( c & 0xCC ) >> 2;
+        c = ( c & 0x0F ) << 4 | ( c & 0xF0 ) >> 4;
+	    	OLED_WR_Byte(c,OLED_DATA);	    	
 	    }
 	}
 }
