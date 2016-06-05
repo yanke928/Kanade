@@ -361,7 +361,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD,USE_STM3210B_EVAL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol;..\Source\Peripherals;..\FWlib\sdcard;..\FWlib\fatfs;..\FWlib\usb;..\Source\Apps\USBMeter;..\Source\Apps\Virtual_Clock;..\Source\FreeRTOS_CLI;..\FWlib\usb\inc;..\Source\FreeRTOS_IO\Include;..\Source\Apps\CommandLines</IncludePath>
+              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol;..\Source\Peripherals;..\FWlib\sdcard;..\FWlib\fatfs;..\FWlib\usb;..\Source\Apps\USBMeter;..\Source\Apps\Virtual_Clock;..\Source\FreeRTOS_CLI;..\FWlib\usb\inc;..\Source\Apps\CommandLines;..\Source\Apps\BadApplePlayer</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -623,6 +623,11 @@
               <FileName>Command.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Apps\CommandLines\Command.c</FilePath>
+            </File>
+            <File>
+              <FileName>BadApplePlayer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Apps\BadApplePlayer\BadApplePlayer.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -716,6 +716,25 @@ void OLED_Init(void)
 	OLEDRelatedMutex=xSemaphoreCreateMutex();
 }
 
+void Draw_BMP(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,unsigned char bmp[])
+{ 	
+  unsigned int ii=1023;
+  unsigned char x,y;
+  
+  if(y1%8==0) 
+  y=y1/8;      
+  else 
+  y=y1/8+1;
+	for(y=y0;y<=y1;y++) 
+	{
+		LCD_Set_Pos(x0,y*8);	
+    for(x=x0;x<x1;x++)
+	    {      
+	    	OLED_WR_Byte(bmp[ii--],OLED_DATA);	    	
+	    }
+	}
+}
+
 
 
 

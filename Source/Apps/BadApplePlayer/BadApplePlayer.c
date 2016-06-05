@@ -27,6 +27,7 @@ void BadApplePlayer(void *pvParameters)
  u32 fileSize;
  u32 dataRead=0;
  char tempString[5];
+ u8 frame[1024];
  res = f_open(&video, "0:/BadApple.bin", FA_READ);
  if(res!=FR_OK)
  {
@@ -37,25 +38,34 @@ void BadApplePlayer(void *pvParameters)
  maxAddr=fileSize/1024;
  xLastWakeTime=xTaskGetTickCount();
  UpdateOLEDJustNow=true;
+ OLED_WR_Byte(0xa0, OLED_CMD);
+ OLED_WR_Byte(0xc8, OLED_CMD);
  while(1)
  {
 	for(currentAddr=0;currentAddr<maxAddr;currentAddr++)	
 	{
-		f_read(&video, OLED_GRAM, 1024, &dataRead);
-		OLED_Refresh_Gram();
-		sprintf(tempString,"%d",currentAddr);
-		OLED_ShowString(0,0,tempString);
-		vTaskDelayUntil(&xLastWakeTime, 50 / portTICK_RATE_MS);
+		res=f_read(&video, frame, 1023, &dataRead);
+		if(res!=FR_OK) goto ReadFileFailed;
+//		res=f_read(&video, OLED_GRAM+512, 512, &dataRead);
+//		if(res!=FR_OK) goto ReadFileFailed;
+		Draw_BMP(0,0,128,7,frame);
+		f_lseek(&video,currentAddr*1024);
+		vTaskDelayUntil(&xLastWakeTime, 33 / portTICK_RATE_MS);
 	} 
 	f_lseek(&video,0);
 	dataRead=0;
+ }
+ ReadFileFailed:
+ {
+  OLED_ShowString(0,0,"Read File Failed");
+	 vTaskDelete(NULL);
  }
 }
 
 void BadApplePlayer_Init()
 {
   xTaskCreate(BadApplePlayer,"Bad Apple Player",
-	512,NULL,BAD_APPLE_PLAYER_PRIORITY,NULL); 
+	600,NULL,BAD_APPLE_PLAYER_PRIORITY,NULL); 
 }
 
 

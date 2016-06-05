@@ -81,6 +81,7 @@ void OLED_DrawAnyLine(u8 x1, u8 y1, u8 x2, u8 y2, bool drawOrUndraw);
 void OLED_Unlimited_Refresh(void);
 void OLED_BackupScreen(void);
 void OLED_RestoreScreen(void);
+void Draw_BMP(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,unsigned char bmp[]);
 
 #endif  
 
