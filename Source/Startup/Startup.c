@@ -258,6 +258,7 @@ void SystemStartup(void *pvParameters)
 	xQueueSend(InitStatusMsg, "System Init...", 0);
 	TemperatureSensors_Init();
 	EBD_Init();
+	vTaskDelay(100 / portTICK_RATE_MS);
 	sdcard_Init();
 	vTaskDelay(200 / portTICK_RATE_MS);
 	ShowCurrentTempSensor();

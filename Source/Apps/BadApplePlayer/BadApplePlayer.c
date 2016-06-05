@@ -74,11 +74,6 @@ void BadApplePlayer(void *pvParameters)
 	f_lseek(&video,0);
 	dataRead=0;
  }
- ReadFileFailed:
- {
-  OLED_ShowString(0,0,"Read File Failed");
-	 vTaskDelete(NULL);
- }
 }
 
 void BadApplePlayer_Init()
