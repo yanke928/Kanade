@@ -590,9 +590,14 @@
               <FilePath>..\Source\Peripherals\Usarts\Usarts.c</FilePath>
             </File>
             <File>
-              <FileName>msd.c</FileName>
+              <FileName>SDCard.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\FWlib\sdcard\msd.c</FilePath>
+              <FilePath>..\FWlib\sdcard\SDCard.c</FilePath>
+            </File>
+            <File>
+              <FileName>SDCardff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\sdcard\SDCardff.c</FilePath>
             </File>
           </Files>
         </Group>
