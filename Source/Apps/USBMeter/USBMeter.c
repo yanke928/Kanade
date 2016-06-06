@@ -62,12 +62,12 @@ void DisplayBasicData(char tempString[],u8 currentStatus)
 	{
 		sprintf(tempString, "%5.3fV", CurrentMeterData.Voltage);
 	}
-	OLED_ShowString(0, 0, (unsigned char*)tempString);
+	OLED_ShowString(0, 0, tempString);
 	if (CurrentMeterData.Current >= 0.1)
 		sprintf(tempString, "%5.3fA", CurrentMeterData.Current);
 	else
 		sprintf(tempString, "%04.1fmA", CurrentMeterData.Current * 1000);
-	OLED_ShowString(80, 0, (unsigned char*)tempString);
+	OLED_ShowString(80, 0, tempString);
 	if (CurrentMeterData.Power >= 10)
 	{
 		sprintf(tempString, "%5.2fW", CurrentMeterData.Power);
@@ -76,36 +76,36 @@ void DisplayBasicData(char tempString[],u8 currentStatus)
 	{
 		sprintf(tempString, "%5.3fW", CurrentMeterData.Power);
 	}
-	OLED_ShowString(0, 16, (unsigned char*)tempString);
+	OLED_ShowString(0, 16, tempString);
 	if (CurrentTemperatureSensor == Internal)
 	{
 		GenerateTempString(tempString, Internal);
 		if (tempString[0] != '1')tempString[0] = '0';
-		OLED_ShowString(80, 16, (unsigned char*)tempString);
+		OLED_ShowString(80, 16, tempString);
 	}
 	else
 	{
 		GenerateTempString(tempString, External);
-		OLED_ShowSelectionString(80, 16, (unsigned char *)"Ex", NotOnSelect, 8);
-		OLED_ShowSelectionString(92, 16, (unsigned char *)tempString, NotOnSelect, 8);
+		OLED_ShowAnyString(80, 16, "Ex", NotOnSelect, 8);
+		OLED_ShowAnyString(92, 16, tempString, NotOnSelect, 8);
 		GenerateTempString(tempString, Internal);
-		OLED_ShowSelectionString(80, 24, (unsigned char *)"In", NotOnSelect, 8);
-		OLED_ShowSelectionString(92, 24, (unsigned char *)tempString, NotOnSelect, 8);
+		OLED_ShowAnyString(80, 24, "In", NotOnSelect, 8);
+		OLED_ShowAnyString(92, 24, tempString, NotOnSelect, 8);
 	}
 	if (currentStatus==USBMETER_ONLY)
 	{
 		GenerateRTCDateString(tempString);
-		OLED_ShowString(0, 32, (unsigned char*)tempString);
+		OLED_ShowString(0, 32, tempString);
 		GenerateRTCTimeString(tempString);
-		OLED_ShowString(0, 48, (unsigned char*)tempString);
+		OLED_ShowString(0, 48, tempString);
 		GenerateRTCWeekString(tempString);
-		OLED_ShowString(104, 32, (unsigned char*)tempString);
+		OLED_ShowString(104, 32, tempString);
 		sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDP);
-		OLED_ShowSelectionString(92, 48, (unsigned char*)tempString, NotOnSelect, 8);
+		OLED_ShowAnyString(92, 48, tempString, NotOnSelect, 8);
 		sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDM);
-		OLED_ShowSelectionString(92, 56, (unsigned char*)tempString, NotOnSelect, 8);
-		OLED_ShowSelectionString(80, 48, (unsigned char*)"D+", NotOnSelect, 8);
-		OLED_ShowSelectionString(80, 56, (unsigned char*)"D-", NotOnSelect, 8);
+		OLED_ShowAnyString(92, 56, tempString, NotOnSelect, 8);
+		OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
+		OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
 	}
 }
 
@@ -121,16 +121,16 @@ void DisplayRecordData(char tempString[])
 		sprintf(tempString, "%05.2fAh", CurrentSumUpData.Capacity);
 	else
 		sprintf(tempString, "%05.0fmAh", CurrentSumUpData.Capacity * 1000);
-	OLED_ShowString(0, 32, (unsigned char*)tempString);
+	OLED_ShowString(0, 32, tempString);
 	if (CurrentSumUpData.Work >= 10000)
 		sprintf(tempString, "%05.2fWh", CurrentSumUpData.Work);
 	else
 		sprintf(tempString, "%05.0fmWh", CurrentSumUpData.Work * 1000);
-	OLED_ShowString(0, 48, (unsigned char*)tempString);
-	GenerateVirtualRTCString((unsigned char *)tempString);
-	OLED_ShowSelectionString(82, 51, (unsigned char *)tempString, NotOnSelect, 12);
+	OLED_ShowString(0, 48, tempString);
+	GenerateVirtualRTCString(tempString);
+	OLED_ShowAnyString(82, 51, tempString, NotOnSelect, 12);
 	sprintf(tempString, "%d Day(s)", RTCCurrent.Day);
-	OLED_ShowSelectionString(82, 35, (unsigned char *)tempString, NotOnSelect, 12);
+	OLED_ShowAnyString(82, 35, tempString, NotOnSelect, 12);
 }
 
 void USBMeter_Init(u8 status)

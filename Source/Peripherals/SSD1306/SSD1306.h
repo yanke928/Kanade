@@ -39,6 +39,8 @@ typedef struct
 #define OLED_CMD  0	
 #define OLED_DATA 1	
 
+extern u8 Language;
+
 extern unsigned char  OLED_GRAM[128][8];
 
 extern volatile bool UpdateOLEDJustNow;
@@ -67,10 +69,10 @@ void OLED_Fill(unsigned char  x1, unsigned char  y1, unsigned char  x2, unsigned
 void OLED_ShowCHinese(unsigned char  x, unsigned char  y, unsigned char  no, unsigned char drawOrUnDraw);
 void OLED_ShowChar(unsigned char  x, unsigned char  y, unsigned char  chr, unsigned char  size, unsigned char  mode);
 void OLED_ShowNum(unsigned char  x, unsigned char  y, unsigned int num, unsigned char  len, unsigned char  size);
-void OLED_ShowString(unsigned char  x, unsigned char  y, const unsigned char  *p);
+void OLED_ShowString(unsigned char  x, unsigned char  y, const char  *p);
 void LCD_Set_Pos(unsigned char  x, unsigned char  y);
 
-void OLED_ShowSelectionString(unsigned char  x, unsigned char  y, const unsigned char  *p, bool OnSelection, unsigned char size);
+void OLED_ShowAnyString(unsigned char  x, unsigned char  y, const char  *p, bool OnSelection, unsigned char size);
 void OLED_DrawVerticalLine(unsigned char  x, unsigned char  y1, unsigned char y2, unsigned char  t);
 void OLED_DrawHorizonalLine(unsigned char  y, unsigned char  x1, unsigned char x2, unsigned char  t);
 void OLED_DrawRect(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, u8 drawOrUnDraw);

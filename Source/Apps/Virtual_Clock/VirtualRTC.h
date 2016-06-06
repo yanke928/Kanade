@@ -22,7 +22,7 @@ void SetVirtualRTC(RTCStructTypedef targetRTC);
 void VirtualRTC_DeInit(void);
 
 //see .c for details
-void GenerateVirtualRTCString(unsigned char string[]);
+void GenerateVirtualRTCString(char string[]);
 
 //see .c for details
 void VirtualRTC_Init(void);

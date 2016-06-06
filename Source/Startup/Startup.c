@@ -24,6 +24,10 @@
 #define SYSTEM_STARTUP_PRIORITY tskIDLE_PRIORITY+4
 #define SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY tskIDLE_PRIORITY+3
 
+const char SystemInit_EN[]="System Init...";
+const char SystemInit_TW[]="系統初始化...";
+const char * SystemInit_Str[]={SystemInit_EN,SystemInit_TW};
+
 xQueueHandle InitAnimatePosHandle;
 
 xQueueHandle InitStatusMsg;
@@ -189,7 +193,7 @@ void InitStatusUpdateHandler(void *pvParameters)
 		/*Clear the area that last initString occupies*/
 		OLED_FillRect(0, 39, 127, 55, 0);
 		/*Show the new initString*/
-		OLED_ShowSelectionString(startAddr, 39, (unsigned char *)initStatus, false, 12);
+		OLED_ShowAnyString(startAddr, 39, initStatus, false, 12);
 		UpdateOLEDJustNow = true;
 		OLED_Refresh_Gram();
 		UpdateOLEDJustNow = false;
@@ -255,11 +259,13 @@ void SystemStartup(void *pvParameters)
 	RTC_Init();
 	logoHandle = Logo_Init();
 	initStatusUpdateHandle = InitStatusHandler_Init();
-	xQueueSend(InitStatusMsg, "System Init...", 0);
+	xQueueSend(InitStatusMsg, SystemInit_Str[Language], 0);
+	vTaskDelay(100 / portTICK_RATE_MS);
 	TemperatureSensors_Init();
 	EBD_Init();
+	vTaskDelay(50 / portTICK_RATE_MS);
 	sdcard_Init();
-	vTaskDelay(200 / portTICK_RATE_MS);
+	vTaskDelay(500 / portTICK_RATE_MS);
 	ShowCurrentTempSensor();
 	CheckEBDDirectories();
 	LED_Animate_DeInit();

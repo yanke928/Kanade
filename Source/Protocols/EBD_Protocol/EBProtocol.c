@@ -8,6 +8,7 @@
 
 #include "USARTS.h"
 #include "EBProtocol.h"
+#include "SSD1306.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -58,6 +59,15 @@ SumupStruct    CurrentSumUpData;
 xQueueHandle EBDTxDataMsg;
 
 xQueueHandle EBDRxDataMsg;
+
+
+const char WaitingForEBD_EN[]="Waiting for EBD...";
+const char WaitingForEBD_TW[]="等待設備...";
+const char * WaitingForEBD_Str[]={WaitingForEBD_EN,WaitingForEBD_TW};
+
+const char EBDConnected_EN[]="EBD Connected";
+const char EBDConnected_TW[]="設備已連接";
+const char * EBDConnected_Str[]={EBDConnected_EN,EBDConnected_TW};
 
 /**
   * @brief   To keep the communications between EBD-USB and PC,
@@ -405,8 +415,6 @@ void EBDWatchingDogSetup(void)
 void EBD_Init(void)
 {
 	u8 i;
-	/*Send a new status to InitStatus*/
-	xQueueSend(InitStatusMsg, "Waiting for EBD...", 100 / portTICK_RATE_MS);
 	/*Init EBD messages*/
 	EBDTxDataMsg = xQueueCreate(1, sizeof(u8));
 	EBDRxDataMsg = xQueueCreate(1, sizeof(u8));
@@ -424,13 +432,13 @@ void EBD_Init(void)
 	vTaskDelay(100 / portTICK_RATE_MS);
 	EBDUSB_LinkStart(true);
 	/*Keep waiting until EBD responses*/
-	xQueueSend(InitStatusMsg, "Waiting for EBD...", 0);
+	xQueueSend(InitStatusMsg,WaitingForEBD_Str[Language], 0);
 	while (xQueueReceive(EBDRxDataMsg, &i, 3000/ portTICK_RATE_MS) != pdPASS)
 	{
 	 EBDUSB_LinkStart(true);
 	}		
 	/*Update initStatus*/
-	xQueueSend(InitStatusMsg, "EBD Connected", 0);
+	xQueueSend(InitStatusMsg, EBDConnected_Str[Language], 0);
 	return;
 }
 

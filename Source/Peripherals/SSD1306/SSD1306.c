@@ -13,12 +13,16 @@
 #include "queue.h"
 #include "semphr.h"  
 
+#include "Taiwanese.h"
+
 #include <string.h>
 #include <stdio.h>
 
 #define OLED_REFRESH_PRIORITY tskIDLE_PRIORITY+2
 
 xSemaphoreHandle OLEDRelatedMutex=NULL;
+
+u8 Language=1;
 
 //#include "delay.h"
 
@@ -380,7 +384,7 @@ void OLED_ShowCHinese(unsigned char  x, unsigned char  y, unsigned char  no, uns
 	for (t = 0; t < 32; t++)
 	{
 
-		temp = CHINESE[no][t];		 //µ÷ÓÃ1608×ÖÌå 	                          
+		temp = CHINESE[no][t];		 
 		for (t1 = 0; t1 < 8; t1++)
 		{
 			if (temp & 0x80)OLED_DrawPoint(x, y, drawOrUnDraw);
@@ -419,7 +423,7 @@ unsigned int oled_pow(unsigned char  m, unsigned char  n)
 
 	  @retval None
   */
-void OLED_ShowString(unsigned char  x, unsigned char  y, const unsigned char  *p)
+void OLED_ShowString(unsigned char  x, unsigned char  y, const char  *p)
 {
 #define MAX_CHAR_POSX 127
 #define MAX_CHAR_POSY 63         
@@ -430,6 +434,46 @@ void OLED_ShowString(unsigned char  x, unsigned char  y, const unsigned char  *p
 		OLED_ShowChar(x, y, *p, 16, 1);
 		x += 8;
 		p++;
+	}
+}
+
+void OLED_ShowNotASCChar(unsigned char  x, unsigned char  y, char *chr, unsigned char  size, unsigned char  mode)
+{
+ u16 addr;
+ u8 language;
+ unsigned char  temp, t, t1, m;
+ unsigned char  y0 = y;
+ if(0xa1 <= *chr && 0xf9 >= *chr)
+ {
+	language=Taiwanese;
+  addr=GetTaiwaneseAddr((s8 *)chr,size);
+ }
+  if (size == 12) m = 24;
+ else if (size==16) m=32;
+ else m=0;
+  temp=255;
+	for (t = 0; t < m; t++)
+	{
+		if(language==Taiwanese)
+		{
+		 if(size==12) temp=TaiwaneseTab12[addr].Msk[t];
+		}
+//		if (size == 12)temp = oled_asc2_1206[chr][t]; //1206
+//		else if (size == 16)temp = oled_asc2_1608[chr][t];//1608
+//		else  temp = oled_asc2_0806[chr][t];//0806
+		for (t1 = 0; t1 < 8; t1++)
+		{
+			if (temp & 0x80)OLED_DrawPoint(x, y, mode);
+			else OLED_DrawPoint(x, y, !mode);
+			temp <<= 1;
+			y++;
+			if ((y - y0) == size)
+			{
+				y = y0;
+				x++;
+				break;
+			}
+		}
 	}
 }
 
@@ -446,7 +490,7 @@ void OLED_ShowString(unsigned char  x, unsigned char  y, const unsigned char  *p
 
 	  @retval None
   */
-void OLED_ShowSelectionString(unsigned char  x, unsigned char  y, const unsigned char  *p, bool OnSelection, unsigned char size)
+void OLED_ShowAnyString(unsigned char  x, unsigned char  y, const char  *p, bool OnSelection, unsigned char size)
 {
 #define MAX_CHAR_POSX 127
 #define MAX_CHAR_POSY 63         
@@ -454,12 +498,24 @@ void OLED_ShowSelectionString(unsigned char  x, unsigned char  y, const unsigned
 	{
 		if (x > MAX_CHAR_POSX) { x = 0; y += 16; }
 		if (y > MAX_CHAR_POSY) { y = x = 0; OLED_Clear(); }
+		if (*p>128) 
+		{
+			OLED_ShowNotASCChar(x, y,(char *) p, size, (!OnSelection));
+			if (size == 16)
+				x += 16;
+			else
+			x += 12;
+			p++;p++;
+		}
+		else
+		{
 		OLED_ShowChar(x, y, *p, size, (!OnSelection));
 		if (size == 16)
 			x += 8;
 		else
 			x += 6;
 		p++;
+	}
 	}
 }
 

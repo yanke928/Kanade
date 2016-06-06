@@ -42,9 +42,9 @@ void UpdateRTCStruct(void)
 * @brief   Write time to string in format dd hh:mm:ss
   * @retval : None
   */
-void GenerateVirtualRTCString(unsigned char string[])
+void GenerateVirtualRTCString(char string[])
 {
-	sprintf((char *)string, "%02d:%02d:%02d", RTCCurrent.Hour,
+	sprintf(string, "%02d:%02d:%02d", RTCCurrent.Hour,
 		RTCCurrent.Min, RTCCurrent.Sec);
 }
 

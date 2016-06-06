@@ -66,7 +66,7 @@ void BadApplePlayer(void *pvParameters)
 		 sprintf(tempString,"%04.1f%%",OSCPUUsage);
 		 else
 		 strcpy(tempString,"FULL");
-		 OLED_ShowSelectionString(0,0,(unsigned char *)tempString,NotOnSelect,12);
+		 OLED_ShowAnyString(0,0,tempString,NotOnSelect,12);
 		}
 		f_lseek(&video,currentAddr*1024);
 		vTaskDelayUntil(&xLastWakeTime, 30 / portTICK_RATE_MS);
@@ -74,11 +74,11 @@ void BadApplePlayer(void *pvParameters)
 	f_lseek(&video,0);
 	dataRead=0;
  }
- ReadFileFailed:
- {
-  OLED_ShowString(0,0,"Read File Failed");
-	 vTaskDelete(NULL);
- }
+// ReadFileFailed:
+// {
+//  OLED_ShowString(0,0,"Read File Failed");
+//	 vTaskDelete(NULL);
+// }
 }
 
 void BadApplePlayer_Init()
