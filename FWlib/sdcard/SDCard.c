@@ -21,6 +21,8 @@
 #include "queue.h"
 
 #include "startup.h"
+#include "SSD1306.h"
+#include "MultiLanguageStrings.h"
 
 #include <stdio.h>
 
@@ -1208,14 +1210,14 @@ void sdcard_Init()
  char tempString[20];
  MSD_Init();
  sd_capacity=SDCardFSInit();
- if(sd_capacity)
+ if(sd_capacity&&sd_capacity<200000)
  {
-	 sprintf(tempString,"Capcity:%dMB",sd_capacity);
+	 sprintf(tempString,Capacity_Str[Language],sd_capacity);
 	 xQueueSend(InitStatusMsg, tempString, 0);
  } 
  else
  {
- 	 xQueueSend(InitStatusMsg, "No SDCard", 0); 
+ 	 xQueueSend(InitStatusMsg,NoSD_Str[Language], 0); 
  }
 }
 

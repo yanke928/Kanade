@@ -9,6 +9,7 @@
 #include "USARTS.h"
 #include "EBProtocol.h"
 #include "SSD1306.h"
+#include "MultiLanguageStrings.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -59,15 +60,6 @@ SumupStruct    CurrentSumUpData;
 xQueueHandle EBDTxDataMsg;
 
 xQueueHandle EBDRxDataMsg;
-
-
-const char WaitingForEBD_EN[]="Waiting for EBD...";
-const char WaitingForEBD_TW[]="等待設備...";
-const char * WaitingForEBD_Str[]={WaitingForEBD_EN,WaitingForEBD_TW};
-
-const char EBDConnected_EN[]="EBD Connected";
-const char EBDConnected_TW[]="設備已連接";
-const char * EBDConnected_Str[]={EBDConnected_EN,EBDConnected_TW};
 
 /**
   * @brief   To keep the communications between EBD-USB and PC,

@@ -14,6 +14,7 @@
 #include "semphr.h"  
 
 #include "Taiwanese.h"
+#include "JapanChinese.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -440,23 +441,23 @@ void OLED_ShowString(unsigned char  x, unsigned char  y, const char  *p)
 void OLED_ShowNotASCChar(unsigned char  x, unsigned char  y, char *chr, unsigned char  size, unsigned char  mode)
 {
  u16 addr;
- u8 language;
  unsigned char  temp, t, t1, m;
  unsigned char  y0 = y;
- if(0xa1 <= *chr && 0xf9 >= *chr)
+ switch(Language)
  {
-	language=Taiwanese;
-  addr=GetTaiwaneseAddr((s8 *)chr,size);
+	 case Taiwanese:addr=GetTaiwaneseAddr((s8 *)chr,size);break;
+	 case Japanchinese:addr=GetJapanchineseAddr((s8 *)chr,size);break;
  }
-  if (size == 12) m = 24;
+ if (size == 12) m = 24;
  else if (size==16) m=32;
  else m=0;
   temp=255;
 	for (t = 0; t < m; t++)
 	{
-		if(language==Taiwanese)
+		switch(Language)
 		{
-		 if(size==12) temp=TaiwaneseTab12[addr].Msk[t];
+		  case Taiwanese:if(size==12) temp=TaiwaneseTab12[addr].Msk[t];break;
+			case Japanchinese:if(size==12) temp=JapanchineseTab12[addr].Msk[t];break;
 		}
 //		if (size == 12)temp = oled_asc2_1206[chr][t]; //1206
 //		else if (size == 16)temp = oled_asc2_1608[chr][t];//1608

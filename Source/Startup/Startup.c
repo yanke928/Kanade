@@ -17,16 +17,13 @@
 #include "USBMeter.h"
 #include "BadApplePlayer.h"
 #include "CPU_Usage.h"
+#include "MultiLanguageStrings.h"
 #include "USBCDC.h"
 
 #include "Startup.h"
 
 #define SYSTEM_STARTUP_PRIORITY tskIDLE_PRIORITY+4
 #define SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY tskIDLE_PRIORITY+3
-
-const char SystemInit_EN[]="System Init...";
-const char SystemInit_TW[]="系統初始化...";
-const char * SystemInit_Str[]={SystemInit_EN,SystemInit_TW};
 
 xQueueHandle InitAnimatePosHandle;
 
