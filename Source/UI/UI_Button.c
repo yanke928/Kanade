@@ -43,7 +43,7 @@ void UI_Button_Handler(void *pvParameters)
  u8 p = 1;
  u8 stringsAddr[4];//Relative individual string addr in buttonString
  unsigned char lengths[4];//Lengths of every seperate string
- char buttons[4][12];//Cache contains the button strings
+ char buttons[4][16];//Cache contains the button strings
  stringsAddr[0] = 0;//Set addr[0] to the first byte of buttonString
 	
 	/*Find the addrs for every string in buttonString*/

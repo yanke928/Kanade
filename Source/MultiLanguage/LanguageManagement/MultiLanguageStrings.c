@@ -55,12 +55,18 @@ const char QCMTKConfirm_JC[] = "QC/MTK¥•∑¢?" ;
 const char QCMTKConfirm_JP[] = "QC/MTKÉgÉäÉKÅ[?";
 const char * QCMTKConfirm_Str[] = { QCMTKConfirm_EN,QCMTKConfirm_TW,QCMTKConfirm_JC,QCMTKConfirm_JP };
 
+const char Saved_EN[] = "Saved";
+const char Saved_TW[] = "§w´O¶s";
+const char Saved_JC[] = "“—±£¥Ê" ;
+const char Saved_JP[] = "ï€ë∂";
+const char * Saved_Str[] = { Saved_EN,Saved_TW,Saved_JC,Saved_JP };
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},
 {36,45,84,45},
 {36,45,84,45},
-{12,45,84,45}
+{8,45,84,45}
 };
 
 

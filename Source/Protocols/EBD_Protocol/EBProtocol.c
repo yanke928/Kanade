@@ -15,6 +15,8 @@
 #include "task.h"
 #include "queue.h"
 
+#include "Settings.h"
+
 #include "Startup.h"
 
 #define EBD_PACKET_RECEIVER_PRIORITY tskIDLE_PRIORITY+5
@@ -424,13 +426,13 @@ void EBD_Init(void)
 	vTaskDelay(100 / portTICK_RATE_MS);
 	EBDUSB_LinkStart(true);
 	/*Keep waiting until EBD responses*/
-	xQueueSend(InitStatusMsg,WaitingForEBD_Str[Language], 0);
+	xQueueSend(InitStatusMsg,WaitingForEBD_Str[CurrentSettings->Language], 0);
 	while (xQueueReceive(EBDRxDataMsg, &i, 3000/ portTICK_RATE_MS) != pdPASS)
 	{
 	 EBDUSB_LinkStart(true);
 	}		
 	/*Update initStatus*/
-	xQueueSend(InitStatusMsg, EBDConnected_Str[Language], 0);
+	xQueueSend(InitStatusMsg, EBDConnected_Str[CurrentSettings->Language], 0);
 	return;
 }
 

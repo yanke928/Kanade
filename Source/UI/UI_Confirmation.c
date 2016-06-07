@@ -13,20 +13,22 @@
 #include "task.h"
 #include "queue.h"
 
+#include "Settings.h"
+
 #include "UI_Confirmation.h" 
 
 bool GetConfirmation(char subString0[],char subString1[])
 {
  u8 i;
  UI_Button_Param_Struct buttonParams;
- buttonParams.ButtonString=(char *)ConfirmCancel_Str[Language];
+ buttonParams.ButtonString=(char *)ConfirmCancel_Str[CurrentSettings->Language];
  buttonParams.ButtonNum=2;
  buttonParams.DefaultValue=0;
- buttonParams.Positions=(OLED_PositionStruct *)ComfirmationPositions[Language];
+ buttonParams.Positions=(OLED_PositionStruct *)ComfirmationPositions[CurrentSettings->Language];
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
  OLED_Clear();
  xSemaphoreGive(OLEDRelatedMutex);
- ShowDialogue((char *)Confirmation_Str[Language],subString0,subString1);
+ ShowDialogue((char *)Confirmation_Str[CurrentSettings->Language],subString0,subString1);
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
  OLED_Refresh_Gram();
  xSemaphoreGive(OLEDRelatedMutex);

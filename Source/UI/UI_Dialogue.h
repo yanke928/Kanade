@@ -6,6 +6,10 @@
 #include "task.h"
 #include "queue.h"
 
+//see .c for details
 void ShowDialogue(char titleString[],char subString0[],char subString1[]);
+
+//see .c for details
+void ShowSmallDialogue(char string[],u16 time);
 
 #endif /* __UI_DIALOGUE_H */

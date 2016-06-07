@@ -25,6 +25,7 @@ void UI_Menu_Handler(void *pvParameters)
 	char itemStrings[10][20];
 	u8 stringsAddr[10];
 	u8 selection;
+	u8 displayedItemNum=(menuParams->ItemNum>=5?5:menuParams->ItemNum);
 	currentPos = menuParams->DefaultPos;
 	currentRelativePos = 0;
 	allContentChanged = true;
@@ -57,18 +58,18 @@ void UI_Menu_Handler(void *pvParameters)
 		xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
 		if (allContentChanged == true)
 		{
-			for (i = 0; i < 5; i++)
+			for (i = 0; i < displayedItemNum; i++)
 			{
 				p = GetStringLength(itemStrings[currentPos + i]);
 				q = GetCentralPosition(0, 127, p);
 				OLED_FillRect(1, i * 12 + 1, 126, i * 12 + 12, 0);
 				OLED_ShowAnyString(q, i * 12 + 1, (char *)itemStrings[currentPos + i], NotOnSelect, 12);
 			}
-			OLED_DrawRect(0, 0, 127, 60, DRAW);
-			OLED_DrawHorizonalLine(12, 0, 127, DRAW);
-			OLED_DrawHorizonalLine(24, 0, 127, DRAW);
-			OLED_DrawHorizonalLine(36, 0, 127, DRAW);
-			OLED_DrawHorizonalLine(48, 0, 127, DRAW);
+			OLED_DrawRect(0, 0, 127, displayedItemNum*12, DRAW);
+			for(i = 1; i < displayedItemNum; i++)
+			{
+			 OLED_DrawHorizonalLine(12*i, 0, 127, DRAW);
+			}
 			OLED_InvertRect(1, currentRelativePos * 12 + 1, 126, currentRelativePos * 12 + 12);
 			allContentChanged = false;
 		}
@@ -103,12 +104,12 @@ void UI_Menu_Handler(void *pvParameters)
 		}
 		else if(keyMessage.KeyEvent==RightClick||keyMessage.AdvancedKeyEvent==RightContinous)
 		{
-			if (currentRelativePos == 4)
+			if (currentRelativePos == displayedItemNum-1)
 			{
 				currentPos++;
-				if (currentPos == menuParams->ItemNum - 4)
+				if (currentPos == menuParams->ItemNum - (displayedItemNum-1))
 				{
-					currentPos = menuParams->ItemNum - 5;
+					currentPos = menuParams->ItemNum - displayedItemNum;
 					goto ReDraw;
 				}
 				allContentChanged = true;

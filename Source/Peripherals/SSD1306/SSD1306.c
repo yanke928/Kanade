@@ -17,6 +17,8 @@
 #include "JapanChinese.h"
 #include "Japanese.h"
 
+#include "Settings.h"
+
 #include <string.h>
 #include <stdio.h>
 
@@ -26,8 +28,6 @@
 
 
 xSemaphoreHandle OLEDRelatedMutex=NULL;
-
-u8 Language=Taiwanese;
 
 //#include "delay.h"
 
@@ -446,7 +446,7 @@ void OLED_ShowNotASCChar(unsigned char  x, unsigned char  y, char *chr, unsigned
  u16 addr;
  unsigned char  temp, t, t1, m;
  unsigned char  y0 = y;
- switch(Language)
+ switch(CurrentSettings->Language)
  {
 	 case Taiwanese:addr=GetTaiwaneseAddr((s8 *)chr,size);break;
 	 case Japanchinese:addr=GetJapanchineseAddr((s8 *)chr,size);break;
@@ -458,7 +458,7 @@ void OLED_ShowNotASCChar(unsigned char  x, unsigned char  y, char *chr, unsigned
   temp=255;
 	for (t = 0; t < m; t++)
 	{
-		switch(Language)
+		switch(CurrentSettings->Language)
 		{
 		  case Taiwanese:if(size==12) temp=TaiwaneseTab12[addr].Msk[t];else temp=TaiwaneseTab16[addr].Msk[t];break;
 			case Japanchinese:if(size==12) temp=JapanchineseTab12[addr].Msk[t];else temp=JapanchineseTab16[addr].Msk[t];break;

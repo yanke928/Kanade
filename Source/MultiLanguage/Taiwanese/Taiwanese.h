@@ -19,7 +19,7 @@ typedef struct
 
 extern const Big5Font TaiwaneseTab12[24];
 
-extern const Big5Font16 TaiwaneseTab16[9];
+extern const Big5Font16 TaiwaneseTab16[12];
 
 u16 GetTaiwaneseAddr( s8 *ptr ,u8 size ) ;             
 

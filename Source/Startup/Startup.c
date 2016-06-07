@@ -19,7 +19,9 @@
 #include "CPU_Usage.h"
 #include "MultiLanguageStrings.h"
 #include "USBCDC.h"
-#include "UI_Utilities.h" 
+#include "UI_Utilities.h"
+
+#include "Settings.h"
 
 #include "Startup.h"
 
@@ -220,11 +222,12 @@ void SystemStartup(void *pvParameters)
 	}
 	USBCDC_Init();
 	CommandLine_Init();
+	Settings_Init();
 	LED_Animate_Init(LEDAnimation_Startup);
 	RTC_Init();
 	logoHandle = Logo_Init();
 	initStatusUpdateHandle = InitStatusHandler_Init();
-	xQueueSend(InitStatusMsg, SystemInit_Str[Language], 0);
+	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);
 	vTaskDelay(100 / portTICK_RATE_MS);
 	TemperatureSensors_Init();
 	EBD_Init();

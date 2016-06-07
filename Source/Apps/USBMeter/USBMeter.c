@@ -50,12 +50,12 @@ void USBMeter(void *pvParameters)
 		{
 		 switch(keyMessage.KeyEvent)
 		 {
-			 case MidDouble:GetConfirmation((char *)RecordConfirm_Str[Language],"");break;
+			 case MidDouble:GetConfirmation((char *)RecordConfirm_Str[CurrentSettings->Language],"");break;
 			 case MidLong:Settings();break;
 		 }
 		 switch(keyMessage.AdvancedKeyEvent)
 		 {
-		   case LeftContinous:GetConfirmation((char *)QCMTKConfirm_Str[Language],"");break;
+		   case LeftContinous:GetConfirmation((char *)QCMTKConfirm_Str[CurrentSettings->Language],"");break;
 		 }
 		 ClearKeyEvent(keyMessage);
 		}

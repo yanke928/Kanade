@@ -19,7 +19,7 @@ typedef struct
 
 extern const RB2312Font JapanchineseTab12[22];
 
-extern const RB2312Font16 JapanchineseTab16[9];
+extern const RB2312Font16 JapanchineseTab16[12];
 
 u16 GetJapanchineseAddr( s8 *ptr ,u8 size );
 

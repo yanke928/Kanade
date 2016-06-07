@@ -24,6 +24,8 @@
 #include "SSD1306.h"
 #include "MultiLanguageStrings.h"
 
+#include "Settings.h"
+
 #include <stdio.h>
 
 extern vu8 SD_Card_Ready;//SD卡初始化成功标志，在diskio.c中
@@ -1212,12 +1214,12 @@ void sdcard_Init()
  sd_capacity=SDCardFSInit();
  if(sd_capacity&&sd_capacity<200000)
  {
-	 sprintf(tempString,Capacity_Str[Language],sd_capacity);
+	 sprintf(tempString,Capacity_Str[CurrentSettings->Language],sd_capacity);
 	 xQueueSend(InitStatusMsg, tempString, 0);
  } 
  else
  {
- 	 xQueueSend(InitStatusMsg,NoSD_Str[Language], 0); 
+ 	 xQueueSend(InitStatusMsg,NoSD_Str[CurrentSettings->Language], 0); 
  }
 }
 
