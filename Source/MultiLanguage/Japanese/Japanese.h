@@ -11,7 +11,15 @@ typedef struct
  s8 Msk[24];    
 }JISFont;
 
+typedef struct    
+{
+ s8 Index[2];    
+ s8 Msk[32];    
+}JISFont16;
+
 extern const JISFont JapaneseTab12[31];
+
+extern const JISFont16 JapaneseTab16[11];
 
 u16 GetJapaneseAddr( s8 *ptr ,u8 size );
 

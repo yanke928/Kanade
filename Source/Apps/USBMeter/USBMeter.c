@@ -18,6 +18,9 @@
 #include "SSD1306.h"
 #include "RTC.h"
 #include "VirtualRTC.h"
+#include "UI_Confirmation.h"
+#include "MultiLanguageStrings.h"
+#include "Keys.h"
 
 #define USB_METER_PRIORITY tskIDLE_PRIORITY+3
 
@@ -28,20 +31,33 @@
   */
 void USBMeter(void *pvParameters)
 {
- char tempString[20];
- portTickType xLastWakeTime;
- u8 status=*(u8*)pvParameters;
- xLastWakeTime=xTaskGetTickCount();
-	while (1) 
+	char tempString[20];
+	Key_Message_Struct keyMessage;
+	portTickType xLastWakeTime;
+	u8 status = *(u8*)pvParameters;
+	xLastWakeTime = xTaskGetTickCount();
+	ClearKeyEvent(keyMessage);
+	while (1)
 	{
-	 xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY );
-	 DisplayBasicData(tempString,status);
-	 if(status==USBMETER_RECORD)
-	 {
-	  DisplayRecordData(tempString);
-	 }
-	 xSemaphoreGive(OLEDRelatedMutex);
-	 vTaskDelayUntil(&xLastWakeTime, 1000 / portTICK_RATE_MS);
+		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+		DisplayBasicData(tempString, status);
+		if (status == USBMETER_RECORD)
+		{
+			DisplayRecordData(tempString);
+		}
+		xSemaphoreGive(OLEDRelatedMutex);
+		if(xQueueReceive(Key_Message, & keyMessage, 1000 / portTICK_RATE_MS )==pdPASS)
+		{
+		 switch(keyMessage.KeyEvent)
+		 {
+			 case MidDouble:GetConfirmation((char *)RecordConfirm_Str[Language],"");break;
+		 }
+		 switch(keyMessage.AdvancedKeyEvent)
+		 {
+		   case LeftContinous:GetConfirmation((char *)QCMTKConfirm_Str[Language],"");break;
+		 }
+		 ClearKeyEvent(keyMessage);
+		}
 	}
 }
 
@@ -52,7 +68,7 @@ void USBMeter(void *pvParameters)
 	By sharing the tempString,more sources can be saved
 	@retval None
   */
-void DisplayBasicData(char tempString[],u8 currentStatus)
+void DisplayBasicData(char tempString[], u8 currentStatus)
 {
 	if (CurrentMeterData.Voltage >= 10)
 	{
@@ -92,7 +108,7 @@ void DisplayBasicData(char tempString[],u8 currentStatus)
 		OLED_ShowAnyString(80, 24, "In", NotOnSelect, 8);
 		OLED_ShowAnyString(92, 24, tempString, NotOnSelect, 8);
 	}
-	if (currentStatus==USBMETER_ONLY)
+	if (currentStatus == USBMETER_ONLY)
 	{
 		GenerateRTCDateString(tempString);
 		OLED_ShowString(0, 32, tempString);
@@ -135,6 +151,6 @@ void DisplayRecordData(char tempString[])
 
 void USBMeter_Init(u8 status)
 {
- xTaskCreate(USBMeter,"USBMeter",
-	300,&status,USB_METER_PRIORITY,NULL);
+	xTaskCreate(USBMeter, "USBMeter",
+		300, &status, USB_METER_PRIORITY, NULL);
 }

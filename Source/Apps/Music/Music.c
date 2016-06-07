@@ -69,11 +69,11 @@ SingleToneStruct Tori_No_Uta[] =
    {0,0}
 };
 
-SingleToneStruct Alarm[]=
+SingleToneStruct Alarm[] =
 {
  {750,0},
  {M7,8},
- {STOP,8}, 
+ {STOP,8},
  {0,0}
 };
 
@@ -90,41 +90,41 @@ void SoundPlayer(void *pvParameters)
 	int nextFREQ;
 	int nextTime;
 	int addr;
-	SingleToneStruct * sound=pvParameters;
-	addr=0;
-	xLastWakeTime=xTaskGetTickCount();
-	while(1)
+	SingleToneStruct * sound = pvParameters;
+	addr = 0;
+	xLastWakeTime = xTaskGetTickCount();
+	while (1)
 	{
-	if (sound[addr].ToneFREQ != 0) //If it is not the end of the score
-	{
-		nextFREQ = sound[addr].ToneFREQ;//Get the FREQ of the tone in the next pitch
-		nextTime = sound[0].ToneFREQ / sound[addr].BeatTimeDivide;//Calculate the time of the next tone 
+		if (sound[addr].ToneFREQ != 0) //If it is not the end of the score
+		{
+			nextFREQ = sound[addr].ToneFREQ;//Get the FREQ of the tone in the next pitch
+			nextTime = sound[0].ToneFREQ / sound[addr].BeatTimeDivide;//Calculate the time of the next tone 
+		}
+		else
+		{
+			nextFREQ = sound[1].ToneFREQ;//Go to the start of the score
+			nextTime = sound[0].ToneFREQ / sound[1].BeatTimeDivide;//The first pitch of the score
+			addr = 1;
+		}
+		TIM_Cmd(TIM4, DISABLE);//Turn off the timer for safety
+		TIM4_TimeBaseStructure.TIM_Prescaler = 10;
+		TIM4_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+		TIM4_TimeBaseStructure.TIM_Period = (100000 * 72) / nextFREQ - 1;//Get the countValue according to FREQ
+		TIM4_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+		TIM4_TimeBaseStructure.TIM_RepetitionCounter = 0x0;
+		TIM_TimeBaseInit(TIM4, &TIM4_TimeBaseStructure);
+		TIM_OCStructInit(&TimOCInitStructure);
+		TimOCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+		TimOCInitStructure.TIM_Pulse = (50000 * 72) / nextFREQ;
+		TimOCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+		TimOCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+		TIM_OC1Init(TIM4, &TimOCInitStructure);
+		TIM_CtrlPWMOutputs(TIM4, ENABLE);
+		if (sound[addr].ToneFREQ != STOP)
+			TIM_Cmd(TIM4, ENABLE);
+		addr++;
+		vTaskDelayUntil(&xLastWakeTime, nextTime / portTICK_RATE_MS);
 	}
-	else
-	{
-		nextFREQ = sound[1].ToneFREQ;//Go to the start of the score
-		nextTime = sound[0].ToneFREQ / sound[1].BeatTimeDivide;//The first pitch of the score
-		addr = 1;
-	}
-	TIM_Cmd(TIM4, DISABLE);//Turn off the timer for safety
-	TIM4_TimeBaseStructure.TIM_Prescaler = 10;
-	TIM4_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM4_TimeBaseStructure.TIM_Period = (100000*72) / nextFREQ - 1;//Get the countValue according to FREQ
-	TIM4_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-	TIM4_TimeBaseStructure.TIM_RepetitionCounter = 0x0;
-	TIM_TimeBaseInit(TIM4, &TIM4_TimeBaseStructure);
-	TIM_OCStructInit(&TimOCInitStructure);
-	TimOCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-	TimOCInitStructure.TIM_Pulse = (50000*72) / nextFREQ;
-	TimOCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-	TimOCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OC1Init(TIM4, &TimOCInitStructure);
-	TIM_CtrlPWMOutputs(TIM4, ENABLE);
-	if (sound[addr].ToneFREQ != STOP)
-		TIM_Cmd(TIM4, ENABLE);
-	addr++;
-  vTaskDelayUntil(&xLastWakeTime, nextTime / portTICK_RATE_MS);
-}
 }
 
 
@@ -136,12 +136,12 @@ void SoundPlayer(void *pvParameters)
 void SoundStart(SingleToneStruct sound[])
 {
 	BuzzerConfig();
-	if(SoundPlayerHandle!=NULL)
+	if (SoundPlayerHandle != NULL)
 	{
 		vTaskDelete(SoundPlayerHandle);
 	}
 	xTaskCreate(SoundPlayer, "Sound Player",
-		32, sound, SOUND_PLAYER_PRIORITY, &SoundPlayerHandle);	
+		32, sound, SOUND_PLAYER_PRIORITY, &SoundPlayerHandle);
 }
 
 /**
@@ -152,7 +152,7 @@ void SoundStart(SingleToneStruct sound[])
   * @retval: None
   */
 void SoundStop(void)
-{ 
+{
 	TIM_DeInit(TIM4);
-  vTaskDelete(SoundPlayerHandle);
+	vTaskDelete(SoundPlayerHandle);
 }

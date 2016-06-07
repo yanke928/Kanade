@@ -13,6 +13,9 @@ extern const char * WaitingForEBD_Str[LanguageNum];
 extern const char * EBDConnected_Str[LanguageNum];
 extern const char * Confirmation_Str[LanguageNum];
 extern const char * ConfirmCancel_Str[LanguageNum];
+extern const char * RecordConfirm_Str[LanguageNum];
+extern const char * QCMTKConfirm_Str[LanguageNum] ;
+
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 
 #endif /* __MULTILANGUAGESTRINGS_H */

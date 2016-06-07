@@ -55,13 +55,13 @@ void GenerateVirtualRTCString(char string[])
   */
 void VirtualRTC_Handler(void *pvParameters)
 {
- while(1)
- {
-  SecondNumNow=RTC_GetCounter();
-	SecondNum=SecondNumNow-StartSecondNum;
-	UpdateRTCStruct();
-	vTaskDelay(100 / portTICK_RATE_MS);
- }
+	while (1)
+	{
+		SecondNumNow = RTC_GetCounter();
+		SecondNum = SecondNumNow - StartSecondNum;
+		UpdateRTCStruct();
+		vTaskDelay(100 / portTICK_RATE_MS);
+	}
 }
 
 /**
@@ -70,7 +70,7 @@ void VirtualRTC_Handler(void *pvParameters)
   */
 void VirtualRTC_DeInit(void)
 {
- vTaskDelete(VirtualRTCHandle);
+	vTaskDelete(VirtualRTCHandle);
 }
 
 
@@ -80,9 +80,9 @@ void VirtualRTC_DeInit(void)
   */
 void VirtualRTC_Init(void)
 {
-  StartSecondNum = RTC_GetCounter(); 
-	if(VirtualRTCHandle!=NULL)
-  vTaskDelete(VirtualRTCHandle);
-  xTaskCreate(VirtualRTC_Handler,"VirtualClock",
-	32,NULL,VIRTUAL_CLOCK_UPDATE_PRIORITY,&VirtualRTCHandle);
+	StartSecondNum = RTC_GetCounter();
+	if (VirtualRTCHandle != NULL)
+		vTaskDelete(VirtualRTCHandle);
+	xTaskCreate(VirtualRTC_Handler, "VirtualClock",
+		32, NULL, VIRTUAL_CLOCK_UPDATE_PRIORITY, &VirtualRTCHandle);
 }

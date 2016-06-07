@@ -13,7 +13,7 @@ volatile  unsigned int  OSIdleCtr;                                 /* Idle count
 unsigned int      OSIdleCtrMax;             /* Max. value that idle ctr can take in 1 sec.     */
 unsigned int      OSIdleCtrRun;             /* Val. reached by idle ctr at run time in 1 sec.  */
 float     OSCPUUsage;               /* Percentage of CPU used  */
-bool CPU_Stat_Running=false;
+bool CPU_Stat_Running = false;
 
 void OS_TaskStat(void * pvParameters)//统计任务
 {
@@ -23,24 +23,24 @@ void OS_TaskStat(void * pvParameters)//统计任务
 	{
 		OSCPUUsage = 0;
 	}
-	xLastWakeTime=xTaskGetTickCount();
+	xLastWakeTime = xTaskGetTickCount();
 	for (;;)
 	{
 		OSIdleCtrRun = OSIdleCtr;           /* Obtain the of the idle counter for the past second */
 		OSIdleCtr = 0;                      /* Reset the idle counter for the next second         */
 		OSCPUUsage = (100 - OSIdleCtrRun / (float)OSIdleCtrMax);
-		OSCPUUsage=ABS(OSCPUUsage);
+		OSCPUUsage = ABS(OSCPUUsage);
 		vTaskDelayUntil(&xLastWakeTime, 100 / portTICK_RATE_MS);
 	}
 }
 
 void  OSStatInit(void)
-{		
+{
 	OSIdleCtr = 0;                          /* Clear idle counter*/
-	vTaskDelay(100/ portTICK_RATE_MS);           /* Determine MAX. idle counter value for 1/10 second ,100ms delay */
+	vTaskDelay(100 / portTICK_RATE_MS);           /* Determine MAX. idle counter value for 1/10 second ,100ms delay */
 	OSIdleCtrMax = OSIdleCtr;                    /* Store maximum idle counter count in 1/10 second*/
-	xTaskCreate(OS_TaskStat, "OS_TaskStat", 128,NULL, CPU_USAGE_PRIORITY, NULL);
-	CPU_Stat_Running=true;
+	xTaskCreate(OS_TaskStat, "OS_TaskStat", 128, NULL, CPU_USAGE_PRIORITY, NULL);
+	CPU_Stat_Running = true;
 }
 
 void vApplicationIdleHook(void)

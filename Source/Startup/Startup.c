@@ -272,7 +272,6 @@ void SystemStartup(void *pvParameters)
 	xSemaphoreGive(OLEDRelatedMutex);
 	UpdateOLEDJustNow=false;
 	OLED_Clear();
-	GetConfirmation("","");
 	if(LEFT_KEY==KEY_ON)
 	{
 	 BadApplePlayer_Init();	
