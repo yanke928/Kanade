@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "USBMeter.h"
-
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -21,6 +19,10 @@
 #include "UI_Confirmation.h"
 #include "MultiLanguageStrings.h"
 #include "Keys.h"
+
+#include "Settings.h"
+
+#include "USBMeter.h"
 
 #define USB_METER_PRIORITY tskIDLE_PRIORITY+3
 
@@ -49,6 +51,7 @@ void USBMeter(void *pvParameters)
 		 switch(keyMessage.KeyEvent)
 		 {
 			 case MidDouble:GetConfirmation((char *)RecordConfirm_Str[Language],"");break;
+			 case MidLong:Settings();break;
 		 }
 		 switch(keyMessage.AdvancedKeyEvent)
 		 {

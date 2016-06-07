@@ -9,6 +9,10 @@
 #include "UI_Dialogue.h" 
 #include "MultiLanguageStrings.h" 
 
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
 #include "UI_Confirmation.h" 
 
 bool GetConfirmation(char subString0[],char subString1[])

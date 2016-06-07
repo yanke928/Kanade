@@ -236,7 +236,7 @@ void KeyEventHandler(void *pvParameters)
 	/*Get status of keys*/
   KeyEvents();
 	/*If a key event takes place*/
-	if(KeyEvent!=0||(AdvancedKeyEvent!=0&&ContinousPressBeats!=0))
+	if((KeyEvent!=0&&AdvancedKeyEvent==0)||(AdvancedKeyEvent!=0&&ContinousPressBeats!=0))
 	{
 	 /*Handle advanced key event priorly*/
 	 if(AdvancedKeyEvent!=0)
@@ -244,7 +244,7 @@ void KeyEventHandler(void *pvParameters)
 	  message.KeyEvent=0;
 		message.AdvancedKeyEvent=AdvancedKeyEvent;
 		ContinousPressBeats=0;
-		KeyEvent=0;
+		//KeyEvent=0;
 		/*Try to send a new message to the queue,at least 100ms is given for the receiver to handle the last event*/
 		if (xQueueSend(Key_Message , & message, 100/portTICK_RATE_MS)!=pdPASS)
 		{

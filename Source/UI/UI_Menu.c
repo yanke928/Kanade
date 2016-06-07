@@ -44,15 +44,13 @@ void UI_Menu_Handler(void *pvParameters)
 	for (i = 0; i < menuParams->ItemNum; i++)
 	{
 		for (p = 0; menuParams->ItemString[stringsAddr[i] + p] !=
-			'\n'&&menuParams->ItemString[stringsAddr[i] + p] != 0; p++)
+			'%'&&menuParams->ItemString[stringsAddr[i] + p] != 0; p++)
 		{
 			itemStrings[i][p] = menuParams->ItemString[stringsAddr[i] + p];
 		}
 		itemStrings[i][p] = 0;
 	}
-	xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	SetKeyBeatRate(menuParams->FastSpeed);
   for(;;)
 	{
 		ReDraw:
