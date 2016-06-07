@@ -3,7 +3,7 @@
 
 #include "stm32f10x.h"
 
-#define LanguageNum 3
+#define LanguageNum 4
 
 extern const char * SystemInit_Str[LanguageNum];
 extern const char * Capacity_Str[LanguageNum];
