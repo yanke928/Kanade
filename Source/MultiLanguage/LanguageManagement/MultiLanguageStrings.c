@@ -1,4 +1,5 @@
 #include "MultiLanguageStrings.h"
+#include "SSD1306.h"
 
 const char SystemInit_EN[]="System Init...";
 const char SystemInit_TW[]="╰参﹍て...";
@@ -30,9 +31,25 @@ const char EBDConnected_JC[]="设备已连接";
 const char EBDConnected_JP[]="愙懕偡偱偵";
 const char * EBDConnected_Str[]={EBDConnected_EN,EBDConnected_TW,EBDConnected_JC,EBDConnected_JP};
 
+const char Confirmation_EN[]="Confirmation";
+const char Confirmation_TW[]="絋粄";
+const char Confirmation_JC[]="确认";
+const char Confirmation_JP[]="妋擣偟傑偡";
+const char * Confirmation_Str[]={Confirmation_EN,Confirmation_TW,Confirmation_JC,Confirmation_JP};
 
+const char ConfirmCancel_EN[]="Cancel\nComfirm";
+const char ConfirmCancel_TW[]="絋粄\n";
+const char ConfirmCancel_JC[]="确认\n取消";
+const char ConfirmCancel_JP[]="妋擣\n僉儍儞僙儖";
+const char * ConfirmCancel_Str[]={ConfirmCancel_EN,ConfirmCancel_TW,ConfirmCancel_JC,ConfirmCancel_JP};
 
-
+const OLED_PositionStruct ComfirmationPositions[LanguageNum][2]=
+{
+{20,44,76,44},
+{40,44,88,44},
+{40,44,88,44},
+{20,44,60,44}
+};
 
 
 

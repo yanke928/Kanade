@@ -11,7 +11,7 @@ typedef struct
  s8 Msk[24];    
 }RB2312Font;
 
-extern const RB2312Font JapanchineseTab12[18];
+extern const RB2312Font JapanchineseTab12[22];
 
 u16 GetJapanchineseAddr( s8 *ptr ,u8 size );
 

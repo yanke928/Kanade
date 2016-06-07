@@ -37,7 +37,7 @@ xQueueHandle UI_ButtonMsg;
 void UI_Button_Handler(void *pvParameters)
 {
  Key_Message_Struct keyMessage;
- UI_Button_Param_Struct* buttonParams=pvParameters;
+ UI_Button_Param_Struct* buttonParams=(UI_Button_Param_Struct*)pvParameters;
  int selection = buttonParams->DefaultValue;
  u8 i;
  u8 p = 1;
@@ -70,12 +70,16 @@ void UI_Button_Handler(void *pvParameters)
 	}
 	
 	/*Print the strings with respective positions to screen*/
+	xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
+	SetUpdateOLEDJustNow();
 	for (i = 0; i < buttonParams->ButtonNum; i++)
 	{
 		OLED_ShowAnyString(buttonParams->Positions[i].x, buttonParams->Positions[i].y, 
 		buttons[i], NotOnSelect, 12);
 	}
   ClearKeyEvent(keyMessage);
+	ResetUpdateOLEDJustNow();
+	xSemaphoreGive(OLEDRelatedMutex);
 	for(;;)
 	{
 		xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
@@ -120,7 +124,7 @@ void UI_Button_Handler(void *pvParameters)
 			 switch(keyMessage.KeyEvent)
 			 {
 				 case LeftClick:selection--;
-			   if (selection < 0) selection = buttonParams->ButtonNum - 1;
+			   if (selection < 0) selection = buttonParams->ButtonNum - 1;break;
 				 case RightClick:selection++;
 			   if (selection > buttonParams->ButtonNum - 1) selection = 0;
 			 }
@@ -148,16 +152,10 @@ void UI_Button_Handler(void *pvParameters)
 
 	@retval The handler will send the result to UI_ButtonMsg when confirmation got
   */
-void UI_Button_Init(char buttonString[], u8 buttonsNum,
-	u8 defaultValue, OLED_PositionStruct positions[])
+void UI_Button_Init(UI_Button_Param_Struct * buttonParams)
 {
-	UI_Button_Param_Struct buttonParams;
-	buttonParams.ButtonString=buttonString;
-	buttonParams.ButtonNum=buttonsNum;
-	buttonParams.DefaultValue=defaultValue;
-	buttonParams.Positions=positions;
 	UI_ButtonMsg=xQueueCreate(1, sizeof(u8));
 	xTaskCreate(UI_Button_Handler, "UI_Button Handler",
-	256, &buttonParams, UI_BUTTON_HANDLER_PRIORITY, NULL);
+	256, buttonParams, UI_BUTTON_HANDLER_PRIORITY, NULL);
 }		
 

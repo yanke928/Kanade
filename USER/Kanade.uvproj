@@ -774,6 +774,11 @@
               <FileType>1</FileType>
               <FilePath>..\Source\UI\UI_Dialogue.c</FilePath>
             </File>
+            <File>
+              <FileName>UI_Confirmation.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\UI\UI_Confirmation.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

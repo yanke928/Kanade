@@ -11,7 +11,7 @@ typedef struct
  s8 Msk[24];    
 }Big5Font;
 
-extern const Big5Font TaiwaneseTab12[20];
+extern const Big5Font TaiwaneseTab12[24];
 
 u16 GetTaiwaneseAddr( s8 *ptr ,u8 size ) ;             
 

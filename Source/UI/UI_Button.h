@@ -17,7 +17,6 @@ typedef struct
 
 extern xQueueHandle UI_ButtonMsg;
 
-void UI_Button_Init(char buttonString[], u8 buttonsNum,
-	u8 defaultValue, OLED_PositionStruct positions[]);
+void UI_Button_Init(UI_Button_Param_Struct * buttonParams);
 
 #endif /* __UI_BUTTON_H */

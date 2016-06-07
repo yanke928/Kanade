@@ -5,7 +5,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
-#include "SSD1306.h"
 
 void ShowDialogue(char titleString[],char subString0[],char subString1[]);
 

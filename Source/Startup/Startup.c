@@ -19,6 +19,7 @@
 #include "CPU_Usage.h"
 #include "MultiLanguageStrings.h"
 #include "USBCDC.h"
+#include "UI_Confirmation.h" 
 
 #include "Startup.h"
 
@@ -271,6 +272,7 @@ void SystemStartup(void *pvParameters)
 	xSemaphoreGive(OLEDRelatedMutex);
 	UpdateOLEDJustNow=false;
 	OLED_Clear();
+	GetConfirmation("","");
 	if(LEFT_KEY==KEY_ON)
 	{
 	 BadApplePlayer_Init();	
@@ -288,7 +290,7 @@ void SystemStartup(void *pvParameters)
 void SystemStart()
 {
 	xTaskCreate(SystemStartup, "SystemStartup",
-		configMINIMAL_STACK_SIZE, NULL, SYSTEM_STARTUP_PRIORITY, NULL);
+		256, NULL, SYSTEM_STARTUP_PRIORITY, NULL);
 	vTaskStartScheduler();
 }
 

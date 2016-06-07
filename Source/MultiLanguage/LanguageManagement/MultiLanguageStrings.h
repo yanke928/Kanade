@@ -2,6 +2,7 @@
 #define	__MULTILANGUAGESTRINGS_H
 
 #include "stm32f10x.h"
+#include "SSD1306.h"
 
 #define LanguageNum 4
 
@@ -10,6 +11,9 @@ extern const char * Capacity_Str[LanguageNum];
 extern const char * NoSD_Str[LanguageNum];
 extern const char * WaitingForEBD_Str[LanguageNum];
 extern const char * EBDConnected_Str[LanguageNum];
+extern const char * Confirmation_Str[LanguageNum];
+extern const char * ConfirmCancel_Str[LanguageNum];
+extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 
 #endif /* __MULTILANGUAGESTRINGS_H */
 

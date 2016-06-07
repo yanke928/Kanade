@@ -22,6 +22,9 @@
 
 #define OLED_REFRESH_PRIORITY tskIDLE_PRIORITY+2
 
+#define English 0
+
+
 xSemaphoreHandle OLEDRelatedMutex=NULL;
 
 u8 Language=Japanese;
