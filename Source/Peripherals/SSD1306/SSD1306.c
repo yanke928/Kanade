@@ -27,7 +27,7 @@
 
 xSemaphoreHandle OLEDRelatedMutex=NULL;
 
-u8 Language=Japanese;
+u8 Language=Japanchinese;
 
 //#include "delay.h"
 

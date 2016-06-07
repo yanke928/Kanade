@@ -43,13 +43,13 @@ void UI_Button_Handler(void *pvParameters)
  u8 p = 1;
  u8 stringsAddr[4];//Relative individual string addr in buttonString
  unsigned char lengths[4];//Lengths of every seperate string
- char buttons[4][10];//Cache contains the button strings
+ char buttons[4][12];//Cache contains the button strings
  stringsAddr[0] = 0;//Set addr[0] to the first byte of buttonString
 	
 	/*Find the addrs for every string in buttonString*/
 	for (i = 0; buttonParams->ButtonString[i] != 0; i++)
 	{
-		if (buttonParams->ButtonString[i] == '\n')
+		if (buttonParams->ButtonString[i] == '%')
 		{
 			stringsAddr[p] = i + 1;
 			p++;
@@ -60,7 +60,7 @@ void UI_Button_Handler(void *pvParameters)
 	place the end for sepearated strings*/
 	for (i = 0; i < buttonParams->ButtonNum; i++)
 	{
-		for (p = 0; buttonParams->ButtonString[stringsAddr[i] + p] != '\n'&&
+		for (p = 0; buttonParams->ButtonString[stringsAddr[i] + p] != '%'&&
 		    buttonParams->ButtonString[stringsAddr[i] + p] != 0; p++)
 		{
 			buttons[i][p] = buttonParams->ButtonString[stringsAddr[i] + p];
