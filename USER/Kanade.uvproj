@@ -779,6 +779,16 @@
               <FileType>1</FileType>
               <FilePath>..\Source\UI\UI_Confirmation.c</FilePath>
             </File>
+            <File>
+              <FileName>UI_Menu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\UI\UI_Menu.c</FilePath>
+            </File>
+            <File>
+              <FileName>UI_Utilities.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\UI\UI_Utilities.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

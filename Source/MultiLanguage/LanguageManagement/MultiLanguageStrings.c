@@ -40,7 +40,7 @@ const char * Confirmation_Str[] = { Confirmation_EN,Confirmation_TW,Confirmation
 const char ConfirmCancel_EN[] = "Cancel%Comfirm";
 const char ConfirmCancel_TW[] = "  % 絋粄 ";
 const char ConfirmCancel_JC[] = " 取消 % 确认 " ;
-const char ConfirmCancel_JP[] = "僉儍儞僙儖%偼偄";
+const char ConfirmCancel_JP[] = " 僉儍儞僙儖 % 偼偄 ";
 const char * ConfirmCancel_Str[] = { ConfirmCancel_EN,ConfirmCancel_TW,ConfirmCancel_JC,ConfirmCancel_JP };
 
 const char RecordConfirm_EN[] = "Start Record?";
@@ -60,7 +60,7 @@ const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {20,45,76,45},
 {36,45,84,45},
 {36,45,84,45},
-{20,45,96,45}
+{12,45,84,45}
 };
 
 

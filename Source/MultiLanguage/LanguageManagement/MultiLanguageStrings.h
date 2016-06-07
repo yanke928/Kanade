@@ -6,6 +6,8 @@
 
 #define LanguageNum 4
 
+#define SETTINGS_START_ADDR 0x0801d800
+
 extern const char * SystemInit_Str[LanguageNum];
 extern const char * Capacity_Str[LanguageNum];
 extern const char * NoSD_Str[LanguageNum];

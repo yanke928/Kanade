@@ -395,10 +395,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>3</ColumnNumber>
+      <ColumnNumber>22</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>249</TopLine>
-      <CurrentLine>278</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>22</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Source\Startup\Startup.c</PathWithFileName>
       <FilenameWithoutPath>Startup.c</FilenameWithoutPath>
@@ -835,10 +835,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>29</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>11</TopLine>
-      <CurrentLine>43</CurrentLine>
+      <TopLine>25</TopLine>
+      <CurrentLine>44</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Source\Peripherals\SSD1306\SSD1306.c</PathWithFileName>
       <FilenameWithoutPath>SSD1306.c</FilenameWithoutPath>
@@ -987,10 +987,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>37</ColumnNumber>
+      <ColumnNumber>33</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>32</TopLine>
-      <CurrentLine>53</CurrentLine>
+      <TopLine>116</TopLine>
+      <CurrentLine>36</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Source\Apps\USBMeter\USBMeter.c</PathWithFileName>
       <FilenameWithoutPath>USBMeter.c</FilenameWithoutPath>
@@ -1371,10 +1371,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>7</ColumnNumber>
+      <ColumnNumber>2</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>44</TopLine>
-      <CurrentLine>72</CurrentLine>
+      <TopLine>54</TopLine>
+      <CurrentLine>73</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Source\MultiLanguage\Taiwanese\Taiwanese.c</PathWithFileName>
       <FilenameWithoutPath>Taiwanese.c</FilenameWithoutPath>
@@ -1387,10 +1387,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>24</ColumnNumber>
+      <ColumnNumber>16</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>6</CurrentLine>
+      <TopLine>30</TopLine>
+      <CurrentLine>49</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.c</PathWithFileName>
       <FilenameWithoutPath>MultiLanguageStrings.c</FilenameWithoutPath>
@@ -1419,9 +1419,9 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>23</ColumnNumber>
+      <ColumnNumber>24</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>17</TopLine>
+      <TopLine>18</TopLine>
       <CurrentLine>35</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Source\MultiLanguage\Japanese\Japanese.c</PathWithFileName>
@@ -1433,7 +1433,7 @@
 
   <Group>
     <GroupName>UI</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1443,10 +1443,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>30</ColumnNumber>
+      <ColumnNumber>6</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>1</TopLine>
+      <CurrentLine>121</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Source\UI\UI_Button.c</PathWithFileName>
       <FilenameWithoutPath>UI_Button.c</FilenameWithoutPath>
@@ -1459,10 +1459,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>25</ColumnNumber>
+      <ColumnNumber>40</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>1</TopLine>
-      <CurrentLine>18</CurrentLine>
+      <CurrentLine>12</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\Source\UI\UI_Dialogue.c</PathWithFileName>
       <FilenameWithoutPath>UI_Dialogue.c</FilenameWithoutPath>
@@ -1482,6 +1482,38 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\Source\UI\UI_Confirmation.c</PathWithFileName>
       <FilenameWithoutPath>UI_Confirmation.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>12</GroupNumber>
+      <FileNumber>65</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <ColumnNumber>1</ColumnNumber>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <TopLine>110</TopLine>
+      <CurrentLine>139</CurrentLine>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\Source\UI\UI_Menu.c</PathWithFileName>
+      <FilenameWithoutPath>UI_Menu.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>12</GroupNumber>
+      <FileNumber>66</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <ColumnNumber>0</ColumnNumber>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <TopLine>3</TopLine>
+      <CurrentLine>42</CurrentLine>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\Source\UI\UI_Utilities.c</PathWithFileName>
+      <FilenameWithoutPath>UI_Utilities.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

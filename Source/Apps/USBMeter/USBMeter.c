@@ -33,9 +33,7 @@ void USBMeter(void *pvParameters)
 {
 	char tempString[20];
 	Key_Message_Struct keyMessage;
-	portTickType xLastWakeTime;
 	u8 status = *(u8*)pvParameters;
-	xLastWakeTime = xTaskGetTickCount();
 	ClearKeyEvent(keyMessage);
 	while (1)
 	{
