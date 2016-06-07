@@ -361,7 +361,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD,USE_STM3210B_EVAL</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol;..\Source\Peripherals;..\FWlib\sdcard;..\FWlib\usb;..\Source\Apps\USBMeter;..\Source\Apps\Virtual_Clock;..\Source\FreeRTOS_CLI;..\FWlib\usb\inc;..\Source\Apps\CommandLines;..\Source\Apps\BadApplePlayer;..\Source\Apps\CPU_Usage;..\Source\fatfs\include;..\Source\MultiLanguage\Taiwanese;..\Source\MultiLanguage\LanguageManagement;..\Source\MultiLanguage\Japanchinese;..\Source\MultiLanguage\Japanese</IncludePath>
+              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol;..\Source\Peripherals;..\FWlib\sdcard;..\FWlib\usb;..\Source\Apps\USBMeter;..\Source\Apps\Virtual_Clock;..\Source\FreeRTOS_CLI;..\FWlib\usb\inc;..\Source\Apps\CommandLines;..\Source\Apps\BadApplePlayer;..\Source\Apps\CPU_Usage;..\Source\fatfs\include;..\Source\MultiLanguage\Taiwanese;..\Source\MultiLanguage\LanguageManagement;..\Source\MultiLanguage\Japanchinese;..\Source\MultiLanguage\Japanese;..\Source\UI</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -758,6 +758,21 @@
               <FileName>Japanese.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\MultiLanguage\Japanese\Japanese.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>UI</GroupName>
+          <Files>
+            <File>
+              <FileName>UI_Button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\UI\UI_Button.c</FilePath>
+            </File>
+            <File>
+              <FileName>UI_Dialogue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\UI\UI_Dialogue.c</FilePath>
             </File>
           </Files>
         </Group>

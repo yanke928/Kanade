@@ -53,12 +53,6 @@ bool MidKeyLongPressed, LeftKeyLongPressed, RightKeyLongPressed;
 
 volatile bool IgnoreNextEvent = false;
 
-typedef struct 
-{
- u8 KeyEvent; 
- u8 AdvancedKeyEvent; 
-} Key_Message_Struct;
-
 xQueueHandle Key_Message; 
 
 /**
@@ -222,6 +216,11 @@ void KeyEvents(void)
 		MidKeyPressed = false;
 		KeyEvent = MidClick;
 	}
+}
+
+void ClearKeyEvent(Key_Message_Struct message)
+{
+ xQueueReceive(Key_Message, & message, 0 );
 }
 
 /**

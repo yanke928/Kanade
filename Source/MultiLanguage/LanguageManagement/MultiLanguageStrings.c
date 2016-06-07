@@ -3,7 +3,7 @@
 const char SystemInit_EN[]="System Init...";
 const char SystemInit_TW[]="ｨtｲﾎｪ�ｩl､ﾆ...";
 const char SystemInit_JC[]="ﾏｵﾍｳｳｼｻｯ...";
-const char SystemInit_JP[]="システムの初期化";
+const char SystemInit_JP[]="システムの初期化...";
 const char * SystemInit_Str[]={SystemInit_EN,SystemInit_TW,SystemInit_JC,SystemInit_JP};
 
 const char Capacity_EN[]="Capacity:%dMB";

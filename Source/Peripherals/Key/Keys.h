@@ -38,7 +38,6 @@
 #define PRESSTIME (30/10)
 #define LONGPRESSTIME (1000/10)
 #define DOUBLECLICKTIMEINTERVAL (200/10)
-#define ClearKeyEvent() KeyEvent=0
 
  //KeyEvents enum
 enum {
@@ -57,6 +56,12 @@ enum {
 	RightContinous =2
 };
 
+typedef struct 
+{
+ u8 KeyEvent; 
+ u8 AdvancedKeyEvent; 
+} Key_Message_Struct;
+
 extern volatile u8 KeyEvent;
 
 extern volatile u8 AdvancedKeyEvent;
@@ -66,6 +71,8 @@ extern volatile bool IgnoreNextEvent;
 extern volatile bool  ContinousPressBeats;
 
 extern u16  ContinousPressBeatTime;
+
+extern xQueueHandle Key_Message; 
 
 void KeyEvents(void);
 
@@ -80,5 +87,7 @@ void SetKeyBeatRate(u8 freq);
 void Key_Init(void);
 
 void Key_Debug_Init(void);
+
+void ClearKeyEvent(Key_Message_Struct message);
 
 #endif /* __KEYS_H */

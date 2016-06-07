@@ -42,8 +42,6 @@ unsigned char  OLED_GRAM[128][8];
 
 //unsigned char  OLED_GRAM_Backup[128][8];
 
-#if OLED_REFRESH_OPTIMIZE_EN
-
 volatile bool GRAM_Changing = false;
 
 volatile bool GRAM_Changed = false;
@@ -51,7 +49,8 @@ volatile bool GRAM_Changed = false;
 volatile bool GRAM_No_Change_Timeout = false;
 
 volatile bool UpdateOLEDJustNow = false;
-#endif
+
+volatile bool UpdateOLEDJustNow_Backup= false;
 
 /**
   * @brief  Read/Write single byte to/from SPI2
@@ -717,6 +716,17 @@ void OLED_Refresh_Handler(void *pvParameters)
  }
 }
 #endif
+
+void SetUpdateOLEDJustNow()
+{
+ UpdateOLEDJustNow_Backup=UpdateOLEDJustNow;
+ UpdateOLEDJustNow=true;
+}
+
+void ResetUpdateOLEDJustNow()
+{
+ UpdateOLEDJustNow=UpdateOLEDJustNow_Backup;
+}
 
 /**
   * @brief  Init OLED

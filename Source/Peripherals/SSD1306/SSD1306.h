@@ -85,6 +85,9 @@ void OLED_BackupScreen(void);
 void OLED_RestoreScreen(void);
 void Draw_BMP(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,unsigned char bmp[]);
 
+void SetUpdateOLEDJustNow(void);
+void ResetUpdateOLEDJustNow(void);
+
 #endif  
 
 
