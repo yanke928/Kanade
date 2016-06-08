@@ -17,6 +17,7 @@ typedef struct
 
 extern xQueueHandle UI_ButtonMsg;
 
+//see .c for details
 void UI_Button_Init(UI_Button_Param_Struct * buttonParams);
 
 #endif /* __UI_BUTTON_H */

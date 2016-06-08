@@ -15,6 +15,20 @@
 
 xQueueHandle UI_MenuMsg; 
 
+
+/**
+  * @brief  Show menu on screen
+
+  * @param  ItemString:A string which contains the strings
+	  of the items,use'%'to seperate two strings
+		e.g."string1%string2&string3"
+
+						ItemNum:The quantity of the items that listed
+
+						DefaultValue:The default selection of the buttons
+
+	@retval The handler will send the result to UI_MenuMsg when confirmation got
+  */
 void UI_Menu_Handler(void *pvParameters)
 {
 	int currentPos, i, p, q, currentRelativePos, lastRelativePos;
@@ -137,6 +151,13 @@ void UI_Menu_Handler(void *pvParameters)
 	}
 }
 
+
+/**
+  * @brief  See UI_Menu_Handler for details
+
+  * @param  Menu UI param struct
+
+  */
 void UI_Menu_Init(UI_Menu_Param_Struct * menuParams)
 {
 	UI_MenuMsg=xQueueCreate(1, sizeof(u8));

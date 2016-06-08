@@ -22,7 +22,7 @@ xQueueHandle UI_ButtonMsg;
   * @brief  Show buttons on screen
 
   * @param  ButtonString:A string which contains the strings
-	  of the buttons,use'\n'to seperate two strings
+	  of the buttons,use''%''to seperate two strings
 		e.g."string1\nstring2\nstring3"
 
 						ButtonNum:The quantity of the buttons that displayed
@@ -137,20 +137,10 @@ void UI_Button_Handler(void *pvParameters)
 }
 
 /**
-  * @brief  Show buttons on screen
+  * @brief  See UI_Button_Handler for details
 
-  * @param  buttonString:A string which contains the strings
-	  of the buttons,use'\n'to seperate two strings
-		e.g."string1\nstring2\nstring3"
+  * @param  Button param struct pointer
 
-						buttonsNum:The quantity of the buttons that displayed
-
-						defaultValue:The default selection of the buttons
-
-						positions:A struct array contains the positions
-	  of the buttons
-
-	@retval The handler will send the result to UI_ButtonMsg when confirmation got
   */
 void UI_Button_Init(UI_Button_Param_Struct * buttonParams)
 {

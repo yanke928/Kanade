@@ -10,6 +10,16 @@
 #include "UI_Dialogue.h" 
 #include "UI_Utilities.h" 
 
+/**
+  * @brief  Show dialogue
+
+  * @param titleString: A string which being shown as title of the dialogue
+	
+	         subString0:  First line of the passage
+					 
+					 subString1:  Second Line of the passage
+
+  */
 void ShowDialogue(char titleString[],char subString0[],char subString1[])
 {
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
@@ -21,6 +31,13 @@ void ShowDialogue(char titleString[],char subString0[],char subString1[])
  xSemaphoreGive(OLEDRelatedMutex);
 }
 
+/**
+  * @brief  Show small dialogue
+
+  * @param  string: Passage
+	
+            time:   Time of the dialoue that lasts
+  */
 void ShowSmallDialogue(char string[],u16 time)
 {
 	u8 startAddr, endAddr;
