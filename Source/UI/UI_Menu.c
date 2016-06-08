@@ -25,7 +25,7 @@ void UI_Menu_Handler(void *pvParameters)
 	char itemStrings[10][20];
 	u8 stringsAddr[10];
 	u8 selection;
-	u8 displayedItemNum=(menuParams->ItemNum>=5?5:menuParams->ItemNum);
+	u8 displayedItemNum=(menuParams->ItemNum>=4?4:menuParams->ItemNum);
 	currentPos = menuParams->DefaultPos;
 	currentRelativePos = 0;
 	allContentChanged = true;
@@ -62,21 +62,21 @@ void UI_Menu_Handler(void *pvParameters)
 			{
 				p = GetStringLength(itemStrings[currentPos + i]);
 				q = GetCentralPosition(0, 127, p);
-				OLED_FillRect(1, i * 12 + 1, 126, i * 12 + 12, 0);
-				OLED_ShowAnyString(q, i * 12 + 1, (char *)itemStrings[currentPos + i], NotOnSelect, 12);
+				OLED_FillRect(2, i * 15 + 2, 125, i * 15 + 14, 0);
+				OLED_ShowAnyString(q, i * 15 + 2, (char *)itemStrings[currentPos + i], NotOnSelect, 12);
 			}
-			OLED_DrawRect(0, 0, 127, displayedItemNum*12, DRAW);
+			OLED_DrawRect(0, 0, 127, displayedItemNum*15, DRAW);
 			for(i = 1; i < displayedItemNum; i++)
 			{
-			 OLED_DrawHorizonalLine(12*i, 0, 127, DRAW);
+			 OLED_DrawHorizonalLine(15*i, 0, 127, DRAW);
 			}
-			OLED_InvertRect(1, currentRelativePos * 12 + 1, 126, currentRelativePos * 12 + 12);
+			OLED_InvertRect(2, currentRelativePos * 15 + 2, 125, currentRelativePos * 15 + 14);
 			allContentChanged = false;
 		}
 		if (relativePosChanged == true)
 		{
-			OLED_InvertRect(1, lastRelativePos * 12 + 1, 126, lastRelativePos * 12 + 12);
-			OLED_InvertRect(1, currentRelativePos * 12 + 1, 126, currentRelativePos * 12 + 12);
+			OLED_InvertRect(2, lastRelativePos * 15 + 2, 125, lastRelativePos * 15 + 14);
+			OLED_InvertRect(2, currentRelativePos * 15 + 2, 125, currentRelativePos * 15 + 14);
 			lastRelativePos = currentRelativePos;
 			relativePosChanged = false;
 		}	 

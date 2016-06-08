@@ -32,10 +32,10 @@ void Settings()
 {
  UI_Menu_Param_Struct menuParams;
  u8 selection;
- menuParams.ItemString="Unmount Disk%Clock Settings%Buzzer Settings%Language%System Scan%System Info";
+ menuParams.ItemString=(char *)Settings_Str[CurrentSettings->Language];
  menuParams.DefaultPos=0;
  menuParams.ItemNum=6;
- menuParams.FastSpeed=5;
+ menuParams.FastSpeed=10;
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
  OLED_Clear();
  xSemaphoreGive(OLEDRelatedMutex);

@@ -61,6 +61,12 @@ const char Saved_JC[] = "已保存" ;
 const char Saved_JP[] = "曐懚";
 const char * Saved_Str[] = { Saved_EN,Saved_TW,Saved_JC,Saved_JP };
 
+const char Settings_EN[]="Unmount Disk%Clock Settings%Buzzer Settings%Language%System Scan%System Info";
+const char Settings_TW[]="紆SD%丁砞竚%牡厨砞竚%Language%╰参苯磞%╰参戈癟";
+const char Settings_JC[] = "安全弹出存储卡%时间设置%蜂鸣器设置%Language%系统扫描%系统信息" ;
+const char Settings_JP[] ="僀僕僃僋僩儊儌儕%帪崗偺愝掕%寈崘偺愝掕%Language%僔僗僥儉僗僉儍儞%僔僗僥儉忣曬";
+const char * Settings_Str[] = { Settings_EN,Settings_TW,Settings_JC,Settings_JP };
+	
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},

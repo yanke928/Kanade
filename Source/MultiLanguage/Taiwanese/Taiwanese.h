@@ -17,7 +17,7 @@ typedef struct
  s8 Msk[32];    
 }Big5Font16;
 
-extern const Big5Font TaiwaneseTab12[24];
+extern const Big5Font TaiwaneseTab12[36];
 
 extern const Big5Font16 TaiwaneseTab16[12];
 

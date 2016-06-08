@@ -17,7 +17,7 @@ typedef struct
  s8 Msk[32];    
 }JISFont16;
 
-extern const JISFont JapaneseTab12[31];
+extern const JISFont JapaneseTab12[47];
 
 extern const JISFont16 JapaneseTab16[13];
 

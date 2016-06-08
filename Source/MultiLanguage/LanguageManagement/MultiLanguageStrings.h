@@ -18,6 +18,7 @@ extern const char * ConfirmCancel_Str[LanguageNum];
 extern const char * RecordConfirm_Str[LanguageNum];
 extern const char * QCMTKConfirm_Str[LanguageNum] ;
 extern const char * Saved_Str[LanguageNum] ;
+extern const char * Settings_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 
