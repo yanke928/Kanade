@@ -3,7 +3,7 @@
 
 #include "stm32f10x.h"
 
-#define Taiwanese 1
+#define ChineseTraditional 1
 
 typedef struct    
 {
@@ -17,11 +17,11 @@ typedef struct
  s8 Msk[32];    
 }Big5Font16;
 
-extern const Big5Font TaiwaneseTab12[36];
+extern const Big5Font ChineseTraditionalTab12[36];
 
-extern const Big5Font16 TaiwaneseTab16[12];
+extern const Big5Font16 ChineseTraditionalTab16[12];
 
-u16 GetTaiwaneseAddr( s8 *ptr ,u8 size ) ;             
+u16 GetChineseTraditionalAddr( s8 *ptr ,u8 size ) ;             
 
 #endif /* __TAIWANESE_H */
 

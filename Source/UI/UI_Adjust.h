@@ -3,6 +3,10 @@
 
 #include "stm32f10x.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
 typedef struct
 {
 	char *AskString;
@@ -14,6 +18,8 @@ typedef struct
 	u8   Pos_y;
 	u8   FastSpeed;
 }UI_Adjust_Param_Struct;
+
+extern xQueueHandle UI_AdjustMsg; 
 
 void UI_Adjust_Init(UI_Adjust_Param_Struct * adjustParams);
 

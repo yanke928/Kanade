@@ -16,6 +16,7 @@
 
 #include "UI_Menu.h"
 #include "UI_Dialogue.h"
+#include "UI_Adjust.h"
 #include "MultiLanguageStrings.h"
 
 #include "Settings.h"
@@ -27,6 +28,8 @@ Settings_Struct SettingsBkp;
 const Settings_Struct DefaultSettings={0};
 
 void SetLanguage(void);
+
+void TimeSettings(void);
 
 void Settings()
 {
@@ -46,6 +49,7 @@ void Settings()
  xSemaphoreGive(OLEDRelatedMutex);
  switch(selection)
  {
+	 case 1:TimeSettings();break;
 	 case 3:SetLanguage();
  }
 }
@@ -115,5 +119,21 @@ void Settings_Init()
   OLED_Refresh_Gram();
   xSemaphoreGive(OLEDRelatedMutex); 
  }
+}
+
+void TimeSettings()
+{
+ u16 year;
+ UI_Adjust_Param_Struct timeAdjustParams;
+ timeAdjustParams.AskString="Shani";
+ timeAdjustParams.Min=1;
+ timeAdjustParams.Max=2000;
+ timeAdjustParams.Step=1;
+ timeAdjustParams.DefaultValue=1000;
+ timeAdjustParams.UnitString="mn";
+ timeAdjustParams.Pos_y=33;
+ timeAdjustParams.FastSpeed=20;
+ UI_Adjust_Init(&timeAdjustParams);
+ xQueueReceive(UI_AdjustMsg, & year, portMAX_DELAY );
 }
 

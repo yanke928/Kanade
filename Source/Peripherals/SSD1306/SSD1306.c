@@ -13,8 +13,8 @@
 #include "queue.h"
 #include "semphr.h"  
 
-#include "Taiwanese.h"
-#include "JapanChinese.h"
+#include "ChineseSimplified.h"
+#include "ChineseTraditional.h"
 #include "Japanese.h"
 
 #include "Settings.h"
@@ -381,14 +381,14 @@ void OLED_ShowChar(unsigned char  x, unsigned char  y, unsigned char  chr, unsig
 
 	  @retval None
   */
-void OLED_ShowCHinese(unsigned char  x, unsigned char  y, unsigned char  no, unsigned char drawOrUnDraw)
+void OLED_ShowIcon(unsigned char  x, unsigned char  y, unsigned char  no, unsigned char drawOrUnDraw)
 {
 	unsigned char  temp, t, t1;
 	unsigned char  y0 = y;
 	for (t = 0; t < 32; t++)
 	{
 
-		temp = CHINESE[no][t];		 
+		temp = Icons[no][t];		 
 		for (t1 = 0; t1 < 8; t1++)
 		{
 			if (temp & 0x80)OLED_DrawPoint(x, y, drawOrUnDraw);
@@ -448,8 +448,8 @@ void OLED_ShowNotASCChar(unsigned char  x, unsigned char  y, char *chr, unsigned
  unsigned char  y0 = y;
  switch(CurrentSettings->Language)
  {
-	 case Taiwanese:addr=GetTaiwaneseAddr((s8 *)chr,size);break;
-	 case Japanchinese:addr=GetJapanchineseAddr((s8 *)chr,size);break;
+	 case ChineseTraditional:addr=GetChineseTraditionalAddr((s8 *)chr,size);break;
+	 case ChineseSimplified:addr=GetChineseSimplifiedAddr((s8 *)chr,size);break;
 	 case Japanese:addr=GetJapaneseAddr((s8 *)chr,size);break;
  }
  if (size == 12) m = 24;
@@ -460,8 +460,8 @@ void OLED_ShowNotASCChar(unsigned char  x, unsigned char  y, char *chr, unsigned
 	{
 		switch(CurrentSettings->Language)
 		{
-		  case Taiwanese:if(size==12) temp=TaiwaneseTab12[addr].Msk[t];else temp=TaiwaneseTab16[addr].Msk[t];break;
-			case Japanchinese:if(size==12) temp=JapanchineseTab12[addr].Msk[t];else temp=JapanchineseTab16[addr].Msk[t];break;
+		  case ChineseTraditional:if(size==12) temp=ChineseTraditionalTab12[addr].Msk[t];else temp=ChineseTraditionalTab16[addr].Msk[t];break;
+			case ChineseSimplified:if(size==12) temp=ChineseSimplifiedTab12[addr].Msk[t];else temp=ChineseSimplifiedTab16[addr].Msk[t];break;
 			case Japanese:if(size==12) temp=JapaneseTab12[addr].Msk[t];else temp=JapaneseTab16[addr].Msk[t];break;
 		}
 //		if (size == 12)temp = oled_asc2_1206[chr][t]; //1206
