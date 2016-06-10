@@ -66,6 +66,30 @@ const char Settings_TW[]="紆SD%丁砞竚%牡厨砞竚%Language%╰参苯磞%╰参戈癟"
 const char Settings_JC[] = "安全弹出存储卡%时间设置%蜂鸣器设置%Language%系统扫描%系统信息" ;
 const char Settings_JP[] ="僀僕僃僋僩儊儌儕%帪崗偺愝掕%寈崘偺愝掕%Language%僔僗僥儉僗僉儍儞%僔僗僥儉忣曬";
 const char * Settings_Str[] = { Settings_EN,Settings_TW,Settings_JC,Settings_JP };
+
+const char SetYear_EN[]="Set year";
+const char SetYear_TW[]="砞竚";
+const char SetYear_JC[] = "设置年份" ;
+const char SetYear_JP[] ="擭傪愝掕";
+const char * SetYear_Str[] = { SetYear_EN,SetYear_TW,SetYear_JC,SetYear_JP };
+
+const char SetYearUnit_EN[] ="Year";
+const char SetYearUnit_TW[] ="";
+const char SetYearUnit_JC[] ="年" ;
+const char SetYearUnit_JP[] ="擭";
+const char * SetYearUnit_Str[] = { SetYearUnit_EN,SetYearUnit_TW,SetYearUnit_JC,SetYearUnit_JP };
+
+const char SetMonth_EN[]="Set month";
+const char SetMonth_TW[]="砞竚る";
+const char SetMonth_JC[] = "设置月份" ;
+const char SetMonth_JP[] ="寧偺愝掕";
+const char * SetYear_Str[] = { SetMonth_EN,SetMonth_TW,SetMonth_JC,SetMonth_JP };
+
+const char SetMonthUnit_EN[] ="month";
+const char SetMonthUnit_TW[] ="る";
+const char SetMonthUnit_JC[] ="月" ;
+const char SetMonthUnit_JP[] ="寧";
+const char * SetMonthUnit_Str[] = { SetMonthUnit_EN,SetMonthUnit_TW,SetMonthUnit_JC,SetMonthUnit_JP };
 	
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {

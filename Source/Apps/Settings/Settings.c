@@ -13,6 +13,7 @@
 #include "queue.h"
 
 #include "SSD1306.h"
+#include "RTC.h"
 
 #include "UI_Menu.h"
 #include "UI_Dialogue.h"
@@ -123,17 +124,20 @@ void Settings_Init()
 
 void TimeSettings()
 {
- u16 year;
+ u16 tmp;
+ struct Data_Time newTime;
  UI_Adjust_Param_Struct timeAdjustParams;
- timeAdjustParams.AskString="Shani";
- timeAdjustParams.Min=1;
- timeAdjustParams.Max=2000;
+ timeAdjustParams.AskString=(char*)SetYear_Str[CurrentSettings->Language];
+ timeAdjustParams.Min=2016;
+ timeAdjustParams.Max=2099;
  timeAdjustParams.Step=1;
- timeAdjustParams.DefaultValue=1000;
- timeAdjustParams.UnitString="mn";
+ timeAdjustParams.DefaultValue=2016;
+ timeAdjustParams.UnitString=(char*)SetYearUnit_Str[CurrentSettings->Language];
  timeAdjustParams.Pos_y=33;
  timeAdjustParams.FastSpeed=20;
  UI_Adjust_Init(&timeAdjustParams);
- xQueueReceive(UI_AdjustMsg, & year, portMAX_DELAY );
+ xQueueReceive(UI_AdjustMsg, & tmp, portMAX_DELAY );
+ newTime.w_year=tmp;
+ 
 }
 

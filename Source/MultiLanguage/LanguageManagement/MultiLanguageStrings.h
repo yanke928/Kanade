@@ -6,8 +6,6 @@
 
 #define LanguageNum 4
 
-#define SETTINGS_START_ADDR 0x0801d800
-
 extern const char * SystemInit_Str[LanguageNum];
 extern const char * Capacity_Str[LanguageNum];
 extern const char * NoSD_Str[LanguageNum];
@@ -19,6 +17,8 @@ extern const char * RecordConfirm_Str[LanguageNum];
 extern const char * QCMTKConfirm_Str[LanguageNum] ;
 extern const char * Saved_Str[LanguageNum] ;
 extern const char * Settings_Str[LanguageNum];
+extern const char * SetYear_Str[LanguageNum];
+extern const char * SetYearUnit_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 

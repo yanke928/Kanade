@@ -19,7 +19,7 @@ typedef struct
 
 extern const GB2312Font ChineseSimplifiedTab12[38];
 
-extern const GB2312Font16 ChineseSimplifiedTab16[12];
+extern const GB2312Font16 ChineseSimplifiedTab16[16];
 
 u16 GetChineseSimplifiedAddr( s8 *ptr ,u8 size );
 

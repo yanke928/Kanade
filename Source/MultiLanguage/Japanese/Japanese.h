@@ -19,7 +19,7 @@ typedef struct
 
 extern const JISFont JapaneseTab12[47];
 
-extern const JISFont16 JapaneseTab16[13];
+extern const JISFont16 JapaneseTab16[17];
 
 u16 GetJapaneseAddr( s8 *ptr ,u8 size );
 
