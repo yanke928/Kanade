@@ -1,4 +1,4 @@
-//File Name   £ºUI_Dialogue.c
+//File Name    UI_Dialogue.c
 //Description : Dialogue UI
 
 #include <string.h>

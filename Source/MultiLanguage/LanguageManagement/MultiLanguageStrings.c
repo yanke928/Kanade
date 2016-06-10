@@ -1,94 +1,96 @@
 #include "MultiLanguageStrings.h"
 #include "SSD1306.h"
 
+#pragma diag_suppress 870
+
 const char SystemInit_EN[] = "System Init...";
-const char SystemInit_TW[] = "¨t²Îªì©l¤Æ...";
-const char SystemInit_JC[] = "ÏµÍ³³õÊ¼»¯...";
-const char SystemInit_JP[] = "ƒVƒXƒeƒ€‚Ì‰Šú‰»...";
+const char SystemInit_TW[] = "ç³»çµ±åˆå§‹åŒ–...";
+const char SystemInit_JC[] = "ç³»ç»Ÿåˆå§‹åŒ–...";
+const char SystemInit_JP[] = "ã‚·ã‚¹ãƒ†ãƒ ã®åˆæœŸåŒ–...";
 const char * SystemInit_Str[] = { SystemInit_EN,SystemInit_TW,SystemInit_JC,SystemInit_JP };
 
 const char Capacity_EN[] = "Capacity:%dMB";
-const char Capacity_TW[] = "®e¶q:%dMB";
-const char Capacity_JC[] = "ÈİÁ¿:%dMB";
-const char Capacity_JP[] = "—e—Ê:%dMB";
+const char Capacity_TW[] = "å®¹é‡:%dMB";
+const char Capacity_JC[] = "å®¹é‡:%dMB";
+const char Capacity_JP[] = "å®¹é‡:%dMB";
 const char * Capacity_Str[] = { Capacity_EN,Capacity_TW,Capacity_JC,Capacity_JP };
 
 const char NoSD_EN[] = "No SDCard";
-const char NoSD_TW[] = "¨S¦³°O¾ĞÅé";
-const char NoSD_JC[] = "Ã»ÓĞSD¿¨";
-const char NoSD_JP[] = "‚¢‚¢‚¦TFƒJ[ƒh";
+const char NoSD_TW[] = "æ²’æœ‰è¨˜æ†¶é«”";
+const char NoSD_JC[] = "æ²¡æœ‰SDå¡";
+const char NoSD_JP[] = "ã„ã„ãˆTFã‚«ãƒ¼ãƒ‰";
 const char * NoSD_Str[] = { NoSD_EN,NoSD_TW,NoSD_JP };
 
 const char WaitingForEBD_EN[] = "Waiting for EBD...";
-const char WaitingForEBD_TW[] = "µ¥«İ³]³Æ...";
-const char WaitingForEBD_JC[] = "µÈ´ıÉè±¸...";
-const char WaitingForEBD_JP[] = "Ú‘±‚µ‚Ü‚·...";
+const char WaitingForEBD_TW[] = "ç­‰å¾…è¨­å‚™...";
+const char WaitingForEBD_JC[] = "ç­‰å¾…è®¾å¤‡...";
+const char WaitingForEBD_JP[] = "æ¥ç¶šã—ã¾ã™...";
 const char * WaitingForEBD_Str[] = { WaitingForEBD_EN,WaitingForEBD_TW,WaitingForEBD_JC,WaitingForEBD_JP };
 
 const char EBDConnected_EN[] = "EBD Connected";
-const char EBDConnected_TW[] = "³]³Æ¤w³s±µ";
-const char EBDConnected_JC[] = "Éè±¸ÒÑÁ¬½Ó";
-const char EBDConnected_JP[] = "Ú‘±‚·‚Å‚É";
+const char EBDConnected_TW[] = "è¨­å‚™å·²é€£æ¥";
+const char EBDConnected_JC[] = "è®¾å¤‡å·²è¿æ¥";
+const char EBDConnected_JP[] = "æ¥ç¶šã™ã§ã«";
 const char * EBDConnected_Str[] = { EBDConnected_EN,EBDConnected_TW,EBDConnected_JC,EBDConnected_JP };
 
 const char Confirmation_EN[] = "Confirmation";
-const char Confirmation_TW[] = "½T»{";
-const char Confirmation_JC[] = "È·ÈÏ";
-const char Confirmation_JP[] = "Šm”F‚µ‚Ü‚·";
+const char Confirmation_TW[] = "ç¢ºèª";
+const char Confirmation_JC[] = "ç¡®è®¤";
+const char Confirmation_JP[] = "ç¢ºèªã—ã¾ã™";
 const char * Confirmation_Str[] = { Confirmation_EN,Confirmation_TW,Confirmation_JC,Confirmation_JP };
 
 const char ConfirmCancel_EN[] = "Cancel%Comfirm";
-const char ConfirmCancel_TW[] = " ¨ú®ø % ½T»{ ";
-const char ConfirmCancel_JC[] = " È¡Ïû % È·ÈÏ " ;
-const char ConfirmCancel_JP[] = " ƒLƒƒƒ“ƒZƒ‹ % ‚Í‚¢ ";
+const char ConfirmCancel_TW[] = " å–æ¶ˆ % ç¢ºèª ";
+const char ConfirmCancel_JC[] = " å–æ¶ˆ % ç¡®è®¤ " ;
+const char ConfirmCancel_JP[] = " ã‚­ãƒ£ãƒ³ã‚»ãƒ« % ã¯ã„ ";
 const char * ConfirmCancel_Str[] = { ConfirmCancel_EN,ConfirmCancel_TW,ConfirmCancel_JC,ConfirmCancel_JP };
 
 const char RecordConfirm_EN[] = "Start Record?";
-const char RecordConfirm_TW[] = "¶}©l°O¿ı¦±½u? ";
-const char RecordConfirm_JC[] = "¿ªÊ¼¼ÇÂ¼ÇúÏß?" ;
-const char RecordConfirm_JP[] = "‹ÈüƒŒƒR[ƒh?";
+const char RecordConfirm_TW[] = "é–‹å§‹è¨˜éŒ„æ›²ç·š? ";
+const char RecordConfirm_JC[] = "å¼€å§‹è®°å½•æ›²çº¿?" ;
+const char RecordConfirm_JP[] = "æ›²ç·šãƒ¬ã‚³ãƒ¼ãƒ‰?";
 const char * RecordConfirm_Str[] = { RecordConfirm_EN,RecordConfirm_TW,RecordConfirm_JC,RecordConfirm_JP };
 
 const char QCMTKConfirm_EN[] = "QC/MTK Trigger?";
-const char QCMTKConfirm_TW[] = "QC/MTKÄ²µo? ";
-const char QCMTKConfirm_JC[] = "QC/MTK´¥·¢?" ;
-const char QCMTKConfirm_JP[] = "QC/MTKƒgƒŠƒK[?";
+const char QCMTKConfirm_TW[] = "QC/MTKè§¸ç™¼?";
+const char QCMTKConfirm_JC[] = "QC/MTKè§¦å‘?" ;
+const char QCMTKConfirm_JP[] = "QC/MTKãƒˆãƒªã‚¬ãƒ¼?";
 const char * QCMTKConfirm_Str[] = { QCMTKConfirm_EN,QCMTKConfirm_TW,QCMTKConfirm_JC,QCMTKConfirm_JP };
 
 const char Saved_EN[] = "Saved";
-const char Saved_TW[] = "¤w«O¦s";
-const char Saved_JC[] = "ÒÑ±£´æ" ;
-const char Saved_JP[] = "•Û‘¶";
+const char Saved_TW[] = "å·²ä¿å­˜";
+const char Saved_JC[] = "å·²ä¿å­˜";
+const char Saved_JP[] = "ä¿å­˜";
 const char * Saved_Str[] = { Saved_EN,Saved_TW,Saved_JC,Saved_JP };
 
 const char Settings_EN[]="Unmount Disk%Clock Settings%Buzzer Settings%Language%System Scan%System Info";
-const char Settings_TW[]="¼u¥XSD¥d%®É¶¡³]¸m%Äµ³ø³]¸m%Language%¨t²Î±½´y%¨t²Î¸ê°T";
-const char Settings_JC[] = "°²È«µ¯³ö´æ´¢¿¨%Ê±¼äÉèÖÃ%·äÃùÆ÷ÉèÖÃ%Language%ÏµÍ³É¨Ãè%ÏµÍ³ĞÅÏ¢" ;
-const char Settings_JP[] ="ƒCƒWƒFƒNƒgƒƒ‚ƒŠ%‚Ìİ’è%Œx‚Ìİ’è%Language%ƒVƒXƒeƒ€ƒXƒLƒƒƒ“%ƒVƒXƒeƒ€î•ñ";
+const char Settings_TW[]="å½ˆå‡ºSDå¡%æ™‚é–“è¨­ç½®%è­¦å ±è¨­ç½®%Language%ç³»çµ±æƒæ%ç³»çµ±è³‡è¨Š";
+const char Settings_JC[] = "å®‰å…¨å¼¹å‡ºå­˜å‚¨å¡%æ—¶é—´è®¾ç½®%èœ‚é¸£å™¨è®¾ç½®%Language%ç³»ç»Ÿæ‰«æ%ç³»ç»Ÿä¿¡æ¯" ;
+const char Settings_JP[] ="ã‚¤ã‚¸ã‚§ã‚¯ãƒˆãƒ¡ãƒ¢ãƒª%æ™‚åˆ»ã®è¨­å®š%è­¦å‘Šã®è¨­å®š%Language%ã‚·ã‚¹ãƒ†ãƒ ã‚¹ã‚­ãƒ£ãƒ³%ã‚·ã‚¹ãƒ†ãƒ æƒ…å ±";
 const char * Settings_Str[] = { Settings_EN,Settings_TW,Settings_JC,Settings_JP };
 
 const char SetYear_EN[]="Set year";
-const char SetYear_TW[]="³]¸m¦~¥÷";
-const char SetYear_JC[] = "ÉèÖÃÄê·İ" ;
-const char SetYear_JP[] ="”N‚ğİ’è";
+const char SetYear_TW[]="è¨­ç½®å¹´ä»½";
+const char SetYear_JC[] = "è®¾ç½®å¹´ä»½" ;
+const char SetYear_JP[] ="å¹´ã‚’è¨­å®š";
 const char * SetYear_Str[] = { SetYear_EN,SetYear_TW,SetYear_JC,SetYear_JP };
 
 const char SetYearUnit_EN[] ="Year";
-const char SetYearUnit_TW[] ="¦~";
-const char SetYearUnit_JC[] ="Äê" ;
-const char SetYearUnit_JP[] ="”N";
+const char SetYearUnit_TW[] ="å¹´";
+const char SetYearUnit_JC[] ="å¹´" ;
+const char SetYearUnit_JP[] ="å¹´";
 const char * SetYearUnit_Str[] = { SetYearUnit_EN,SetYearUnit_TW,SetYearUnit_JC,SetYearUnit_JP };
 
 const char SetMonth_EN[]="Set month";
-const char SetMonth_TW[]="³]¸m¤ë¥÷";
-const char SetMonth_JC[] = "ÉèÖÃÔÂ·İ" ;
-const char SetMonth_JP[] ="Œ‚Ìİ’è";
-const char * SetYear_Str[] = { SetMonth_EN,SetMonth_TW,SetMonth_JC,SetMonth_JP };
+const char SetMonth_TW[]="è¨­ç½®æœˆä»½";
+const char SetMonth_JC[] = "è®¾ç½®æœˆä»½" ;
+const char SetMonth_JP[] ="æœˆã®è¨­å®š";
+const char * SetMonth_Str[] = { SetMonth_EN,SetMonth_TW,SetMonth_JC,SetMonth_JP };
 
 const char SetMonthUnit_EN[] ="month";
-const char SetMonthUnit_TW[] ="¤ë";
-const char SetMonthUnit_JC[] ="ÔÂ" ;
-const char SetMonthUnit_JP[] ="Œ";
+const char SetMonthUnit_TW[] ="æœˆ";
+const char SetMonthUnit_JC[] ="æœˆ" ;
+const char SetMonthUnit_JP[] ="æœˆ";
 const char * SetMonthUnit_Str[] = { SetMonthUnit_EN,SetMonthUnit_TW,SetMonthUnit_JC,SetMonthUnit_JP };
 	
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
@@ -98,7 +100,5 @@ const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {36,45,84,45},
 {8,45,84,45}
 };
-
-
 
 

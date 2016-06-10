@@ -1,5 +1,5 @@
-//File Name   £ºStartup.c
-//Description £ºSystem startup  
+//File Name   Startup.c
+//Description System startup  
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -185,7 +185,7 @@ xTaskHandle Logo_Init()
 {
 	xTaskHandle logoHandle;
 	xTaskCreate(LogoHandler, "Logo handler",
-		64, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &logoHandle);
+		56, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &logoHandle);
 	InitAnimatePosHandle = xQueueCreate(1, sizeof(u8));
 	return(logoHandle);
 }
@@ -259,7 +259,7 @@ void SystemStartup(void *pvParameters)
 void SystemStart()
 {
 	xTaskCreate(SystemStartup, "SystemStartup",
-		256, NULL, SYSTEM_STARTUP_PRIORITY, NULL);
+		128, NULL, SYSTEM_STARTUP_PRIORITY, NULL);
 	vTaskStartScheduler();
 }
 

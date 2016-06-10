@@ -7,13 +7,13 @@
 
 typedef struct    
 {
- s8 Index[2];    
+ s8 Index[3];    
  s8 Msk[24];    
 }GB2312Font;
 
 typedef struct    
 {
- s8 Index[2];    
+ s8 Index[3];    
  s8 Msk[32];    
 }GB2312Font16;
 
