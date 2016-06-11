@@ -1,10 +1,9 @@
-//File Name   £ºUI_Confirmation.c
+//File Name    UI_Confirmation.c
 //Description : Confirmation UI
 
 #include <string.h>
 #include <stdio.h>
 
-#include "SSD1306.h"
 #include "UI_Button.h" 
 #include "UI_Dialogue.h" 
 #include "MultiLanguageStrings.h" 
@@ -13,6 +12,9 @@
 #include "task.h"
 #include "queue.h"
 
+#include "SSD1306.h"
+#include "Keys.h"
+
 #include "Settings.h"
 
 #include "UI_Confirmation.h" 
@@ -20,6 +22,7 @@
 bool GetConfirmation(char subString0[],char subString1[])
 {
  u8 i;
+ Key_Message_Struct keyMessage;
  UI_Button_Param_Struct buttonParams;
  buttonParams.ButtonString=(char *)ConfirmCancel_Str[CurrentSettings->Language];
  buttonParams.ButtonNum=2;
@@ -37,6 +40,7 @@ bool GetConfirmation(char subString0[],char subString1[])
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
  OLED_Clear();
  xSemaphoreGive(OLEDRelatedMutex);
+ xQueueReceive(Key_Message, & keyMessage, portMAX_DELAY );
  if(i) return true;
  else return false;
 }

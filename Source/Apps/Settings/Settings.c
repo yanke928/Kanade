@@ -34,6 +34,12 @@ void SetLanguage(void);
 
 void TimeSettings(void);
 
+/**
+  * @brief  Settings 
+
+  * @param  None
+
+  */
 void Settings()
 {
  UI_Menu_Param_Struct menuParams;
@@ -57,6 +63,12 @@ void Settings()
  }
 }
 
+/**
+  * @brief  Save settings 
+
+  * @param  None
+
+  */
 void SaveSettings()
 {
   int i=sizeof(Settings_Struct);
@@ -78,6 +90,12 @@ void SaveSettings()
 	FLASH_Lock();
 }
 
+/**
+  * @brief  Set language
+
+  * @param  None
+
+  */
 void SetLanguage()
 {
  UI_Menu_Param_Struct menuParams;
@@ -110,6 +128,12 @@ bool CheckSettings()
  return true;
 }
 
+/**
+  * @brief  Init Settings(check if settings data is OK)
+
+  * @param  None
+
+  */
 void Settings_Init()
 {
  if(!CheckSettings())
@@ -124,6 +148,12 @@ void Settings_Init()
  }
 }
 
+/**
+  * @brief  Get a param from user to set the time
+
+  * @param  None
+
+  */
 u16 GetTimeParam(char *askString,char *unitString,u16 min,u16 max,u16 defaultValue)
 {
  u16 tmp; 
@@ -142,6 +172,12 @@ u16 GetTimeParam(char *askString,char *unitString,u16 min,u16 max,u16 defaultVal
  return tmp;
 }
 
+/**
+  * @brief  Time settings
+
+  * @param  None
+
+  */
 void TimeSettings()
 {
  struct Data_Time newTime;

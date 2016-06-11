@@ -1,5 +1,5 @@
-//File Name   £ºUSBMeterUI.c
-//Description £ºMain UI
+//File Name   USBMeterUI.c
+//Description Main UI
 
 #include "stm32f10x.h"
 #include "stm32f10x_it.h"
@@ -21,6 +21,7 @@
 #include "Keys.h"
 
 #include "Settings.h"
+#include "FastCharge_Trigger.h"
 
 #include "USBMeter.h"
 
@@ -55,9 +56,9 @@ void USBMeter(void *pvParameters)
 		 }
 		 switch(keyMessage.AdvancedKeyEvent)
 		 {
-		   case LeftContinous:GetConfirmation((char *)QCMTKConfirm_Str[CurrentSettings->Language],"");break;
+		   case LeftContinous:if (GetConfirmation((char *)QCMTKConfirm_Str[CurrentSettings->Language],""))
+				 		 FastChargeTriggerUI(); ;break;
 		 }
-		 ClearKeyEvent(keyMessage);
 		}
 	}
 }

@@ -115,7 +115,6 @@ void UI_Button_Handler(void *pvParameters)
 			 }
 			 OLED_ShowAnyString(buttonParams->Positions[selection].x, buttonParams->Positions[selection].y, 
 			 buttons[selection], NotOnSelect, 12);
-			 vTaskDelay(20/portTICK_RATE_MS);
 			 ResetUpdateOLEDJustNow();
 		   xSemaphoreGive(OLEDRelatedMutex);
 			 xQueueSend(UI_ButtonMsg,&selection, 100/portTICK_RATE_MS);
