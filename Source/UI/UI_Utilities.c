@@ -1,4 +1,4 @@
-//File Name   £ºUI_Utilities.c
+//File Name     UI_Utilities.c
 //Description : UI Utilities
 
 #include <string.h>
@@ -34,8 +34,16 @@ u8 GetCentralPosition(u8 startPos, u8 endPos, u8 stringLength)
   */
 u8 GetStringLength(char string[])
 {
-	u8 length;
-	for (length = 0; string[length] != 0; length++);
+  u8 length=0;
+	for (; *string!= 0; string++)
+	{
+	 if(*string>127)
+	 {
+	  string+=2;
+		length++;
+	 }
+	 length++;
+ }
 	return(length);
 }
 

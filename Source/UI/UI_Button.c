@@ -1,4 +1,4 @@
-//File Name   £ºUI_Button.c
+//File Name     UI_Button.c
 //Description : UI button
 
 #include <string.h>
@@ -11,8 +11,10 @@
 #include "FreeRTOS_CLI.h"
 
 #include "SSD1306.h"
-#include "UI_Button.h" 
 #include "Keys.h" 
+
+#include "UI_Button.h" 
+#include "UI_Utilities.h" 
 
 #define UI_BUTTON_HANDLER_PRIORITY tskIDLE_PRIORITY+2
 
@@ -39,11 +41,11 @@ void UI_Button_Handler(void *pvParameters)
  Key_Message_Struct keyMessage;
  UI_Button_Param_Struct* buttonParams=(UI_Button_Param_Struct*)pvParameters;
  int selection = buttonParams->DefaultValue;
- u8 i;
- u8 p = 1;
- u8 stringsAddr[4];//Relative individual string addr in buttonString
- unsigned char lengths[4];//Lengths of every seperate string
- char buttons[4][16];//Cache contains the button strings
+ u16 i;
+ u16 p = 1;
+ u16 stringsAddr[4];//Relative individual string addr in buttonString
+ u16 lengths[4];//Lengths of every seperate string
+ char buttons[4][32];//Cache contains the button strings
  stringsAddr[0] = 0;//Set addr[0] to the first byte of buttonString
 	
 	/*Find the addrs for every string in buttonString*/
@@ -65,10 +67,12 @@ void UI_Button_Handler(void *pvParameters)
 		{
 			buttons[i][p] = buttonParams->ButtonString[stringsAddr[i] + p];
 		}
-		lengths[i] = p;
 		buttons[i][p] = 0;
 	}
-	
+	for (i = 0; i < buttonParams->ButtonNum; i++)
+	{
+	 lengths[i]=GetStringLength(buttons[i]);
+	}
 	/*Print the strings with respective positions to screen*/
 	xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
 	SetUpdateOLEDJustNow();

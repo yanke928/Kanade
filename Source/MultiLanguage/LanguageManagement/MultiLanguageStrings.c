@@ -75,7 +75,7 @@ const char SetYear_JC[] = "设置年份" ;
 const char SetYear_JP[] ="年を設定";
 const char * SetYear_Str[] = { SetYear_EN,SetYear_TW,SetYear_JC,SetYear_JP };
 
-const char SetYearUnit_EN[] ="Year";
+const char SetYearUnit_EN[] ="";
 const char SetYearUnit_TW[] ="年";
 const char SetYearUnit_JC[] ="年" ;
 const char SetYearUnit_JP[] ="年";
@@ -87,7 +87,7 @@ const char SetMonth_JC[] = "设置月份" ;
 const char SetMonth_JP[] ="月の設定";
 const char * SetMonth_Str[] = { SetMonth_EN,SetMonth_TW,SetMonth_JC,SetMonth_JP };
 
-const char SetMonthUnit_EN[] ="month";
+const char SetMonthUnit_EN[] ="";
 const char SetMonthUnit_TW[] ="月";
 const char SetMonthUnit_JC[] ="月" ;
 const char SetMonthUnit_JP[] ="月";

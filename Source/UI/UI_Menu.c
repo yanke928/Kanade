@@ -36,7 +36,7 @@ void UI_Menu_Handler(void *pvParameters)
 	bool allContentChanged;
 	bool relativePosChanged;
   Key_Message_Struct keyMessage;
-	char itemStrings[10][20];
+	char itemStrings[10][32];
 	u8 stringsAddr[10];
 	u8 selection;
 	u8 displayedItemNum=(menuParams->ItemNum>=4?4:menuParams->ItemNum);

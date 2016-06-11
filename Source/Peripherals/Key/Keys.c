@@ -316,7 +316,7 @@ void Key_Init(void)
  Keys_GPIO_Init();
  Key_Message=xQueueCreate(1, sizeof(Key_Message_Struct));
  xTaskCreate(KeyEventHandler,"Key Event Handler",
-	32,NULL,KEY_EVENT_HANDLER_PRIORITY,NULL); 
+	40,NULL,KEY_EVENT_HANDLER_PRIORITY,NULL); 
 }
 
 /**

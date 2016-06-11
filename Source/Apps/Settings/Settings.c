@@ -1,5 +1,7 @@
-//File Name   ��Settings.c
-//Description ��Settings UI
+//File Name   Settings.c
+//Description Settings UI
+
+#pragma diag_suppress 870
 
 #include "stm32f10x.h"
 #include <stdio.h>
@@ -80,7 +82,7 @@ void SetLanguage()
 {
  UI_Menu_Param_Struct menuParams;
  u8 selection;
- menuParams.ItemString="English%Japanese%Japanese(CN)%Taiwanese";
+ menuParams.ItemString="English%日本語%日本语(华式)%台灣語";
  menuParams.DefaultPos=0;
  menuParams.ItemNum=4;
  menuParams.FastSpeed=5;
@@ -122,22 +124,32 @@ void Settings_Init()
  }
 }
 
-void TimeSettings()
+u16 GetTimeParam(char *askString,char *unitString,u16 min,u16 max,u16 defaultValue)
 {
- u16 tmp;
- struct Data_Time newTime;
+ u16 tmp; 
  UI_Adjust_Param_Struct timeAdjustParams;
- timeAdjustParams.AskString=(char*)SetYear_Str[CurrentSettings->Language];
- timeAdjustParams.Min=2016;
- timeAdjustParams.Max=2099;
+ timeAdjustParams.AskString=askString;
+ timeAdjustParams.Min=min;
+ timeAdjustParams.Max=max;
  timeAdjustParams.Step=1;
- timeAdjustParams.DefaultValue=2016;
- timeAdjustParams.UnitString=(char*)SetYearUnit_Str[CurrentSettings->Language];
+ timeAdjustParams.DefaultValue=defaultValue;
+ timeAdjustParams.UnitString=unitString;
  timeAdjustParams.Pos_y=33;
  timeAdjustParams.FastSpeed=20;
  UI_Adjust_Init(&timeAdjustParams);
  xQueueReceive(UI_AdjustMsg, & tmp, portMAX_DELAY );
- newTime.w_year=tmp;
- 
+ OLED_Clear();
+ return tmp;
+}
+
+void TimeSettings()
+{
+ struct Data_Time newTime;
+ newTime.w_year=GetTimeParam((char*)SetYear_Str[CurrentSettings->Language],
+	 (char*)SetYearUnit_Str[CurrentSettings->Language],
+	 2016,2099,2016);
+ newTime.w_month=GetTimeParam((char*)SetMonth_Str[CurrentSettings->Language],
+	 (char*)SetMonthUnit_Str[CurrentSettings->Language],
+	 1,12,1);
 }
 

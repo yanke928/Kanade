@@ -19,6 +19,8 @@ extern const char * Saved_Str[LanguageNum] ;
 extern const char * Settings_Str[LanguageNum];
 extern const char * SetYear_Str[LanguageNum];
 extern const char * SetYearUnit_Str[LanguageNum];
+extern const char * SetMonth_Str[LanguageNum];
+extern const char * SetMonthUnit_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 

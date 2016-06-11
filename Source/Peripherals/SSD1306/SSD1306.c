@@ -1,5 +1,5 @@
-//File Name   ：SSD1306.c
-//Description ：SSD1306 driver and basic GUI functions
+//File Name   SSD1306.c
+//Description SSD1306 driver and basic GUI functions
 
 #include "SSD1306.h"
 #include "stdlib.h"
@@ -13,9 +13,7 @@
 #include "queue.h"
 #include "semphr.h"  
 
-#include "ChineseSimplified.h"
-#include "ChineseTraditional.h"
-#include "Japanese.h"
+#include "Public_FontTab.h"
 
 #include "Settings.h"
 
@@ -63,19 +61,19 @@ volatile bool UpdateOLEDJustNow_Backup= false;
 unsigned char SPI2_ReadWriteByte(unsigned char TxData)
 {
 	unsigned int retry = 0;
-	while ((SPI2->SR & 1 << 1) == 0)//等待发送区空	
+	while ((SPI2->SR & 1 << 1) == 0)
 	{
 		retry++;
 		if (retry > 2000)return 0;
 	}
-	SPI2->DR = TxData;	 	  //发送一个byte 
+	SPI2->DR = TxData;	 	 
 	retry = 0;
-	while ((SPI2->SR & 1 << 0) == 0) //等待接收完一个byte  
+	while ((SPI2->SR & 1 << 0) == 0)
 	{
 		retry++;
 		if (retry > 2000)return 0;
 	}
-	return SPI2->DR;          //返回收到的数据				    
+	return SPI2->DR;         	    
 }
 
 
@@ -142,7 +140,7 @@ void OLED_Display_On(void)
   */
 void OLED_Display_Off(void)
 {
-	OLED_WR_Byte(0X8D, OLED_CMD);  //SET DCDC命令
+	OLED_WR_Byte(0X8D, OLED_CMD);  //SET DCDC
 	OLED_WR_Byte(0X10, OLED_CMD);  //DCDC OFF
 	OLED_WR_Byte(0XAE, OLED_CMD);  //DISPLAY OFF
 }
@@ -446,27 +444,17 @@ void OLED_ShowNotASCChar(unsigned char  x, unsigned char  y, char *chr, unsigned
  u16 addr;
  unsigned char  temp, t, t1, m;
  unsigned char  y0 = y;
- switch(CurrentSettings->Language)
- {
-	 case ChineseTraditional:addr=GetChineseTraditionalAddr((s8 *)chr,size);break;
-	 case ChineseSimplified:addr=GetChineseSimplifiedAddr((s8 *)chr,size);break;
-	 case Japanese:addr=GetJapaneseAddr((s8 *)chr,size);break;
- }
+ addr=GetUTF8IndexInFontTab((s8 *)chr,size);
  if (size == 12) m = 24;
  else if (size==16) m=32;
  else m=0;
   temp=255;
 	for (t = 0; t < m; t++)
 	{
-		switch(CurrentSettings->Language)
-		{
-		  case ChineseTraditional:if(size==12) temp=ChineseTraditionalTab12[addr].Msk[t];else temp=ChineseTraditionalTab16[addr].Msk[t];break;
-			case ChineseSimplified:if(size==12) temp=ChineseSimplifiedTab12[addr].Msk[t];else temp=ChineseSimplifiedTab16[addr].Msk[t];break;
-			case Japanese:if(size==12) temp=JapaneseTab12[addr].Msk[t];else temp=JapaneseTab16[addr].Msk[t];break;
-		}
-//		if (size == 12)temp = oled_asc2_1206[chr][t]; //1206
-//		else if (size == 16)temp = oled_asc2_1608[chr][t];//1608
-//		else  temp = oled_asc2_0806[chr][t];//0806
+		if(size==12)
+		temp=UTF8FontTab12[addr].Msk[t];
+		else if(size==16) temp=UTF8FontTab16[addr].Msk[t];
+		
 		for (t1 = 0; t1 < 8; t1++)
 		{
 			if (temp & 0x80)OLED_DrawPoint(x, y, mode);
@@ -499,19 +487,20 @@ void OLED_ShowNotASCChar(unsigned char  x, unsigned char  y, char *chr, unsigned
 void OLED_ShowAnyString(unsigned char  x, unsigned char  y, const char  *p, bool OnSelection, unsigned char size)
 {
 #define MAX_CHAR_POSX 127
-#define MAX_CHAR_POSY 63         
+#define MAX_CHAR_POSY 63  
+	
 	while (*p != '\0')
 	{
 		if (x > MAX_CHAR_POSX) { x = 0; y += 16; }
 		if (y > MAX_CHAR_POSY) { y = x = 0; OLED_Clear(); }
-		if (*p>128) 
+		if (*p>127) 
 		{
 			OLED_ShowNotASCChar(x, y,(char *) p, size, (!OnSelection));
 			if (size == 16)
 				x += 16;
 			else
 			x += 12;
-			p++;p++;
+			p+=3;
 		}
 		else
 		{
