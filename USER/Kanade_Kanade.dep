@@ -1,10 +1,10 @@
 Dependencies for Project 'Kanade', Target 'Kanade': (DO NOT MODIFY !)
 F (..\CMSIS\startup\startup_stm32f10x_md.s)(0x575189C8)(--cpu Cortex-M3 -g --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include--list ..\listing\startup_stm32f10x_md.lst --xref -o ..\output\startup_stm32f10x_md.o --depend ..\output\startup_stm32f10x_md.d)
-F (..\Source\Startup\Startup.c)(0x575A90F3)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\startup.o --omf_browse ..\output\startup.crf --depend ..\output\startup.d)
+F (..\Source\Startup\Startup.c)(0x575A97A7)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\startup.o --omf_browse ..\output\startup.crf --depend ..\output\startup.d)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -14,7 +14,7 @@ I (..\Source\FreeRTOS\Source\include\task.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\FreeRTOS_CLI\FreeRTOS_Cli.h)(0x575192F5)
-I (..\Source\Peripherals\RTC\rtc.h)(0x574D29DA)
+I (..\Source\Peripherals\RTC\rtc.h)(0x575BD668)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
 I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
 I (..\CMSIS\system_stm32f10x.h)(0x571EF97C)
@@ -36,7 +36,7 @@ I (..\Source\Protocols\EBD_Protocol\EBProtocol.h)(0x575149AF)
 I (..\Source\Apps\USBMeter\USBMeter.h)(0x575157E7)
 I (..\Source\Apps\BadApplePlayer\BadApplePlayer.h)(0x5752C517)
 I (..\Source\Apps\CPU_Usage\CPU_Usage.h)(0x5753CE41)
-I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575A7479)
+I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575BDA11)
 I (..\FWlib\USB\inc\USBCDC.h)(0x5752759C)
 I (..\FWlib\USB\inc\platform.h)(0x570A2F88)
 I (..\Source\Peripherals\General_Data_Type.h)(0x572706AA)
@@ -194,7 +194,7 @@ I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -204,7 +204,7 @@ I (..\Source\FreeRTOS\Source\include\task.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\Startup\Startup.h)(0x57516E02)
-F (..\Source\STM32\stm32f10x_it.c)(0x57516E7C)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\stm32f10x_it.o --omf_browse ..\output\stm32f10x_it.crf --depend ..\output\stm32f10x_it.d)
+F (..\Source\STM32\stm32f10x_it.c)(0x575A9310)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\stm32f10x_it.o --omf_browse ..\output\stm32f10x_it.crf --depend ..\output\stm32f10x_it.d)
 I (..\Source\STM32\stm32f10x_it.h)(0x49D96964)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
 I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
@@ -223,7 +223,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -237,7 +237,7 @@ F (..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3\port.c)(0x573F3A17)(-c --cpu 
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -250,7 +250,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -263,7 +263,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -276,7 +276,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -291,7 +291,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -313,7 +313,7 @@ I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -333,7 +333,7 @@ F (..\Source\Peripherals\LED\LED.c)(0x574D737A)(-c --cpu Cortex-M3 -g -O0 --apcs
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -351,7 +351,7 @@ I (..\FWlib\inc\stm32f10x_gpio.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
-F (..\Source\Peripherals\SSD1306\SSD1306.c)(0x57582720)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ssd1306.o --omf_browse ..\output\ssd1306.crf --depend ..\output\ssd1306.d)
+F (..\Source\Peripherals\SSD1306\SSD1306.c)(0x575BA94C)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ssd1306.o --omf_browse ..\output\ssd1306.crf --depend ..\output\ssd1306.d)
 I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
 I (..\FWlib\inc\misc.h)(0x4BBD6D10)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
@@ -365,7 +365,7 @@ I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -379,13 +379,11 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x52FDD27E)
 I (..\Source\Peripherals\SSD1306\SSD1306Font.h)(0x5757E951)
 I (..\FWlib\inc\stm32f10x_tim.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_spi.h)(0x4BBD6D12)
-I (..\Source\MultiLanguage\ChineseSimplified\ChineseSimplified.h)(0x575A8AB5)
-I (..\Source\MultiLanguage\ChineseTraditional\ChineseTraditional.h)(0x575A8AB5)
-I (..\Source\MultiLanguage\Japanese\Japanese.h)(0x575A8AB5)
+I (..\Source\MultiLanguage\LanguageManagement\Public_FontTab.h)(0x575BA055)
 I (..\Source\Apps\Settings\Settings.h)(0x5756DF0A)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
-F (..\Source\Peripherals\Key\Keys.c)(0x5756C94B)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\keys.o --omf_browse ..\output\keys.crf --depend ..\output\keys.d)
+F (..\Source\Peripherals\Key\Keys.c)(0x575B9687)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\keys.o --omf_browse ..\output\keys.crf --depend ..\output\keys.d)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
 I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
@@ -399,7 +397,7 @@ I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
 I (..\FWlib\inc\misc.h)(0x4BBD6D10)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -429,7 +427,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -440,7 +438,7 @@ I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
-I (..\Source\Peripherals\RTC\rtc.h)(0x574D29DA)
+I (..\Source\Peripherals\RTC\rtc.h)(0x575BD668)
 F (..\Source\Peripherals\Temperature_Sensors\TempSensors.c)(0x57514307)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\tempsensors.o --omf_browse ..\output\tempsensors.crf --depend ..\output\tempsensors.d)
 I (..\FWlib\inc\stm32f10x_adc.h)(0x4BBD6D10)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
@@ -459,7 +457,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\Startup\startup.h)(0x57516E02)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -495,7 +493,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 I (..\Source\Startup\Startup.h)(0x57516E02)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -527,7 +525,7 @@ I (..\Source\fatfs\include\ffconf.h)(0x57540002)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -539,7 +537,7 @@ I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\Startup\startup.h)(0x57516E02)
 I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
-I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575A7479)
+I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575BDA11)
 I (..\Source\Apps\Settings\Settings.h)(0x5756DF0A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 F (..\FWlib\sdcard\SDCardff.c)(0x5755471E)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\sdcardff.o --omf_browse ..\output\sdcardff.crf --depend ..\output\sdcardff.d)
@@ -564,7 +562,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -589,7 +587,7 @@ I (..\Source\Peripherals\Buzzer\Buzzer.h)(0x57387D21)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -612,7 +610,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -627,10 +625,10 @@ I (..\Source\Peripherals\Temperature_Sensors\TempSensors.h)(0x57514226)
 I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
 I (..\FWlib\inc\misc.h)(0x4BBD6D10)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
-I (..\Source\Peripherals\RTC\RTC.h)(0x574D29DA)
+I (..\Source\Peripherals\RTC\RTC.h)(0x575BD668)
 I (..\Source\Apps\Virtual_Clock\VirtualRTC.h)(0x57555B43)
 I (..\Source\UI\UI_Confirmation.h)(0x5756C570)
-I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575A7479)
+I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575BDA11)
 I (..\Source\Peripherals\Key\Keys.h)(0x57567134)
 I (..\Source\Apps\Settings\Settings.h)(0x5756DF0A)
 I (..\Source\Apps\USBMeter\USBMeter.h)(0x575157E7)
@@ -649,7 +647,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 I (..\FWlib\inc\stm32f10x_rtc.h)(0x4BBD6D12)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -670,7 +668,7 @@ I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -698,7 +696,7 @@ I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -723,7 +721,7 @@ F (..\Source\Apps\CPU_Usage\CPU_Usage.c)(0x57569A63)(-c --cpu Cortex-M3 -g -O0 -
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -745,7 +743,7 @@ I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
-F (..\Source\Apps\Settings\Settings.c)(0x575A7486)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\settings.o --omf_browse ..\output\settings.crf --depend ..\output\settings.d)
+F (..\Source\Apps\Settings\Settings.c)(0x575BDAEF)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\settings.o --omf_browse ..\output\settings.crf --depend ..\output\settings.d)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
 I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
@@ -760,7 +758,7 @@ I (..\FWlib\inc\stm32f10x_rtc.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_flash.h)(0x4BBD6D12)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -773,17 +771,17 @@ I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
 I (..\FWlib\inc\misc.h)(0x4BBD6D10)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
-I (..\Source\Peripherals\RTC\RTC.h)(0x574D29DA)
+I (..\Source\Peripherals\RTC\RTC.h)(0x575BD668)
 I (..\Source\UI\UI_Menu.h)(0x5756C5E2)
-I (..\Source\UI\UI_Dialogue.h)(0x5756D2D8)
+I (..\Source\UI\UI_Dialogue.h)(0x575BD796)
 I (..\Source\UI\UI_Adjust.h)(0x5757F563)
-I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575A7479)
+I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575BDA11)
 I (..\Source\Apps\Settings\Settings.h)(0x5756DF0A)
-F (..\Source\Apps\ExceptionHandle\ExceptionHandle.c)(0x575A8F16)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\exceptionhandle.o --omf_browse ..\output\exceptionhandle.crf --depend ..\output\exceptionhandle.d)
+F (..\Source\Apps\ExceptionHandle\ExceptionHandle.c)(0x575A975E)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\exceptionhandle.o --omf_browse ..\output\exceptionhandle.crf --depend ..\output\exceptionhandle.d)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -792,7 +790,7 @@ I (..\Source\FreeRTOS\Source\include\mpu_wrappers.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\task.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
-I (..\Source\UI\UI_Dialogue.h)(0x5756D2D8)
+I (..\Source\UI\UI_Dialogue.h)(0x575BD796)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
 I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
 I (..\CMSIS\system_stm32f10x.h)(0x571EF97C)
@@ -800,11 +798,12 @@ I (..\Source\STM32\stm32f10x_conf.h)(0x570929CE)
 I (..\FWlib\inc\stm32f10x_gpio.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\UI\UI_Utilities.h)(0x5756BDB6)
 I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
 I (..\FWlib\inc\misc.h)(0x4BBD6D10)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
+I (..\Source\Peripherals\Key\Keys.h)(0x57567134)
 I (..\Source\Apps\ExceptionHandle\ExceptionHandle.h)(0x575A8A24)
 F (..\Source\Protocols\EBD_Protocol\EBProtocol.c)(0x5756E025)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ebprotocol.o --omf_browse ..\output\ebprotocol.crf --depend ..\output\ebprotocol.d)
 I (..\FWlib\inc\stm32f10x_gpio.h)(0x4BBD6D12)
@@ -824,7 +823,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 I (..\Source\Protocols\EBD_Protocol\EBProtocol.h)(0x575149AF)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -835,7 +834,7 @@ I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
-I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575A7479)
+I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575BDA11)
 I (..\Source\Apps\Settings\Settings.h)(0x5756DF0A)
 I (..\Source\Startup\Startup.h)(0x57516E02)
 F (..\FWlib\usb\src\hw_config.c)(0x575197C7)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\hw_config.o --omf_browse ..\output\hw_config.crf --depend ..\output\hw_config.d)
@@ -1010,7 +1009,7 @@ I (..\FWlib\USB\inc\usb_istr.h)(0x4E16A8E6)
 I (..\Source\Startup\startup.h)(0x57516E02)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -1156,15 +1155,15 @@ I (..\FWlib\sdcard\sdcardff.h)(0x57540002)
 I (..\Source\fatfs\include\ff.h)(0x57540002)
 I (..\Source\fatfs\include\ffconf.h)(0x57540002)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
-I (..\Source\Peripherals\RTC\RTC.h)(0x574D29DA)
+I (..\Source\Peripherals\RTC\RTC.h)(0x575BD668)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 F (..\Source\fatfs\source\ff.c)(0x57540002)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ff.o --omf_browse ..\output\ff.crf --depend ..\output\ff.d)
 I (..\Source\fatfs\include\ff.h)(0x57540002)
 I (..\Source\fatfs\include\integer.h)(0x57540002)
 I (..\Source\fatfs\include\ffconf.h)(0x57540002)
 I (..\Source\fatfs\include\diskio.h)(0x57540002)
-F (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.c)(0x575A7A86)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\multilanguagestrings.o --omf_browse ..\output\multilanguagestrings.crf --depend ..\output\multilanguagestrings.d)
-I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575A7479)
+F (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.c)(0x575BDACF)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\multilanguagestrings.o --omf_browse ..\output\multilanguagestrings.crf --depend ..\output\multilanguagestrings.d)
+I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575BDA11)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
 I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
@@ -1178,7 +1177,7 @@ I (..\FWlib\inc\misc.h)(0x4BBD6D10)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -1188,8 +1187,8 @@ I (..\Source\FreeRTOS\Source\include\task.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
-F (..\Source\MultiLanguage\Japanese\Japanese.c)(0x575A7F99)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\japanese.o --omf_browse ..\output\japanese.crf --depend ..\output\japanese.d)
-I (..\Source\MultiLanguage\Japanese\Japanese.h)(0x575A8AB5)
+F (..\Source\MultiLanguage\LanguageManagement\Public_FontTab.c)(0x575BDB44)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\public_fonttab.o --omf_browse ..\output\public_fonttab.crf --depend ..\output\public_fonttab.d)
+I (..\Source\MultiLanguage\LanguageManagement\Public_FontTab.h)(0x575BA055)
 I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
 I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
@@ -1198,33 +1197,13 @@ I (..\Source\STM32\stm32f10x_conf.h)(0x570929CE)
 I (..\FWlib\inc\stm32f10x_gpio.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
-F (..\Source\MultiLanguage\ChineseSimplified\ChineseSimplified.c)(0x575A7F99)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\chinesesimplified.o --omf_browse ..\output\chinesesimplified.crf --depend ..\output\chinesesimplified.d)
-I (..\Source\MultiLanguage\ChineseSimplified\ChineseSimplified.h)(0x575A8AB5)
-I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
-I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
-I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\CMSIS\system_stm32f10x.h)(0x571EF97C)
-I (..\Source\STM32\stm32f10x_conf.h)(0x570929CE)
-I (..\FWlib\inc\stm32f10x_gpio.h)(0x4BBD6D12)
-I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
-I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
-F (..\Source\MultiLanguage\ChineseTraditional\ChineseTraditional.c)(0x575A7F99)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\chinesetraditional.o --omf_browse ..\output\chinesetraditional.crf --depend ..\output\chinesetraditional.d)
-I (..\Source\MultiLanguage\ChineseTraditional\ChineseTraditional.h)(0x575A8AB5)
-I (..\CMSIS\stm32f10x.h)(0x574BA5FC)
-I (..\CMSIS\core_cm3.h)(0x4BBD6D10)
-I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\CMSIS\system_stm32f10x.h)(0x571EF97C)
-I (..\Source\STM32\stm32f10x_conf.h)(0x570929CE)
-I (..\FWlib\inc\stm32f10x_gpio.h)(0x4BBD6D12)
-I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
-I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
-F (..\Source\UI\UI_Button.c)(0x5757E7DC)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_button.o --omf_browse ..\output\ui_button.crf --depend ..\output\ui_button.d)
+F (..\Source\UI\UI_Button.c)(0x575BAD2A)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_button.o --omf_browse ..\output\ui_button.crf --depend ..\output\ui_button.d)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -1245,9 +1224,10 @@ I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
-I (..\Source\UI\UI_Button.h)(0x5757E7DC)
 I (..\Source\Peripherals\Key\Keys.h)(0x57567134)
-F (..\Source\UI\UI_Dialogue.c)(0x575A8E49)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_dialogue.o --omf_browse ..\output\ui_dialogue.crf --depend ..\output\ui_dialogue.d)
+I (..\Source\UI\UI_Button.h)(0x5757E7DC)
+I (..\Source\UI\UI_Utilities.h)(0x5756BDB6)
+F (..\Source\UI\UI_Dialogue.c)(0x575BD796)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_dialogue.o --omf_browse ..\output\ui_dialogue.crf --depend ..\output\ui_dialogue.d)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
@@ -1263,7 +1243,7 @@ I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -1274,7 +1254,7 @@ I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
 I (..\Source\Peripherals\Key\Keys.h)(0x57567134)
-I (..\Source\UI\UI_Dialogue.h)(0x5756D2D8)
+I (..\Source\UI\UI_Dialogue.h)(0x575BD796)
 I (..\Source\UI\UI_Utilities.h)(0x5756BDB6)
 F (..\Source\UI\UI_Confirmation.c)(0x5756E071)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_confirmation.o --omf_browse ..\output\ui_confirmation.crf --depend ..\output\ui_confirmation.d)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
@@ -1292,7 +1272,7 @@ I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -1303,11 +1283,11 @@ I (..\Source\FreeRTOS\Source\include\list.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
 I (..\Source\UI\UI_Button.h)(0x5757E7DC)
-I (..\Source\UI\UI_Dialogue.h)(0x5756D2D8)
-I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575A7479)
+I (..\Source\UI\UI_Dialogue.h)(0x575BD796)
+I (..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.h)(0x575BDA11)
 I (..\Source\Apps\Settings\Settings.h)(0x5756DF0A)
 I (..\Source\UI\UI_Confirmation.h)(0x5756C570)
-F (..\Source\UI\UI_Menu.c)(0x5757E669)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_menu.o --omf_browse ..\output\ui_menu.crf --depend ..\output\ui_menu.d)
+F (..\Source\UI\UI_Menu.c)(0x575BAA00)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_menu.o --omf_browse ..\output\ui_menu.crf --depend ..\output\ui_menu.d)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
@@ -1323,7 +1303,7 @@ I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -1336,7 +1316,7 @@ I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
 I (..\Source\Peripherals\Key\Keys.h)(0x57567134)
 I (..\Source\UI\UI_Utilities.h)(0x5756BDB6)
 I (..\Source\UI\UI_Menu.h)(0x5756C5E2)
-F (..\Source\UI\UI_Utilities.c)(0x5756BDDD)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_utilities.o --omf_browse ..\output\ui_utilities.crf --depend ..\output\ui_utilities.d)
+F (..\Source\UI\UI_Utilities.c)(0x575BA845)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_utilities.o --omf_browse ..\output\ui_utilities.crf --depend ..\output\ui_utilities.d)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 I (..\Source\UI\UI_Utilities.h)(0x5756BDB6)
@@ -1348,7 +1328,7 @@ I (..\Source\STM32\stm32f10x_conf.h)(0x570929CE)
 I (..\FWlib\inc\stm32f10x_gpio.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_rcc.h)(0x4BBD6D12)
 I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
-F (..\Source\UI\UI_Adjust.c)(0x5757F0FD)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_adjust.o --omf_browse ..\output\ui_adjust.crf --depend ..\output\ui_adjust.d)
+F (..\Source\UI\UI_Adjust.c)(0x575BB891)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I..\CMSIS -I..\FWlib\inc -I..\Utilities\STM32_EVAL -I..\FWlib\USB\inc -I..\Utilities\STM32_EVAL\STM3210C_EVAL -I..\Utilities\STM32_EVAL\STM3210B_EVAL -I..\FWlib\sdcard -I..\FWlib\fatfs -I..\Source\Main -I..\Source\STM32 -I..\Source\FreeRTOS\Source\include -I..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I..\Source\FreeRTOS -I..\Source\Peripherals\LED -I..\Source\Peripherals\SSD1306 -I..\Source\Peripherals\Key -I..\Source\Startup -I..\Source\Peripherals\RTC -I..\Source\Peripherals\Temperature_Sensors -I..\Source\Peripherals\Buzzer -I..\Source\Apps\Music -I..\Source\Peripherals\Usarts -I..\Source\Protocols\EBD_Protocol -I..\Source\Peripherals -I..\FWlib\sdcard -I..\FWlib\usb -I..\Source\Apps\USBMeter -I..\Source\Apps\Virtual_Clock -I..\Source\FreeRTOS_CLI -I..\FWlib\usb\inc -I..\Source\Apps\CommandLines -I..\Source\Apps\BadApplePlayer -I..\Source\Apps\CPU_Usage -I..\Source\fatfs\include -I..\Source\MultiLanguage\LanguageManagement -I..\Source\UI -I..\Source\Apps\Settings -I..\Source\MultiLanguage\ChineseSimplified -I..\Source\MultiLanguage\ChineseTraditional -I..\Source\MultiLanguage\Japanese -I..\Source\Apps\ExceptionHandle-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\1.1.0\Device\Include-DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD -DUSE_STM3210B_EVAL -o ..\output\ui_adjust.o --omf_browse ..\output\ui_adjust.crf --depend ..\output\ui_adjust.d)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x52FDD27E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x52FDD27E)
 I (..\Source\Peripherals\SSD1306\SSD1306.h)(0x5757EA56)
@@ -1364,7 +1344,7 @@ I (..\FWlib\inc\stm32f10x_usart.h)(0x4BBD6D12)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x52FDD27E)
 I (..\Source\FreeRTOS\Source\include\FreeRTOS.h)(0x573F3A16)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x52FDD27E)
-I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575A8B14)
+I (..\Source\FreeRTOS\FreeRTOSConfig.h)(0x575B97DF)
 I (..\Source\FreeRTOS\Source\include\projdefs.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\portable.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\deprecated_definitions.h)(0x573F3A16)
@@ -1376,3 +1356,4 @@ I (..\Source\FreeRTOS\Source\include\queue.h)(0x573F3A16)
 I (..\Source\FreeRTOS\Source\include\semphr.h)(0x573F3A16)
 I (..\Source\Peripherals\Key\Keys.h)(0x57567134)
 I (..\Source\UI\UI_Adjust.h)(0x5757F563)
+I (..\Source\UI\UI_Utilities.h)(0x5756BDB6)

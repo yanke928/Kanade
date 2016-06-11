@@ -2,6 +2,8 @@
 #define	__UI_DIALOGUE_H
 
 #include "stm32f10x.h"
+#include "stdbool.h"
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -10,6 +12,6 @@
 void ShowDialogue(char titleString[],char subString0[],char subString1[]);
 
 //see .c for details
-void ShowSmallDialogue(char string[],u16 time);
+void ShowSmallDialogue(char string[],u16 time,bool occupyThread);
 
 #endif /* __UI_DIALOGUE_H */

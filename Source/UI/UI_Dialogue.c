@@ -37,8 +37,11 @@ void ShowDialogue(char titleString[],char subString0[],char subString1[])
   * @param  string: Passage
 	
             time:   Time of the dialoue that lasts
+
+            occupyThread:Will ShowSmallDialogue() occupies thread
+until time is up
   */
-void ShowSmallDialogue(char string[],u16 time)
+void ShowSmallDialogue(char string[],u16 time,bool occupyThread)
 {
 	u8 startAddr, endAddr;
 	u8 stringLength;
@@ -50,8 +53,10 @@ void ShowSmallDialogue(char string[],u16 time)
   OLED_DrawRect(startAddr - 4, 20, endAddr + 4, 44, DRAW);
 	OLED_ShowAnyString(startAddr, 24, string,NotOnSelect,16);
   xSemaphoreGive(OLEDRelatedMutex);
+	if(occupyThread)
 	vTaskDelay(time/portTICK_RATE_MS);
  	xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
+  if(occupyThread)
 	OLED_Clear();
   xSemaphoreGive(OLEDRelatedMutex);	
 }

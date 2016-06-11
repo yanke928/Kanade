@@ -755,19 +755,9 @@
               <FilePath>..\Source\MultiLanguage\LanguageManagement\MultiLanguageStrings.c</FilePath>
             </File>
             <File>
-              <FileName>Japanese.c</FileName>
+              <FileName>Public_FontTab.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Source\MultiLanguage\Japanese\Japanese.c</FilePath>
-            </File>
-            <File>
-              <FileName>ChineseSimplified.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Source\MultiLanguage\ChineseSimplified\ChineseSimplified.c</FilePath>
-            </File>
-            <File>
-              <FileName>ChineseTraditional.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Source\MultiLanguage\ChineseTraditional\ChineseTraditional.c</FilePath>
+              <FilePath>..\Source\MultiLanguage\LanguageManagement\Public_FontTab.c</FilePath>
             </File>
           </Files>
         </Group>

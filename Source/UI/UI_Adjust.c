@@ -1,4 +1,4 @@
-//File Name   £ºUI_Adjust.c
+//File Name     UI_Adjust.c
 //Description : Adjust UI
 
 #include <string.h>
@@ -12,6 +12,7 @@
 #include "queue.h"
 
 #include "UI_Adjust.h"
+#include "UI_Utilities.h"
 
 #define UI_ADJUST_HANDLER_PRIORITY tskIDLE_PRIORITY+2
 
@@ -46,6 +47,7 @@ void UI_Adjust_Handler(void *pvParameters)
 	Key_Message_Struct keyMsg;
 	u8 digitNum, unitCharNum, length;
 	u8 i;
+	u8 askStringLength;
 	char value[7];
 	OLED_PositionStruct positions[4];
 	int currentValue = adjustParams->DefaultValue;
@@ -94,9 +96,14 @@ void UI_Adjust_Handler(void *pvParameters)
 		unitCharNum * 8 + 1, adjustParams->Pos_y + 17, DRAW);
 	OLED_DrawVerticalLine(positions[0].x + 17, adjustParams->Pos_y - 2, adjustParams->Pos_y + 17, DRAW);
 	OLED_DrawVerticalLine(positions[2].x - 2, adjustParams->Pos_y - 2, adjustParams->Pos_y + 17, DRAW);
+	askStringLength=GetStringLength(adjustParams->AskString);
 	/*Show askString*/
-	OLED_ShowAnyString(positions[0].x - 2, adjustParams->Pos_y - 22,
+	if(askStringLength*8+positions[0].x-2>127)
+	OLED_ShowAnyString(64-askStringLength*8/2, adjustParams->Pos_y - 22,
 		adjustParams->AskString, NotOnSelect, 16);
+	else
+	OLED_ShowAnyString(positions[0].x-2, adjustParams->Pos_y - 22,
+		adjustParams->AskString, NotOnSelect, 16);		
 	SetKeyBeatRate(adjustParams->FastSpeed);
 	SetUpdateOLEDJustNow();
 	OLED_Refresh_Gram();

@@ -87,7 +87,7 @@ void SetLanguage()
  menuParams.ItemNum=4;
  menuParams.FastSpeed=5;
  memcpy(&SettingsBkp,CurrentSettings,sizeof(Settings_Struct));
- ShowSmallDialogue("Language",1000);
+ ShowSmallDialogue("Language",1000,true);
  UI_Menu_Init(&menuParams);
  xQueueReceive(UI_MenuMsg, & selection, portMAX_DELAY );
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
@@ -101,7 +101,7 @@ void SetLanguage()
 	 case 3:SettingsBkp.Language=1;
  }
  SaveSettings();
- ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language],1000);	
+ ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language],1000,true);	
 }
 
 bool CheckSettings()
@@ -116,8 +116,8 @@ void Settings_Init()
  {
   memcpy(&SettingsBkp,&DefaultSettings,sizeof(Settings_Struct));
 	SaveSettings();
-  ShowSmallDialogue("Settings Error",1000);	
-	ShowSmallDialogue("Reset Done",1000);	
+  ShowSmallDialogue("Settings Error",1000,true);	
+	ShowSmallDialogue("Reset Done",1000,true);	
 	xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
   OLED_Refresh_Gram();
   xSemaphoreGive(OLEDRelatedMutex); 
@@ -147,9 +147,32 @@ void TimeSettings()
  struct Data_Time newTime;
  newTime.w_year=GetTimeParam((char*)SetYear_Str[CurrentSettings->Language],
 	 (char*)SetYearUnit_Str[CurrentSettings->Language],
-	 2016,2099,2016);
+	 2016,2099,RTCTime.w_year);
  newTime.w_month=GetTimeParam((char*)SetMonth_Str[CurrentSettings->Language],
 	 (char*)SetMonthUnit_Str[CurrentSettings->Language],
-	 1,12,1);
+	 1,12,RTCTime.w_month);
+ if(newTime.w_year%4==0 && newTime.w_month==2)
+ {
+  newTime.w_date=GetTimeParam((char*)SetDay_Str[CurrentSettings->Language],
+	 (char*)SetDayUnit_Str[CurrentSettings->Language],
+		 1,29,RTCTime.w_date>29?29:RTCTime.w_date);
+ }
+ else	 
+ newTime.w_date=GetTimeParam((char*)SetDay_Str[CurrentSettings->Language],
+	 (char*)SetDayUnit_Str[CurrentSettings->Language],
+	 1,mon_table[newTime.w_month-1],RTCTime.w_date>mon_table[newTime.w_month-1]?
+	 mon_table[newTime.w_month-1]:RTCTime.w_date);
+ newTime.hour=GetTimeParam((char*)SetHour_Str[CurrentSettings->Language],
+	 (char*)SetHourUnit_Str[CurrentSettings->Language],
+	 0,23,RTCTime.hour);
+ newTime.min=GetTimeParam((char*)SetMin_Str[CurrentSettings->Language],
+	 (char*)SetMinUnit_Str[CurrentSettings->Language],
+	 0,59,RTCTime.min);
+ newTime.sec=GetTimeParam((char*)SetSec_Str[CurrentSettings->Language],
+	 (char*)SetSecUnit_Str[CurrentSettings->Language],
+	 0,59,RTCTime.sec);
+ Time_Update(newTime.w_year,newTime.w_month,newTime.w_date,
+ newTime.hour,newTime.min,newTime.sec);
+ ShowSmallDialogue((char *)TimeSetting_Str[CurrentSettings->Language],1000,true);
 }
 

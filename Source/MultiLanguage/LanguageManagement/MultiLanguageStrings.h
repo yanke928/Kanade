@@ -21,6 +21,15 @@ extern const char * SetYear_Str[LanguageNum];
 extern const char * SetYearUnit_Str[LanguageNum];
 extern const char * SetMonth_Str[LanguageNum];
 extern const char * SetMonthUnit_Str[LanguageNum];
+extern const char * SetDay_Str[LanguageNum];
+extern const char * SetDayUnit_Str[LanguageNum];
+extern const char * SetHour_Str[LanguageNum];
+extern const char * SetHourUnit_Str[LanguageNum];
+extern const char * SetMin_Str[LanguageNum];
+extern const char * SetMinUnit_Str[LanguageNum];
+extern const char * SetSec_Str[LanguageNum];
+extern const char * SetSecUnit_Str[LanguageNum];
+extern const char * TimeSetting_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 

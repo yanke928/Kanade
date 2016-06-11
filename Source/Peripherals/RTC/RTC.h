@@ -18,6 +18,8 @@ struct Data_Time
 extern bool RTCUpdateExecute[3];
 extern void(*RTCUpdateFunctions[3])(void);
 
+extern const u8 mon_table[12];
+
 extern volatile struct Data_Time RTCTime; 
 
 //see .c for details
@@ -52,7 +54,8 @@ void GenerateRTCWeekString(char string[]);
 
 //see .c for details
 void RTCCheck(void);
-//void TimeSettings(void);
+
+//see .c for details
 void RTC_Init(void);
 
 #endif
