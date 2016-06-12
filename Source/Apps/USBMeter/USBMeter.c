@@ -21,6 +21,7 @@
 #include "Keys.h"
 
 #include "Settings.h"
+#include "StepUpTest.h"
 #include "FastCharge_Trigger.h"
 
 #include "USBMeter.h"
@@ -53,6 +54,8 @@ void USBMeter(void *pvParameters)
 		 {
 			 case MidDouble:GetConfirmation((char *)RecordConfirm_Str[CurrentSettings->Language],"");break;
 			 case MidLong:Settings();break;
+			 case LeftClick:if (GetConfirmation("StepUp Test?",""))
+				 		 RunAStepUpTest(); ;break;
 		 }
 		 switch(keyMessage.AdvancedKeyEvent)
 		 {
@@ -154,5 +157,5 @@ void DisplayRecordData(char tempString[])
 void USBMeter_Init(u8 status)
 {
 	xTaskCreate(USBMeter, "USBMeter",
-		300, &status, USB_METER_PRIORITY, NULL);
+		400, &status, USB_METER_PRIORITY, NULL);
 }

@@ -19,9 +19,9 @@
 
 #include "Startup.h"
 
-#define EBD_PACKET_RECEIVER_PRIORITY tskIDLE_PRIORITY+5
+#define EBD_PACKET_RECEIVER_PRIORITY tskIDLE_PRIORITY+6
 
-#define EBD_PACKET_TRANSMITTER_PRIORITY tskIDLE_PRIORITY+5
+#define EBD_PACKET_TRANSMITTER_PRIORITY tskIDLE_PRIORITY+6
 
 //EBD command string example
 unsigned char EBDUSBStandardString[8] = { 0xfa,0x05,0x00,0x00,0x00,0x00,0x00,0x00 };
@@ -375,12 +375,12 @@ void EBDPacketReceiver(void *pvParameters)
 				if (BadPacketReceivedFlag == true)//If it is a bad packet
 				{
 					BadPacketReceivedFlag = false;//Clear badFlag
-					return;
+					//return;
 				}
 				EBDWatchCount = 0;//Clear WatchDog
 				ReceiveAddr = 0;//Clear ReceiveAddr for the next packet
 				PacketDecode();
-				xQueueSend(EBDRxDataMsg, &i, 100 / portTICK_RATE_MS);			
+				xQueueSend(EBDRxDataMsg, &i, 0);			
 			}
 		}
 		if (EBDPacketReceivingFlag == true)
@@ -394,6 +394,13 @@ void EBDPacketReceiver(void *pvParameters)
 		//is active
 		vTaskDelay(10 / portTICK_RATE_MS);
 	}
+}
+
+void EBD_Sync()
+{
+ u8 i;
+ xQueueReceive(EBDRxDataMsg, & i, portMAX_DELAY);
+ xQueueReceive(EBDRxDataMsg, & i, portMAX_DELAY);
 }
 
 /**

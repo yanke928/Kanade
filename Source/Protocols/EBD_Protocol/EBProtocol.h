@@ -43,6 +43,8 @@
 
 extern xQueueHandle EBDTxDataMsg;
 
+extern xQueueHandle EBDRxDataMsg;
+
 extern unsigned char EBDBackPacket[EBD_PACKET_LENGTH + 1];
 
 extern u8 EBDCommandStringCache[EBD_COMMAND_LENGTH + 1];
@@ -114,6 +116,10 @@ void EBDSendLoadCommand(u16 current, u8 mode);
 //see .c for details
 void EBDWatchingDogSetup(void);
 
+//see .c for details
 void EBD_Init(void);
+
+//see .c for details
+void EBD_Sync(void);
 
 #endif /* __EBPROTOCOL_H */
