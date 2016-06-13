@@ -54,7 +54,7 @@ void USBMeter(void *pvParameters)
 		 {
 			 case MidDouble:GetConfirmation((char *)RecordConfirm_Str[CurrentSettings->Language],"");break;
 			 case MidLong:Settings();break;
-			 case LeftClick:if (GetConfirmation("StepUp Test?",""))
+			 case LeftClick:if (GetConfirmation((char *)StepUpConfirm_Str[CurrentSettings->Language],""))
 				 		 RunAStepUpTest(); ;break;
 		 }
 		 switch(keyMessage.AdvancedKeyEvent)
@@ -158,4 +158,5 @@ void USBMeter_Init(u8 status)
 {
 	xTaskCreate(USBMeter, "USBMeter",
 		400, &status, USB_METER_PRIORITY, NULL);
+  vTaskDelay(100/portTICK_RATE_MS);
 }

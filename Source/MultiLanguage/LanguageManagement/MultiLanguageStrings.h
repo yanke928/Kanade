@@ -30,6 +30,16 @@ extern const char * SetMinUnit_Str[LanguageNum];
 extern const char * SetSec_Str[LanguageNum];
 extern const char * SetSecUnit_Str[LanguageNum];
 extern const char * TimeSetting_Str[LanguageNum];
+extern const char * StepUpConfirm_Str[LanguageNum];
+extern const char * StartCurrentGet_Str[LanguageNum];
+extern const char * EndCurrentGet_Str[LanguageNum];
+extern const char * StepCurrentGet_Str[LanguageNum];
+extern const char * TimeIntervalGet_Str[LanguageNum];
+extern const char * ProtVoltageGet_Str[LanguageNum];
+extern const char * RunTime_Str[LanguageNum];
+extern const char * CurrentVoltage_Str[LanguageNum];
+extern const char * CurrentCurrent_Str[LanguageNum];
+extern const char * StepUpTestRunning_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 

@@ -57,6 +57,12 @@ const char QCMTKConfirm_CN[] = "QC/MTK触发?" ;
 const char QCMTKConfirm_JP[] = "QC/MTKトリガー?";
 const char * QCMTKConfirm_Str[] = { QCMTKConfirm_EN,QCMTKConfirm_TW,QCMTKConfirm_CN,QCMTKConfirm_JP };
 
+const char StepUpConfirm_EN[] ="Step-up Test?";
+const char StepUpConfirm_TW[] ="開始步進測試?";
+const char StepUpConfirm_CN[] ="开始步进测试?" ;
+const char StepUpConfirm_JP[] ="StepUpテスト?";
+const char * StepUpConfirm_Str[] = { StepUpConfirm_EN,StepUpConfirm_TW,StepUpConfirm_CN,StepUpConfirm_JP };
+
 const char Saved_EN[] = "Saved";
 const char Saved_TW[] = "已保存";
 const char Saved_CN[] = "已保存";
@@ -146,6 +152,60 @@ const char TimeSetting_TW[] ="已應用";
 const char TimeSetting_CN[] ="已应用" ;
 const char TimeSetting_JP[] ="適用されました";
 const char * TimeSetting_Str[] = { TimeSetting_EN,TimeSetting_TW,TimeSetting_CN,TimeSetting_JP };
+
+const char StartCurrentGet_EN[] ="I.Start";
+const char StartCurrentGet_TW[] ="起始電流";
+const char StartCurrentGet_CN[] ="起始电流" ;
+const char StartCurrentGet_JP[] ="初期電流";
+const char * StartCurrentGet_Str[] = { StartCurrentGet_EN,StartCurrentGet_TW,StartCurrentGet_CN,StartCurrentGet_JP };
+
+const char EndCurrentGet_EN[] ="I.End";
+const char EndCurrentGet_TW[] ="終止電流";
+const char EndCurrentGet_CN[] ="终止电流" ;
+const char EndCurrentGet_JP[] ="終了電流";
+const char * EndCurrentGet_Str[] = { EndCurrentGet_EN,EndCurrentGet_TW,EndCurrentGet_CN,EndCurrentGet_JP };
+
+const char StepCurrentGet_EN[] ="I.Step";
+const char StepCurrentGet_TW[] ="步距";
+const char StepCurrentGet_CN[] ="步距" ;
+const char StepCurrentGet_JP[] ="ステップ";
+const char * StepCurrentGet_Str[] = { StepCurrentGet_EN,StepCurrentGet_TW,StepCurrentGet_CN,StepCurrentGet_JP };
+
+const char TimeIntervalGet_EN[] ="T.Interval";
+const char TimeIntervalGet_TW[] ="時間間隔";
+const char TimeIntervalGet_CN[] ="时间间隔" ;
+const char TimeIntervalGet_JP[] ="インターバル";
+const char * TimeIntervalGet_Str[] = { TimeIntervalGet_EN,TimeIntervalGet_TW,TimeIntervalGet_CN,TimeIntervalGet_JP };
+
+const char ProtVoltageGet_EN[] ="V.Protect";
+const char ProtVoltageGet_TW[] ="保護電壓";
+const char ProtVoltageGet_CN[] ="保护电压" ;
+const char ProtVoltageGet_JP[] ="電圧防護";
+const char * ProtVoltageGet_Str[] = { ProtVoltageGet_EN,ProtVoltageGet_TW,ProtVoltageGet_CN,ProtVoltageGet_JP };
+
+const char RunTime_EN[] ="RunTime:";
+const char RunTime_TW[] ="當前時間";
+const char RunTime_CN[] ="当前时间" ;
+const char RunTime_JP[] ="現在時刻";
+const char * RunTime_Str[] = { RunTime_EN,RunTime_TW,RunTime_CN,RunTime_JP };
+
+const char CurrentVoltage_EN[] ="Voltage:";
+const char CurrentVoltage_TW[] ="當前電壓";
+const char CurrentVoltage_CN[] ="当前电压" ;
+const char CurrentVoltage_JP[] ="現在電圧";
+const char * CurrentVoltage_Str[] = { CurrentVoltage_EN,CurrentVoltage_TW,CurrentVoltage_CN,CurrentVoltage_JP };
+
+const char CurrentCurrent_EN[] ="Current:";
+const char CurrentCurrent_TW[] ="當前電流";
+const char CurrentCurrent_CN[] ="当前电流" ;
+const char CurrentCurrent_JP[] ="現在電流";
+const char * CurrentCurrent_Str[] = { CurrentCurrent_EN,CurrentCurrent_TW,CurrentCurrent_CN,CurrentCurrent_JP };
+
+const char StepUpTestRunning_EN[] ="Test Running...";
+const char StepUpTestRunning_TW[] ="正在測試...";
+const char StepUpTestRunning_CN[] ="正在测试..." ;
+const char StepUpTestRunning_JP[] ="テスト運転中...";
+const char * StepUpTestRunning_Str[] = { StepUpTestRunning_EN,StepUpTestRunning_TW,StepUpTestRunning_CN,StepUpTestRunning_JP };
 
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {

@@ -15,6 +15,11 @@
 #include "EBProtocol.h"
 
 #include "UI_Dialogue.h"
+#include "UI_Adjust.h"
+
+#include "MultiLanguageStrings.h"
+
+#include "Settings.h"
 
 #include "StepUpTest.h"
 
@@ -87,7 +92,7 @@ void StepUpTestOnTimeUI(u16 timeNow);
 void StepUpTest_UI_Handler(void *pvParameters)
 {
 	u16 currentTime = 0;
-	ShowDialogue("Test Running...", "", "");
+	ShowDialogue((char *)StepUpTestRunning_Str[CurrentSettings->Language], "", "");
 	for (;;)
 	{
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
@@ -112,16 +117,16 @@ void StepUpTest_UI_Handler(void *pvParameters)
 void StepUpTestOnTimeUI(u16 timeNow)
 {
 	char tempString[10];
-	OLED_ShowAnyString(5, 15, "RunTime:", NotOnSelect, 16);
+	OLED_ShowAnyString(5, 15, (char *)RunTime_Str[CurrentSettings->Language], NotOnSelect, 16);
 	sprintf(tempString, "%3ds", timeNow);
 	OLED_ShowAnyString(88, 15, tempString, NotOnSelect, 16);
-	OLED_ShowAnyString(5, 31, "Voltage:", NotOnSelect, 16);
+	OLED_ShowAnyString(5, 31, (char *)CurrentVoltage_Str[CurrentSettings->Language], NotOnSelect, 16);
 	if (CurrentMeterData.Voltage < 10)
 		sprintf(tempString, "%5.3fV", CurrentMeterData.Voltage);
 	else
 		sprintf(tempString, "%5.2fV", CurrentMeterData.Voltage);
 	OLED_ShowAnyString(72, 31, tempString, NotOnSelect, 16);
-	OLED_ShowAnyString(5, 47, "Current:", NotOnSelect, 16);
+	OLED_ShowAnyString(5, 47, (char *)CurrentCurrent_Str[CurrentSettings->Language], NotOnSelect, 16);
 	sprintf(tempString, "%5.3fA", CurrentMeterData.Current);
 	OLED_ShowAnyString(72, 47, tempString, NotOnSelect, 16);
 }
@@ -191,18 +196,48 @@ void Flash_ProgramFloat(u32 addr, float data)
 	FLASH_ProgramWord(addr, p[0]);
 }
 
+
+u16 GetTestParam(const char askString[],u16 min,u16 max,u16 defaultValue,u16 step,char unitString[],u8 fastSpeed)
+{
+ u16 t;
+ UI_Adjust_Param_Struct adjust_params;
+ xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+ OLED_Clear();
+ xSemaphoreGive(OLEDRelatedMutex);
+ adjust_params.AskString=(char *)askString;
+ adjust_params.Min=min;
+ adjust_params.Max=max;
+ adjust_params.Step=step;
+ adjust_params.DefaultValue=defaultValue;
+ adjust_params.UnitString=unitString;
+ adjust_params.FastSpeed=fastSpeed;
+ adjust_params.Pos_y=33;
+ UI_Adjust_Init(&adjust_params);
+ xQueueReceive(UI_AdjustMsg, & t, portMAX_DELAY );
+ return t;
+}
+
 void RunAStepUpTest()
 {
 	StepUpTestParamsStruct test_Params;
 	u16 i;
+	test_Params.StartCurrent = 
+	GetTestParam(StartCurrentGet_Str[CurrentSettings->Language],100,STEP_UP_TEST_CURRENT_MAX,
+	1000,100,"mA",20);
+	test_Params.StopCurrent = 
+	GetTestParam(EndCurrentGet_Str[CurrentSettings->Language],100,STEP_UP_TEST_CURRENT_MAX,
+	2000,100,"mA",20);
+	test_Params.Step = GetTestParam(StepCurrentGet_Str[CurrentSettings->Language],100,500,
+	100,100,"mA",10);
+	test_Params.TimeInterval = 
+	GetTestParam(TimeIntervalGet_Str[CurrentSettings->Language],2,30,
+	4,2,"s",10);
+	test_Params.ProtectVolt = 
+	GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language],0,20000,
+	900*CurrentMeterData.Voltage/10*10,10,"mV",25);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
-	test_Params.StartCurrent = 100;
-	test_Params.StopCurrent = 1000;
-	test_Params.Step = 100;
-	test_Params.TimeInterval = 10;
-	test_Params.ProtectVolt = 1000;
 	StepUpTest_Init(&test_Params);
 	StepUpTest_UI_Init();
 	xQueueReceive(StepUpTest_UI_Test_DoneMsg, &i, portMAX_DELAY);
