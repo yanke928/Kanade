@@ -24,7 +24,7 @@
 
 #include "Settings.h"
 
-Settings_Struct* CurrentSettings=(Settings_Struct*)0x0801d800;
+Settings_Struct* CurrentSettings=(Settings_Struct*)0x0801f800;
 
 Settings_Struct SettingsBkp;
 

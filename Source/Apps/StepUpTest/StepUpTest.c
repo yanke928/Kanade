@@ -5,6 +5,7 @@
 #include "stm32f10x_flash.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "FreeRTOS.h"
@@ -16,6 +17,7 @@
 
 #include "UI_Dialogue.h"
 #include "UI_Adjust.h"
+#include "UI_ListView.h"
 
 #include "MultiLanguageStrings.h"
 
@@ -24,7 +26,7 @@
 #include "StepUpTest.h"
 
 /*Step-up test memory mapping*/
-#define FLASH_CACHE_START_ADDR 0x0801dc00
+#define FLASH_CACHE_START_ADDR 0x0801d000
 #define FLASH_VOLTAGE_ADDR  FLASH_CACHE_START_ADDR
 #define FLASH_CURRENT_ADDR  FLASH_CACHE_START_ADDR+3072     
 #define FLASH_DATAEND_ADDR  FLASH_CACHE_START_ADDR+6144
@@ -44,27 +46,31 @@ void Flash_ProgramFloat(u32 addr, float data);
 void StepUpTest_Handler(void *pvParameters)
 {
 	StepUpTestParamsStruct* test_Params = (StepUpTestParamsStruct*)pvParameters;
-	u16 currentTime = 0;
+	StepUpTestStateStruct currentState;
 	u16 currentAddr = 0;
 	u16 currentCurrent;
 	u16 lastCurrent = test_Params->StartCurrent;
 	u8 i;
 	EBD_Sync();
+	vPortEnterCritical();
 	EraseCacheBlocks();
+	vPortExitCritical();
 	vTaskDelay(200 / portTICK_RATE_MS);
 	EBDSendLoadCommand(0, StartTest);
 	vTaskDelay(200 / portTICK_RATE_MS);
 	EBDSendLoadCommand(test_Params->StartCurrent, KeepTest);
 	EBD_Sync();
+	currentState.TestOverFlag=0;
+	currentState.CurrentTime=0;
 	for (;;)
 	{
 		xQueueReceive(EBDRxDataMsg, &i, portMAX_DELAY);
 		Flash_ProgramFloat(FLASH_VOLTAGE_ADDR + currentAddr * sizeof(float), CurrentMeterData.Voltage);
 		Flash_ProgramFloat(FLASH_CURRENT_ADDR + currentAddr * sizeof(float), CurrentMeterData.Current);
-		xQueueSend(StepUpTest_UI_UpdateMsg, &currentTime, 0);
-		currentTime = currentTime + 2;
+		xQueueSend(StepUpTest_UI_UpdateMsg, &currentState, 0);
+		currentState.CurrentTime = currentState.CurrentTime + 2;
 		currentAddr++;
-		currentCurrent = (currentTime / test_Params->TimeInterval)*test_Params->Step + test_Params->StartCurrent;
+		currentCurrent = (currentState.CurrentTime / test_Params->TimeInterval)*test_Params->Step + test_Params->StartCurrent;
 		if ((CurrentMeterData.Voltage < (float)test_Params->ProtectVolt / 1000) ||
 			(CurrentMeterData.Voltage < 0.5) ||
 			(currentCurrent > test_Params->StopCurrent))
@@ -72,10 +78,10 @@ void StepUpTest_Handler(void *pvParameters)
 			vTaskDelay(200 / portTICK_RATE_MS);
 			EBDSendLoadCommand(0, StopTest);
 			if (currentCurrent > test_Params->StopCurrent)
-				currentTime = 65535;
+				currentState.TestOverFlag=1;
 			else
-				currentTime = 65534;
-			xQueueSend(StepUpTest_UI_UpdateMsg, &currentTime, 0);
+				currentState.TestOverFlag=2;
+			xQueueSend(StepUpTest_UI_UpdateMsg, &currentState, 0);
 			vTaskDelete(NULL);
 		}
 		if (currentCurrent != lastCurrent)
@@ -91,24 +97,25 @@ void StepUpTestOnTimeUI(u16 timeNow);
 
 void StepUpTest_UI_Handler(void *pvParameters)
 {
-	u16 currentTime = 0;
+	StepUpTestStateStruct currentState;
+	currentState.CurrentTime=0;
 	ShowDialogue((char *)StepUpTestRunning_Str[CurrentSettings->Language], "", "");
 	for (;;)
 	{
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-		StepUpTestOnTimeUI(currentTime);
+		StepUpTestOnTimeUI(currentState.CurrentTime);
 		xSemaphoreGive(OLEDRelatedMutex);
-		if (currentTime != 0)
+		if (currentState.CurrentTime != 0)
 		{
 			vTaskDelay(1000 / portTICK_RATE_MS);
 			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-			StepUpTestOnTimeUI(currentTime + 1);
+			StepUpTestOnTimeUI(currentState.CurrentTime + 1);
 			xSemaphoreGive(OLEDRelatedMutex);
 		}
-		xQueueReceive(StepUpTest_UI_UpdateMsg, &currentTime, portMAX_DELAY);
-		if (currentTime == 65535 || currentTime == 65534)
+		xQueueReceive(StepUpTest_UI_UpdateMsg, &currentState, portMAX_DELAY);
+		if (currentState.TestOverFlag>0)
 		{
-			xQueueSend(StepUpTest_UI_Test_DoneMsg, &currentTime, 0);
+			xQueueSend(StepUpTest_UI_Test_DoneMsg, &currentState, 0);
 			vTaskDelete(NULL);
 		}
 	}
@@ -140,7 +147,7 @@ void StepUpTestOnTimeUI(u16 timeNow)
   */
 void StepUpTest_Init(StepUpTestParamsStruct* test_Params)
 {
-	StepUpTest_UI_UpdateMsg = xQueueCreate(2, sizeof(u16));
+	StepUpTest_UI_UpdateMsg = xQueueCreate(2, sizeof(StepUpTestStateStruct));
 	xTaskCreate(StepUpTest_Handler, "Stepup test Handler",
 		256, test_Params, STEPUPTEST_HANDLER_PRIORITY, NULL);
 }
@@ -154,9 +161,9 @@ void StepUpTest_Init(StepUpTestParamsStruct* test_Params)
   */
 void StepUpTest_UI_Init(void)
 {
-	StepUpTest_UI_Test_DoneMsg = xQueueCreate(1, sizeof(u16));
+	StepUpTest_UI_Test_DoneMsg = xQueueCreate(1, sizeof(StepUpTestStateStruct));
 	xTaskCreate(StepUpTest_UI_Handler, "Stepup test UI Handler",
-		128, NULL, STEPUPTEST_HANDLER_PRIORITY, NULL);
+		160, NULL, STEPUPTEST_HANDLER_PRIORITY, NULL);
 }
 
 
@@ -217,10 +224,44 @@ u16 GetTestParam(const char askString[],u16 min,u16 max,u16 defaultValue,u16 ste
  return t;
 }
 
+void ShowStepUpTestResult(u16 time)
+{
+ ListView_Param_Struct listView_Params;
+ u16 i;
+ char ItemNameTime[]="Time";
+ char ItemNameCurt[]="Curt(A)"; 
+ char ItemNameVolt[]="Volt(V)"; 
+ char sprintfCommandCurt[]="%0.3f"; 
+ char sprintfCommandVolt[]="%0.3f"; 
+ listView_Params.ItemNames[0]=ItemNameTime;
+ listView_Params.ItemNames[1]=ItemNameCurt;
+ listView_Params.ItemNames[2]=ItemNameVolt;
+ listView_Params.DataPointers[0]=(float*)(FLASH_CURRENT_ADDR);
+ listView_Params.DataPointers[1]=(float*)(FLASH_VOLTAGE_ADDR);
+ listView_Params.sprintfCommandStrings[0]=sprintfCommandCurt;
+ listView_Params.sprintfCommandStrings[1]=sprintfCommandVolt;	
+ listView_Params.ItemNum=3;
+ listView_Params.ItemPositions[0] = 2;
+ listView_Params.ItemPositions[1] = 30;
+ listView_Params.ItemPositions[2] = 81;
+ listView_Params.ItemPositions[3] = 127;
+ listView_Params.DefaultPos = 0;
+ listView_Params.FastSpeed=25;
+ listView_Params.Item1AutoNum=true;
+ listView_Params.Item1AutoNumStart=0;
+ listView_Params.Item1AutoNumStep=2;
+ listView_Params.ListLength=time/2;
+// sprintf(tempString,"%f",*(float*)(FLASH_CURRENT_ADDR));
+// OLED_ShowString(0,0,tempString);
+// while(1) vTaskDelay(100);
+ UI_ListView_Init(&listView_Params);
+ xQueueReceive(UI_ListViewMsg, &i, portMAX_DELAY);
+}
+
 void RunAStepUpTest()
 {
 	StepUpTestParamsStruct test_Params;
-	u16 i;
+	StepUpTestStateStruct testInfo;
 	test_Params.StartCurrent = 
 	GetTestParam(StartCurrentGet_Str[CurrentSettings->Language],100,STEP_UP_TEST_CURRENT_MAX,
 	1000,100,"mA",20);
@@ -240,13 +281,14 @@ void RunAStepUpTest()
 	xSemaphoreGive(OLEDRelatedMutex);
 	StepUpTest_Init(&test_Params);
 	StepUpTest_UI_Init();
-	xQueueReceive(StepUpTest_UI_Test_DoneMsg, &i, portMAX_DELAY);
+	xQueueReceive(StepUpTest_UI_Test_DoneMsg, &testInfo, portMAX_DELAY);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
-	if (i == 65535)
+	if (testInfo.TestOverFlag==1)
 		ShowSmallDialogue("Test Done!", 1000, true);
 	else
 		ShowSmallDialogue("Protected!", 1000, true);
+	ShowStepUpTestResult(testInfo.CurrentTime);
 }
 
