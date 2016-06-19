@@ -18,6 +18,7 @@
 #include "UI_Dialogue.h"
 #include "UI_Adjust.h"
 #include "UI_ListView.h"
+#include "UI_Dialgram.h"
 
 #include "MultiLanguageStrings.h"
 
@@ -60,8 +61,8 @@ void StepUpTest_Handler(void *pvParameters)
 	vTaskDelay(200 / portTICK_RATE_MS);
 	EBDSendLoadCommand(test_Params->StartCurrent, KeepTest);
 	EBD_Sync();
-	currentState.TestOverFlag=0;
-	currentState.CurrentTime=0;
+	currentState.TestOverFlag = 0;
+	currentState.CurrentTime = 0;
 	for (;;)
 	{
 		xQueueReceive(EBDRxDataMsg, &i, portMAX_DELAY);
@@ -78,9 +79,9 @@ void StepUpTest_Handler(void *pvParameters)
 			vTaskDelay(200 / portTICK_RATE_MS);
 			EBDSendLoadCommand(0, StopTest);
 			if (currentCurrent > test_Params->StopCurrent)
-				currentState.TestOverFlag=1;
+				currentState.TestOverFlag = 1;
 			else
-				currentState.TestOverFlag=2;
+				currentState.TestOverFlag = 2;
 			xQueueSend(StepUpTest_UI_UpdateMsg, &currentState, 0);
 			vTaskDelete(NULL);
 		}
@@ -98,7 +99,7 @@ void StepUpTestOnTimeUI(u16 timeNow);
 void StepUpTest_UI_Handler(void *pvParameters)
 {
 	StepUpTestStateStruct currentState;
-	currentState.CurrentTime=0;
+	currentState.CurrentTime = 0;
 	ShowDialogue((char *)StepUpTestRunning_Str[CurrentSettings->Language], "", "");
 	for (;;)
 	{
@@ -113,7 +114,7 @@ void StepUpTest_UI_Handler(void *pvParameters)
 			xSemaphoreGive(OLEDRelatedMutex);
 		}
 		xQueueReceive(StepUpTest_UI_UpdateMsg, &currentState, portMAX_DELAY);
-		if (currentState.TestOverFlag>0)
+		if (currentState.TestOverFlag > 0)
 		{
 			xQueueSend(StepUpTest_UI_Test_DoneMsg, &currentState, 0);
 			vTaskDelete(NULL);
@@ -204,78 +205,164 @@ void Flash_ProgramFloat(u32 addr, float data)
 }
 
 
-u16 GetTestParam(const char askString[],u16 min,u16 max,u16 defaultValue,u16 step,char unitString[],u8 fastSpeed)
+u16 GetTestParam(const char askString[], u16 min, u16 max, u16 defaultValue, u16 step, char unitString[], u8 fastSpeed)
 {
- u16 t;
- UI_Adjust_Param_Struct adjust_params;
- xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
- OLED_Clear();
- xSemaphoreGive(OLEDRelatedMutex);
- adjust_params.AskString=(char *)askString;
- adjust_params.Min=min;
- adjust_params.Max=max;
- adjust_params.Step=step;
- adjust_params.DefaultValue=defaultValue;
- adjust_params.UnitString=unitString;
- adjust_params.FastSpeed=fastSpeed;
- adjust_params.Pos_y=33;
- UI_Adjust_Init(&adjust_params);
- xQueueReceive(UI_AdjustMsg, & t, portMAX_DELAY );
- return t;
+	u16 t;
+	UI_Adjust_Param_Struct adjust_params;
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
+	adjust_params.AskString = (char *)askString;
+	adjust_params.Min = min;
+	adjust_params.Max = max;
+	adjust_params.Step = step;
+	adjust_params.DefaultValue = defaultValue;
+	adjust_params.UnitString = unitString;
+	adjust_params.FastSpeed = fastSpeed;
+	adjust_params.Pos_y = 33;
+	UI_Adjust_Init(&adjust_params);
+	xQueueReceive(UI_AdjustMsg, &t, portMAX_DELAY);
+	return t;
+}
+
+bool ShowStepUpTestResultInListView(u16 time)
+{
+	ListView_Param_Struct listView_Params;
+	u8 i;
+	char ItemNameTime[] = "Time";
+	char ItemNameCurt[] = "Curt(A)";
+	char ItemNameVolt[] = "Volt(V)";
+	char sprintfCommandCurt[] = "%0.3f";
+	char sprintfCommandVolt[] = "%0.3f";
+	listView_Params.ItemNames[0] = ItemNameTime;
+	listView_Params.ItemNames[1] = ItemNameCurt;
+	listView_Params.ItemNames[2] = ItemNameVolt;
+	listView_Params.DataPointers[0] = (float*)(FLASH_CURRENT_ADDR);
+	listView_Params.DataPointers[1] = (float*)(FLASH_VOLTAGE_ADDR);
+	listView_Params.sprintfCommandStrings[0] = sprintfCommandCurt;
+	listView_Params.sprintfCommandStrings[1] = sprintfCommandVolt;
+	listView_Params.ItemNum = 3;
+	listView_Params.ItemPositions[0] = 2;
+	listView_Params.ItemPositions[1] = 30;
+	listView_Params.ItemPositions[2] = 81;
+	listView_Params.ItemPositions[3] = 127;
+	listView_Params.DefaultPos = 0;
+	listView_Params.FastSpeed = 25;
+	listView_Params.Item1AutoNum = true;
+	listView_Params.Item1AutoNumStart = 0;
+	listView_Params.Item1AutoNumStep = 2;
+	listView_Params.ListLength = time / 2;
+	UI_ListView_Init(&listView_Params);
+	xQueueReceive(UI_ListViewMsg, &i, portMAX_DELAY);
+	if (i == 32767) return true;
+	else return false;
+}
+
+/**
+  * @brief  Find maximun value in given dataSet
+
+	@params dataSet:Target dataSet
+
+			dataLength:Search-length in dataSet
+
+  * @retval The max value in given dataSet
+  */
+float FindMax(float *dataSet, u16 dataLength)
+{
+	u16 i;
+	float max;
+	max = dataSet[0];
+	for (i = 1; i < dataLength; i++)
+	{
+		if (dataSet[i] > max) max = dataSet[i];
+	}
+	return(max);
+}
+
+/**
+  * @brief  Find minimum value in given dataSet
+
+	@params dataSet:Target dataSet
+
+			dataLength:Search-length in dataSet
+
+  * @retval The min value in given dataSet
+  */
+float FindMin(float *dataSet, u16 dataLength)
+{
+	u16 i;
+	float min;
+	min = dataSet[0];
+	for (i = 1; i < dataLength; i++)
+	{
+		if (dataSet[i] < min) min = dataSet[i];
+	}
+	return(min);
+}
+
+bool ShowStepUpTestResultInDialgram(u16 time)
+{
+	Dialgram_Param_Struct dialgram_Params;
+	u8 i, temp;
+	dialgram_Params.DataPointers[0] = (float*)(FLASH_VOLTAGE_ADDR);
+	dialgram_Params.DataPointers[1] = (float*)(FLASH_CURRENT_ADDR);
+	strcpy(dialgram_Params.MaxAndMinSprintfCommandStrings[0], "%0.1fV");
+	strcpy(dialgram_Params.MaxAndMinSprintfCommandStrings[1], "%0.1fA");
+	strcpy(dialgram_Params.DataNumSprintfCommandString, "t=%03ds");
+	strcpy(dialgram_Params.DataSprintfCommandStrings[0], "%0.3fV");
+	strcpy(dialgram_Params.DataSprintfCommandStrings[1], "%0.3fA");
+	dialgram_Params.RecordLength = time / 2;
+	dialgram_Params.MaxValues[0] = FindMax((float*)(FLASH_VOLTAGE_ADDR), time / 2);
+	dialgram_Params.MinValues[0] = FindMin((float*)(FLASH_VOLTAGE_ADDR), time / 2);
+	dialgram_Params.MaxValues[1] = FindMax((float*)(FLASH_CURRENT_ADDR), time / 2);
+	dialgram_Params.MinValues[1] = FindMin((float*)(FLASH_CURRENT_ADDR), time / 2);
+	dialgram_Params.Item1AutoNumStart = 0;
+	dialgram_Params.Item1AutoNumStep = 2;
+	for (i = 0; i < 2; i++)
+	{
+		temp = (dialgram_Params.MaxValues[i] - dialgram_Params.MinValues[i]) * 10;
+		temp = temp + 2;
+		dialgram_Params.MinValues[i] = (float)((u16)(dialgram_Params.MinValues[i] * 10)) / 10;
+		dialgram_Params.MaxValues[i] = dialgram_Params.MinValues[i] + (float)temp*0.1;
+	}
+	UI_Dialgram_Init(&dialgram_Params);
+	xQueueReceive(UI_DialogueMsg, &i, portMAX_DELAY);
+	if (i) return true;
+	else return false;
 }
 
 void ShowStepUpTestResult(u16 time)
 {
- ListView_Param_Struct listView_Params;
- u16 i;
- char ItemNameTime[]="Time";
- char ItemNameCurt[]="Curt(A)"; 
- char ItemNameVolt[]="Volt(V)"; 
- char sprintfCommandCurt[]="%0.3f"; 
- char sprintfCommandVolt[]="%0.3f"; 
- listView_Params.ItemNames[0]=ItemNameTime;
- listView_Params.ItemNames[1]=ItemNameCurt;
- listView_Params.ItemNames[2]=ItemNameVolt;
- listView_Params.DataPointers[0]=(float*)(FLASH_CURRENT_ADDR);
- listView_Params.DataPointers[1]=(float*)(FLASH_VOLTAGE_ADDR);
- listView_Params.sprintfCommandStrings[0]=sprintfCommandCurt;
- listView_Params.sprintfCommandStrings[1]=sprintfCommandVolt;	
- listView_Params.ItemNum=3;
- listView_Params.ItemPositions[0] = 2;
- listView_Params.ItemPositions[1] = 30;
- listView_Params.ItemPositions[2] = 81;
- listView_Params.ItemPositions[3] = 127;
- listView_Params.DefaultPos = 0;
- listView_Params.FastSpeed=25;
- listView_Params.Item1AutoNum=true;
- listView_Params.Item1AutoNumStart=0;
- listView_Params.Item1AutoNumStep=2;
- listView_Params.ListLength=time/2;
-// sprintf(tempString,"%f",*(float*)(FLASH_CURRENT_ADDR));
-// OLED_ShowString(0,0,tempString);
-// while(1) vTaskDelay(100);
- UI_ListView_Init(&listView_Params);
- xQueueReceive(UI_ListViewMsg, &i, portMAX_DELAY);
+	bool exit;
+	for (;;)
+	{
+		exit = ShowStepUpTestResultInListView(time - 1);
+		if (exit == true) return;
+		ShowSmallDialogue("Dialgram", 800, true);
+		exit = ShowStepUpTestResultInDialgram(time - 1);
+		if (exit == true) return;
+		ShowSmallDialogue("List", 800, true);
+	}
 }
 
 void RunAStepUpTest()
 {
 	StepUpTestParamsStruct test_Params;
 	StepUpTestStateStruct testInfo;
-	test_Params.StartCurrent = 
-	GetTestParam(StartCurrentGet_Str[CurrentSettings->Language],100,STEP_UP_TEST_CURRENT_MAX,
-	1000,100,"mA",20);
-	test_Params.StopCurrent = 
-	GetTestParam(EndCurrentGet_Str[CurrentSettings->Language],100,STEP_UP_TEST_CURRENT_MAX,
-	2000,100,"mA",20);
-	test_Params.Step = GetTestParam(StepCurrentGet_Str[CurrentSettings->Language],100,500,
-	100,100,"mA",10);
-	test_Params.TimeInterval = 
-	GetTestParam(TimeIntervalGet_Str[CurrentSettings->Language],2,30,
-	4,2,"s",10);
-	test_Params.ProtectVolt = 
-	GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language],0,20000,
-	900*CurrentMeterData.Voltage/10*10,10,"mV",25);
+	test_Params.StartCurrent =
+		GetTestParam(StartCurrentGet_Str[CurrentSettings->Language], 100, STEP_UP_TEST_CURRENT_MAX,
+			1000, 100, "mA", 20);
+	test_Params.StopCurrent =
+		GetTestParam(EndCurrentGet_Str[CurrentSettings->Language], 100, STEP_UP_TEST_CURRENT_MAX,
+			2000, 100, "mA", 20);
+	test_Params.Step = GetTestParam(StepCurrentGet_Str[CurrentSettings->Language], 100, 500,
+		100, 100, "mA", 10);
+	test_Params.TimeInterval =
+		GetTestParam(TimeIntervalGet_Str[CurrentSettings->Language], 2, 30,
+			4, 2, "s", 10);
+	test_Params.ProtectVolt =
+		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0, 20000,
+			900 * CurrentMeterData.Voltage / 10 * 10, 10, "mV", 25);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
@@ -285,7 +372,7 @@ void RunAStepUpTest()
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
-	if (testInfo.TestOverFlag==1)
+	if (testInfo.TestOverFlag == 1)
 		ShowSmallDialogue("Test Done!", 1000, true);
 	else
 		ShowSmallDialogue("Protected!", 1000, true);

@@ -3,9 +3,9 @@
 
 #include "stm32f10x.h"
 
-#define FLASH_SETTINGS_BLOCK 0x0801d800
+#define FLASH_SETTINGS_BLOCK 0x0801c000
 
-#define FLASH_SETTINGS_ADDR 0x0801d800
+#define FLASH_SETTINGS_ADDR 0x0801c000
 
 void Settings(void);
 

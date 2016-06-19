@@ -21,14 +21,14 @@
 
 #define UI_LISTVIEW_HANDLER_PRIORITY tskIDLE_PRIORITY+2
 
-xQueueHandle UI_ListViewMsg; 
+xQueueHandle UI_ListViewMsg;
 
 void UI_ListView_Handler(void *pvParameters)
 {
-	ListView_Param_Struct* listView_Params=pvParameters;
+	ListView_Param_Struct* listView_Params = pvParameters;
 	Key_Message_Struct key_Message;
 	u16 pos[5];
-	char tempString[29]; 
+	char tempString[29];
 	int currentPos;
 	int currentRelativePos;
 	u16 itemStringLengths[4];
@@ -36,7 +36,7 @@ void UI_ListView_Handler(void *pvParameters)
 	u16 lengthTemp;
 	u16 posTemp;
 	u16 i, p, m;
-//	u16* dataNumPointer;
+	//	u16* dataNumPointer;
 	float * dataPointers[4];
 	bool updateNumTab = true;
 	bool firstDraw = true;
@@ -59,7 +59,7 @@ void UI_ListView_Handler(void *pvParameters)
 	{
 		pos[i] = GetCentralPosition(listView_Params->ItemPositions[i],
 			listView_Params->ItemPositions[i + 1], itemStringLengths[i]);
-	}	
+	}
 	for (i = 0; i < listView_Params->ItemNum; i++)
 	{
 		OLED_ShowAnyString(pos[i], 1, listView_Params->ItemNames[i], NotOnSelect, 12);
@@ -80,12 +80,12 @@ void UI_ListView_Handler(void *pvParameters)
 		{
 			dataPointers[i + 1] = listView_Params->DataPointers[i];
 		}
-//		dataNumPointer = listView_Params->DataAutoNumPointer;
-//		for (i = 0; i < listView_Params->ListLength; i++)
-//		{
-//			dataNumPointer[i] = listView_Params->Item1AutoNumStart + i*listView_Params->Item1AutoNumStep;
-//		}
-	}	
+		//		dataNumPointer = listView_Params->DataAutoNumPointer;
+		//		for (i = 0; i < listView_Params->ListLength; i++)
+		//		{
+		//			dataNumPointer[i] = listView_Params->Item1AutoNumStart + i*listView_Params->Item1AutoNumStep;
+		//		}
+	}
 	else
 	{
 		for (i = 0; i < listView_Params->ItemNum; i++)
@@ -96,11 +96,11 @@ void UI_ListView_Handler(void *pvParameters)
 	currentPos = listView_Params->DefaultPos;
 	currentRelativePos = 0;
 	ClearKeyEvent(key_Message);
-	for(;;)
+	for (;;)
 	{
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		if (listView_Params->Item1AutoNum == true) p = 1;
-		else p = 0;	 
+		else p = 0;
 		for (i = 0; i < listView_Params->ItemNum - p; i++)
 		{
 			for (m = 0; m < 5; m++)
@@ -111,22 +111,22 @@ void UI_ListView_Handler(void *pvParameters)
 					listView_Params->ItemPositions[i + p + 1], lengthTemp);
 				OLED_ShowAnyString(posTemp - 1, 15 + 10 * m, tempString, NotOnSelect, 8);
 			}
-		}		
-																	
+		}
+
 		if (listView_Params->Item1AutoNum == true)
-		{	
+		{
 			if (currentPosChanged == true)
 			{
 				currentPosChanged = false;
 				for (i = 0; i < 5; i++)
-					OLED_FillRect(listView_Params->ItemPositions[0], 15 + 10 * i, 
-				  listView_Params->ItemPositions[1] - 4, 22 + 10 * i, 0);
+					OLED_FillRect(listView_Params->ItemPositions[0], 15 + 10 * i,
+						listView_Params->ItemPositions[1] - 4, 22 + 10 * i, 0);
 				firstDraw = true;
 				updateNumTab = true;
 			}
-				for (i = 0; i < 5; i++)
+			for (i = 0; i < 5; i++)
 			{
-				sprintf(tempString, "%d", listView_Params->Item1AutoNumStart + (currentPos+i)*listView_Params->Item1AutoNumStep);
+				sprintf(tempString, "%d", listView_Params->Item1AutoNumStart + (currentPos + i)*listView_Params->Item1AutoNumStep);
 				lengthTemp = GetStringLength(tempString);
 				posTemp = GetCentralPosition(listView_Params->ItemPositions[0],
 					listView_Params->ItemPositions[1], lengthTemp);
@@ -135,21 +135,21 @@ void UI_ListView_Handler(void *pvParameters)
 				if (currentRelativePos == i&&updateNumTab == true)
 				{
 					if (firstDraw == false)
-						OLED_InvertRect(listView_Params->ItemPositions[0], 15 + 10 * lastSelected, 
-					  listView_Params->ItemPositions[1] - 4, 22 + 10 * lastSelected);
+						OLED_InvertRect(listView_Params->ItemPositions[0], 15 + 10 * lastSelected,
+							listView_Params->ItemPositions[1] - 4, 22 + 10 * lastSelected);
 					else firstDraw = false;
 					OLED_ShowAnyString(posTemp - 1, 15 + 10 * i, tempString, NotOnSelect, 8);
-					OLED_InvertRect(listView_Params->ItemPositions[0], 15 + 10 * i, 
-					listView_Params->ItemPositions[1] - 4, 22 + 10 * i);
+					OLED_InvertRect(listView_Params->ItemPositions[0], 15 + 10 * i,
+						listView_Params->ItemPositions[1] - 4, 22 + 10 * i);
 					lastSelected = currentRelativePos;
 					updateNumTab = false;
 				}
 			}
 		}
 		OLED_Refresh_Gram();
-	  xSemaphoreGive(OLEDRelatedMutex);
-		xQueueReceive(Key_Message, & key_Message, portMAX_DELAY );
-		if(key_Message.KeyEvent==RightClick||key_Message.AdvancedKeyEvent==RightContinous)
+		xSemaphoreGive(OLEDRelatedMutex);
+		xQueueReceive(Key_Message, &key_Message, portMAX_DELAY);
+		if (key_Message.KeyEvent == RightClick || key_Message.AdvancedKeyEvent == RightContinous)
 		{
 			currentRelativePos++;
 			updateNumTab = true;
@@ -157,19 +157,19 @@ void UI_ListView_Handler(void *pvParameters)
 			{
 				currentPosChanged = true;
 				currentPos++;
-				if (currentPos + 5 >listView_Params->ListLength)
+				if (currentPos + 5 > listView_Params->ListLength)
 				{
 					currentPos = listView_Params->ListLength - 5;
 					currentPosChanged = false;
-					updateNumTab=false;
+					updateNumTab = false;
 				}
 				currentRelativePos = 4;
-			}	 
-		} 
-   else if(key_Message.KeyEvent==LeftClick||key_Message.AdvancedKeyEvent==LeftContinous)
-	 {
+			}
+		}
+		else if (key_Message.KeyEvent == LeftClick || key_Message.AdvancedKeyEvent == LeftContinous)
+		{
 			currentRelativePos--;
-		 	updateNumTab = true;	
+			updateNumTab = true;
 			if (currentRelativePos < 0)
 			{
 				currentPosChanged = true;
@@ -178,23 +178,23 @@ void UI_ListView_Handler(void *pvParameters)
 				{
 					currentPos = 0;
 					currentPosChanged = false;
-					updateNumTab = false;	
+					updateNumTab = false;
 				}
 				currentRelativePos = 0;
-			}  
-	 }
-	 else if(key_Message.KeyEvent==MidDouble)
-	 {
-	  currentPos=32767;
-		xQueueSend(UI_ListViewMsg,&currentPos, portMAX_DELAY);
-		vTaskDelete(NULL);
-	 }
-	 else if(key_Message.KeyEvent==MidClick)
-	 {
-		xQueueSend(UI_ListViewMsg,&currentPos, portMAX_DELAY);
-		vTaskDelete(NULL);	  
-	 }
-  }
+			}
+		}
+		else if (key_Message.KeyEvent == MidDouble)
+		{
+			currentPos = 32767;
+			xQueueSend(UI_ListViewMsg, &currentPos, portMAX_DELAY);
+			vTaskDelete(NULL);
+		}
+		else if (key_Message.KeyEvent == MidClick)
+		{
+			xQueueSend(UI_ListViewMsg, &currentPos, portMAX_DELAY);
+			vTaskDelete(NULL);
+		}
+	}
 }
 
 /**
@@ -205,9 +205,9 @@ void UI_ListView_Handler(void *pvParameters)
   */
 void UI_ListView_Init(ListView_Param_Struct * listViewParams)
 {
-	UI_ListViewMsg=xQueueCreate(1, sizeof(int));
+	UI_ListViewMsg = xQueueCreate(1, sizeof(int));
 	xTaskCreate(UI_ListView_Handler, "UI_ListView Handler",
-	384, listViewParams, UI_LISTVIEW_HANDLER_PRIORITY, NULL);
-}		
+		256, listViewParams, UI_LISTVIEW_HANDLER_PRIORITY, NULL);
+}
 
 
