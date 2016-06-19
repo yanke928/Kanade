@@ -21,7 +21,7 @@ typedef struct {
 void StepUpTest_Init(StepUpTestParamsStruct* test_Params);
 
 //see .c for details
-void StepUpTest_UI_Init(u16* testTime);
+void StepUpTest_UI_Init(void);
 
 //see .c for details
 void RunAStepUpTest(void);

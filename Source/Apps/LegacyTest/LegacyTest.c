@@ -20,7 +20,6 @@
 #include "UI_ListView.h"
 #include "UI_Dialgram.h"
 #include "UI_Confirmation.h"
-#include "UI_ProgressBar.h"
 
 #include "MultiLanguageStrings.h"
 
@@ -101,40 +100,24 @@ void StepUpTestOnTimeUI(u16 timeNow);
 void StepUpTest_UI_Handler(void *pvParameters)
 {
 	StepUpTestStateStruct currentState;
-	u16 testTime=*(u16*)pvParameters;
-	float progressTime;
-	ProgressBar_Param_Struct progressBar_Params;
-	progressBar_Params.Pos1.x=1;
-	progressBar_Params.Pos1.y=1;
-	progressBar_Params.Pos2.x=126;
-	progressBar_Params.Pos2.y=13;
-	progressBar_Params.MinValue=0;
-	progressBar_Params.MaxValue=testTime;
 	currentState.CurrentTime = 0;
 	ShowDialogue((char *)StepUpTestRunning_Str[CurrentSettings->Language], "", "");
-	UI_ProgressBar_Init(&progressBar_Params);
 	for (;;)
 	{
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		StepUpTestOnTimeUI(currentState.CurrentTime);
 		xSemaphoreGive(OLEDRelatedMutex);
-		progressTime=currentState.CurrentTime;
 		if (currentState.CurrentTime != 0)
 		{
-			xQueueSend(UI_ProgressBarMsg, &progressTime, portMAX_DELAY);
 			vTaskDelay(1000 / portTICK_RATE_MS);
 			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 			StepUpTestOnTimeUI(currentState.CurrentTime + 1);
 			xSemaphoreGive(OLEDRelatedMutex);
-			progressTime++;
-			xQueueSend(UI_ProgressBarMsg, &progressTime, portMAX_DELAY);
 		}
 		xQueueReceive(StepUpTest_UI_UpdateMsg, &currentState, portMAX_DELAY);
 		if (currentState.TestOverFlag > 0)
 		{
-			progressTime=-100;
-			xQueueSend(UI_ProgressBarMsg, &progressTime, portMAX_DELAY);
-			xQueueSend(StepUpTest_UI_Test_DoneMsg, &currentState, portMAX_DELAY);
+			xQueueSend(StepUpTest_UI_Test_DoneMsg, &currentState, 0);
 			vTaskDelete(NULL);
 		}
 	}
@@ -178,11 +161,11 @@ void StepUpTest_Init(StepUpTestParamsStruct* test_Params)
 
   * @retval None
   */
-void StepUpTest_UI_Init(u16* testTime)
+void StepUpTest_UI_Init(void)
 {
 	StepUpTest_UI_Test_DoneMsg = xQueueCreate(1, sizeof(StepUpTestStateStruct));
 	xTaskCreate(StepUpTest_UI_Handler, "Stepup test UI Handler",
-		160, testTime, STEPUPTEST_HANDLER_PRIORITY, NULL);
+		160, NULL, STEPUPTEST_HANDLER_PRIORITY, NULL);
 }
 
 
@@ -375,28 +358,25 @@ void RunAStepUpTest()
 {
 	StepUpTestParamsStruct test_Params;
 	StepUpTestStateStruct testInfo;
-	u16 testTime;
 	test_Params.StartCurrent =
 		GetTestParam(StartCurrentGet_Str[CurrentSettings->Language], 100, STEP_UP_TEST_CURRENT_MAX,
 			1000, 100, "mA", 20);
 	test_Params.StopCurrent =
-		GetTestParam(EndCurrentGet_Str[CurrentSettings->Language], test_Params.StartCurrent+100, STEP_UP_TEST_CURRENT_MAX,
-	test_Params.StartCurrent<2000?2000:test_Params.StartCurrent+100, 100, "mA", 20);
-	test_Params.Step = GetTestParam(StepCurrentGet_Str[CurrentSettings->Language], 100, 
-	test_Params.StopCurrent-test_Params.StartCurrent>500?500:test_Params.StopCurrent-test_Params.StartCurrent,
-			100, 100, "mA", 10);
+		GetTestParam(EndCurrentGet_Str[CurrentSettings->Language], 100, STEP_UP_TEST_CURRENT_MAX,
+			2000, 100, "mA", 20);
+	test_Params.Step = GetTestParam(StepCurrentGet_Str[CurrentSettings->Language], 100, 500,
+		100, 100, "mA", 10);
 	test_Params.TimeInterval =
 		GetTestParam(TimeIntervalGet_Str[CurrentSettings->Language], 2, 30,
 			4, 2, "s", 10);
 	test_Params.ProtectVolt =
-		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0, (u16)(1000 * CurrentMeterData.Voltage) / 10 * 10,
-			(u16)(900 * CurrentMeterData.Voltage) / 10 * 10, 10, "mV", 25);
-	testTime=((test_Params.StopCurrent-test_Params.StartCurrent)/test_Params.Step+1)*test_Params.TimeInterval;
+		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0, 20000,
+			900 * CurrentMeterData.Voltage / 10 * 10, 10, "mV", 25);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
 	StepUpTest_Init(&test_Params);
-	StepUpTest_UI_Init(&testTime);
+	StepUpTest_UI_Init();
 	xQueueReceive(StepUpTest_UI_Test_DoneMsg, &testInfo, portMAX_DELAY);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
