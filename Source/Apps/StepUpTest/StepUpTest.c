@@ -19,6 +19,7 @@
 #include "UI_Adjust.h"
 #include "UI_ListView.h"
 #include "UI_Dialgram.h"
+#include "UI_Confirmation.h"
 
 #include "MultiLanguageStrings.h"
 
@@ -228,10 +229,10 @@ u16 GetTestParam(const char askString[], u16 min, u16 max, u16 defaultValue, u16
 bool ShowStepUpTestResultInListView(u16 time)
 {
 	ListView_Param_Struct listView_Params;
-	u8 i;
-	char ItemNameTime[] = "Time";
-	char ItemNameCurt[] = "Curt(A)";
-	char ItemNameVolt[] = "Volt(V)";
+	u16 i;
+	char *ItemNameTime = (char *)StepUpTestDialgramTime_Str[CurrentSettings->Language];
+	char *ItemNameCurt = (char *)StepUpTestDialgramCurrent_Str[CurrentSettings->Language];
+	char *ItemNameVolt = (char *)StepUpTestDialgramVoltage_Str[CurrentSettings->Language];
 	char sprintfCommandCurt[] = "%0.3f";
 	char sprintfCommandVolt[] = "%0.3f";
 	listView_Params.ItemNames[0] = ItemNameTime;
@@ -336,12 +337,18 @@ void ShowStepUpTestResult(u16 time)
 	bool exit;
 	for (;;)
 	{
+		ListView:
 		exit = ShowStepUpTestResultInListView(time - 1);
-		if (exit == true) return;
-		ShowSmallDialogue("Dialgram", 800, true);
+		if (exit == true) 
+			if(GetConfirmation((char *)StepUpTestExitBroswer_Str[CurrentSettings->Language],"")) return;
+		  else goto ListView;
+		ShowSmallDialogue((char *)StepUpTestDialgram_Str[CurrentSettings->Language], 800, true);
+			Dialgram:
 		exit = ShowStepUpTestResultInDialgram(time - 1);
-		if (exit == true) return;
-		ShowSmallDialogue("List", 800, true);
+		if (exit == true) 
+			if(GetConfirmation((char *)StepUpTestExitBroswer_Str[CurrentSettings->Language],"")) return;
+		  else goto Dialgram;
+		ShowSmallDialogue((char *)StepUpTestList_Str[CurrentSettings->Language], 800, true);
 	}
 }
 
@@ -373,9 +380,12 @@ void RunAStepUpTest()
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
 	if (testInfo.TestOverFlag == 1)
-		ShowSmallDialogue("Test Done!", 1000, true);
+		ShowSmallDialogue((char *)StepUpTestDone_Str[CurrentSettings->Language], 1000, true);
 	else
-		ShowSmallDialogue("Protected!", 1000, true);
+		ShowSmallDialogue((char *)StepUpTestProtected_Str[CurrentSettings->Language], 1000, true);
 	ShowStepUpTestResult(testInfo.CurrentTime);
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
 }
 

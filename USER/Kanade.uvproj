@@ -809,6 +809,11 @@
               <FileType>1</FileType>
               <FilePath>..\Source\UI\UI_ListView.c</FilePath>
             </File>
+            <File>
+              <FileName>UI_Dialgram.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\UI\UI_Dialgram.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

@@ -40,6 +40,14 @@ extern const char * RunTime_Str[LanguageNum];
 extern const char * CurrentVoltage_Str[LanguageNum];
 extern const char * CurrentCurrent_Str[LanguageNum];
 extern const char * StepUpTestRunning_Str[LanguageNum];
+extern const char * StepUpTestProtected_Str[LanguageNum];
+extern const char * StepUpTestDone_Str[LanguageNum];
+extern const char * StepUpTestDialgram_Str[LanguageNum];
+extern const char * StepUpTestList_Str[LanguageNum];
+extern const char * StepUpTestDialgramTime_Str[LanguageNum];
+extern const char * StepUpTestDialgramCurrent_Str[LanguageNum];
+extern const char * StepUpTestDialgramVoltage_Str[LanguageNum];
+extern const char * StepUpTestExitBroswer_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 

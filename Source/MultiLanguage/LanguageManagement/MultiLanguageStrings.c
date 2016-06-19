@@ -19,7 +19,7 @@ const char NoSD_EN[] = "No SDCard";
 const char NoSD_TW[] = "沒有記憶體";
 const char NoSD_CN[] = "没有SD卡";
 const char NoSD_JP[] = "いいえTFカード";
-const char * NoSD_Str[] = { NoSD_EN,NoSD_TW,NoSD_JP };
+const char * NoSD_Str[] = { NoSD_EN,NoSD_TW,NoSD_CN,NoSD_JP };
 
 const char WaitingForEBD_EN[] = "Waiting for EBD...";
 const char WaitingForEBD_TW[] = "等待設備...";
@@ -206,6 +206,54 @@ const char StepUpTestRunning_TW[] ="正在測試...";
 const char StepUpTestRunning_CN[] ="正在测试..." ;
 const char StepUpTestRunning_JP[] ="テスト運転中...";
 const char * StepUpTestRunning_Str[] = { StepUpTestRunning_EN,StepUpTestRunning_TW,StepUpTestRunning_CN,StepUpTestRunning_JP };
+
+const char StepUpTestProtected_EN[] ="Protected";
+const char StepUpTestProtected_TW[] ="已保護";
+const char StepUpTestProtected_CN[] ="已保护" ;
+const char StepUpTestProtected_JP[] ="保護されました";
+const char * StepUpTestProtected_Str[] = { StepUpTestProtected_EN,StepUpTestProtected_TW,StepUpTestProtected_CN,StepUpTestProtected_JP };
+
+const char StepUpTestDone_EN[] ="Test Done";
+const char StepUpTestDone_TW[] ="已完成測試";
+const char StepUpTestDone_CN[] ="已完成测试" ;
+const char StepUpTestDone_JP[] ="完成しました";
+const char * StepUpTestDone_Str[] = { StepUpTestDone_EN,StepUpTestDone_TW,StepUpTestDone_CN,StepUpTestDone_JP };
+
+const char StepUpTestDialgram_EN[] ="Dialgram";
+const char StepUpTestDialgram_TW[] ="圖像";
+const char StepUpTestDialgram_CN[] ="图像" ;
+const char StepUpTestDialgram_JP[] ="ダイアグラム";
+const char * StepUpTestDialgram_Str[] = { StepUpTestDialgram_EN,StepUpTestDialgram_TW,StepUpTestDialgram_CN,StepUpTestDialgram_JP };
+
+const char StepUpTestList_EN[] ="ListView";
+const char StepUpTestList_TW[] ="表格";
+const char StepUpTestList_CN[] ="表格" ;
+const char StepUpTestList_JP[] ="テーブル";
+const char * StepUpTestList_Str[] = { StepUpTestList_EN,StepUpTestList_TW,StepUpTestList_CN,StepUpTestList_JP };
+
+const char StepUpTestDialgramTime_EN[] ="Time";
+const char StepUpTestDialgramTime_TW[] ="時間";
+const char StepUpTestDialgramTime_CN[] ="时间" ;
+const char StepUpTestDialgramTime_JP[] ="時間";
+const char * StepUpTestDialgramTime_Str[] = { StepUpTestDialgramTime_EN,StepUpTestDialgramTime_TW,StepUpTestDialgramTime_CN,StepUpTestDialgramTime_JP };
+
+const char StepUpTestDialgramCurrent_EN[] ="Current";
+const char StepUpTestDialgramCurrent_TW[] ="電流";
+const char StepUpTestDialgramCurrent_CN[] ="电流" ;
+const char StepUpTestDialgramCurrent_JP[] ="電流";
+const char * StepUpTestDialgramCurrent_Str[] = { StepUpTestDialgramCurrent_EN,StepUpTestDialgramCurrent_TW,StepUpTestDialgramCurrent_CN,StepUpTestDialgramCurrent_JP };
+
+const char StepUpTestDialgramVoltage_EN[] ="Voltage";
+const char StepUpTestDialgramVoltage_TW[] ="電壓";
+const char StepUpTestDialgramVoltage_CN[] ="电压" ;
+const char StepUpTestDialgramVoltage_JP[] ="電圧";
+const char * StepUpTestDialgramVoltage_Str[] = { StepUpTestDialgramVoltage_EN,StepUpTestDialgramVoltage_TW,StepUpTestDialgramVoltage_CN,StepUpTestDialgramVoltage_JP };
+
+const char StepUpTestExitBroswer_EN[] ="Exit Broswer?";
+const char StepUpTestExitBroswer_TW[] ="退出瀏覽?";
+const char StepUpTestExitBroswer_CN[] ="退出浏览?" ;
+const char StepUpTestExitBroswer_JP[] ="終了ブラウザ?";
+const char * StepUpTestExitBroswer_Str[] = { StepUpTestExitBroswer_EN,StepUpTestExitBroswer_TW,StepUpTestExitBroswer_CN,StepUpTestExitBroswer_JP };
 
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {

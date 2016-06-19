@@ -50,15 +50,14 @@ void UI_ListView_Handler(void *pvParameters)
 	/*Get the lengths of the itemNames*/
 	for (i = 0; i < listView_Params->ItemNum; i++)
 	{
-		for (p = 0; listView_Params->ItemNames[i][p] != 0; p++);
-		itemStringLengths[i] = p;
+		itemStringLengths[i] = GetStringLength(listView_Params->ItemNames[i]);
 	}
 	pos[0] = listView_Params->ItemPositions[0];
 	/*Make the positions of the itemStrings centural between two grids*/
 	for (i = 0; i < listView_Params->ItemNum; i++)
 	{
 		pos[i] = GetCentralPosition(listView_Params->ItemPositions[i],
-			listView_Params->ItemPositions[i + 1], itemStringLengths[i]);
+			listView_Params->ItemPositions[i + 1], itemStringLengths[i])-1;
 	}
 	for (i = 0; i < listView_Params->ItemNum; i++)
 	{
