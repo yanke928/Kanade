@@ -36,6 +36,7 @@ void UI_ListView_Handler(void *pvParameters)
 	u16 lengthTemp;
 	u16 posTemp;
 	u16 i, p, m;
+	u8 displayLineNumInSinglePage=listView_Params->ListLength>5?5:listView_Params->ListLength;
 	//	u16* dataNumPointer;
 	float * dataPointers[4];
 	bool updateNumTab = true;
@@ -43,7 +44,7 @@ void UI_ListView_Handler(void *pvParameters)
 	bool currentPosChanged = false;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
-	OLED_DrawRect(0, 0, 127, 63, DRAW);
+	OLED_DrawRect(0, 0, 127, 23 + 10 * (displayLineNumInSinglePage-1), DRAW);
 	OLED_DrawHorizonalLine(13, 0, 127, 1);
 	xSemaphoreGive(OLEDRelatedMutex);
 	SetKeyBeatRate(listView_Params->FastSpeed);
@@ -66,10 +67,10 @@ void UI_ListView_Handler(void *pvParameters)
 	/*Draw vertical grids*/
 	for (i = 0; i < listView_Params->ItemNum; i++)
 	{
-		OLED_DrawVerticalLine(listView_Params->ItemPositions[i] - 2, 0, 63, 1);
+		OLED_DrawVerticalLine(listView_Params->ItemPositions[i] - 2, 0,  23 + 10 * (displayLineNumInSinglePage-1), 1);
 	}
 	/*Draw horizonal grids*/
-	for (i = 0; i < 5; i++)
+	for (i = 0; i <displayLineNumInSinglePage; i++)
 	{
 		OLED_DrawHorizonalLine(23 + 10 * i, 0, 127, 1);
 	}
@@ -102,7 +103,7 @@ void UI_ListView_Handler(void *pvParameters)
 		else p = 0;
 		for (i = 0; i < listView_Params->ItemNum - p; i++)
 		{
-			for (m = 0; m < 5; m++)
+			for (m = 0; m < displayLineNumInSinglePage; m++)
 			{
 				sprintf(tempString, listView_Params->sprintfCommandStrings[i], dataPointers[i + p][currentPos + m]);
 				lengthTemp = GetStringLength(tempString);
@@ -117,13 +118,13 @@ void UI_ListView_Handler(void *pvParameters)
 			if (currentPosChanged == true)
 			{
 				currentPosChanged = false;
-				for (i = 0; i < 5; i++)
+				for (i = 0; i < displayLineNumInSinglePage; i++)
 					OLED_FillRect(listView_Params->ItemPositions[0], 15 + 10 * i,
 						listView_Params->ItemPositions[1] - 4, 22 + 10 * i, 0);
 				firstDraw = true;
 				updateNumTab = true;
 			}
-			for (i = 0; i < 5; i++)
+			for (i = 0; i < displayLineNumInSinglePage; i++)
 			{
 				sprintf(tempString, "%d", listView_Params->Item1AutoNumStart + (currentPos + i)*listView_Params->Item1AutoNumStep);
 				lengthTemp = GetStringLength(tempString);
@@ -152,17 +153,17 @@ void UI_ListView_Handler(void *pvParameters)
 		{
 			currentRelativePos++;
 			updateNumTab = true;
-			if (currentRelativePos >= 5)
+			if (currentRelativePos >= displayLineNumInSinglePage)
 			{
 				currentPosChanged = true;
 				currentPos++;
-				if (currentPos + 5 > listView_Params->ListLength)
+				if (currentPos + displayLineNumInSinglePage > listView_Params->ListLength)
 				{
-					currentPos = listView_Params->ListLength - 5;
+					currentPos = listView_Params->ListLength - displayLineNumInSinglePage;
 					currentPosChanged = false;
 					updateNumTab = false;
 				}
-				currentRelativePos = 4;
+				currentRelativePos = displayLineNumInSinglePage-1;
 			}
 		}
 		else if (key_Message.KeyEvent == LeftClick || key_Message.AdvancedKeyEvent == LeftContinous)

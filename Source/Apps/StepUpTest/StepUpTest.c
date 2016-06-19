@@ -339,12 +339,14 @@ void ShowStepUpTestResult(u16 time)
 	{
 		ListView:
 		exit = ShowStepUpTestResultInListView(time - 1);
+		vTaskDelay(20/portTICK_RATE_MS);
 		if (exit == true) 
 			if(GetConfirmation((char *)StepUpTestExitBroswer_Str[CurrentSettings->Language],"")) return;
 		  else goto ListView;
 		ShowSmallDialogue((char *)StepUpTestDialgram_Str[CurrentSettings->Language], 800, true);
 			Dialgram:
 		exit = ShowStepUpTestResultInDialgram(time - 1);
+		vTaskDelay(20/portTICK_RATE_MS);
 		if (exit == true) 
 			if(GetConfirmation((char *)StepUpTestExitBroswer_Str[CurrentSettings->Language],"")) return;
 		  else goto Dialgram;
