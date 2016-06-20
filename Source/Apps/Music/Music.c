@@ -43,8 +43,6 @@ u16 MusicFREQTab[]={262,294,330,349,392,440,494,
                     523,578,659,698,784,880,988,
                     1046,1175,1318,1397,1568,1760,1976};
 
-										
-
 xTaskHandle SoundPlayerHandle;
 
 const SingleToneStruct Tori_No_Uta[] =
