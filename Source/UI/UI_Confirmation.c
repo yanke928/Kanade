@@ -19,19 +19,19 @@
 
 #include "UI_Confirmation.h" 
 
-bool GetConfirmation(char subString0[],char subString1[])
+bool GetConfirmation(const char subString0[],const char subString1[])
 {
  u8 i;
  Key_Message_Struct keyMessage;
  UI_Button_Param_Struct buttonParams;
- buttonParams.ButtonString=(char *)ConfirmCancel_Str[CurrentSettings->Language];
+ buttonParams.ButtonString=ConfirmCancel_Str[CurrentSettings->Language];
  buttonParams.ButtonNum=2;
  buttonParams.DefaultValue=0;
  buttonParams.Positions=(OLED_PositionStruct *)ComfirmationPositions[CurrentSettings->Language];
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
  OLED_Clear();
  xSemaphoreGive(OLEDRelatedMutex);
- ShowDialogue((char *)Confirmation_Str[CurrentSettings->Language],subString0,subString1);
+ ShowDialogue(Confirmation_Str[CurrentSettings->Language],subString0,subString1);
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
  OLED_Refresh_Gram();
  xSemaphoreGive(OLEDRelatedMutex);

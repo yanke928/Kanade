@@ -32,7 +32,7 @@ u8 GetCentralPosition(u8 startPos, u8 endPos, u8 stringLength)
 
 	  @retval Length of given string
   */
-u8 GetStringLength(char string[])
+u8 GetStringLength(const char string[])
 {
   u8 length=0;
 	for (; *string!= 0; string++)

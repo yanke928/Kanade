@@ -7,6 +7,6 @@
 u8 GetCentralPosition(u8 startPos, u8 endPos, u8 stringLength);
 
 //see .c for details
-u8 GetStringLength(char string[]);
+u8 GetStringLength(const char string[]);
 
 #endif /* __UI_UTILITIES_H */

@@ -23,6 +23,7 @@
 #include "MultiLanguageStrings.h"
 
 #include "Settings.h"
+#include "About.h"
 
 Settings_Struct* CurrentSettings=(Settings_Struct*)0x0801c000;
 
@@ -59,7 +60,8 @@ void Settings()
  switch(selection)
  {
 	 case 1:TimeSettings();break;
-	 case 3:SetLanguage();
+	 case 3:SetLanguage();break;
+	 case 5:About();
  }
 }
 

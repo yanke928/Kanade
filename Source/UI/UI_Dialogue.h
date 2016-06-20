@@ -9,9 +9,9 @@
 #include "queue.h"
 
 //see .c for details
-void ShowDialogue(char titleString[],char subString0[],char subString1[]);
+void ShowDialogue(const char titleString[],const char subString0[],const char subString1[]);
 
 //see .c for details
-void ShowSmallDialogue(char string[],u16 time,bool occupyThread);
+void ShowSmallDialogue(const char string[],u16 time,bool occupyThread);
 
 #endif /* __UI_DIALOGUE_H */

@@ -13,11 +13,43 @@
 
 #define SOUND_PLAYER_PRIORITY tskIDLE_PRIORITY+4
 
+//Define the simple title of each pitch													 
+#define L1 0
+#define L2 1												 
+#define L3 2
+#define L4 3
+#define L5 4
+#define L6 5
+#define L7 6
+
+#define M1 7
+#define M2 8												 
+#define M3 9
+#define M4 10
+#define M5 11
+#define M6 12
+#define M7 13
+
+#define H1 14
+#define H2 15												 
+#define H3 16
+#define H4 17
+#define H5 18
+#define H6 19
+#define H7 20								
+#define STOP 21
+
+u16 MusicFREQTab[]={262,294,330,349,392,440,494,
+                    523,578,659,698,784,880,988,
+                    1046,1175,1318,1397,1568,1760,1976};
+
+										
+
 xTaskHandle SoundPlayerHandle;
 
-SingleToneStruct Tori_No_Uta[] =
+const SingleToneStruct Tori_No_Uta[] =
 {
- {750,0},
+ {75,0},
  // {STOP,4},{M5,4},{M6,4},{H1,4},{M7,1},{STOP,4},{M5,4},
  // {M6,4},{H1,4},{H2,1},{STOP,4},{M5,4},{M6,4},{M7,4},
  // {H5,1},{STOP,2},{H4,4},{H3,2},{STOP,4},{M5,4},
@@ -69,9 +101,17 @@ SingleToneStruct Tori_No_Uta[] =
    {0,0}
 };
 
-SingleToneStruct Alarm[] =
+//SingleToneStruct Tori_No_Uta[] =
+//{
+// {750,0},
+// 
+//   {STOP,1},{STOP,1},{STOP,1},
+//   {0,0}
+//};
+
+const SingleToneStruct Alarm[] =
 {
- {750,0},
+ {75,0},
  {M7,8},
  {STOP,8},
  {0,0}
@@ -95,15 +135,15 @@ void SoundPlayer(void *pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 	while (1)
 	{
-		if (sound[addr].ToneFREQ != 0) //If it is not the end of the score
+		if (sound[addr].BeatTimeDivide != 0) //If it is not the end of the score
 		{
-			nextFREQ = sound[addr].ToneFREQ;//Get the FREQ of the tone in the next pitch
-			nextTime = sound[0].ToneFREQ / sound[addr].BeatTimeDivide;//Calculate the time of the next tone 
+			nextFREQ = MusicFREQTab[sound[addr].ToneFREQIndex];//Get the FREQ of the tone in the next pitch
+			nextTime = sound[0].ToneFREQIndex*10/ sound[addr].BeatTimeDivide;//Calculate the time of the next tone 
 		}
 		else
 		{
-			nextFREQ = sound[1].ToneFREQ;//Go to the start of the score
-			nextTime = sound[0].ToneFREQ / sound[1].BeatTimeDivide;//The first pitch of the score
+			nextFREQ = MusicFREQTab[sound[1].ToneFREQIndex];//Go to the start of the score
+			nextTime = sound[0].ToneFREQIndex*10/ sound[1].BeatTimeDivide;//The first pitch of the score
 			addr = 1;
 		}
 		TIM_Cmd(TIM4, DISABLE);//Turn off the timer for safety
@@ -120,7 +160,7 @@ void SoundPlayer(void *pvParameters)
 		TimOCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 		TIM_OC1Init(TIM4, &TimOCInitStructure);
 		TIM_CtrlPWMOutputs(TIM4, ENABLE);
-		if (sound[addr].ToneFREQ != STOP)
+		if (sound[addr].ToneFREQIndex != STOP)
 			TIM_Cmd(TIM4, ENABLE);
 		addr++;
 		vTaskDelayUntil(&xLastWakeTime, nextTime / portTICK_RATE_MS);
@@ -133,7 +173,7 @@ void SoundPlayer(void *pvParameters)
 
   * @retval : TimerNo for kanade
   */
-void SoundStart(SingleToneStruct sound[])
+void SoundStart(const SingleToneStruct sound[])
 {
 	BuzzerConfig();
 	if (SoundPlayerHandle != NULL)
@@ -141,7 +181,7 @@ void SoundStart(SingleToneStruct sound[])
 		vTaskDelete(SoundPlayerHandle);
 	}
 	xTaskCreate(SoundPlayer, "Sound Player",
-		32, sound, SOUND_PLAYER_PRIORITY, &SoundPlayerHandle);
+		64, (SingleToneStruct*)sound, SOUND_PLAYER_PRIORITY, &SoundPlayerHandle);
 }
 
 /**

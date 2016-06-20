@@ -20,7 +20,7 @@
 					 subString1:  Second Line of the passage
 
   */
-void ShowDialogue(char titleString[],char subString0[],char subString1[])
+void ShowDialogue(const char titleString[],const char subString0[],const char subString1[])
 {
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
  OLED_DrawRect(0, 0, 127, 63, DRAW);
@@ -41,7 +41,7 @@ void ShowDialogue(char titleString[],char subString0[],char subString1[])
             occupyThread:Will ShowSmallDialogue() occupies thread
 until time is up
   */
-void ShowSmallDialogue(char string[],u16 time,bool occupyThread)
+void ShowSmallDialogue(const char string[],u16 time,bool occupyThread)
 {
 	u8 startAddr, endAddr;
 	u8 stringLength;

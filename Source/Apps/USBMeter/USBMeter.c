@@ -52,15 +52,15 @@ void USBMeter(void *pvParameters)
 		{
 		 switch(keyMessage.KeyEvent)
 		 {
-			 case MidDouble:GetConfirmation((char *)RecordConfirm_Str[CurrentSettings->Language],"");break;
+			 case MidDouble:GetConfirmation(RecordConfirm_Str[CurrentSettings->Language],"");break;
 			 case MidLong:Settings();break;
-			 case LeftClick:if (GetConfirmation((char *)StepUpConfirm_Str[CurrentSettings->Language],""))
+			 case LeftClick:if (GetConfirmation(StepUpConfirm_Str[CurrentSettings->Language],""))
 				 		 RunAStepUpTest(); ;break;
-			 case RightClick:if (GetConfirmation((char *)LegacyTestConfirm_Str[CurrentSettings->Language],""))break;
+			 case RightClick:if (GetConfirmation(LegacyTestConfirm_Str[CurrentSettings->Language],""))break;
 		 }
 		 switch(keyMessage.AdvancedKeyEvent)
 		 {
-		   case LeftContinous:if (GetConfirmation((char *)QCMTKConfirm_Str[CurrentSettings->Language],""))
+		   case LeftContinous:if (GetConfirmation(QCMTKConfirm_Str[CurrentSettings->Language],""))
 				 		 FastChargeTriggerUI(); ;break;
 		 }
 		}

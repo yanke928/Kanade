@@ -9,7 +9,7 @@
 
 typedef struct 
 {
- char *ButtonString;
+ const char *ButtonString;
  u8 ButtonNum;
  u8 DefaultValue;
  OLED_PositionStruct * Positions;
