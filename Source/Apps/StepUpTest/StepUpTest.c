@@ -113,8 +113,10 @@ void StepUpTest_UI_Handler(void *pvParameters)
 	currentState.CurrentTime = 0;
 	ShowDialogue((char *)StepUpTestRunning_Str[CurrentSettings->Language], "", "");
 	UI_ProgressBar_Init(&progressBar_Params);
+	StepUpTestOnTimeUI(0);
 	for (;;)
 	{
+		xQueueReceive(StepUpTest_UI_UpdateMsg, &currentState, portMAX_DELAY);
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		StepUpTestOnTimeUI(currentState.CurrentTime);
 		xSemaphoreGive(OLEDRelatedMutex);
@@ -129,7 +131,6 @@ void StepUpTest_UI_Handler(void *pvParameters)
 			progressTime++;
 			xQueueSend(UI_ProgressBarMsg, &progressTime, portMAX_DELAY);
 		}
-		xQueueReceive(StepUpTest_UI_UpdateMsg, &currentState, portMAX_DELAY);
 		if (currentState.TestOverFlag > 0)
 		{
 			progressTime=-100;
