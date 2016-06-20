@@ -654,6 +654,11 @@
               <FileType>1</FileType>
               <FilePath>..\Source\Apps\StepUpTest\StepUpTest.c</FilePath>
             </File>
+            <File>
+              <FileName>LegacyTest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Apps\LegacyTest\LegacyTest.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

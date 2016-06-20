@@ -56,6 +56,7 @@ void USBMeter(void *pvParameters)
 			 case MidLong:Settings();break;
 			 case LeftClick:if (GetConfirmation((char *)StepUpConfirm_Str[CurrentSettings->Language],""))
 				 		 RunAStepUpTest(); ;break;
+			 case RightClick:if (GetConfirmation((char *)LegacyTestConfirm_Str[CurrentSettings->Language],""))break;
 		 }
 		 switch(keyMessage.AdvancedKeyEvent)
 		 {

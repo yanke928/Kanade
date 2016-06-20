@@ -48,6 +48,7 @@ extern const char * StepUpTestDialgramTime_Str[LanguageNum];
 extern const char * StepUpTestDialgramCurrent_Str[LanguageNum];
 extern const char * StepUpTestDialgramVoltage_Str[LanguageNum];
 extern const char * StepUpTestExitBroswer_Str[LanguageNum];
+extern const char * LegacyTestConfirm_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 

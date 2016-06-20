@@ -63,6 +63,12 @@ const char StepUpConfirm_CN[] ="开始步进测试?" ;
 const char StepUpConfirm_JP[] ="StepUpテスト?";
 const char * StepUpConfirm_Str[] = { StepUpConfirm_EN,StepUpConfirm_TW,StepUpConfirm_CN,StepUpConfirm_JP };
 
+const char LegacyTestConfirm_EN[] ="Legacy test?";
+const char LegacyTestConfirm_TW[] ="開始一般測試?";
+const char LegacyTestConfirm_CN[] ="开始一般测试?" ;
+const char LegacyTestConfirm_JP[] ="一般的なテスト?";
+const char * LegacyTestConfirm_Str[] = { LegacyTestConfirm_EN,LegacyTestConfirm_TW,LegacyTestConfirm_CN,LegacyTestConfirm_JP };
+
 const char Saved_EN[] = "Saved";
 const char Saved_TW[] = "已保存";
 const char Saved_CN[] = "已保存";
