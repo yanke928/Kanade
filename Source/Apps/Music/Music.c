@@ -193,4 +193,5 @@ void SoundStop(void)
 {
 	TIM_DeInit(TIM4);
 	vTaskDelete(SoundPlayerHandle);
+	SoundPlayerHandle=NULL;
 }

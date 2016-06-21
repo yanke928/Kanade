@@ -43,8 +43,6 @@ enum { DrawCoordinate = true, DontDrawCoordinate = false };
 
 enum { LeftHalf = 1, RightHalf = 0 };
 
-enum { HighDensity = 1, LowDensity = 0 };
-
 xQueueHandle UI_DialogueMsg;
 
 /**
@@ -185,80 +183,6 @@ void DrawDialgram(DialgramConfigurationStruct dialgramConfig)
 	curveConfig.DrawPos = dialgramConfig.DrawPos;
 
 	DrawSingleCurve(curveConfig);
-}
-
-/**
-  * @brief  Draw or unDraw a vertical dashed grid with given density
-
-* @param    x:Position
-
-			drawOrUnDraw:Draw(1) or unDraw(1)
-
-			gridsDensity:2 pixels per dot(HighDensity)
-
-			gridsDensity:4 pixels per dot(LowDensity)
-
-	  @retval None
-  */
-void DrawVerticalDashedGrid(u8 x, bool drawOrUnDraw, u8 gridsDensity)
-{
-	u8 i;
-	/*If highDensity is given*/
-	if (gridsDensity == HighDensity)
-		for (i = 0; i < 64; i++)
-		{
-			if (i % 2 == 0)
-			{
-				OLED_DrawPoint(x, i, drawOrUnDraw);
-			}
-		}
-	/*If lowDensity is given*/
-	else
-	{
-		for (i = 0; i < 64; i++)
-		{
-			if ((i - 1) % 4 == 0)
-			{
-				OLED_DrawPoint(x, i, drawOrUnDraw);
-			}
-		}
-	}
-}
-
-/**
-  * @brief  Draw or unDraw a horizonal dashed grid with given density
-
-* @param    y:Position
-
-			drawOrUnDraw:Draw(1) or unDraw(1)
-
-			gridsDensity:2 pixels per dot(HighDensity)
-
-			gridsDensity:4 pixels per dot(LowDensity)
-
-	  @retval None
-  */
-void DrawHorizonalDashedGrid(u8 y, bool drawOrUnDraw, u8 gridsDensity)
-{
-	u8 i;
-	/*If highDensity is given*/
-	if (gridsDensity == HighDensity)
-		for (i = 0; i < 128; i++)
-		{
-			if (i % 2 == 0)
-			{
-				OLED_DrawPoint(i, y, drawOrUnDraw);
-			}
-		}
-	/*If lowDensity is given*/
-	else
-		for (i = 0; i < 128; i++)
-		{
-			if ((i - 1) % 4 == 0)
-			{
-				OLED_DrawPoint(i, y, drawOrUnDraw);
-			}
-		}
 }
 
 /**
