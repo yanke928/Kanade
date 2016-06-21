@@ -8,10 +8,12 @@
 typedef struct
 {
 	u8  ToneFREQIndex;
-	u8  BeatTimeDivide;
+	s8  BeatTimeDivide;
 }SingleToneStruct;
 
 extern const SingleToneStruct Tori_No_Uta[];
+
+extern const SingleToneStruct Ichiban_no_takaramono[];
 
 extern const SingleToneStruct Alarm[];
 

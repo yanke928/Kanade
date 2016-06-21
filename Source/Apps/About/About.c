@@ -29,7 +29,7 @@ void About()
  u8 prodectInfoAddr;
  u8 tmp;
  Key_Message_Struct keyMessage;
- SoundStart((SingleToneStruct*)ProductSound);
+ SoundStart((SingleToneStruct*)Ichiban_no_takaramono);
  productNameLength=GetStringLength(ProductName_Str[CurrentSettings->Language]);
  productVersionLength=GetStringLength(ProductVersion_Str[CurrentSettings->Language]);
  prodectInfoAddr=63-(productNameLength+productVersionLength+1)*3;
@@ -46,6 +46,9 @@ void About()
  tmp=GetCentralPosition(0,127,tmp);
  OLED_ShowAnyString(tmp,32,ProductVendor_Str[CurrentSettings->Language],NotOnSelect,12);		
  DrawHorizonalDashedGrid(46,true,HighDensity);	
+ tmp=GetStringLength(CustomString_Str[CurrentSettings->Language]);
+ tmp=GetCentralPosition(0,127,tmp);
+ OLED_ShowAnyString(tmp,49,CustomString_Str[CurrentSettings->Language],NotOnSelect,12);		
  xSemaphoreGive(OLEDRelatedMutex);
  xQueueReceive(Key_Message, & keyMessage, portMAX_DELAY );
  SoundStop();

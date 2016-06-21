@@ -31,6 +31,12 @@ const char ProductVendor_CN[]="yanke928供应";
 const char ProductVendor_JP[]="yanke928提供";
 const char* const ProductVendor_Str[] = { ProductVendor_EN,ProductVendor_TW,ProductVendor_CN,ProductVendor_JP };
 
+const char CustomString_EN[]="China DIE!!";
+const char CustomString_TW[]="中国滅亡!!";
+const char CustomString_CN[]="中国灭亡!!";
+const char CustomString_JP[]="中国滅びます!!";
+const char* const CustomString_Str[] = { CustomString_EN,CustomString_TW,CustomString_CN,CustomString_JP };
+
 const SingleToneStruct* const ProductSound=Tori_No_Uta;
 
 #endif /* __VERSIONINFO_H */
