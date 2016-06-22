@@ -23,28 +23,24 @@ vu8 SD_Card_Ready;
 
 extern u8  SD_Type;
 
-extern u32 Mass_Block_Count;//������
-extern u32 Mass_Block_Size;//������С
-extern u32 Mass_Memory_Size;//����
-
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
 /*-----------------------------------------------------------------------*/
 
-DSTATUS disk_status (
+DSTATUS disk_status(
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
 	switch (pdrv)
 	{
-		case 0 :
-			return RES_OK;
-		case 1 :
-			return RES_OK;
-		case 2 :
-			return RES_OK;
-		default:
-			return STA_NOINIT;
+	case 0:
+		return RES_OK;
+	case 1:
+		return RES_OK;
+	case 2:
+		return RES_OK;
+	default:
+		return STA_NOINIT;
 	}
 }
 
@@ -54,18 +50,18 @@ DSTATUS disk_status (
 /* Inidialize a Drive                                                    */
 /*-----------------------------------------------------------------------*/
 
-DSTATUS disk_initialize (
+DSTATUS disk_initialize(
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-  int result;
-    if(pdrv)
-    {
-        return STA_NOINIT; 
-    }
-    result = SD_Init();
-	  if(result==0) { return RES_OK; }
-    else{ return STA_NOINIT; }
+	int result;
+	if (pdrv)
+	{
+		return STA_NOINIT;
+	}
+	result = SD_Init();
+	if (result == 0) { return RES_OK; }
+	else { return STA_NOINIT; }
 }
 
 
@@ -74,53 +70,53 @@ DSTATUS disk_initialize (
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_read (
+DRESULT disk_read(
 	BYTE pdrv,		/* Physical drive nmuber to identify the drive */
 	BYTE *buff,		/* Data buffer to store read data */
 	DWORD sector,	/* Sector address in LBA */
 	UINT count		/* Number of sectors to read */
 )
 {
-	u8 res=0;
-    if (pdrv || !count)
-    {    
-        return RES_PARERR;  //仅支持单磁盘操作，count不能等于0，否则返回参数错误
-    }
-//    if(!SD_DET())
-//    {
-//        return RES_NOTRDY;  //没有检测到SD卡，报NOT READY错误
-//    }
+	u8 res = 0;
+	if (pdrv || !count)
+	{
+		return RES_PARERR;  //仅支持单磁盘操作，count不能等于0，否则返回参数错误
+	}
+	//    if(!SD_DET())
+	//    {
+	//        return RES_NOTRDY;  //没有检测到SD卡，报NOT READY错误
+	//    }
 
-    
-	
-    if(count==1)            //1个sector的读操作      
-    {                                                
-        res = SD_ReadSingleBlock(sector, buff);      
-    }                                                
-    else                    //多个sector的读操作     
-    {                                                
-        res = SD_ReadMultiBlock(sector, buff, count);
-    }                                                
+
+
+	if (count == 1)            //1个sector的读操作      
+	{
+		res = SD_ReadSingleBlock(sector, buff);
+	}
+	else                    //多个sector的读操作     
+	{
+		res = SD_ReadMultiBlock(sector, buff, count);
+	}
 	/*
-    do                           
-    {                                          
-        if(SD_ReadSingleBlock(sector, buff)!=0)
-        {                                      
-            res = 1;                           
-            break;                             
-        }                                      
-        buff+=512;                             
-    }while(--count);                                         
-    */
-    //处理返回值，将SPI_SD_driver.c的返回值转成ff.c的返回值
-    if(res == 0x00)
-    {
-        return RES_OK;
-    }
-    else
-    {
-        return RES_ERROR;
-    }
+	do
+	{
+		if(SD_ReadSingleBlock(sector, buff)!=0)
+		{
+			res = 1;
+			break;
+		}
+		buff+=512;
+	}while(--count);
+	*/
+	//处理返回值，将SPI_SD_driver.c的返回值转成ff.c的返回值
+	if (res == 0x00)
+	{
+		return RES_OK;
+	}
+	else
+	{
+		return RES_ERROR;
+	}
 }
 
 
@@ -129,7 +125,7 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_write (
+DRESULT disk_write(
 	BYTE pdrv,			/* Physical drive nmuber to identify the drive */
 	const BYTE *buff,	/* Data to be written */
 	DWORD sector,		/* Sector address in LBA */
@@ -138,33 +134,33 @@ DRESULT disk_write (
 {
 	u8 res;
 
-    if (pdrv || !count)
-    {    
-        return RES_PARERR;  //仅支持单磁盘操作，count不能等于0，否则返回参数错误
-    }
-//    if(!SD_DET())
-//    {
-//        return RES_NOTRDY;  //没有检测到SD卡，报NOT READY错误
-//    }
+	if (pdrv || !count)
+	{
+		return RES_PARERR;  //仅支持单磁盘操作，count不能等于0，否则返回参数错误
+	}
+	//    if(!SD_DET())
+	//    {
+	//        return RES_NOTRDY;  //没有检测到SD卡，报NOT READY错误
+	//    }
 
-    // 读写操作
-    if(count == 1)
-    {
-        res = SD_WriteSingleBlock(sector, buff);
-    }
-    else
-    {
-        res = SD_WriteMultiBlock(sector, buff, count);
-    }
-    // 返回值转换
-    if(res == 0)
-    {
-        return RES_OK;
-    }
-    else
-    {
-        return RES_ERROR;
-    }
+		// 读写操作
+	if (count == 1)
+	{
+		res = SD_WriteSingleBlock(sector, buff);
+	}
+	else
+	{
+		res = SD_WriteMultiBlock(sector, buff, count);
+	}
+	// 返回值转换
+	if (res == 0)
+	{
+		return RES_OK;
+	}
+	else
+	{
+		return RES_ERROR;
+	}
 }
 
 
@@ -173,66 +169,66 @@ DRESULT disk_write (
 /* Miscellaneous Functions                                               */
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_ioctl (
+DRESULT disk_ioctl(
 	BYTE pdrv,		/* Physical drive nmuber (0..) */
 	BYTE cmd,		/* Control code */
 	void *buff		/* Buffer to send/receive control data */
 )
 {
-    DRESULT res;
+	DRESULT res;
 
 
-    if (pdrv)
-    {    
-        return RES_PARERR;  //仅支持单磁盘操作，否则返回参数错误
-    }
-    
-    //FATFS目前版本仅需处理CTRL_SYNC，GET_SECTOR_COUNT，GET_BLOCK_SIZ三个命令
-    switch(cmd)
-    {
-    case CTRL_SYNC:
-        SD_CS_ENABLE();
-        if(SD_WaitReady()==0)
-        {
-            res = RES_OK;
-        }
-        else
-        {
-            res = RES_ERROR;
-        }
-        SD_CS_DISABLE();
-        break;
-        
-    case GET_BLOCK_SIZE:
-        *(WORD*)buff = 512;
-        res = RES_OK;
-        break;
+	if (pdrv)
+	{
+		return RES_PARERR;  //仅支持单磁盘操作，否则返回参数错误
+	}
 
-    case GET_SECTOR_COUNT:
-        *(DWORD*)buff = SD_GetCapacity();
-        res = RES_OK;
-        break;
-    default:
-        res = RES_PARERR;
-        break;
-    }
+	//FATFS目前版本仅需处理CTRL_SYNC，GET_SECTOR_COUNT，GET_BLOCK_SIZ三个命令
+	switch (cmd)
+	{
+	case CTRL_SYNC:
+		SD_CS_ENABLE();
+		if (SD_WaitReady() == 0)
+		{
+			res = RES_OK;
+		}
+		else
+		{
+			res = RES_ERROR;
+		}
+		SD_CS_DISABLE();
+		break;
 
-    return res;
+	case GET_BLOCK_SIZE:
+		*(WORD*)buff = 512;
+		res = RES_OK;
+		break;
+
+	case GET_SECTOR_COUNT:
+		*(DWORD*)buff = SD_GetCapacity();
+		res = RES_OK;
+		break;
+	default:
+		res = RES_PARERR;
+		break;
+	}
+
+	return res;
 }
 
 /*-----------------------------------------------------------------------*/
 /* User defined function to give a current time to fatfs module          */
-/* 31-25: Year(0-127 org.1980), 24-21: Month(1-12), 20-16: Day(1-31) */                                                                                                                                                                                                                                          
-/* 15-11: Hour(0-23), 10-5: Minute(0-59), 4-0: Second(0-29 *2) */                                                                                                                                                                                                                                                
-DWORD get_fattime (void)
+/* 31-25: Year(0-127 org.1980), 24-21: Month(1-12), 20-16: Day(1-31) */
+/* 15-11: Hour(0-23), 10-5: Minute(0-59), 4-0: Second(0-29 *2) */
+DWORD get_fattime(void)
 {
 #if	 GET_FATTIME_EN
-    DWORD temp;
-	temp=(RTCTime.w_year-1980)<<25|RTCTime.w_month<<21|RTCTime.w_date<<16|
-	RTCTime.hour<<11|RTCTime.min<<5|RTCTime.sec;
-    return temp;
+	DWORD temp;
+	temp = (RTCTime.w_year - 1980) << 25 | RTCTime.w_month << 21 | RTCTime.w_date << 16 |
+		RTCTime.hour << 11 | RTCTime.min << 5 | RTCTime.sec;
+	return temp;
 #else
-     return 0;
+	return 0;
 #endif
 }
 

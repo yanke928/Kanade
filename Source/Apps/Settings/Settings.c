@@ -16,6 +16,8 @@
 
 #include "SSD1306.h"
 #include "RTC.h"
+#include "sdcard.h"
+#include "sdcardff.h"
 
 #include "UI_Menu.h"
 #include "UI_Dialogue.h"
@@ -35,6 +37,8 @@ void SetLanguage(void);
 
 void TimeSettings(void);
 
+void MountOrUnMountDisk(void);
+
 /**
   * @brief  Settings 
 
@@ -45,7 +49,10 @@ void Settings()
 {
  UI_Menu_Param_Struct menuParams;
  u8 selection;
+ if(SDCardMountStatus)
  menuParams.ItemString=(char *)Settings_Str[CurrentSettings->Language];
+ else
+ menuParams.ItemString=(char *)SettingsNoDisk_Str[CurrentSettings->Language];	 
  menuParams.DefaultPos=0;
  menuParams.ItemNum=6;
  menuParams.FastSpeed=10;
@@ -59,9 +66,50 @@ void Settings()
  xSemaphoreGive(OLEDRelatedMutex);
  switch(selection)
  {
+	 case 0:MountOrUnMountDisk();break;
 	 case 1:TimeSettings();break;
 	 case 3:SetLanguage();break;
 	 case 5:About();
+ }
+}
+
+/**
+  * @brief  Mount or UnMount disk
+
+  * @param  None
+
+  */
+void MountOrUnMountDisk()
+{
+ FRESULT res;
+ u32 capp;
+ char tempString[20];
+ if(SDCardMountStatus)
+ {
+	 res=f_mount(NULL,"0:/",1);
+	 if(res==FR_OK)
+	 {
+	  ShowSmallDialogue(SettingsUnmounted_Str[CurrentSettings->Language],1000,true);
+		SDCardMountStatus=false;
+	 }
+	 else
+	 {
+	  ShowSmallDialogue(SettingsUnmountFailed_Str[CurrentSettings->Language],1000,true);
+	 }
+ }
+ else
+ {
+  capp=sdcard_Init(false);
+	if(capp) 
+	{
+	  sprintf(tempString,SettingsMounted_Str[CurrentSettings->Language],capp,true);
+		ShowSmallDialogue(tempString,1000,true);
+		SDCardMountStatus=true;	 
+	}
+	else
+	{
+	 ShowSmallDialogue(SettingsMountFailed_Str[CurrentSettings->Language],1000,true);
+	} 
  }
 }
 

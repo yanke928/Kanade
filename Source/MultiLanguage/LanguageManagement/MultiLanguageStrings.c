@@ -78,8 +78,38 @@ const char* const Saved_Str[] = { Saved_EN,Saved_TW,Saved_CN,Saved_JP };
 const char Settings_EN[]="Unmount Disk%Clock Settings%Buzzer Settings%Language%System Scan%System Info";
 const char Settings_TW[]="彈出SD卡%時間設置%警報設置%Language%系統掃描%系統資訊";
 const char Settings_CN[] = "安全弹出存储卡%时间设置%蜂鸣器设置%Language%系统扫描%系统信息" ;
-const char Settings_JP[] ="イジェクトメモリ%時刻の設定%警告の設定%Language%システムスキャン%システム情報";
+const char Settings_JP[] ="トメモリイジェク%時刻の設定%警告の設定%Language%システムスキャン%システム情報";
 const char* const Settings_Str[] = { Settings_EN,Settings_TW,Settings_CN,Settings_JP };
+
+const char SettingsNoDisk_EN[]="Mount Disk%Clock Settings%Buzzer Settings%Language%System Scan%System Info";
+const char SettingsNoDisk_TW[]="掛載SD卡%時間設置%警報設置%Language%系統掃描%系統資訊";
+const char SettingsNoDisk_CN[] = "挂载存储卡%时间设置%蜂鸣器设置%Language%系统扫描%系统信息" ;
+const char SettingsNoDisk_JP[] ="トメモリマウント%時刻の設定%警告の設定%Language%システムスキャン%システム情報";
+const char* const SettingsNoDisk_Str[] = { SettingsNoDisk_EN,SettingsNoDisk_TW,SettingsNoDisk_CN,SettingsNoDisk_JP };
+
+const char SettingsUnmounted_EN[]="Unmounted";
+const char SettingsUnmounted_TW[]="已彈出";
+const char SettingsUnmounted_CN[] = "已弹出" ;
+const char SettingsUnmounted_JP[] ="イジェクよし";
+const char* const SettingsUnmounted_Str[] = { SettingsUnmounted_EN,SettingsUnmounted_TW,SettingsUnmounted_CN,SettingsUnmounted_JP };
+
+const char SettingsUnmountFailed_EN[]="Unmount Failed";
+const char SettingsUnmountFailed_TW[]="彈出失敗";
+const char SettingsUnmountFailed_CN[] = "弹出失败" ;
+const char SettingsUnmountFailed_JP[] ="失敗します";
+const char* const SettingsUnmountFailed_Str[] = { SettingsUnmountFailed_EN,SettingsUnmountFailed_TW,SettingsUnmountFailed_CN,SettingsUnmountFailed_JP };
+
+const char SettingsMounted_EN[]="Mounted:%dMB";
+const char SettingsMounted_TW[]="已掛載:%dMB";
+const char SettingsMounted_CN[] = "已挂载:%dMB" ;
+const char SettingsMounted_JP[] ="よし:%dMB";
+const char* const SettingsMounted_Str[] = { SettingsMounted_EN,SettingsMounted_TW,SettingsMounted_CN,SettingsMounted_JP };
+
+const char SettingsMountFailed_EN[]="Mount Failed";
+const char SettingsMountFailed_TW[]="掛載失敗";
+const char SettingsMountFailed_CN[] = "挂载失败" ;
+const char SettingsMountFailed_JP[] ="失敗します";
+const char* const SettingsMountFailed_Str[] = { SettingsMountFailed_EN,SettingsMountFailed_TW,SettingsMountFailed_CN,SettingsMountFailed_JP };
 
 const char SetYear_EN[]="Set year";
 const char SetYear_TW[]="設置年份";

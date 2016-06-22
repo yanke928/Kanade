@@ -7,13 +7,7 @@
 
 extern bool SDCardMountStatus;
 
-extern bool SDExist;
-
-u32 SDCardFSInit(void);
-
-extern FATFS fatfs; 
-
-extern u32 SD_Capacity;
+extern FATFS fatfs;
 
 #endif /* __SDCARDFF_H */
 

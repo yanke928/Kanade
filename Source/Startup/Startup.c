@@ -232,7 +232,7 @@ void SystemStartup(void *pvParameters)
 	TemperatureSensors_Init();
 	EBD_Init();
 	vTaskDelay(50 / portTICK_RATE_MS);
-	sdcard_Init();
+	sdcard_Init(true);
 	vTaskDelay(500 / portTICK_RATE_MS);
 	ShowCurrentTempSensor();
 	//CheckEBDDirectories();

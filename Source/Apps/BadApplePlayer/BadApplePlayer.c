@@ -1,4 +1,4 @@
-//File Name   £ºBadApplePlayer.c
+//File Name     BadApplePlayer.c
 //Description : BadApplePlayer 
 
 #include <string.h>
@@ -35,7 +35,8 @@ void BadApplePlayer(void *pvParameters)
 	res = f_open(&video, "0:/BadApple.bin", FA_READ);
 	if (res != FR_OK)
 	{
-		OLED_ShowString(0, 0, "No File");
+		if(SDCardMountStatus!=true) OLED_ShowString(0, 0, "No Memory");
+    else OLED_ShowString(0, 0, "No File");
 		vTaskDelete(NULL);
 	}
 	fileSize = f_size(&video);
@@ -46,17 +47,10 @@ void BadApplePlayer(void *pvParameters)
 	{
 		for (currentAddr = 0; currentAddr < maxAddr; currentAddr++)
 		{
-		ReRead:
-			res = f_read(&video, frame, 512, &dataRead);
-			if (res != FR_OK) goto Retry;
-			res = f_read(&video, frame + 512, 512, &dataRead);
+			res = f_read(&video, frame, 1024, &dataRead);
 			if (res != FR_OK)
 			{
-			Retry:
-				f_close(&video);
-				f_open(&video, "0:/BadApple.bin", FA_READ);
-				f_lseek(&video, currentAddr * 1024);
-				goto ReRead;
+				goto ReadFileFailed;
 			}
 			Draw_BMP(0, 0, 128, 7, frame);
 			if (CPU_Stat_Running == true)
@@ -73,17 +67,17 @@ void BadApplePlayer(void *pvParameters)
 		f_lseek(&video, 0);
 		dataRead = 0;
 	}
-	// ReadFileFailed:
-	// {
-	//  OLED_ShowString(0,0,"Read File Failed");
-	//	 vTaskDelete(NULL);
-	// }
+	 ReadFileFailed:
+	 {
+	  OLED_ShowString(0,0,"File Read Failed");
+		 vTaskDelete(NULL);
+	 }
 }
 
 void BadApplePlayer_Init()
 {
 	xTaskCreate(BadApplePlayer, "Bad Apple Player",
-		512, NULL, BAD_APPLE_PLAYER_PRIORITY, NULL);
+		768, NULL, BAD_APPLE_PLAYER_PRIORITY, NULL);
 }
 
 

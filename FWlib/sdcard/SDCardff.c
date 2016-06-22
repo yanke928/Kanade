@@ -17,19 +17,11 @@ FILINFO Finfo;
 
 char * myts_file = "0:/a.txt";
 
-bool SDCardMountStatus=false;
+bool SDCardMountStatus = false;
 
-bool SDExist=false;
+u32 SD_Capacity = 0;
 
-u32 SD_Capacity=0;
-
-//static DIR Dir;					/* Directory object */
-//DIR start_dirs;          		//目录起点信息
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//列举指定目录下的文件
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-FRESULT scan_files (
+FRESULT scan_files(
 	char* path		/* Pointer to the path name working buffer */
 )
 {
@@ -50,12 +42,13 @@ FRESULT scan_files (
 #endif
 			if (Finfo.fattrib & AM_DIR) {
 				acc_dirs++;
-				*(path+i) = '/'; strcpy(path+i+1, fn);
+				*(path + i) = '/'; strcpy(path + i + 1, fn);
 				res = scan_files(path);
-				*(path+i) = '\0';
+				*(path + i) = '\0';
 				if (res != FR_OK) break;
-			} else {
- 				printf("%s/%s\n", path, fn);
+			}
+			else {
+				printf("%s/%s\n", path, fn);
 				acc_files++;
 				acc_size += Finfo.fsize;
 			}
@@ -64,15 +57,3 @@ FRESULT scan_files (
 	return res;
 }
 
-u32 SDCardFSInit()
-{ 
-	u32 SD_capp;
-	if(SDCardMountStatus == false)
-	{
-		if(f_mount(&fatfs,"0:/",1) == FR_OK)//Try to mount sdcard
-		{
-			SDCardMountStatus = true;
-		}
-	}
-	return(SD_capp);
-}

@@ -21,6 +21,7 @@
 //#include "stm32f10x_map.h"
 #include "misc.h"
 #include "stm32f10x_spi.h"
+#include "stdbool.h"
 
 /* Private define ------------------------------------------------------------*/
 /* SD卡类型定义 */
@@ -74,7 +75,7 @@ u8 SD_WaitReady(void);                          //等待SD卡就绪
 u8 SD_SendCommand(u8 cmd, u32 arg, u8 crc);     //SD卡发送一个命令
 u8 SD_SendCommand_NoDeassert(u8 cmd, u32 arg, u8 crc);
 u8 SD_Init(void);                               //SD卡初始化
-                                                //
+												//
 u8 SD_ReceiveData(u8 *data, u16 len, u8 release);//SD卡读数据
 u8 SD_GetCID(u8 *cid_data);                     //读SD卡CID
 u8 SD_GetCSD(u8 *csd_data);                     //读SD卡CSD
@@ -85,7 +86,7 @@ u8 SD_WriteSingleBlock(u32 sector, const u8 *buffer); //写一个sector
 u8 SD_ReadMultiBlock(u32 sector, u8 *buffer, u8 count); //读多个sector
 u8 SD_WriteMultiBlock(u32 sector, const u8 *data, u8 count);  //写多个sector
 
-void sdcard_Init(void);
+u32 sdcard_Init(bool withGUI);
 
 #endif
 

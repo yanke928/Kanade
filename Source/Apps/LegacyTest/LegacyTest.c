@@ -44,7 +44,7 @@ void RunLegacyTest(u8* status,Legacy_Test_Param_Struct* test_Params)
  GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language],0,
  (int)(1000 * CurrentMeterData.Voltage)/10*10>0?(1000 * CurrentMeterData.Voltage)/10*10:100,
  (int)(900 * CurrentMeterData.Voltage)/10*10>0?(900 * CurrentMeterData.Voltage) / 10 * 10:100, 10, "mV", 25);
- if(!SDExist)
+ if(!SDCardMountStatus)
  {
   
  }
