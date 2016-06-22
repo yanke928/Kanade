@@ -26,4 +26,7 @@ void StepUpTest_UI_Init(u16* testTime);
 //see .c for details
 void RunAStepUpTest(void);
 
+//see .c for details
+u16 GetTestParam(const char askString[], u16 min, u16 max, u16 defaultValue, u16 step, char unitString[], u8 fastSpeed);
+
 #endif /* __STEPUPTEST_H */

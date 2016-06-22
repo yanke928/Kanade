@@ -3,5 +3,6 @@
 
 #include "stm32f10x.h"
 
+void EBD_Exception_Handler_Init(void);
 
 #endif /* __EXCEPTIONHANDLE_H */

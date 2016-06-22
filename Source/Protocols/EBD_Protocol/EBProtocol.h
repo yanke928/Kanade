@@ -65,6 +65,8 @@ extern bool SumUpInProgress;
 
 extern bool EBDExceptionHandleOnegaiFlag;
 
+extern bool EBDAliveFlag;
+
 enum { StopTest = 0, KeepTest = 1, StartTest = 2 };
 
 typedef struct {

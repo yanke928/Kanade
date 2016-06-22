@@ -5139,7 +5139,6 @@ FRESULT f_forward (
 #endif /* _USE_FORWARD */
 
 
-
 #if _USE_MKFS && !_FS_READONLY
 /*-----------------------------------------------------------------------*/
 /* Create file system on the logical drive                               */

@@ -15,902 +15,190 @@
 /* Includes ------------------------------------------------------------------*/
 #include "SDCard.h"
 #include "SDCardff.h"
+#include "ff.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 
 #include "startup.h"
-#include "SSD1306.h"
 #include "MultiLanguageStrings.h"
+
+#include "SSD1306.h"
+#include "UI_Dialogue.h"
 
 #include "Settings.h"
 
 #include <stdio.h>
 
-extern vu8 SD_Card_Ready;//SD¿¨³õÊ¼»¯³É¹¦±êÖ¾£¬ÔÚdiskio.cÖĞ
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
 
-
-/* Global Variable ------------------------------------------------------------*/  
-u8  SD_Type=0;//SD¿¨µÄÀàĞÍ,ÎªÁËÖ§³Ö¸ßËÙ¿¨¶ø¼ÓÈë
-
-u32 Mass_Block_Count;
-u32 Mass_Block_Size;
-u32 Mass_Memory_Size;
-sMSD_CSD MSD_csd;
-
+/* Private variables ---------------------------------------------------------*/
+u8  SD_Type=0;
+/* Private function prototypes -----------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
 
-//½øĞĞÒÆÖ²Ê±,ĞèÒªĞŞ¸Ä
-void SD_SPI_Configuration(void)//ÅäÖÃSPI½Ó¿Ú	
-{
-    SPI_InitTypeDef SPI_InitStructure ;
-    GPIO_InitTypeDef GPIO_InitStructure ;
 
-	/* GPIOA and GPIOB Periph clock enable */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
-
-
-    //Æô¶¯SPIÊ±ÖÓ
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1,ENABLE);
-
-    //////ÏÂÃæÊÇSPIÏà¹ØGPIO³õÊ¼»¯//////
-    //SPI1Ä£¿é¶ÔÓ¦µÄSCK¡¢MISO¡¢MOSIÎªAFÒı½Å
-    GPIO_InitStructure.GPIO_Pin=SPI_PINS;
-    GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz ;
-    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_AF_PP ;
-    GPIO_Init(SPI_PORT,&GPIO_InitStructure);
-
-	  GPIO_InitStructure.GPIO_Pin = SPI_MISO; 
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;   //ÉÏÀ­ÊäÈë
-    GPIO_Init(SPI_PORT,&GPIO_InitStructure);	
-    
-    
-    //PB6 pin:SD_CS
-    GPIO_InitStructure.GPIO_Pin=SD_CS_PIN;
-    GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz ;
-    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP ;
-    GPIO_Init(SD_CS_PORT,&GPIO_InitStructure); 
-
-	GPIO_SetBits(SD_CS_PORT,SD_CS_PIN);
-
-
-    SPI_Cmd(SD_SPI_NUM,DISABLE);
-
-	//////SPIÄ£¿éÅäÖÃ//////
-
-  	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-  	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-  	SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
-  	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
-  	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
-  	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-  	SPI_InitStructure.SPI_CRCPolynomial = 7;
-
-    SPI_Init(SD_SPI_NUM,&SPI_InitStructure);
-    SPI_Cmd(SD_SPI_NUM,ENABLE);
-    SPI_I2S_ClearITPendingBit(SD_SPI_NUM, SPI_I2S_IT_RXNE);
-}
- 
-  
-//½øĞĞÒÆÖ²Ê±,ĞèÒªĞŞ¸Ä
-void SD_SPI_HightSpeed(void)  //Ìá¸ßSD¿¨µÄ¶ÁĞ´ËÙ¶È
-{
-	SPI_InitTypeDef SPI_InitStructure ;
-
-    SPI_Cmd(SD_SPI_NUM,DISABLE);
-
-    //////SPIÄ£¿éÅäÖÃ//////
-  	/* SPI1 Config */
-  	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-  	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-  	SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
-  	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
-  	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_64;
-  	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-  	SPI_InitStructure.SPI_CRCPolynomial = 7;
-
-    SPI_Init(SD_SPI_NUM,&SPI_InitStructure);
-    SPI_Cmd(SD_SPI_NUM,ENABLE);
-    SPI_I2S_ClearITPendingBit(SD_SPI_NUM, SPI_I2S_IT_RXNE);
-}  
+////////////////////////////////////////////////////////////////////////////////
+// ä»¥ä¸‹æ˜¯SPIæ¨¡å—çš„åˆå§‹åŒ–ä»£ç ï¼Œé…ç½®æˆä¸»æœºæ¨¡å¼ï¼Œè®¿é—®SDå¡
+////////////////////////////////////////////////////////////////////////////////
 /*******************************************************************************
-* Function Name  : MSD_WriteByte
-* Description    : Write a byte on the MSD.
-* Input          : Data: byte to send.
-* Output         : None
-* Return         : None.
-*******************************************************************************/
-//½øĞĞÒÆÖ²Ê±,ĞèÒªĞŞ¸Ä
-void MSD_WriteByte(u8 Data)
-{
-	while((SD_SPI_NUM->SR&1<<1)==0);//µÈ´ı·¢ËÍÇø¿Õ				  
-	SD_SPI_NUM->DR=Data;	 	    //·¢ËÍÒ»¸öbyte   	
-}
-
-/*******************************************************************************
-* Function Name  : MSD_ReadByte
-* Description    : Read a byte from the MSD.
-* Input          : None.
-* Output         : None
-* Return         : The received byte.
-*******************************************************************************/
-//½øĞĞÒÆÖ²Ê±,ĞèÒªĞŞ¸Ä
-u8 MSD_ReadByte(void)
-{
-	while((SD_SPI_NUM->SR&1<<1)==0);//µÈ´ı·¢ËÍÇø¿Õ				  
-	SD_SPI_NUM->DR=DUMMY;	 	    //·¢ËÍÒ»¸öbyte   
-	while((SD_SPI_NUM->SR&1<<0)==0);//µÈ´ı½ÓÊÕÍêÒ»¸öbyte  
-	return SD_SPI_NUM->DR;          //·µ»ØÊÕµ½µÄÊı¾İ				    
-}
-
-	 
-/*******************************************************************************
-* Function Name  : SPI1_ReadWriteByte
-* Description    : SPI¶ÁĞ´Ò»¸ö×Ö½Ú£¨·¢ËÍÍê³Éºó·µ»Ø±¾´ÎÍ¨Ñ¶¶ÁÈ¡µÄÊı¾İ£©
-* Input          : u8 TxData ´ı·¢ËÍµÄÊı
-* Output         : None
-* Return         : u8 RxData ÊÕµ½µÄÊı
-*******************************************************************************/
-//½øĞĞÒÆÖ²Ê±,ĞèÒªĞŞ¸Ä
-u8 SPI1_ReadWriteByte(u8 TxData)//ÔÚ¸ßËÙSD¿¨µÄÇı¶¯³ÌĞòÖĞÓÃµ½
-{
-	while((SPI1->SR&1<<1)==0);//µÈ´ı·¢ËÍÇø¿Õ				  
-	SPI1->DR=TxData;	 	  //·¢ËÍÒ»¸öbyte   
-	while((SPI1->SR&1<<0)==0);//µÈ´ı½ÓÊÕÍêÒ»¸öbyte  
-	return SPI1->DR;          //·µ»ØÊÕµ½µÄÊı¾İ				    
-}
-
-
-
-/*******************************************************************************
-* Function Name  : MSD_Init
-* Description    : Initializes the MSD/SD communication.
+* Function Name  : SPI_Configuration
+* Description    : SPIæ¨¡å—åˆå§‹åŒ–ï¼Œã€åŒ…æ‹¬ç›¸å…³IOå£çš„åˆå§‹åŒ–ã€‘
 * Input          : None
-* Output         : None
-* Return         : The MSD Response: - MSD_RESPONSE_FAILURE: Sequence failed
-*                                    - MSD_RESPONSE_NO_ERROR: Sequence succeed 
-*******************************************************************************/
-extern void SD_SPI_Configuration(void);
-u8 MSD_Init(void)
-{
-  u8 ret;
-#if SDHC_EN
-  /*********2011/02/27 by xingxing*********/
-  //ÎªÁËÖ§³Ö¸ßËÙsd¿¨¶ø¼ÓÈëµÄ
-  ret = SDHC_Init();
-  SD_Card_Ready = ret;
-  return ret;
-#else
-  u32 i = 0;	
-	
-  /* Initialize SPI1 */
-  SD_SPI_Configuration();
-  /* MSD chip select high */
-  MSD_CS_HIGH();
-  /* Send dummy byte 0xFF, 10 times with CS high*/
-  /* rise CS and MOSI for 80 clocks cycles */
-  for (i = 0; i <= 9; i++)
-  {
-    /* Send dummy byte 0xFF */
-    MSD_WriteByte(DUMMY);
-  }
-  /*------------Put MSD in SPI mode--------------*/
-  /* MSD initialized and set to SPI mode properly */
-  ret = MSD_GoIdleState();//ĞŞ¸ÄÕß£ºWXT 2011/02/26 11:37
-  SD_Card_Ready = ret;
-  return ret;
-  //return (MSD_GoIdleState());	//ĞŞ¸ÄÕß£ºWXT 2011/02/26 11:37
-#endif
-}
-
-/*******************************************************************************
-* Function Name  : MSD_WriteBlock
-* Description    : Writes a block on the MSD
-* Input          : - pBuffer : pointer to the buffer containing the data to be
-*                    written on the MSD.
-*                  - WriteAddr : address to write on.
-*                  - NumByteToWrite: number of data to write
-* Output         : None
-* Return         : The MSD Response: - MSD_RESPONSE_FAILURE: Sequence failed
-*                                    - MSD_RESPONSE_NO_ERROR: Sequence succeed 
-*******************************************************************************/
-u8 MSD_WriteBlock(u8* pBuffer, u32 WriteAddr, u16 NumByteToWrite)
-{
-  u32 i = 0;
-  u8 rvalue = MSD_RESPONSE_FAILURE;
-
-  /* MSD chip select low */
-  MSD_CS_LOW();
-  /* Send CMD24 (MSD_WRITE_BLOCK) to write multiple block */
-  MSD_SendCmd(MSD_WRITE_BLOCK, WriteAddr, 0xFF);
-
-  /* Check if the MSD acknowledged the write block command: R1 response (0x00: no errors) */
-  if (!MSD_GetResponse(MSD_RESPONSE_NO_ERROR))
-  {
-    /* Send a dummy byte */
-    MSD_WriteByte(DUMMY);
-    /* Send the data token to signify the start of the data */
-    MSD_WriteByte(0xFE);
-    /* Write the block data to MSD : write count data by block */
-    for (i = 0; i < NumByteToWrite; i++)
-    {
-      /* Send the pointed byte */
-      MSD_WriteByte(*pBuffer);
-      /* Point to the next location where the byte read will be saved */
-      pBuffer++;
-    }
-    /* Put CRC bytes (not really needed by us, but required by MSD) */
-    MSD_ReadByte();
-    MSD_ReadByte();
-    /* Read data response */
-    if (MSD_GetDataResponse() == MSD_DATA_OK)
-    {
-      rvalue = MSD_RESPONSE_NO_ERROR;
-    }
-  }
-
-  /* MSD chip select high */
-  MSD_CS_HIGH();
-  /* Send dummy byte: 8 Clock pulses of delay */
-  MSD_WriteByte(DUMMY);
-  /* Returns the reponse */
-  return rvalue;
-}
-
-/*******************************************************************************
-* Function Name  : MSD_ReadBlock
-* Description    : Reads a block of data from the MSD.
-* Input          : - pBuffer : pointer to the buffer that receives the data read
-*                    from the MSD.
-*                  - ReadAddr : MSD's internal address to read from.
-*                  - NumByteToRead : number of bytes to read from the MSD.
-* Output         : None
-* Return         : The MSD Response: - MSD_RESPONSE_FAILURE: Sequence failed
-*                                    - MSD_RESPONSE_NO_ERROR: Sequence succeed 
-*******************************************************************************/
-u8 MSD_ReadBlock(u8* pBuffer, u32 ReadAddr, u16 NumByteToRead)
-{
-  u32 i = 0;
-  u8 rvalue = MSD_RESPONSE_FAILURE;
-
-  /* MSD chip select low */
-  MSD_CS_LOW();
-  /* Send CMD17 (MSD_READ_SINGLE_BLOCK) to read one block */
-  MSD_SendCmd(MSD_READ_SINGLE_BLOCK, ReadAddr, 0xFF);
-
-  /* Check if the MSD acknowledged the read block command: R1 response (0x00: no errors) */
-  if (!MSD_GetResponse(MSD_RESPONSE_NO_ERROR))
-  {
-    /* Now look for the data token to signify the start of the data */
-    if (!MSD_GetResponse(MSD_START_DATA_SINGLE_BLOCK_READ))
-    {
-      /* Read the MSD block data : read NumByteToRead data */
-      for (i = 0; i < NumByteToRead; i++)
-      {
-        /* Save the received data */
-        *pBuffer = MSD_ReadByte();
-        /* Point to the next location where the byte read will be saved */
-        pBuffer++;
-      }
-      /* Get CRC bytes (not really needed by us, but required by MSD) */
-      MSD_ReadByte();
-      MSD_ReadByte();
-      /* Set response value to success */
-      rvalue = MSD_RESPONSE_NO_ERROR;
-    }
-  }
-
-  /* MSD chip select high */
-  MSD_CS_HIGH();
-  /* Send dummy byte: 8 Clock pulses of delay */
-  MSD_WriteByte(DUMMY);
-  /* Returns the reponse */
-  return rvalue;
-}
-
-/*******************************************************************************
-* Function Name  : MSD_WriteBuffer
-* Description    : Writes many blocks on the MSD
-* Input          : - pBuffer : pointer to the buffer containing the data to be
-*                    written on the MSD.
-*                  - WriteAddr : address to write on.
-*                  - NumByteToWrite: number of data to write
-* Output         : None
-* Return         : The MSD Response: - MSD_RESPONSE_FAILURE: Sequence failed
-*                                    - MSD_RESPONSE_NO_ERROR: Sequence succeed 
-*******************************************************************************/
-u8 MSD_WriteBuffer(u8* pBuffer, u32 WriteAddr, u32 NumByteToWrite)
-{
-  u32 i = 0, NbrOfBlock = 0, Offset = 0;
-  u8 rvalue = MSD_RESPONSE_FAILURE;
-
-  /* Calculate number of blocks to write */
-  NbrOfBlock = NumByteToWrite / BLOCK_SIZE;
-  /* MSD chip select low */
-  MSD_CS_LOW();
-
-  /* Data transfer */
-  while (NbrOfBlock --)
-  {
-    /* Send CMD24 (MSD_WRITE_BLOCK) to write blocks */
-    MSD_SendCmd(MSD_WRITE_BLOCK, WriteAddr + Offset, 0xFF);
-
-    /* Check if the MSD acknowledged the write block command: R1 response (0x00: no errors) */
-    if (MSD_GetResponse(MSD_RESPONSE_NO_ERROR))
-    {
-      return MSD_RESPONSE_FAILURE;
-    }
-    /* Send dummy byte */
-    MSD_WriteByte(DUMMY);
-    /* Send the data token to signify the start of the data */
-    MSD_WriteByte(MSD_START_DATA_SINGLE_BLOCK_WRITE);
-    /* Write the block data to MSD : write count data by block */
-    for (i = 0; i < BLOCK_SIZE; i++)
-    {
-      /* Send the pointed byte */
-      MSD_WriteByte(*pBuffer);
-      /* Point to the next location where the byte read will be saved */
-      pBuffer++;
-    }
-    /* Set next write address */
-    Offset += 512;
-    /* Put CRC bytes (not really needed by us, but required by MSD) */
-    MSD_ReadByte();
-    MSD_ReadByte();
-    /* Read data response */
-    if (MSD_GetDataResponse() == MSD_DATA_OK)
-    {
-      /* Set response value to success */
-      rvalue = MSD_RESPONSE_NO_ERROR;
-    }
-    else
-    {
-      /* Set response value to failure */
-      rvalue = MSD_RESPONSE_FAILURE;
-    }
-  }
-
-  /* MSD chip select high */
-  MSD_CS_HIGH();
-  /* Send dummy byte: 8 Clock pulses of delay */
-  MSD_WriteByte(DUMMY);
-  /* Returns the reponse */
-  return rvalue;
-}
-
-/*******************************************************************************
-* Function Name  : MSD_ReadBuffer
-* Description    : Reads multiple block of data from the MSD.
-* Input          : - pBuffer : pointer to the buffer that receives the data read
-*                    from the MSD.
-*                  - ReadAddr : MSD's internal address to read from.
-*                  - NumByteToRead : number of bytes to read from the MSD.
-* Output         : None
-* Return         : The MSD Response: - MSD_RESPONSE_FAILURE: Sequence failed
-*                                    - MSD_RESPONSE_NO_ERROR: Sequence succeed 
-*******************************************************************************/
-u8 MSD_ReadBuffer(u8* pBuffer, u32 ReadAddr, u32 NumByteToRead)
-{
-  u32 i = 0, NbrOfBlock = 0, Offset = 0;
-  u8 rvalue = MSD_RESPONSE_FAILURE;
-
-  /* Calculate number of blocks to read */
-  NbrOfBlock = NumByteToRead / BLOCK_SIZE;
-  /* MSD chip select low */
-  MSD_CS_LOW();
-
-  /* Data transfer */
-  while (NbrOfBlock --)
-  {
-    /* Send CMD17 (MSD_READ_SINGLE_BLOCK) to read one block */
-    MSD_SendCmd (MSD_READ_SINGLE_BLOCK, ReadAddr + Offset, 0xFF);
-    /* Check if the MSD acknowledged the read block command: R1 response (0x00: no errors) */
-    if (MSD_GetResponse(MSD_RESPONSE_NO_ERROR))
-    {
-      return  MSD_RESPONSE_FAILURE;
-    }
-    /* Now look for the data token to signify the start of the data */
-    if (!MSD_GetResponse(MSD_START_DATA_SINGLE_BLOCK_READ))
-    {
-      /* Read the MSD block data : read NumByteToRead data */
-      for (i = 0; i < BLOCK_SIZE; i++)
-      {
-        /* Read the pointed data */
-        *pBuffer = MSD_ReadByte();
-        /* Point to the next location where the byte read will be saved */
-        pBuffer++;
-      }
-      /* Set next read address*/
-      Offset += 512;
-      /* get CRC bytes (not really needed by us, but required by MSD) */
-      MSD_ReadByte();
-      MSD_ReadByte();
-      /* Set response value to success */
-      rvalue = MSD_RESPONSE_NO_ERROR;
-    }
-    else
-    {
-      /* Set response value to failure */
-      rvalue = MSD_RESPONSE_FAILURE;
-    }
-  }
-
-  /* MSD chip select high */
-  MSD_CS_HIGH();
-  /* Send dummy byte: 8 Clock pulses of delay */
-  MSD_WriteByte(DUMMY);
-  /* Returns the reponse */
-  return rvalue;
-}
-
-/*******************************************************************************
-* Function Name  : MSD_GetCSDRegister
-* Description    : Read the CSD card register.
-*                  Reading the contents of the CSD register in SPI mode
-*                  is a simple read-block transaction.
-* Input          : - MSD_csd: pointer on an SCD register structure
-* Output         : None
-* Return         : The MSD Response: - MSD_RESPONSE_FAILURE: Sequence failed
-*                                    - MSD_RESPONSE_NO_ERROR: Sequence succeed 
-*******************************************************************************/
-u8 MSD_GetCSDRegister(sMSD_CSD* MSD_csd)
-{
-  u32 i = 0;
-  u8 rvalue = MSD_RESPONSE_FAILURE;
-  u8 CSD_Tab[16];
-
-  /* MSD chip select low */
-  MSD_CS_LOW();
-  /* Send CMD9 (CSD register) or CMD10(CSD register) */
-  MSD_SendCmd(MSD_SEND_CSD, 0, 0xFF);
-
-  /* Wait for response in the R1 format (0x00 is no errors) */
-  if (!MSD_GetResponse(MSD_RESPONSE_NO_ERROR))
-  {
-    if (!MSD_GetResponse(MSD_START_DATA_SINGLE_BLOCK_READ))
-    {
-      for (i = 0; i < 16; i++)
-      {
-        /* Store CSD register value on CSD_Tab */
-        CSD_Tab[i] = MSD_ReadByte();
-      }
-    }
-    /* Get CRC bytes (not really needed by us, but required by MSD) */
-    MSD_WriteByte(DUMMY);
-    MSD_WriteByte(DUMMY);
-    /* Set response value to success */
-    rvalue = MSD_RESPONSE_NO_ERROR;
-  }
-
-  /* MSD chip select high */
-  MSD_CS_HIGH();
-  /* Send dummy byte: 8 Clock pulses of delay */
-  MSD_WriteByte(DUMMY);
-
-  /* Byte 0 */
-  MSD_csd->CSDStruct = (CSD_Tab[0] & 0xC0) >> 6;
-  MSD_csd->SysSpecVersion = (CSD_Tab[0] & 0x3C) >> 2;
-  MSD_csd->Reserved1 = CSD_Tab[0] & 0x03;
-  /* Byte 1 */
-  MSD_csd->TAAC = CSD_Tab[1] ;
-  /* Byte 2 */
-  MSD_csd->NSAC = CSD_Tab[2];
-  /* Byte 3 */
-  MSD_csd->MaxBusClkFrec = CSD_Tab[3];
-  /* Byte 4 */
-  MSD_csd->CardComdClasses = CSD_Tab[4] << 4;
-  /* Byte 5 */
-  MSD_csd->CardComdClasses |= (CSD_Tab[5] & 0xF0) >> 4;
-  MSD_csd->RdBlockLen = CSD_Tab[5] & 0x0F;
-  /* Byte 6 */
-  MSD_csd->PartBlockRead = (CSD_Tab[6] & 0x80) >> 7;
-  MSD_csd->WrBlockMisalign = (CSD_Tab[6] & 0x40) >> 6;
-  MSD_csd->RdBlockMisalign = (CSD_Tab[6] & 0x20) >> 5;
-  MSD_csd->DSRImpl = (CSD_Tab[6] & 0x10) >> 4;
-  MSD_csd->Reserved2 = 0; /* Reserved */
-  MSD_csd->DeviceSize = (CSD_Tab[6] & 0x03) << 10;
-  /* Byte 7 */
-  MSD_csd->DeviceSize |= (CSD_Tab[7]) << 2;
-  /* Byte 8 */
-  MSD_csd->DeviceSize |= (CSD_Tab[8] & 0xC0) >> 6;
-  MSD_csd->MaxRdCurrentVDDMin = (CSD_Tab[8] & 0x38) >> 3;
-  MSD_csd->MaxRdCurrentVDDMax = (CSD_Tab[8] & 0x07);
-  /* Byte 9 */
-  MSD_csd->MaxWrCurrentVDDMin = (CSD_Tab[9] & 0xE0) >> 5;
-  MSD_csd->MaxWrCurrentVDDMax = (CSD_Tab[9] & 0x1C) >> 2;
-  MSD_csd->DeviceSizeMul = (CSD_Tab[9] & 0x03) << 1;
-  /* Byte 10 */
-  MSD_csd->DeviceSizeMul |= (CSD_Tab[10] & 0x80) >> 7;
-  MSD_csd->EraseGrSize = (CSD_Tab[10] & 0x7C) >> 2;
-  MSD_csd->EraseGrMul = (CSD_Tab[10] & 0x03) << 3;
-  /* Byte 11 */
-  MSD_csd->EraseGrMul |= (CSD_Tab[11] & 0xE0) >> 5;
-  MSD_csd->WrProtectGrSize = (CSD_Tab[11] & 0x1F);
-  /* Byte 12 */
-  MSD_csd->WrProtectGrEnable = (CSD_Tab[12] & 0x80) >> 7;
-  MSD_csd->ManDeflECC = (CSD_Tab[12] & 0x60) >> 5;
-  MSD_csd->WrSpeedFact = (CSD_Tab[12] & 0x1C) >> 2;
-  MSD_csd->MaxWrBlockLen = (CSD_Tab[12] & 0x03) << 2;
-  /* Byte 13 */
-  MSD_csd->MaxWrBlockLen |= (CSD_Tab[13] & 0xc0) >> 6;
-  MSD_csd->WriteBlockPaPartial = (CSD_Tab[13] & 0x20) >> 5;
-  MSD_csd->Reserved3 = 0;
-  MSD_csd->ContentProtectAppli = (CSD_Tab[13] & 0x01);
-  /* Byte 14 */
-  MSD_csd->FileFormatGrouop = (CSD_Tab[14] & 0x80) >> 7;
-  MSD_csd->CopyFlag = (CSD_Tab[14] & 0x40) >> 6;
-  MSD_csd->PermWrProtect = (CSD_Tab[14] & 0x20) >> 5;
-  MSD_csd->TempWrProtect = (CSD_Tab[14] & 0x10) >> 4;
-  MSD_csd->FileFormat = (CSD_Tab[14] & 0x0C) >> 2;
-  MSD_csd->ECC = (CSD_Tab[14] & 0x03);
-  /* Byte 15 */
-  MSD_csd->CRC_Check = (CSD_Tab[15] & 0xFE) >> 1;
-  MSD_csd->Reserved4 = 1;
-
-  /* Return the reponse */
-  return rvalue;
-}
-
-/*******************************************************************************
-* Function Name  : MSD_GetCIDRegister
-* Description    : Read the CID card register.
-*                  Reading the contents of the CID register in SPI mode
-*                  is a simple read-block transaction.
-* Input          : - MSD_cid: pointer on an CID register structure
-* Output         : None
-* Return         : The MSD Response: - MSD_RESPONSE_FAILURE: Sequence failed
-*                                    - MSD_RESPONSE_NO_ERROR: Sequence succeed 
-*******************************************************************************/
-u8 MSD_GetCIDRegister(sMSD_CID* MSD_cid)
-{
-  u32 i = 0;
-  u8 rvalue = MSD_RESPONSE_FAILURE;
-  u8 CID_Tab[16];
-
-  /* MSD chip select low */
-  MSD_CS_LOW();
-  /* Send CMD10 (CID register) */
-  MSD_SendCmd(MSD_SEND_CID, 0, 0xFF);
-
-  /* Wait for response in the R1 format (0x00 is no errors) */
-  if (!MSD_GetResponse(MSD_RESPONSE_NO_ERROR))
-  {
-    if (!MSD_GetResponse(MSD_START_DATA_SINGLE_BLOCK_READ))
-    {
-      /* Store CID register value on CID_Tab */
-      for (i = 0; i < 16; i++)
-      {
-        CID_Tab[i] = MSD_ReadByte();
-      }
-    }
-    /* Get CRC bytes (not really needed by us, but required by MSD) */
-    MSD_WriteByte(DUMMY);
-    MSD_WriteByte(DUMMY);
-    /* Set response value to success */
-    rvalue = MSD_RESPONSE_NO_ERROR;
-  }
-
-  /* MSD chip select high */
-  MSD_CS_HIGH();
-  /* Send dummy byte: 8 Clock pulses of delay */
-  MSD_WriteByte(DUMMY);
-
-  /* Byte 0 */
-  MSD_cid->ManufacturerID = CID_Tab[0];
-  /* Byte 1 */
-  MSD_cid->OEM_AppliID = CID_Tab[1] << 8;
-  /* Byte 2 */
-  MSD_cid->OEM_AppliID |= CID_Tab[2];
-  /* Byte 3 */
-  MSD_cid->ProdName1 = CID_Tab[3] << 24;
-  /* Byte 4 */
-  MSD_cid->ProdName1 |= CID_Tab[4] << 16;
-  /* Byte 5 */
-  MSD_cid->ProdName1 |= CID_Tab[5] << 8;
-  /* Byte 6 */
-  MSD_cid->ProdName1 |= CID_Tab[6];
-  /* Byte 7 */
-  MSD_cid->ProdName2 = CID_Tab[7];
-  /* Byte 8 */
-  MSD_cid->ProdRev = CID_Tab[8];
-  /* Byte 9 */
-  MSD_cid->ProdSN = CID_Tab[9] << 24;
-  /* Byte 10 */
-  MSD_cid->ProdSN |= CID_Tab[10] << 16;
-  /* Byte 11 */
-  MSD_cid->ProdSN |= CID_Tab[11] << 8;
-  /* Byte 12 */
-  MSD_cid->ProdSN |= CID_Tab[12];
-  /* Byte 13 */
-  MSD_cid->Reserved1 |= (CID_Tab[13] & 0xF0) >> 4;
-  /* Byte 14 */
-  MSD_cid->ManufactDate = (CID_Tab[13] & 0x0F) << 8;
-  /* Byte 15 */
-  MSD_cid->ManufactDate |= CID_Tab[14];
-  /* Byte 16 */
-  MSD_cid->CRC_Check = (CID_Tab[15] & 0xFE) >> 1;
-  MSD_cid->Reserved2 = 1;
-
-  /* Return the reponse */
-  return rvalue;
-}
-
-/*******************************************************************************
-* Function Name  : MSD_SendCmd
-* Description    : Send 5 bytes command to the MSD card.
-* Input          : - Cmd: the user expected command to send to MSD card
-*                  - Arg: the command argument
-*                  - Crc: the CRC
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void MSD_SendCmd(u8 Cmd, u32 Arg, u8 Crc)
+void SPI_Configuration(void)
 {
-  u32 i = 0x00;
-  u8 Frame[6];
+	SPI_InitTypeDef  SPI_InitStructure;
+    GPIO_InitTypeDef GPIO_InitStructure;
+	//å¯åŠ¨SPI1æ—¶é’Ÿ
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+	//SPI2 Periph clock enable 
+//    RCC_APB1PeriphClockCmd( RCC_APB1Periph_SPI2, ENABLE ) ;
 
-  /* Construct byte1 */
-  Frame[0] = (Cmd | 0x40);
-  /* Construct byte2 */
-  Frame[1] = (u8)(Arg >> 24);
-  /* Construct byte3 */
-  Frame[2] = (u8)(Arg >> 16);
-  /* Construct byte4 */
-  Frame[3] = (u8)(Arg >> 8);
-  /* Construct byte5 */
-  Frame[4] = (u8)(Arg);
-  /* Construct CRC: byte6 */
-  Frame[5] = (Crc);
+    //////ä¸‹é¢æ˜¯SPIç›¸å…³GPIOåˆå§‹åŒ–//////
+    //Configure SPI2 pins: SCK, MISO and MOSI 
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5|GPIO_Pin_6|GPIO_Pin_7; 
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;   //å¤ç”¨æ¨æŒ½è¾“å‡º
+	GPIO_Init(GPIOA,&GPIO_InitStructure);  
+	
+	  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; 
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;   //Ê-Ë¤É«
+    GPIO_Init(GPIOA,&GPIO_InitStructure);	
+	
+	//Configure PG15 pin: SD_CS pin 
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4; 
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 	//æ¨æŒ½è¾“å‡º
+	GPIO_Init(GPIOA,&GPIO_InitStructure); 
 
-  /* Send the Cmd bytes */
-  for (i = 0; i < 6; i++)
-  {
-    MSD_WriteByte(Frame[i]);
-  }
+    //////SPIæ¨¡å—é…ç½®//////
+    //ä¸€å¼€å§‹SDåˆå§‹åŒ–é˜¶æ®µï¼ŒSPIæ—¶é’Ÿé¢‘ç‡å¿…é¡»<400K
+    SD_CS_DISABLE();
+ SPI_Cmd(SPI1,DISABLE);
+	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+	SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
+	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
+	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
+	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+	SPI_InitStructure.SPI_CRCPolynomial = 7;
+	SPI_Init(SPI1, &SPI_InitStructure);
+
+	SPI_Cmd(SPI1, ENABLE);
+	    SPI_I2S_ClearITPendingBit(SPI1, SPI_I2S_IT_RXNE);
+	return;
 }
 
 /*******************************************************************************
-* Function Name  : MSD_GetDataResponse
-* Description    : Get MSD card data response.
-* Input          : None
+* Function Name  : SPI_SetSpeed
+* Description    : SPIè®¾ç½®é€Ÿåº¦ä¸ºé«˜é€Ÿ
+* Input          : u8 SpeedSet 
+*                  å¦‚æœé€Ÿåº¦è®¾ç½®è¾“å…¥0ï¼Œåˆ™ä½é€Ÿæ¨¡å¼ï¼Œé0åˆ™é«˜é€Ÿæ¨¡å¼
+*                  SPI_SPEED_HIGH   1
+*                  SPI_SPEED_LOW    0
 * Output         : None
-* Return         : The MSD status: Read data response xxx0<status>1
-*                   - status 010: Data accecpted
-*                   - status 101: Data rejected due to a crc error
-*                   - status 110: Data rejected due to a Write error.
-*                   - status 111: Data rejected due to other error.
+* Return         : None
 *******************************************************************************/
-u8 MSD_GetDataResponse(void)
+void SPI_SetSpeed(u8 SpeedSet)
 {
-  u32 i = 0;
-  u8 response, rvalue;
-
-  while (i <= 64)
-  {
-    /* Read resonse */
-    response = MSD_ReadByte();
-    /* Mask unused bits */
-    response &= 0x1F;
-
-    switch (response)
+    SPI_InitTypeDef SPI_InitStructure;
+ SPI_Cmd(SPI1,DISABLE);
+    SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+	SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
+	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
+	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+    //å¦‚æœé€Ÿåº¦è®¾ç½®è¾“å…¥0ï¼Œåˆ™ä½é€Ÿæ¨¡å¼ï¼Œé0åˆ™é«˜é€Ÿæ¨¡å¼
+    if(SpeedSet==SPI_SPEED_LOW)
     {
-      case MSD_DATA_OK:
-      {
-        rvalue = MSD_DATA_OK;
-        break;
-      }
-
-      case MSD_DATA_CRC_ERROR:
-        return MSD_DATA_CRC_ERROR;
-
-      case MSD_DATA_WRITE_ERROR:
-        return MSD_DATA_WRITE_ERROR;
-
-      default:
-      {
-        rvalue = MSD_DATA_OTHER_ERROR;
-        break;
-      }
+        SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
     }
-    /* Exit loop in case of data ok */
-    if (rvalue == MSD_DATA_OK)
-      break;
-    /* Increment loop counter */
-    i++;
-  }
-  /* Wait null data */
-  while (MSD_ReadByte() == 0);
-  /* Return response */
-  return response;
-}
-
-/*******************************************************************************
-* Function Name  : MSD_GetResponse
-* Description    : Returns the MSD response.
-* Input          : None
-* Output         : None
-* Return         : The MSD Response: - MSD_RESPONSE_FAILURE: Sequence failed
-*                                    - MSD_RESPONSE_NO_ERROR: Sequence succeed 
-*******************************************************************************/
-u8 MSD_GetResponse(u8 Response)
-{
-  u32 Count = 0xff;
-
-  /* Check if response is got or a timeout is happen */
-  while ((MSD_ReadByte() != Response) && Count)
-  {
-    Count--;
-  }
-
-  if (Count == 0)
-  {
-    /* After time out */
-    return MSD_RESPONSE_FAILURE;
-  }
-  else
-  {
-    /* Right response got */
-    return MSD_RESPONSE_NO_ERROR;
-  }
-}
-
-/*******************************************************************************
-* Function Name  : MSD_GetStatus
-* Description    : Returns the MSD status.
-* Input          : None
-* Output         : None
-* Return         : The MSD status.
-*******************************************************************************/
-u16 MSD_GetStatus(void)
-{
-  u16 Status = 0;
-
-  /* MSD chip select low */
-  MSD_CS_LOW();
-  /* Send CMD13 (MSD_SEND_STATUS) to get MSD status */
-  MSD_SendCmd(MSD_SEND_STATUS, 0, 0xFF);
-
-  Status = MSD_ReadByte();
-  Status |= (u16)(MSD_ReadByte() << 8);
-
-  /* MSD chip select high */
-  MSD_CS_HIGH();
-  /* Send dummy byte 0xFF */
-  MSD_WriteByte(DUMMY);
-
-  return Status;
-}
-
-/*******************************************************************************
-* Function Name  : MSD_GoIdleState
-* Description    : Put MSD in Idle state.
-* Input          : None
-* Output         : None
-* Return         : The MSD Response: - MSD_RESPONSE_FAILURE: Sequence failed
-*                                    - MSD_RESPONSE_NO_ERROR: Sequence succeed 
-*******************************************************************************/
-u8 MSD_GoIdleState(void)
-{
-//³¬Ê±ÍË³ö
-#if  XING_DO
-   u32 Count = 0xFFF*2;
-#endif
-
-  /* MSD chip select low */
-  MSD_CS_LOW();
-  /* Send CMD0 (GO_IDLE_STATE) to put MSD in SPI mode */
-  MSD_SendCmd(MSD_GO_IDLE_STATE, 0, 0x95);
-
-  /* Wait for In Idle State Response (R1 Format) equal to 0x01 */
-  if (MSD_GetResponse(MSD_IN_IDLE_STATE))
-  {
-    /* No Idle State Response: return response failue */
-    return MSD_RESPONSE_FAILURE;
-  }
-  /*----------Activates the card initialization process-----------*/
-  do
-  {
-    /* MSD chip select high */
-    MSD_CS_HIGH();
-    /* Send Dummy byte 0xFF */
-    MSD_WriteByte(DUMMY);
-
-    /* MSD chip select low */
-    MSD_CS_LOW();
-
-    /* Send CMD1 (Activates the card process) until response equal to 0x0 */
-    MSD_SendCmd(MSD_SEND_OP_COND, 0, 0xFF);
-    /* Wait for no error Response (R1 Format) equal to 0x00 */
-
-//³¬Ê±ÍË³ö
-#if  XING_DO
-    Count--;
-    if(Count==0){
-       /* No Idle State Response: return response failue */
-       return MSD_RESPONSE_FAILURE;
+    else
+    {
+        SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
     }
-#endif
+	//moon.mp3: 4707774 Byte size ç›®æ ‡æ–‡ä»¶ è®¾ä¸ºbuffer[512]     
+	//speed:å®éªŒæµ‹è¯•æ•°æ®ï¼Œæœ€å¤§é€Ÿåº¦ 392314 Byte/Sï¼Œ
+	//Prescaler_128, 59592 Byte/S
+	//Prescaler_64, 104617 Byte/S
+	//Prescaler_32, 168134 Byte/S    162337 Byte/S
+	//Prescaler_16, 261543 Byte/S    247777 Byte/S
+	//Prescaler_8,  313851 Byte/S    336269 Byte/S
+	//Prescaler_4,  392314 Byte/S    392314 Byte/S
+	//Prescaler_2,  392314 Byte/S
 
-  }
-  while (MSD_GetResponse(MSD_RESPONSE_NO_ERROR));
-
-  /* MSD chip select high */
-  MSD_CS_HIGH();
-  /* Send dummy byte 0xFF */
-  MSD_WriteByte(DUMMY);
-
-#if  XING_DO
-  SD_SPI_HightSpeed();//ÌáÉıSPIËÙ¶È
-  Get_Medium_Characteristics();//»ñÈ¡¿¨µÄĞÅÏ¢
-  SD_Card_Ready = 0;
-#else
-  SD_SPI_HightSpeed();//ÌáÉıSPIËÙ¶È
-#endif
-
-  return MSD_RESPONSE_NO_ERROR;
+	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+	SPI_InitStructure.SPI_CRCPolynomial = 7;
+	SPI_Init(SPI1, &SPI_InitStructure);
+				SPI_Cmd(SPI1,ENABLE);
+		SPI_I2S_ClearITPendingBit(SPI1, SPI_I2S_IT_RXNE);
+    return;
 }
 
 
 /*******************************************************************************
-* Function Name  : Get_Medium_Characteristics.
-* Description    : Get the microSD card size.
-* Input          : None.
-* Output         : None.
-* Return         : None.
+* Function Name  : SPI_ReadWriteByte
+* Description    : SPIè¯»å†™ä¸€ä¸ªå­—èŠ‚ï¼ˆå‘é€å®Œæˆåè¿”å›æœ¬æ¬¡é€šè®¯è¯»å–çš„æ•°æ®ï¼‰
+* Input          : u8 TxData å¾…å‘é€çš„æ•°
+* Output         : None
+* Return         : u8 RxData æ”¶åˆ°çš„æ•°
 *******************************************************************************/
-void Get_Medium_Characteristics(void)
+u8 SPI_ReadWriteByte(u8 TxData)
 {
-  u32 temp1 = 0;
-  u32 temp2 = 0;
-
-  MSD_GetCSDRegister(&MSD_csd);
-
-  temp1 = MSD_csd.DeviceSize + 1;
-  temp2 = 1 << (MSD_csd.DeviceSizeMul + 2);
-
-  Mass_Block_Count = temp1 * temp2;
-
-  Mass_Block_Size =  1 << MSD_csd.RdBlockLen;
-
-  Mass_Memory_Size = (Mass_Block_Count * Mass_Block_Size);
-
+	while((SPI1->SR&1<<1)==0);//ç­‰å¾…å‘é€åŒºç©º				  
+	SPI1->DR=TxData;	 	  //å‘é€ä¸€ä¸ªbyte   
+	while((SPI1->SR&1<<0)==0);//ç­‰å¾…æ¥æ”¶å®Œä¸€ä¸ªbyte  
+	return SPI1->DR;          //è¿”å›æ”¶åˆ°çš„æ•°æ®		
 }
 
-/******************* (C) COPYRIGHT 2007 STMicroelectronics *****END OF FILE****/
+/*******************************************************************************
+* Function Name  : SD_WaitReady
+* Description    : ç­‰å¾…SDå¡Ready
+* Input          : None
+* Output         : None
+* Return         : u8 
+*                   0ï¼š æˆåŠŸ
+*                   otherï¼šå¤±è´¥
+*******************************************************************************/
+u8 SD_WaitReady(void)
+{
+    u8 r1;
+    u16 retry;
+    retry = 0;
+    do
+    {
+        r1 = SPI_ReadWriteByte(0xFF);
+        if(retry==0xfffe)
+        {
+            return 1;
+        }
+    }while(r1!=0xFF);
+
+    return 0;
+}
 
 
 
-
-
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>start of  code<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-//ÕûÀíÕß: Sasukewxt
-//Ê±¼ä  : 2011/02/27
-//ËµÃ÷  : ÒÔÏÂ¼ÓÈëµÄ´úÂëÊÇÎªÁËÊ¹ÏµÍ³Ö§³Ö¸ßËÙSDHC¿¨
-//------------------------------------------------
-
-/******************************************************************************* 
-*  ±¾ÎÄ¼şÎªSPI²Ù×÷SD¿¨µÄµ×²ãÇı¶¯ÎÄ¼ş
-*  °üÀ¨SPIÄ£¿é¼°Ïà¹ØIOµÄ³õÊ¼»¯£¬SPI¶ÁĞ´SD¿¨£¨Ğ´Ö¸Áî£¬¶ÁÊı¾İµÈ£©
-*******************************************************************************/   
-
-	 
 /*******************************************************************************
 * Function Name  : SD_SendCommand
-* Description    : ÏòSD¿¨·¢ËÍÒ»¸öÃüÁî
-* Input          : u8 cmd   ÃüÁî 
-*                  u32 arg  ÃüÁî²ÎÊı
-*                  u8 crc   crcĞ£ÑéÖµ
+* Description    : å‘SDå¡å‘é€ä¸€ä¸ªå‘½ä»¤
+* Input          : u8 cmd   å‘½ä»¤ 
+*                  u32 arg  å‘½ä»¤å‚æ•°
+*                  u8 crc   crcæ ¡éªŒå€¼
 * Output         : None
-* Return         : u8 r1 SD¿¨·µ»ØµÄÏìÓ¦
+* Return         : u8 r1 SDå¡è¿”å›çš„å“åº”
 *******************************************************************************/
 u8 SD_SendCommand(u8 cmd, u32 arg, u8 crc)
 {
@@ -918,287 +206,708 @@ u8 SD_SendCommand(u8 cmd, u32 arg, u8 crc)
     unsigned char Retry = 0;
 
     //????????
-    SPI1_ReadWriteByte(0xff);
-    //Æ¬Ñ¡¶ËÖÃµÍ£¬Ñ¡ÖĞSD¿¨
+    SPI_ReadWriteByte(0xff);
+    //ç‰‡é€‰ç«¯ç½®ä½ï¼Œé€‰ä¸­SDå¡
     SD_CS_ENABLE();
 
-    //·¢ËÍ
-    SPI1_ReadWriteByte(cmd | 0x40);                         //·Ö±ğĞ´ÈëÃüÁî
-    SPI1_ReadWriteByte(arg >> 24);
-    SPI1_ReadWriteByte(arg >> 16);
-    SPI1_ReadWriteByte(arg >> 8);
-    SPI1_ReadWriteByte(arg);
-    SPI1_ReadWriteByte(crc);
+    //å‘é€
+    SPI_ReadWriteByte(cmd | 0x40);                         //åˆ†åˆ«å†™å…¥å‘½ä»¤
+    SPI_ReadWriteByte(arg >> 24);
+    SPI_ReadWriteByte(arg >> 16);
+    SPI_ReadWriteByte(arg >> 8);
+    SPI_ReadWriteByte(arg);
+    SPI_ReadWriteByte(crc);
     
-    //µÈ´ıÏìÓ¦£¬»ò³¬Ê±ÍË³ö
-    while((r1 = SPI1_ReadWriteByte(0xFF))==0xFF)
+    //ç­‰å¾…å“åº”ï¼Œæˆ–è¶…æ—¶é€€å‡º
+    while((r1 = SPI_ReadWriteByte(0xFF))==0xFF)
     {
         Retry++;
-        if(Retry > RE_TRY_CNT)break; 
-    }   
-    //¹Ø±ÕÆ¬Ñ¡
-    SD_CS_DISABLE();
-    //ÔÚ×ÜÏßÉÏ¶îÍâÔö¼Ó8¸öÊ±ÖÓ£¬ÈÃSD¿¨Íê³ÉÊ£ÏÂµÄ¹¤×÷
-    SPI1_ReadWriteByte(0xFF);
+        if(Retry > 200)
+        {
+            break;
+        }
+    }
+    
 
-    //·µ»Ø×´Ì¬Öµ
+    //å…³é—­ç‰‡é€‰
+    SD_CS_DISABLE();
+    //åœ¨æ€»çº¿ä¸Šé¢å¤–å¢åŠ 8ä¸ªæ—¶é’Ÿï¼Œè®©SDå¡å®Œæˆå‰©ä¸‹çš„å·¥ä½œ
+    SPI_ReadWriteByte(0xFF);
+
+    //è¿”å›çŠ¶æ€å€¼
     return r1;
 }
 
 
 /*******************************************************************************
 * Function Name  : SD_SendCommand_NoDeassert
-* Description    : ÏòSD¿¨·¢ËÍÒ»¸öÃüÁî(½áÊøÊÇ²»Ê§ÄÜÆ¬Ñ¡£¬»¹ÓĞºóĞøÊı¾İ´«À´£©
-* Input          : u8 cmd   ÃüÁî 
-*                  u32 arg  ÃüÁî²ÎÊı
-*                  u8 crc   crcĞ£ÑéÖµ
+* Description    : å‘SDå¡å‘é€ä¸€ä¸ªå‘½ä»¤(ç»“æŸæ˜¯ä¸å¤±èƒ½ç‰‡é€‰ï¼Œè¿˜æœ‰åç»­æ•°æ®ä¼ æ¥ï¼‰
+* Input          : u8 cmd   å‘½ä»¤ 
+*                  u32 arg  å‘½ä»¤å‚æ•°
+*                  u8 crc   crcæ ¡éªŒå€¼
 * Output         : None
-* Return         : u8 r1 SD¿¨·µ»ØµÄÏìÓ¦
+* Return         : u8 r1 SDå¡è¿”å›çš„å“åº”
 *******************************************************************************/
 u8 SD_SendCommand_NoDeassert(u8 cmd, u32 arg, u8 crc)
 {
     unsigned char r1;
     unsigned char Retry = 0;
 
-    SPI1_ReadWriteByte(0xff);
-    //Æ¬Ñ¡¶ËÖÃµÍ£¬Ñ¡ÖĞSD¿¨
+    //????????
+    SPI_ReadWriteByte(0xff);
+    //ç‰‡é€‰ç«¯ç½®ä½ï¼Œé€‰ä¸­SDå¡
     SD_CS_ENABLE();
 
-    //·¢ËÍ
-    SPI1_ReadWriteByte(cmd | 0x40);                         //·Ö±ğĞ´ÈëÃüÁî
-    SPI1_ReadWriteByte(arg >> 24);
-    SPI1_ReadWriteByte(arg >> 16);
-    SPI1_ReadWriteByte(arg >> 8);
-    SPI1_ReadWriteByte(arg);
-    SPI1_ReadWriteByte(crc);
+    //å‘é€
+    SPI_ReadWriteByte(cmd | 0x40);                         //åˆ†åˆ«å†™å…¥å‘½ä»¤
+    SPI_ReadWriteByte(arg >> 24);
+    SPI_ReadWriteByte(arg >> 16);
+    SPI_ReadWriteByte(arg >> 8);
+    SPI_ReadWriteByte(arg);
+    SPI_ReadWriteByte(crc);
 
-    //µÈ´ıÏìÓ¦£¬»ò³¬Ê±ÍË³ö
-    while((r1 = SPI1_ReadWriteByte(0xFF))==0xFF)
+    //ç­‰å¾…å“åº”ï¼Œæˆ–è¶…æ—¶é€€å‡º
+    while((r1 = SPI_ReadWriteByte(0xFF))==0xFF)
     {
         Retry++;
-        if(Retry > RE_TRY_CNT)break;   
+        if(Retry > 200)
+        {
+            break;
+        }
     }
-    //·µ»ØÏìÓ¦Öµ
+    //è¿”å›å“åº”å€¼
     return r1;
 }
 
 /*******************************************************************************
-* Function Name  : SDHC_Init
-* Description    : ³õÊ¼»¯SDHC¿¨
+* Function Name  : SD_Init
+* Description    : åˆå§‹åŒ–SDå¡
 * Input          : None
 * Output         : None
 * Return         : u8 
-*                  0£ºNO_ERR
-*                  1£ºTIME_OUT
-*                  99£ºNO_CARD
+*                  0ï¼šNO_ERR
+*                  1ï¼šTIME_OUT
+*                  99ï¼šNO_CARD
 *******************************************************************************/
-u8 SDHC_Init(void)// ³õÊ¼»¯¸ßËÙSD¿¨,ÓÉMSD_Initµ÷ÓÃ
+u8 SD_Init(void)
 {
-    u16 i;      // ÓÃÀ´Ñ­»·¼ÆÊı
-    u8 r1;      // ´æ·ÅSD¿¨µÄ·µ»ØÖµ
-    u16 retry;  // ÓÃÀ´½øĞĞ³¬Ê±¼ÆÊı
+    u16 i;      // ç”¨æ¥å¾ªç¯è®¡æ•°
+    u8 r1;      // å­˜æ”¾SDå¡çš„è¿”å›å€¼
+    u16 retry;  // ç”¨æ¥è¿›è¡Œè¶…æ—¶è®¡æ•°
     u8 buff[6];
-					 
-	/* Initialize SPI1 */
-    SD_SPI_Configuration();
 
-	SD_CS_ENABLE();
-					  
-    // ´¿ÑÓÊ±£¬µÈ´ıSD¿¨ÉÏµçÍê³É
-    for(i=0;i<0x2f00;i++);
+    //å¦‚æœæ²¡æœ‰æ£€æµ‹åˆ°å¡æ’å…¥ï¼Œç›´æ¥é€€å‡ºï¼Œè¿”å›é”™è¯¯æ ‡å¿—
+//    if(!SD_DET())
+//    {
+//        //return 99;        
+//        return STA_NODISK;  //  FatFSé”™è¯¯æ ‡å¿—ï¼šæ²¡æœ‰æ’å…¥ç£ç›˜
+//    }
 
-    //ÏÈ²úÉú>74¸öÂö³å£¬ÈÃSD¿¨×Ô¼º³õÊ¼»¯Íê³É
+    //SDå¡ä¸Šç”µ
+    //SD_PWR_ON();
+    // çº¯å»¶æ—¶ï¼Œç­‰å¾…SDå¡ä¸Šç”µå®Œæˆ
+    //for(i=0;i<0xf00;i++);
+
+	/******************************************************* 
+	//è¿™ä¸ªåœ°æ–¹è¦åŠ ä¸€å¥,è®¾ç½®SPIé€Ÿåº¦ä¸ºä½é€Ÿã€‚ 
+	//ä¸ºä»€ä¹ˆæœ‰çš„å¡å¯ä»¥å‘¢ï¼Ÿå› ä¸ºSPIåˆå§‹åŒ–æ—¶æ˜¯ä½é€Ÿçš„ï¼ŒSDå¡åˆå§‹åŒ– 
+	//å®Œæˆåè®¾ç½®ä¸ºé«˜é€Ÿï¼Œæœ‰çš„å¡åªè¦åˆå§‹åŒ–ä¸€æ¬¡å°±è¡Œï¼Œç¨‹åºå°±okï¼› 
+	//ä½†æœ‰çš„å¡éœ€è¦å¤šæ¬¡å¤ä½ï¼Œå‘µå‘µï¼Œè¿™ä¸ªåœ°æ–¹å·®è¿™ä¸€å¥ï¼Œ 
+	//è¿™ç§å¡å°±ç”¨ä¸æˆå’¯ï¼ 
+	*******************************************************/ 
+    SPI_SetSpeed(0); //è®¾ç½®SPIé€Ÿåº¦ä¸ºä½é€Ÿ 
+
+    //å…ˆäº§ç”Ÿ>74ä¸ªè„‰å†²ï¼Œè®©SDå¡è‡ªå·±åˆå§‹åŒ–å®Œæˆ
     for(i=0;i<10;i++)
     {
-        SPI1_ReadWriteByte(0xFF);
+        SPI_ReadWriteByte(0xFF);
     }
 
-    //-----------------SD¿¨¸´Î»µ½idle¿ªÊ¼-----------------
-    //Ñ­»·Á¬Ğø·¢ËÍCMD0£¬Ö±µ½SD¿¨·µ»Ø0x01,½øÈëIDLE×´Ì¬
-    //³¬Ê±ÔòÖ±½ÓÍË³ö
+    //-----------------SDå¡å¤ä½åˆ°idleå¼€å§‹-----------------
+    //å¾ªç¯è¿ç»­å‘é€CMD0ï¼Œç›´åˆ°SDå¡è¿”å›0x01,è¿›å…¥IDLEçŠ¶æ€
+    //è¶…æ—¶åˆ™ç›´æ¥é€€å‡º
     retry = 0;
     do
     {
-        //·¢ËÍCMD0£¬ÈÃSD¿¨½øÈëIDLE×´Ì¬
+        //å‘é€CMD0ï¼Œè®©SDå¡è¿›å…¥IDLEçŠ¶æ€
         r1 = SD_SendCommand(CMD0, 0, 0x95);
         retry++;
-    }while((r1 != 0x01) && (retry<RE_TRY_CNT));
-    //Ìø³öÑ­»·ºó£¬¼ì²éÔ­Òò£º³õÊ¼»¯³É¹¦£¿or ÖØÊÔ³¬Ê±£¿
-    if(retry==RE_TRY_CNT) return 1;   //³¬Ê±·µ»Ø1	  
-    //-----------------SD¿¨¸´Î»µ½idle½áÊø-----------------	 
-    //»ñÈ¡¿¨Æ¬µÄSD°æ±¾ĞÅÏ¢
-    r1 = SD_SendCommand_NoDeassert(8, 0x1aa, 0x87);	     
-    //Èç¹û¿¨Æ¬°æ±¾ĞÅÏ¢ÊÇv1.0°æ±¾µÄ£¬¼´r1=0x05£¬Ôò½øĞĞÒÔÏÂ³õÊ¼»¯
+    }while((r1 != 0x01) && (retry<200));
+    //è·³å‡ºå¾ªç¯åï¼Œæ£€æŸ¥åŸå› ï¼šåˆå§‹åŒ–æˆåŠŸï¼Ÿor é‡è¯•è¶…æ—¶ï¼Ÿ
+    if(retry==200)
+    {
+        return 1;   //è¶…æ—¶è¿”å›1
+    }
+    //-----------------SDå¡å¤ä½åˆ°idleç»“æŸ-----------------
+
+
+
+    //è·å–å¡ç‰‡çš„SDç‰ˆæœ¬ä¿¡æ¯
+    r1 = SD_SendCommand_NoDeassert(8, 0x1aa, 0x87);
+
+    //å¦‚æœå¡ç‰‡ç‰ˆæœ¬ä¿¡æ¯æ˜¯v1.0ç‰ˆæœ¬çš„ï¼Œå³r1=0x05ï¼Œåˆ™è¿›è¡Œä»¥ä¸‹åˆå§‹åŒ–
     if(r1 == 0x05)
     {
-        //ÉèÖÃ¿¨ÀàĞÍÎªSDV1.0£¬Èç¹ûºóÃæ¼ì²âµ½ÎªMMC¿¨£¬ÔÙĞŞ¸ÄÎªMMC
-        SD_Type = SD_TYPE_V1;	   
-        //Èç¹ûÊÇV1.0¿¨£¬CMD8Ö¸ÁîºóÃ»ÓĞºóĞøÊı¾İ
-        //Æ¬Ñ¡ÖÃ¸ß£¬½áÊø±¾´ÎÃüÁî
+        //è®¾ç½®å¡ç±»å‹ä¸ºSDV1.0ï¼Œå¦‚æœåé¢æ£€æµ‹åˆ°ä¸ºMMCå¡ï¼Œå†ä¿®æ”¹ä¸ºMMC
+        SD_Type = SD_TYPE_V1;
+
+        //å¦‚æœæ˜¯V1.0å¡ï¼ŒCMD8æŒ‡ä»¤åæ²¡æœ‰åç»­æ•°æ®
+        //ç‰‡é€‰ç½®é«˜ï¼Œç»“æŸæœ¬æ¬¡å‘½ä»¤
         SD_CS_DISABLE();
-        //¶à·¢8¸öCLK£¬ÈÃSD½áÊøºóĞø²Ù×÷
-        SPI1_ReadWriteByte(0xFF);	  
-        //-----------------SD¿¨¡¢MMC¿¨³õÊ¼»¯¿ªÊ¼-----------------	 
-        //·¢¿¨³õÊ¼»¯Ö¸ÁîCMD55+ACMD41
-        // Èç¹ûÓĞÓ¦´ğ£¬ËµÃ÷ÊÇSD¿¨£¬ÇÒ³õÊ¼»¯Íê³É
-        // Ã»ÓĞ»ØÓ¦£¬ËµÃ÷ÊÇMMC¿¨£¬¶îÍâ½øĞĞÏàÓ¦³õÊ¼»¯
+        //å¤šå‘8ä¸ªCLKï¼Œè®©SDç»“æŸåç»­æ“ä½œ
+        SPI_ReadWriteByte(0xFF);
+
+        //-----------------SDå¡ã€MMCå¡åˆå§‹åŒ–å¼€å§‹-----------------
+
+        //å‘å¡åˆå§‹åŒ–æŒ‡ä»¤CMD55+ACMD41
+        // å¦‚æœæœ‰åº”ç­”ï¼Œè¯´æ˜æ˜¯SDå¡ï¼Œä¸”åˆå§‹åŒ–å®Œæˆ
+        // æ²¡æœ‰å›åº”ï¼Œè¯´æ˜æ˜¯MMCå¡ï¼Œé¢å¤–è¿›è¡Œç›¸åº”åˆå§‹åŒ–
         retry = 0;
         do
         {
-            //ÏÈ·¢CMD55£¬Ó¦·µ»Ø0x01£»·ñÔò³ö´í
+            //å…ˆå‘CMD55ï¼Œåº”è¿”å›0x01ï¼›å¦åˆ™å‡ºé”™
             r1 = SD_SendCommand(CMD55, 0, 0);
-            if(r1 != 0x01)return r1;	  
-            //µÃµ½ÕıÈ·ÏìÓ¦ºó£¬·¢ACMD41£¬Ó¦µÃµ½·µ»ØÖµ0x00£¬·ñÔòÖØÊÔ200´Î
+            if(r1 != 0x01)
+            {
+                return r1;  
+            }
+            //å¾—åˆ°æ­£ç¡®å“åº”åï¼Œå‘ACMD41ï¼Œåº”å¾—åˆ°è¿”å›å€¼0x00ï¼Œå¦åˆ™é‡è¯•200æ¬¡
             r1 = SD_SendCommand(ACMD41, 0, 0);
             retry++;
-        }while((r1!=0x00) && (retry<RE_TRY_CNT));
-        // ÅĞ¶ÏÊÇ³¬Ê±»¹ÊÇµÃµ½ÕıÈ·»ØÓ¦
-        // ÈôÓĞ»ØÓ¦£ºÊÇSD¿¨£»Ã»ÓĞ»ØÓ¦£ºÊÇMMC¿¨
+        }while((r1!=0x00) && (retry<400));
+        // åˆ¤æ–­æ˜¯è¶…æ—¶è¿˜æ˜¯å¾—åˆ°æ­£ç¡®å›åº”
+        // è‹¥æœ‰å›åº”ï¼šæ˜¯SDå¡ï¼›æ²¡æœ‰å›åº”ï¼šæ˜¯MMCå¡
         
-        //----------MMC¿¨¶îÍâ³õÊ¼»¯²Ù×÷¿ªÊ¼------------
-        if(retry==RE_TRY_CNT)
+        //----------MMCå¡é¢å¤–åˆå§‹åŒ–æ“ä½œå¼€å§‹------------
+        if(retry==400)
         {
             retry = 0;
-            //·¢ËÍMMC¿¨³õÊ¼»¯ÃüÁî£¨Ã»ÓĞ²âÊÔ£©
+            //å‘é€MMCå¡åˆå§‹åŒ–å‘½ä»¤ï¼ˆæ²¡æœ‰æµ‹è¯•ï¼‰
             do
             {
                 r1 = SD_SendCommand(1, 0, 0);
                 retry++;
-            }while((r1!=0x00)&& (retry<RE_TRY_CNT));
-            if(retry==RE_TRY_CNT)return 1;   //MMC¿¨³õÊ¼»¯³¬Ê±		    
-            //Ğ´Èë¿¨ÀàĞÍ
+            }while((r1!=0x00)&& (retry<400));
+            if(retry==400)
+            {
+                return 1;   //MMCå¡åˆå§‹åŒ–è¶…æ—¶
+            }
+            //å†™å…¥å¡ç±»å‹
             SD_Type = SD_TYPE_MMC;
         }
-        //----------MMC¿¨¶îÍâ³õÊ¼»¯²Ù×÷½áÊø------------	    
-        //ÉèÖÃSPIÎª¸ßËÙÄ£Ê½
-		//SD_SPI_HightSpeed();//ÌáÉıSPIËÙ¶È  
-		SPI1_ReadWriteByte(0xFF);
+        //----------MMCå¡é¢å¤–åˆå§‹åŒ–æ“ä½œç»“æŸ------------
         
-        //½ûÖ¹CRCĞ£Ñé	   
-		r1 = SD_SendCommand(CMD59, 0, 0x95);
-        if(r1 != 0x00)return r1;  //ÃüÁî´íÎó£¬·µ»Ør1   	   
-        //ÉèÖÃSector Size
-        r1 = SD_SendCommand(CMD16, 512, 0x95);
-        if(r1 != 0x00)return r1;//ÃüÁî´íÎó£¬·µ»Ør1		 
-        //-----------------SD¿¨¡¢MMC¿¨³õÊ¼»¯½áÊø-----------------
+        //è®¾ç½®SPIä¸ºé«˜é€Ÿæ¨¡å¼
+        SPI_SetSpeed(1);
 
-    }//SD¿¨ÎªV1.0°æ±¾µÄ³õÊ¼»¯½áÊø	 
-    //ÏÂÃæÊÇV2.0¿¨µÄ³õÊ¼»¯
-    //ÆäÖĞĞèÒª¶ÁÈ¡OCRÊı¾İ£¬ÅĞ¶ÏÊÇSD2.0»¹ÊÇSD2.0HC¿¨
+		SPI_ReadWriteByte(0xFF);
+        
+        //ç¦æ­¢CRCæ ¡éªŒ
+        /*
+		r1 = SD_SendCommand(CMD59, 0, 0x01);
+        if(r1 != 0x00)
+        {
+            return r1;  //å‘½ä»¤é”™è¯¯ï¼Œè¿”å›r1
+        }
+        */    
+        //è®¾ç½®Sector Size
+        r1 = SD_SendCommand(CMD16, 512, 0xff);
+        if(r1 != 0x00)
+        {
+            return r1;  //å‘½ä»¤é”™è¯¯ï¼Œè¿”å›r1
+        }
+        //-----------------SDå¡ã€MMCå¡åˆå§‹åŒ–ç»“æŸ-----------------
+
+    }//SDå¡ä¸ºV1.0ç‰ˆæœ¬çš„åˆå§‹åŒ–ç»“æŸ
+    
+
+    //ä¸‹é¢æ˜¯V2.0å¡çš„åˆå§‹åŒ–
+    //å…¶ä¸­éœ€è¦è¯»å–OCRæ•°æ®ï¼Œåˆ¤æ–­æ˜¯SD2.0è¿˜æ˜¯SD2.0HCå¡
     else if(r1 == 0x01)
     {
-        //V2.0µÄ¿¨£¬CMD8ÃüÁîºó»á´«»Ø4×Ö½ÚµÄÊı¾İ£¬ÒªÌø¹ıÔÙ½áÊø±¾ÃüÁî
-        buff[0] = SPI1_ReadWriteByte(0xFF);  //should be 0x00
-        buff[1] = SPI1_ReadWriteByte(0xFF);  //should be 0x00
-        buff[2] = SPI1_ReadWriteByte(0xFF);  //should be 0x01
-        buff[3] = SPI1_ReadWriteByte(0xFF);  //should be 0xAA	    
-        SD_CS_DISABLE();	  
-        SPI1_ReadWriteByte(0xFF);//the next 8 clocks			 
-        //ÅĞ¶Ï¸Ã¿¨ÊÇ·ñÖ§³Ö2.7V-3.6VµÄµçÑ¹·¶Î§
-        //if(buff[2]==0x01 && buff[3]==0xAA) //²»ÅĞ¶Ï£¬ÈÃÆäÖ§³ÖµÄ¿¨¸ü¶à
-        {	  
+        //V2.0çš„å¡ï¼ŒCMD8å‘½ä»¤åä¼šä¼ å›4å­—èŠ‚çš„æ•°æ®ï¼Œè¦è·³è¿‡å†ç»“æŸæœ¬å‘½ä»¤
+        buff[0] = SPI_ReadWriteByte(0xFF);  //should be 0x00
+        buff[1] = SPI_ReadWriteByte(0xFF);  //should be 0x00
+        buff[2] = SPI_ReadWriteByte(0xFF);  //should be 0x01
+        buff[3] = SPI_ReadWriteByte(0xFF);  //should be 0xAA
+     
+        SD_CS_DISABLE();
+        //the next 8 clocks
+        SPI_ReadWriteByte(0xFF);
+        
+        //åˆ¤æ–­è¯¥å¡æ˜¯å¦æ”¯æŒ2.7V-3.6Vçš„ç”µå‹èŒƒå›´
+        if(buff[2]==0x01 && buff[3]==0xAA)
+        {
+            //æ”¯æŒç”µå‹èŒƒå›´ï¼Œå¯ä»¥æ“ä½œ
             retry = 0;
-            //·¢¿¨³õÊ¼»¯Ö¸ÁîCMD55+ACMD41
+            //å‘å¡åˆå§‹åŒ–æŒ‡ä»¤CMD55+ACMD41
     		do
     		{
     			r1 = SD_SendCommand(CMD55, 0, 0);
-    			if(r1!=0x01)return r1;	   
+    			if(r1!=0x01)
+    			{
+    				return r1;
+    			}
     			r1 = SD_SendCommand(ACMD41, 0x40000000, 0);
-                if(retry>RE_TRY_CNT)return r1;  //³¬Ê±Ôò·µ»Ør1×´Ì¬  
-            }while(r1!=0);		  
-            //³õÊ¼»¯Ö¸Áî·¢ËÍÍê³É£¬½ÓÏÂÀ´»ñÈ¡OCRĞÅÏ¢		   
-            //-----------¼ø±ğSD2.0¿¨°æ±¾¿ªÊ¼-----------
+                if(retry>200)   
+                {
+                    return r1;  //è¶…æ—¶åˆ™è¿”å›r1çŠ¶æ€
+                }
+            }while(r1!=0);
+          
+            //åˆå§‹åŒ–æŒ‡ä»¤å‘é€å®Œæˆï¼Œæ¥ä¸‹æ¥è·å–OCRä¿¡æ¯
+
+            //-----------é‰´åˆ«SD2.0å¡ç‰ˆæœ¬å¼€å§‹-----------
             r1 = SD_SendCommand_NoDeassert(CMD58, 0, 0);
-            if(r1!=0x00)return r1;  //Èç¹ûÃüÁîÃ»ÓĞ·µ»ØÕıÈ·Ó¦´ğ£¬Ö±½ÓÍË³ö£¬·µ»ØÓ¦´ğ		 
-            //¶ÁOCRÖ¸Áî·¢³öºó£¬½ô½Ó×ÅÊÇ4×Ö½ÚµÄOCRĞÅÏ¢
-            buff[0] = SPI1_ReadWriteByte(0xFF);
-            buff[1] = SPI1_ReadWriteByte(0xFF); 
-            buff[2] = SPI1_ReadWriteByte(0xFF);
-            buff[3] = SPI1_ReadWriteByte(0xFF);
+            if(r1!=0x00)
+            {
+                return r1;  //å¦‚æœå‘½ä»¤æ²¡æœ‰è¿”å›æ­£ç¡®åº”ç­”ï¼Œç›´æ¥é€€å‡ºï¼Œè¿”å›åº”ç­”
+            }
+            //è¯»OCRæŒ‡ä»¤å‘å‡ºåï¼Œç´§æ¥ç€æ˜¯4å­—èŠ‚çš„OCRä¿¡æ¯
+            buff[0] = SPI_ReadWriteByte(0xFF);
+            buff[1] = SPI_ReadWriteByte(0xFF); 
+            buff[2] = SPI_ReadWriteByte(0xFF);
+            buff[3] = SPI_ReadWriteByte(0xFF);
 
-            //OCR½ÓÊÕÍê³É£¬Æ¬Ñ¡ÖÃ¸ß
+            //OCRæ¥æ”¶å®Œæˆï¼Œç‰‡é€‰ç½®é«˜
             SD_CS_DISABLE();
-            SPI1_ReadWriteByte(0xFF);
+            SPI_ReadWriteByte(0xFF);
 
-            //¼ì²é½ÓÊÕµ½µÄOCRÖĞµÄbit30Î»£¨CCS£©£¬È·¶¨ÆäÎªSD2.0»¹ÊÇSDHC
-            //Èç¹ûCCS=1£ºSDHC   CCS=0£ºSD2.0
-            if(buff[0]&0x40)SD_Type = SD_TYPE_V2HC;    //¼ì²éCCS	 
-            else SD_Type = SD_TYPE_V2;	    
-            //-----------¼ø±ğSD2.0¿¨°æ±¾½áÊø----------- 
-            //ÉèÖÃSPIÎª¸ßËÙÄ£Ê½
-			//SD_SPI_HightSpeed();//ÌáÉıSPIËÙ¶È 
-        }	    
+            //æ£€æŸ¥æ¥æ”¶åˆ°çš„OCRä¸­çš„bit30ä½ï¼ˆCCSï¼‰ï¼Œç¡®å®šå…¶ä¸ºSD2.0è¿˜æ˜¯SDHC
+            //å¦‚æœCCS=1ï¼šSDHC   CCS=0ï¼šSD2.0
+            if(buff[0]&0x40)    //æ£€æŸ¥CCS
+            {
+                SD_Type = SD_TYPE_V2HC;
+            }
+            else
+            {
+                SD_Type = SD_TYPE_V2;
+            }
+            //-----------é‰´åˆ«SD2.0å¡ç‰ˆæœ¬ç»“æŸ-----------
+
+            
+            //è®¾ç½®SPIä¸ºé«˜é€Ÿæ¨¡å¼
+            SPI_SetSpeed(1);  
+        }
+
     }
     return r1;
 }
 
-//»ñÈ¡SD¿¨µÄCSDĞÅÏ¢£¬°üÀ¨ÈİÁ¿ºÍËÙ¶ÈĞÅÏ¢
-//ÊäÈë:u8 *cid_data(´æ·ÅCIDµÄÄÚ´æ£¬ÖÁÉÙ16Byte£©	    
-//·µ»ØÖµ:0£ºNO_ERR
-//		 1£º´íÎó	
-u8 CSD_Tab[16];
 
+
+/*******************************************************************************
+* Function Name  : SD_ReceiveData
+* Description    : ä»SDå¡ä¸­è¯»å›æŒ‡å®šé•¿åº¦çš„æ•°æ®ï¼Œæ”¾ç½®åœ¨ç»™å®šä½ç½®
+* Input          : u8 *data(å­˜æ”¾è¯»å›æ•°æ®çš„å†…å­˜>len)
+*                  u16 len(æ•°æ®é•¿åº¦ï¼‰
+*                  u8 release(ä¼ è¾“å®Œæˆåæ˜¯å¦é‡Šæ”¾æ€»çº¿CSç½®é«˜ 0ï¼šä¸é‡Šæ”¾ 1ï¼šé‡Šæ”¾ï¼‰
+* Output         : None
+* Return         : u8 
+*                  0ï¼šNO_ERR
+*                  otherï¼šé”™è¯¯ä¿¡æ¯
+*******************************************************************************/
+u8 SD_ReceiveData(u8 *data, u16 len, u8 release)
+{
+    u16 retry;
+    u8 r1;
+
+    // å¯åŠ¨ä¸€æ¬¡ä¼ è¾“
+    SD_CS_ENABLE();
+    //ç­‰å¾…SDå¡å‘å›æ•°æ®èµ·å§‹ä»¤ç‰Œ0xFE
+    retry = 0;
+    do
+    {
+        r1 = SPI_ReadWriteByte(0xFF);
+        retry++;
+        if(retry>2000)  //2000æ¬¡ç­‰å¾…åæ²¡æœ‰åº”ç­”ï¼Œé€€å‡ºæŠ¥é”™
+        {
+            SD_CS_DISABLE();
+            return 1;
+        }
+    }while(r1 != 0xFE);
+    //å¼€å§‹æ¥æ”¶æ•°æ®
+    while(len--)
+    {
+        *data = SPI_ReadWriteByte(0xFF);
+        data++;
+    }
+    //ä¸‹é¢æ˜¯2ä¸ªä¼ªCRCï¼ˆdummy CRCï¼‰
+    SPI_ReadWriteByte(0xFF);
+    SPI_ReadWriteByte(0xFF);
+    //æŒ‰éœ€é‡Šæ”¾æ€»çº¿ï¼Œå°†CSç½®é«˜
+    if(release == RELEASE)
+    {
+        //ä¼ è¾“ç»“æŸ
+        SD_CS_DISABLE();
+        SPI_ReadWriteByte(0xFF);
+    }
+
+    return 0;
+}
+
+
+/*******************************************************************************
+* Function Name  : SD_GetCID
+* Description    : è·å–SDå¡çš„CIDä¿¡æ¯ï¼ŒåŒ…æ‹¬åˆ¶é€ å•†ä¿¡æ¯
+* Input          : u8 *cid_data(å­˜æ”¾CIDçš„å†…å­˜ï¼Œè‡³å°‘16Byteï¼‰
+* Output         : None
+* Return         : u8 
+*                  0ï¼šNO_ERR
+*                  1ï¼šTIME_OUT
+*                  otherï¼šé”™è¯¯ä¿¡æ¯
+*******************************************************************************/
+u8 SD_GetCID(u8 *cid_data)
+{
+    u8 r1;
+
+    //å‘CMD10å‘½ä»¤ï¼Œè¯»CID
+    r1 = SD_SendCommand(CMD10, 0, 0xFF);
+    if(r1 != 0x00)
+    {
+        return r1;  //æ²¡è¿”å›æ­£ç¡®åº”ç­”ï¼Œåˆ™é€€å‡ºï¼ŒæŠ¥é”™
+    }
+    //æ¥æ”¶16ä¸ªå­—èŠ‚çš„æ•°æ®
+    SD_ReceiveData(cid_data, 16, RELEASE);
+
+    return 0;
+}
+
+
+/*******************************************************************************
+* Function Name  : SD_GetCSD
+* Description    : è·å–SDå¡çš„CSDä¿¡æ¯ï¼ŒåŒ…æ‹¬å®¹é‡å’Œé€Ÿåº¦ä¿¡æ¯
+* Input          : u8 *cid_data(å­˜æ”¾CIDçš„å†…å­˜ï¼Œè‡³å°‘16Byteï¼‰
+* Output         : None
+* Return         : u8 
+*                  0ï¼šNO_ERR
+*                  1ï¼šTIME_OUT
+*                  otherï¼šé”™è¯¯ä¿¡æ¯
+*******************************************************************************/
 u8 SD_GetCSD(u8 *csd_data)
 {
-  u32 i = 0;
-  u8 rvalue = MSD_RESPONSE_FAILURE;
-  
+    u8 r1;
 
-  /* MSD chip select low */
-  MSD_CS_LOW();
-  /* Send CMD9 (CSD register) or CMD10(CSD register) */
-  MSD_SendCmd(MSD_SEND_CSD, 0, 0xFF);
-
-  /* Wait for response in the R1 format (0x00 is no errors) */
-  if (!MSD_GetResponse(MSD_RESPONSE_NO_ERROR))
-  {
-    if (!MSD_GetResponse(MSD_START_DATA_SINGLE_BLOCK_READ))
+    //å‘CMD9å‘½ä»¤ï¼Œè¯»CSD
+    r1 = SD_SendCommand(CMD9, 0, 0xFF);
+    if(r1 != 0x00)
     {
-      for (i = 0; i < 16; i++)
-      {
-        /* Store CSD register value on CSD_Tab */
-        CSD_Tab[i] = MSD_ReadByte();
-      }
+        return r1;  //æ²¡è¿”å›æ­£ç¡®åº”ç­”ï¼Œåˆ™é€€å‡ºï¼ŒæŠ¥é”™
     }
-    /* Get CRC bytes (not really needed by us, but required by MSD) */
-    MSD_WriteByte(DUMMY);
-    MSD_WriteByte(DUMMY);
-    /* Set response value to success */
-    rvalue = MSD_RESPONSE_NO_ERROR;
-  }
+    //æ¥æ”¶16ä¸ªå­—èŠ‚çš„æ•°æ®
+    SD_ReceiveData(csd_data, 16, RELEASE);
 
-  /* MSD chip select high */
-  MSD_CS_HIGH();
-  /* Send dummy byte: 8 Clock pulses of delay */
-  MSD_WriteByte(DUMMY);
-  
-  return rvalue;
-}  
-//»ñÈ¡SD¿¨µÄ×ÜÉÈÇøÊı£¨ÉÈÇøÊı£©   
-//·µ»ØÖµ:0£º È¡ÈİÁ¿³ö´í 
-//       ÆäËû:SD¿¨µÄÈİÁ¿(ÉÈÇøÊı/512×Ö½Ú)
-//Ã¿ÉÈÇøµÄ×Ö½ÚÊı±ØÎª512£¬ÒòÎªÈç¹û²»ÊÇ512£¬Ôò³õÊ¼»¯²»ÄÜÍ¨¹ı.														  
-u32 SD_GetSectorCount(void)
+    return 0;
+}
+
+
+/*******************************************************************************
+* Function Name  : SD_GetCapacity
+* Description    : è·å–SDå¡çš„å®¹é‡
+* Input          : None
+* Output         : None
+* Return         : u32 capacity 
+*                   0ï¼š å–å®¹é‡å‡ºé”™ 
+*******************************************************************************/
+u32 SD_GetCapacity(void)
 {
+    u8 csd[16];
     u32 Capacity;  
     u8 n;
-	u32 csize;  
-	u8 * csd = CSD_Tab;
-	//È¡CSDĞÅÏ¢£¬Èç¹ûÆÚ¼ä³ö´í£¬·µ»Ø0
+	u32 csize; 
+
+    //å–CSDä¿¡æ¯ï¼Œå¦‚æœæœŸé—´å‡ºé”™ï¼Œè¿”å›0
+    if(SD_GetCSD(csd)!=0)
+    {
+        return 0;
+    }
+       
+	//ÃˆÂ¡CSDÃÃ…ÃÂ¢Â£Â¬ÃˆÃ§Â¹Ã»Ã†ÃšÂ¼Ã¤Â³Ã¶Â´Ã­Â£Â¬Â·ÂµÂ»Ã˜0
     if(SD_GetCSD(csd)!=0) return 0;	    
-    //Èç¹ûÎªSDHC¿¨£¬°´ÕÕÏÂÃæ·½Ê½¼ÆËã
+    //ÃˆÃ§Â¹Ã»ÃÂªSDHCÂ¿Â¨Â£Â¬Â°Â´Ã•Ã•ÃÃ‚ÃƒÃ¦Â·Â½ÃŠÂ½Â¼Ã†Ã‹Ã£
 	
-    if((csd[0]&0xC0)==0x40)	 //V2.00µÄ¿¨
+    if((csd[0]&0xC0)==0x40)	 //V2.00ÂµÃ„Â¿Â¨
     {	
 		csize = csd[9] + ((u32)csd[8] << 8) + 1;
-		Capacity = (u32)csize << 10;//µÃµ½ÉÈÇøÊı	 		   
-    }else//V1.XXµÄ¿¨
+		Capacity = (u32)csize << 10;//ÂµÃƒÂµÂ½Ã‰ÃˆÃ‡Ã¸ÃŠÃ½	 		   
+    }else//V1.XXÂµÃ„Â¿Â¨
     {	
 		n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
 		csize = (csd[8] >> 6) + ((u16)csd[7] << 2) + ((u16)(csd[6] & 3) << 10) + 1;
-		Capacity= (u32)csize << (n - 9);//µÃµ½ÉÈÇøÊı   
+		Capacity= (u32)csize << (n - 9);//ÂµÃƒÂµÂ½Ã‰ÃˆÃ‡Ã¸ÃŠÃ½   
     }
     return Capacity;
+}
+
+
+/*******************************************************************************
+* Function Name  : SD_ReadSingleBlock
+* Description    : è¯»SDå¡çš„ä¸€ä¸ªblock
+* Input          : u32 sector å–åœ°å€ï¼ˆsectorå€¼ï¼Œéç‰©ç†åœ°å€ï¼‰ 
+*                  u8 *buffer æ•°æ®å­˜å‚¨åœ°å€ï¼ˆå¤§å°è‡³å°‘512byteï¼‰ 
+* Output         : None
+* Return         : u8 r1 
+*                   0ï¼š æˆåŠŸ
+*                   otherï¼šå¤±è´¥
+*******************************************************************************/
+u8 SD_ReadSingleBlock(u32 sector, u8 *buffer)
+{
+	u8 r1;
+    //è®¾ç½®ä¸ºé«˜é€Ÿæ¨¡å¼
+    SPI_SetSpeed(SPI_SPEED_HIGH);
+    SD_CS_ENABLE();
+    //å¦‚æœä¸æ˜¯SDHCï¼Œå°†sectoråœ°å€è½¬æˆbyteåœ°å€
+    if(SD_Type!=SD_TYPE_V2HC)
+    {
+        sector = sector<<9;
+    }
+
+
+	r1 = SD_SendCommand(CMD17, sector, 0);//è¯»å‘½ä»¤
+	
+	if(r1 != 0x00)
+    {
+        return r1;
+    }
+    
+    r1 = SD_ReceiveData(buffer, 512, RELEASE);
+    if(r1 != 0)
+    {
+        return r1;   //è¯»æ•°æ®å‡ºé”™ï¼
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+/*******************************************************************************
+* Function Name  : SD_WriteSingleBlock
+* Description    : å†™å…¥SDå¡çš„ä¸€ä¸ªblock
+* Input          : u32 sector æ‰‡åŒºåœ°å€ï¼ˆsectorå€¼ï¼Œéç‰©ç†åœ°å€ï¼‰ 
+*                  u8 *buffer æ•°æ®å­˜å‚¨åœ°å€ï¼ˆå¤§å°è‡³å°‘512byteï¼‰ 
+* Output         : None
+* Return         : u8 r1 
+*                   0ï¼š æˆåŠŸ
+*                   otherï¼šå¤±è´¥
+*******************************************************************************/
+u8 SD_WriteSingleBlock(u32 sector, const u8 *data)
+{
+    u8 r1;
+    u16 i;
+    u16 retry;
+    //è®¾ç½®ä¸ºé«˜é€Ÿæ¨¡å¼
+    SPI_SetSpeed(SPI_SPEED_HIGH);
+ SD_CS_ENABLE();
+    //å¦‚æœä¸æ˜¯SDHCï¼Œç»™å®šçš„æ˜¯sectoråœ°å€ï¼Œå°†å…¶è½¬æ¢æˆbyteåœ°å€
+    if(SD_Type!=SD_TYPE_V2HC)
+    {
+        sector = sector<<9;
+    }
+
+    r1 = SD_SendCommand(CMD24, sector, 0x00);
+    if(r1 != 0x00)
+    {
+        return r1;  //åº”ç­”ä¸æ­£ç¡®ï¼Œç›´æ¥è¿”å›
+    }
+    
+    //å¼€å§‹å‡†å¤‡æ•°æ®ä¼ è¾“
+    SD_CS_ENABLE();
+    //å…ˆæ”¾3ä¸ªç©ºæ•°æ®ï¼Œç­‰å¾…SDå¡å‡†å¤‡å¥½
+    SPI_ReadWriteByte(0xff);
+    SPI_ReadWriteByte(0xff);
+    SPI_ReadWriteByte(0xff);
+    //æ”¾èµ·å§‹ä»¤ç‰Œ0xFE
+    SPI_ReadWriteByte(0xFE);
+
+    //æ”¾ä¸€ä¸ªsectorçš„æ•°æ®
+    for(i=0;i<512;i++)
+    {
+        SPI_ReadWriteByte(*data++);
+    }
+    //å‘2ä¸ªByteçš„dummy CRC
+    SPI_ReadWriteByte(0xff);
+    SPI_ReadWriteByte(0xff);
+    
+    //ç­‰å¾…SDå¡åº”ç­”
+    r1 = SPI_ReadWriteByte(0xff);
+    if((r1&0x1F)!=0x05)
+    {
+        SD_CS_DISABLE();
+        return r1;
+    }
+    
+    //ç­‰å¾…æ“ä½œå®Œæˆ
+    retry = 0;
+    while(!SPI_ReadWriteByte(0xff))
+    {
+        retry++;
+        if(retry>0xfffe)        //å¦‚æœé•¿æ—¶é—´å†™å…¥æ²¡æœ‰å®Œæˆï¼ŒæŠ¥é”™é€€å‡º
+        {
+            SD_CS_DISABLE();
+            return 1;           //å†™å…¥è¶…æ—¶è¿”å›1
+        }
+    }
+
+    //å†™å…¥å®Œæˆï¼Œç‰‡é€‰ç½®1
+    SD_CS_DISABLE();
+    SPI_ReadWriteByte(0xff);
+
+    return 0;
+}
+
+
+/*******************************************************************************
+* Function Name  : SD_ReadMultiBlock
+* Description    : è¯»SDå¡çš„å¤šä¸ªblock
+* Input          : u32 sector å–åœ°å€ï¼ˆsectorå€¼ï¼Œéç‰©ç†åœ°å€ï¼‰ 
+*                  u8 *buffer æ•°æ®å­˜å‚¨åœ°å€ï¼ˆå¤§å°è‡³å°‘512byteï¼‰
+*                  u8 count è¿ç»­è¯»countä¸ªblock
+* Output         : None
+* Return         : u8 r1 
+*                   0ï¼š æˆåŠŸ
+*                   otherï¼šå¤±è´¥
+*******************************************************************************/
+u8 SD_ReadMultiBlock(u32 sector, u8 *buffer, u8 count)
+{
+    u8 r1;
+    //è®¾ç½®ä¸ºé«˜é€Ÿæ¨¡å¼
+    SPI_SetSpeed(SPI_SPEED_HIGH);
+    SD_CS_ENABLE();
+    //å¦‚æœä¸æ˜¯SDHCï¼Œå°†sectoråœ°å€è½¬æˆbyteåœ°å€
+    if(SD_Type!=SD_TYPE_V2HC)
+    {
+        sector = sector<<9;
+    }
+
+    //SD_WaitReady();
+    //å‘è¯»å¤šå—å‘½ä»¤
+	r1 = SD_SendCommand(CMD18, sector, 0);//è¯»å‘½ä»¤
+	if(r1 != 0x00)
+    {
+        return r1;
+    }
+    //å¼€å§‹æ¥æ”¶æ•°æ®
+    do
+    {
+        if(SD_ReceiveData(buffer, 512, NO_RELEASE) != 0x00)
+        {
+            break;
+        }
+        buffer += 512;
+    } while(--count);
+
+    //å…¨éƒ¨ä¼ è¾“å®Œæ¯•ï¼Œå‘é€åœæ­¢å‘½ä»¤
+    SD_SendCommand(CMD12, 0, 0);
+    //é‡Šæ”¾æ€»çº¿
+    SD_CS_DISABLE();
+    SPI_ReadWriteByte(0xFF);
+    
+    if(count != 0)
+    {
+        return count;   //å¦‚æœæ²¡æœ‰ä¼ å®Œï¼Œè¿”å›å‰©ä½™ä¸ªæ•°
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+
+/*******************************************************************************
+* Function Name  : SD_WriteMultiBlock
+* Description    : å†™å…¥SDå¡çš„Nä¸ªblock
+* Input          : u32 sector æ‰‡åŒºåœ°å€ï¼ˆsectorå€¼ï¼Œéç‰©ç†åœ°å€ï¼‰ 
+*                  u8 *buffer æ•°æ®å­˜å‚¨åœ°å€ï¼ˆå¤§å°è‡³å°‘512byteï¼‰
+*                  u8 count å†™å…¥çš„blockæ•°ç›®
+* Output         : None
+* Return         : u8 r1 
+*                   0ï¼š æˆåŠŸ
+*                   otherï¼šå¤±è´¥
+*******************************************************************************/
+u8 SD_WriteMultiBlock(u32 sector, const u8 *data, u8 count)
+{
+    u8 r1;
+    u16 i;
+
+    //è®¾ç½®ä¸ºé«˜é€Ÿæ¨¡å¼
+    SPI_SetSpeed(SPI_SPEED_HIGH);
+SD_CS_ENABLE();
+    //å¦‚æœä¸æ˜¯SDHCï¼Œç»™å®šçš„æ˜¯sectoråœ°å€ï¼Œå°†å…¶è½¬æ¢æˆbyteåœ°å€
+    if(SD_Type != SD_TYPE_V2HC)
+    {
+        sector = sector<<9;
+    }
+    //å¦‚æœç›®æ ‡å¡ä¸æ˜¯MMCå¡ï¼Œå¯ç”¨ACMD23æŒ‡ä»¤ä½¿èƒ½é¢„æ“¦é™¤
+    if(SD_Type != SD_TYPE_MMC)
+    {
+        r1 = SD_SendCommand(ACMD23, count, 0x00);
+    }
+    //å‘å¤šå—å†™å…¥æŒ‡ä»¤
+    r1 = SD_SendCommand(CMD25, sector, 0x00);
+    if(r1 != 0x00)
+    {
+        return r1;  //åº”ç­”ä¸æ­£ç¡®ï¼Œç›´æ¥è¿”å›
+    }
+    
+    //å¼€å§‹å‡†å¤‡æ•°æ®ä¼ è¾“
+    SD_CS_ENABLE();
+    //å…ˆæ”¾3ä¸ªç©ºæ•°æ®ï¼Œç­‰å¾…SDå¡å‡†å¤‡å¥½
+    SPI_ReadWriteByte(0xff);
+    SPI_ReadWriteByte(0xff);
+
+    //--------ä¸‹é¢æ˜¯Nä¸ªsectorå†™å…¥çš„å¾ªç¯éƒ¨åˆ†
+    do
+    {
+        //æ”¾èµ·å§‹ä»¤ç‰Œ0xFC è¡¨æ˜æ˜¯å¤šå—å†™å…¥
+        SPI_ReadWriteByte(0xFC);
+    
+        //æ”¾ä¸€ä¸ªsectorçš„æ•°æ®
+        for(i=0;i<512;i++)
+        {
+            SPI_ReadWriteByte(*data++);
+        }
+        //å‘2ä¸ªByteçš„dummy CRC
+        SPI_ReadWriteByte(0xff);
+        SPI_ReadWriteByte(0xff);
+        
+        //ç­‰å¾…SDå¡åº”ç­”
+        r1 = SPI_ReadWriteByte(0xff);
+        if((r1&0x1F)!=0x05)
+        {
+            SD_CS_DISABLE();    //å¦‚æœåº”ç­”ä¸ºæŠ¥é”™ï¼Œåˆ™å¸¦é”™è¯¯ä»£ç ç›´æ¥é€€å‡º
+            return r1;
+        }
+
+        //ç­‰å¾…SDå¡å†™å…¥å®Œæˆ
+        if(SD_WaitReady()==1)
+        {
+            SD_CS_DISABLE();    //ç­‰å¾…SDå¡å†™å…¥å®Œæˆè¶…æ—¶ï¼Œç›´æ¥é€€å‡ºæŠ¥é”™
+            return 1;
+        }
+
+        //æœ¬sectoræ•°æ®ä¼ è¾“å®Œæˆ
+    }while(--count);
+    
+    //å‘ç»“æŸä¼ è¾“ä»¤ç‰Œ0xFD
+    r1 = SPI_ReadWriteByte(0xFD);
+    if(r1==0x00)
+    {
+        count =  0xfe;
+    }
+
+    if(SD_WaitReady())
+    {
+        while(1)
+        {
+        }
+    }
+    
+    //å†™å…¥å®Œæˆï¼Œç‰‡é€‰ç½®1
+    SD_CS_DISABLE();
+    SPI_ReadWriteByte(0xff);
+
+    return count;   //è¿”å›countå€¼ï¼Œå¦‚æœå†™å®Œåˆ™count=0ï¼Œå¦åˆ™count=1
 }
 
 /**
@@ -1208,11 +917,25 @@ u32 SD_GetSectorCount(void)
   */
 void sdcard_Init()
 {
+	FRESULT res;
  u32 sd_capacity;
  char tempString[20];
- MSD_Init();
- sd_capacity=SDCardFSInit();
- if(sd_capacity&&sd_capacity<200000)
+	SPI_Configuration();
+ SD_Init();
+	SPI_SetSpeed(1);
+ sd_capacity=SD_GetCapacity()/2048;
+ //SDCardFSInit();
+	vTaskDelay(1000);
+	vPortEnterCritical();
+	 SD_Init();
+	res = f_mount(&fatfs,"0:/",1);
+	vPortExitCritical();
+	if(res!=FR_OK)
+	{
+	 sprintf(tempString,"%d",res);
+	 ShowSmallDialogue(tempString,1000,true);
+	}
+ if(sd_capacity)
  {
 	 sprintf(tempString,Capacity_Str[CurrentSettings->Language],sd_capacity);
 	 xQueueSend(InitStatusMsg, tempString, 0);
@@ -1222,53 +945,3 @@ void sdcard_Init()
  	 xQueueSend(InitStatusMsg,NoSD_Str[CurrentSettings->Language], 0); 
  }
 }
-
-/**
-  * @brief  Make necessary EBD directories
-
-	  @retval None
-  */
-bool MakeEBDDirectories(void)
-{
-	FRESULT res;
-	res = f_mkdir("EBD");
-	if (res != FR_EXIST&&res != FR_DISK_ERR)
-	{
-		if (res != FR_OK)
-		//ShowDiskIOStatus();
-		return(false);
-	}
-	res = f_mkdir("EBD/Records");
-	if (res != FR_EXIST&&res != FR_DISK_ERR)
-	{
-		//ShowDiskIOStatus();
-		return(false);
-	}
-	return(true);
-}
-
-/**
-  * @brief  Check neccessary EBD directories
-
-	  @retval None
-  */
-void CheckEBDDirectories(void)
-{
- if(SDExist)
- {
-	bool success;
-	FILINFO lese;
- 	if(f_stat("EBD/Records",&lese)!=FR_OK)
-	success=MakeEBDDirectories(); 
-	if(success)
-	{
-	 xQueueSend(InitStatusMsg, "Directories made", 0);
-	}
-	else
-	{
-	 xQueueSend(InitStatusMsg, "mkdir failed", 0);
-	}
- }
-}
-
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>end of  code<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

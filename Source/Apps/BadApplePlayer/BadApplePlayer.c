@@ -42,7 +42,6 @@ void BadApplePlayer(void *pvParameters)
 	maxAddr = fileSize / 1024;
 	xLastWakeTime = xTaskGetTickCount();
 	UpdateOLEDJustNow = true;
-	SD_SPI_HightSpeed();
 	while (1)
 	{
 		for (currentAddr = 0; currentAddr < maxAddr; currentAddr++)

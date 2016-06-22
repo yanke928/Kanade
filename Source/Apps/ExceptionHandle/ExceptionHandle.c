@@ -10,8 +10,12 @@
 
 #include "SSD1306.h"
 #include "Keys.h"
+#include "LED.h"
+#include "EBProtocol.h"
 
 #include "ExceptionHandle.h"
+
+#define EBD_EXCEPTION_HANDLER_PRIORITY tskIDLE_PRIORITY+6
 
 void vApplicationStackOverflowHook( TaskHandle_t xTask,
                                     signed char *pcTaskName )
@@ -50,6 +54,37 @@ void ShowFault(char * string)
 	 return;
 	}
  }
+}
+
+void EBD_Exception_Handler(void *pvParameters)
+{
+ portTickType xLastWakeTime;
+ u8 i;
+ xLastWakeTime = xTaskGetTickCount();
+	for(;;)
+	{
+	  vTaskDelayUntil(&xLastWakeTime, 3000 / portTICK_RATE_MS);
+		if(EBDAliveFlag==false)
+		{
+		 LED_Animate_Init(LEDAnimation_EBDException);
+		 EBDUSB_LinkStart(true);
+		 xQueueReceive(EBDRxDataMsg, &i, 0);
+		 while (xQueueReceive(EBDRxDataMsg, &i, 3000/ portTICK_RATE_MS) != pdPASS)
+	        {
+	         EBDUSB_LinkStart(true);
+	        }		
+	   while (xQueueReceive(EBDRxDataMsg, &i, 3000/ portTICK_RATE_MS) != pdPASS);
+		 xLastWakeTime = xTaskGetTickCount();
+		 LED_Animate_DeInit();	
+		}
+		EBDAliveFlag=false;
+	}
+}
+
+void EBD_Exception_Handler_Init(void)
+{
+ 	xTaskCreate(EBD_Exception_Handler, "EBD Exception Handler",
+		128, NULL, EBD_EXCEPTION_HANDLER_PRIORITY, NULL);
 }
 
 /**

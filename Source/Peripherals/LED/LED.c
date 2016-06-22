@@ -14,10 +14,17 @@ LEDAnimateSliceStruct* LEDAnimatePointer=NULL;
 
 xTaskHandle LEDAnimateTaskHandle;
 
-LEDAnimateSliceStruct LEDAnimation_Startup[] =
+const LEDAnimateSliceStruct LEDAnimation_Startup[] =
 {
  {Cyan,200,6,false},//Cyan with brightness of 2
  {KanadeC,200,6,false},//Kanade with brightness of 2
+ {0,0,0,END}//End of the animation
+};
+
+const LEDAnimateSliceStruct LEDAnimation_EBDException[] =
+{
+ {Red,200,6,false},//Red with brightness of 2
+ {Cyan,200,6,false},//Cyan with brightness of 2
  {0,0,0,END}//End of the animation
 };
 
@@ -170,13 +177,13 @@ void LEDAnimateHandler(void *pvParameters)
  
   * @retval None
   */
-void LED_Animate_Init(LEDAnimateSliceStruct animate[])
+void LED_Animate_Init(const LEDAnimateSliceStruct animate[])
 {
  LED_GPIO_Init();
  if(LEDAnimateTaskHandle!=NULL)
  vTaskDelete(LEDAnimateTaskHandle);
  xTaskCreate(LEDAnimateHandler,"LED Animation Handler",
-	32,animate,LED_ANIMATION_PRIORITY,&LEDAnimateTaskHandle);
+	32,(LEDAnimateSliceStruct*)animate,LED_ANIMATION_PRIORITY,&LEDAnimateTaskHandle);
 }
 
 /**
@@ -191,6 +198,7 @@ void LED_Animate_DeInit(void)
   LEDColorStruct dark={0,0,0};
   SetLEDColor(dark);
 	vTaskDelete(LEDAnimateTaskHandle);
+	LEDAnimateTaskHandle=NULL;
 }
 
 

@@ -1,29 +1,16 @@
-#ifndef __STEPUPTEST_H
-#define	__STEPUPTEST_H
+#ifndef __LEGACYTEST_H
+#define	__LEGACYTEST_H
 
 #include "stm32f10x.h"
 #include "stdbool.h"
 
+#define LEGACY_TEST 2
+
 typedef struct {
-	u16 StartCurrent;
-	u16 StopCurrent;
-	u16 Step;
-	u16 TimeInterval;
+	u16 Current;
 	u16 ProtectVolt;
-}StepUpTestParamsStruct;
+}Legacy_Test_Param_Struct;
 
-typedef struct {
-	u16 CurrentTime;
-  u8  TestOverFlag;
-}StepUpTestStateStruct;
-
-//see .c for details
-void StepUpTest_Init(StepUpTestParamsStruct* test_Params);
-
-//see .c for details
-void StepUpTest_UI_Init(void);
-
-//see .c for details
-void RunAStepUpTest(void);
+void RunLegacyTest(u8* status,Legacy_Test_Param_Struct* test_Params);
 
 #endif /* __STEPUPTEST_H */

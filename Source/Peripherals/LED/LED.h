@@ -57,7 +57,9 @@ enum
  Pink=7,
 };
 
-extern LEDAnimateSliceStruct LEDAnimation_Startup[];
+extern const LEDAnimateSliceStruct LEDAnimation_Startup[];
+
+extern const LEDAnimateSliceStruct LEDAnimation_EBDException[];
 
 //see .c for details
 void LED_GPIO_Init(void);
@@ -72,7 +74,7 @@ void DisplayBasicColor(u8 color,u8 brightness);
 void LEDAnimateHandler(void *pvParameters);
 
 //see .c for details
-void LED_Animate_Init(LEDAnimateSliceStruct animate[]);
+void LED_Animate_Init(const LEDAnimateSliceStruct animate[]);
 
 //see .c for details
 void LED_Animate_DeInit(void);

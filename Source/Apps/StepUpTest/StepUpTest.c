@@ -390,8 +390,9 @@ void RunAStepUpTest()
 		GetTestParam(TimeIntervalGet_Str[CurrentSettings->Language], 2, 30,
 			4, 2, "s", 10);
 	test_Params.ProtectVolt =
-		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0, (u16)(1000 * CurrentMeterData.Voltage) / 10 * 10,
-			(u16)(900 * CurrentMeterData.Voltage) / 10 * 10, 10, "mV", 25);
+		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language],0,
+	(int)(1000 * CurrentMeterData.Voltage) / 10 * 10>0?(1000 * CurrentMeterData.Voltage) / 10 * 10:100,
+	(int)(900 * CurrentMeterData.Voltage) / 10 * 10>0?(900 * CurrentMeterData.Voltage) / 10 * 10:100, 10, "mV", 25);
 	testTime=((test_Params.StopCurrent-test_Params.StartCurrent)/test_Params.Step+1)*test_Params.TimeInterval;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();

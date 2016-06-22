@@ -18,9 +18,6 @@
 #include  <stdio.h>
 
 /* Definitions of physical drive number for each drive */
-#define ATA		0	/* Example: Map ATA harddisk to physical drive 0 */
-#define MMC		1	/* Example: Map MMC/SD card to physical drive 1 */
-#define USB		2	/* Example: Map USB MSD to physical drive 2 */
 
 vu8 SD_Card_Ready;
 
@@ -38,29 +35,17 @@ DSTATUS disk_status (
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
-	u8 state;
-    if(pdrv)
-    {
-        return STA_NOINIT;  //��֧�ִ���0�Ĳ���
-    }
-		    state = MSD_Init();
-	SD_Card_Ready=state;//SD����ʼ���ɹ���־
-			if(SD_Card_Ready)//SD��û��ʼ���ɹ�
+	switch (pdrv)
 	{
-	   return STA_NODISK;
+		case 0 :
+			return RES_OK;
+		case 1 :
+			return RES_OK;
+		case 2 :
+			return RES_OK;
+		default:
+			return STA_NOINIT;
 	}
-	    if(state == STA_NODISK)
-    {
-        return STA_NODISK;
-    }
-    else if(state != 0)
-    {
-        return STA_NOINIT;  //�������󣺳�ʼ��ʧ��
-    }
-    else
-    {
-        return 0;           //��ʼ���ɹ�
-    }
 }
 
 
@@ -73,24 +58,14 @@ DSTATUS disk_initialize (
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-  u8 result;
+  int result;
     if(pdrv)
     {
         return STA_NOINIT; 
     }
-  result = MSD_Init();
-    if(result == STA_NODISK)
-    {
-        return STA_NODISK;
-    }
-    else if(result != 0)
-    {
-        return STA_NOINIT;
-    }
-    else
-    {
-        return 0;
-    }
+    result = SD_Init();
+	  if(result==0) { return RES_OK; }
+    else{ return STA_NOINIT; }
 }
 
 
@@ -106,30 +81,38 @@ DRESULT disk_read (
 	UINT count		/* Number of sectors to read */
 )
 {
-	u8 res;
-  if (pdrv || !count)
-    { 
-        return RES_PARERR;
+	u8 res=0;
+    if (pdrv || !count)
+    {    
+        return RES_PARERR;  //仅支持单磁盘操作，count不能等于0，否则返回参数错误
     }
-	if(SD_Card_Ready)//SD��û��ʼ���ɹ�
-	{
-	   return RES_NOTRDY;
-	}
-    if(count==1) 
-    { 
-    	if(SD_Type!=SD_TYPE_V2HC)
-    	{
-       		res = MSD_ReadBlock(buff, (u32)sector*512, 512);  
-    	}else{
-	
-	   		res = MSD_ReadBlock(buff, (u32)sector, 512);  
-    } 
-	}
-    else 
-    { 
-        res = MSD_ReadBuffer(buff,sector*512,count*512);
-    }		
+//    if(!SD_DET())
+//    {
+//        return RES_NOTRDY;  //没有检测到SD卡，报NOT READY错误
+//    }
 
+    
+	
+    if(count==1)            //1个sector的读操作      
+    {                                                
+        res = SD_ReadSingleBlock(sector, buff);      
+    }                                                
+    else                    //多个sector的读操作     
+    {                                                
+        res = SD_ReadMultiBlock(sector, buff, count);
+    }                                                
+	/*
+    do                           
+    {                                          
+        if(SD_ReadSingleBlock(sector, buff)!=0)
+        {                                      
+            res = 1;                           
+            break;                             
+        }                                      
+        buff+=512;                             
+    }while(--count);                                         
+    */
+    //处理返回值，将SPI_SD_driver.c的返回值转成ff.c的返回值
     if(res == 0x00)
     {
         return RES_OK;
@@ -154,33 +137,26 @@ DRESULT disk_write (
 )
 {
 	u8 res;
-    if (pdrv || !count)
-    { 
-        return RES_PARERR;
-    }
-	if(SD_Card_Ready)
-	{
-	   return RES_NOTRDY;
-	}
-    if(count==1) 
-    {
-    	if(SD_Type!=SD_TYPE_V2HC)
-    	{	      	   
-			res = MSD_WriteBlock((u8*)buff, (u32)sector*512, 512);
-		}else{
-	    	res = MSD_WriteBlock((u8*)buff, (u32)sector, 512);
-		}
 
+    if (pdrv || !count)
+    {    
+        return RES_PARERR;  //仅支持单磁盘操作，count不能等于0，否则返回参数错误
     }
-    else 
-    { 
-    	if(SD_Type!=SD_TYPE_V2HC)
-    	{	   
-			res = MSD_WriteBuffer((u8*)buff, (u32)sector*512, (u32)count*512);
-		}else{
-			res = MSD_WriteBuffer((u8*)buff, (u32)sector, (u32)count*512);
+//    if(!SD_DET())
+//    {
+//        return RES_NOTRDY;  //没有检测到SD卡，报NOT READY错误
+//    }
+
+    // 读写操作
+    if(count == 1)
+    {
+        res = SD_WriteSingleBlock(sector, buff);
     }
-	}		
+    else
+    {
+        res = SD_WriteMultiBlock(sector, buff, count);
+    }
+    // 返回值转换
     if(res == 0)
     {
         return RES_OK;
@@ -188,7 +164,7 @@ DRESULT disk_write (
     else
     {
         return RES_ERROR;
-    }		
+    }
 }
 
 
@@ -203,21 +179,20 @@ DRESULT disk_ioctl (
 	void *buff		/* Buffer to send/receive control data */
 )
 {
-	DRESULT res;
+    DRESULT res;
 
-		if(SD_Card_Ready)//SD��û��ʼ���ɹ�
-	{
-	   return RES_NOTRDY;
-	}
+
     if (pdrv)
-    { 
-        return RES_PARERR; 
+    {    
+        return RES_PARERR;  //仅支持单磁盘操作，否则返回参数错误
     }
-   switch(cmd)
+    
+    //FATFS目前版本仅需处理CTRL_SYNC，GET_SECTOR_COUNT，GET_BLOCK_SIZ三个命令
+    switch(cmd)
     {
     case CTRL_SYNC:
         SD_CS_ENABLE();
-        if(MSD_GetResponse(0xff)==0)
+        if(SD_WaitReady()==0)
         {
             res = RES_OK;
         }
@@ -229,19 +204,20 @@ DRESULT disk_ioctl (
         break;
         
     case GET_BLOCK_SIZE:
-        *(WORD*)buff = Mass_Block_Size;
+        *(WORD*)buff = 512;
         res = RES_OK;
         break;
 
     case GET_SECTOR_COUNT:
-        *(DWORD*)buff = Mass_Block_Count;
+        *(DWORD*)buff = SD_GetCapacity();
         res = RES_OK;
         break;
     default:
         res = RES_PARERR;
         break;
     }
- return res;
+
+    return res;
 }
 
 /*-----------------------------------------------------------------------*/

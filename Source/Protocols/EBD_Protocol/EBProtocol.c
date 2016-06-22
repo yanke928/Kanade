@@ -16,6 +16,7 @@
 #include "queue.h"
 
 #include "Settings.h"
+#include "ExceptionHandle.h"
 
 #include "Startup.h"
 
@@ -46,6 +47,8 @@ bool EBDPacketReceivedFlag = false;
 bool EBDPacketReceiveEnable = false;
 
 bool EBDExceptionHandleOnegaiFlag = false;
+
+bool EBDAliveFlag = false;
 
 //BadPacketReceivedFlag,used to indicate if a bad packet(usually
 //over-length or with a wrong checksum)received
@@ -380,7 +383,8 @@ void EBDPacketReceiver(void *pvParameters)
 				EBDWatchCount = 0;//Clear WatchDog
 				ReceiveAddr = 0;//Clear ReceiveAddr for the next packet
 				PacketDecode();
-				xQueueSend(EBDRxDataMsg, &i, 0);			
+				xQueueSend(EBDRxDataMsg, &i, 0);	
+        EBDAliveFlag=true;				
 			}
 		}
 		if (EBDPacketReceivingFlag == true)
@@ -432,12 +436,14 @@ void EBD_Init(void)
 	/*Send connection start string to EBD*/
 	vTaskDelay(100 / portTICK_RATE_MS);
 	EBDUSB_LinkStart(true);
+	EBDAliveFlag=true;
 	/*Keep waiting until EBD responses*/
 	xQueueSend(InitStatusMsg,WaitingForEBD_Str[CurrentSettings->Language], 0);
 	while (xQueueReceive(EBDRxDataMsg, &i, 3000/ portTICK_RATE_MS) != pdPASS)
 	{
 	 EBDUSB_LinkStart(true);
 	}		
+	EBD_Exception_Handler_Init();
 	/*Update initStatus*/
 	xQueueSend(InitStatusMsg, EBDConnected_Str[CurrentSettings->Language], 0);
 	return;

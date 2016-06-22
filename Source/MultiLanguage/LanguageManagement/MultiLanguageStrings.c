@@ -258,8 +258,14 @@ const char* const StepUpTestDialgramVoltage_Str[] = { StepUpTestDialgramVoltage_
 const char StepUpTestExitBroswer_EN[] ="Exit Broswer?";
 const char StepUpTestExitBroswer_TW[] ="退出瀏覽?";
 const char StepUpTestExitBroswer_CN[] ="退出浏览?" ;
-const char StepUpTestExitBroswer_JP[] ="終了ブラウザ?";
+const char StepUpTestExitBroswer_JP[] ="ブラウザ終了?";
 const char* const StepUpTestExitBroswer_Str[] = { StepUpTestExitBroswer_EN,StepUpTestExitBroswer_TW,StepUpTestExitBroswer_CN,StepUpTestExitBroswer_JP };
+
+const char LegacyTestSetCurrent_EN[] ="I.Load";
+const char LegacyTestSetCurrent_TW[] ="電流";
+const char LegacyTestSetCurrent_CN[] ="电流";
+const char LegacyTestSetCurrent_JP[] ="電流";
+const char* const LegacyTestSetCurrent_Str[] = { LegacyTestSetCurrent_EN,LegacyTestSetCurrent_TW,LegacyTestSetCurrent_CN,LegacyTestSetCurrent_JP };
 
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {

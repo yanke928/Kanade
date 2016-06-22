@@ -235,7 +235,7 @@ void SystemStartup(void *pvParameters)
 	sdcard_Init();
 	vTaskDelay(500 / portTICK_RATE_MS);
 	ShowCurrentTempSensor();
-	CheckEBDDirectories();
+	//CheckEBDDirectories();
 	LED_Animate_DeInit();
 	vTaskDelete(initStatusUpdateHandle);
 	vTaskDelete(logoHandle);
@@ -259,7 +259,7 @@ void SystemStartup(void *pvParameters)
 void SystemStart()
 {
 	xTaskCreate(SystemStartup, "SystemStartup",
-		128, NULL, SYSTEM_STARTUP_PRIORITY, NULL);
+		256, NULL, SYSTEM_STARTUP_PRIORITY, NULL);
 	vTaskStartScheduler();
 }
 

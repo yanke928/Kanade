@@ -23,6 +23,7 @@
 #include "Settings.h"
 #include "StepUpTest.h"
 #include "FastCharge_Trigger.h"
+#include "LegacyTest.h"
 
 #include "USBMeter.h"
 
@@ -38,6 +39,7 @@ void USBMeter(void *pvParameters)
 	char tempString[20];
 	Key_Message_Struct keyMessage;
 	u8 status = *(u8*)pvParameters;
+	Legacy_Test_Param_Struct legacy_Test_Params;
 	ClearKeyEvent(keyMessage);
 	while (1)
 	{
@@ -55,8 +57,9 @@ void USBMeter(void *pvParameters)
 			 case MidDouble:GetConfirmation(RecordConfirm_Str[CurrentSettings->Language],"");break;
 			 case MidLong:Settings();break;
 			 case LeftClick:if (GetConfirmation(StepUpConfirm_Str[CurrentSettings->Language],""))
-				 		 RunAStepUpTest(); ;break;
-			 case RightClick:if (GetConfirmation(LegacyTestConfirm_Str[CurrentSettings->Language],""))break;
+				 		 RunAStepUpTest();break;
+			 case RightClick:if (GetConfirmation(LegacyTestConfirm_Str[CurrentSettings->Language],""))
+				     RunLegacyTest(&status,&legacy_Test_Params);break;
 		 }
 		 switch(keyMessage.AdvancedKeyEvent)
 		 {

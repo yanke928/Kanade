@@ -8,9 +8,6 @@
 #include "stm32f10x.h"
 #include "core_cm3.h"
 
-#define  SD_CS_ENABLE()	  MSD_CS_LOW()
-#define  SD_CS_DISABLE()  MSD_CS_HIGH()
-
 FATFS fatfs;            // Work area (file system object) for logical drive
 
 static DWORD acc_size;				/* Work register for fs command */
@@ -76,24 +73,6 @@ u32 SDCardFSInit()
 		{
 			SDCardMountStatus = true;
 		}
-	}
-	if(SDCardMountStatus==1)
-	{
-	 SD_capp = SD_GetSectorCount();
-	 SD_capp = SD_capp/2048;
-	if(SD_capp)
-	{
-   SD_Capacity=SD_capp;
-	 SDExist=true;		
-	}
-	else
-	{
-   SDExist=false;		
-	}
-	}
-	else
-	{
-	 SDExist=false;		
 	}
 	return(SD_capp);
 }
