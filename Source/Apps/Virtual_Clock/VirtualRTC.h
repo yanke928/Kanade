@@ -15,6 +15,8 @@ typedef struct {
 
 extern volatile RTCStructTypedef RTCCurrent;
 
+extern volatile unsigned long SecondNum;
+
 //see .c for details								
 void SetVirtualRTC(RTCStructTypedef targetRTC);
 

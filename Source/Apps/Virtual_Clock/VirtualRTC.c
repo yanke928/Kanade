@@ -1,5 +1,5 @@
-//File Name   £ºVirtual	RTC.c
-//Description £ºSimulate a RTC Clock with SystemBeats      
+//File Name   Virtual	RTC.c
+//Description Simulate a RTC Clock with SystemBeats      
 
 #include "misc.h"
 #include "VirtualRTC.h"
@@ -24,7 +24,7 @@ volatile unsigned long SecondNumNow;
 
 unsigned long StartSecondNum;
 
-xTaskHandle VirtualRTCHandle;
+xTaskHandle VirtualRTCHandle=NULL;
 
 /**
   * @brief   Update RTCCurrent struct according to SecondNum
@@ -71,6 +71,7 @@ void VirtualRTC_Handler(void *pvParameters)
 void VirtualRTC_DeInit(void)
 {
 	vTaskDelete(VirtualRTCHandle);
+	VirtualRTCHandle=NULL;
 }
 
 
@@ -84,5 +85,5 @@ void VirtualRTC_Init(void)
 	if (VirtualRTCHandle != NULL)
 		vTaskDelete(VirtualRTCHandle);
 	xTaskCreate(VirtualRTC_Handler, "VirtualClock",
-		32, NULL, VIRTUAL_CLOCK_UPDATE_PRIORITY, &VirtualRTCHandle);
+		64, NULL, VIRTUAL_CLOCK_UPDATE_PRIORITY, &VirtualRTCHandle);
 }

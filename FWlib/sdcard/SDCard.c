@@ -928,19 +928,70 @@ u32 sdcard_Init(bool withGUI)
 	res = f_mount(&fatfs, "0:/", 1);
 	if (sd_capacity&&res == FR_OK)
 	{
-		if(withGUI)
+		if (withGUI)
 		{
-		 sprintf(tempString, Capacity_Str[CurrentSettings->Language], sd_capacity);
-		 xQueueSend(InitStatusMsg, tempString, 0);
+			sprintf(tempString, Capacity_Str[CurrentSettings->Language], sd_capacity);
+			xQueueSend(InitStatusMsg, tempString, 0);
 		}
-		SDCardMountStatus=true;
+		SDCardMountStatus = true;
 		return sd_capacity;
 	}
 	else
 	{
-		if(withGUI)
-		xQueueSend(InitStatusMsg, NoSD_Str[CurrentSettings->Language], 0);
+		if (withGUI)
+			xQueueSend(InitStatusMsg, NoSD_Str[CurrentSettings->Language], 0);
 		else return 0;
 	}
 	return 0;
+}
+
+/**
+  * @brief  Make necessary EBD directories
+
+	  @retval None
+  */
+bool MakeEBDDirectories(void)
+{
+	FRESULT res;
+	res = f_mkdir("EBD");
+	if (res != FR_EXIST&&res != FR_DISK_ERR)
+	{
+		if (res != FR_OK)
+			//ShowDiskIOStatus();
+			return(false);
+	}
+	res = f_mkdir("EBD/Records");
+	if (res != FR_EXIST&&res != FR_DISK_ERR)
+	{
+		//ShowDiskIOStatus();
+		return(false);
+	}
+	return(true);
+}
+
+/**
+  * @brief  Check neccessary EBD directories
+
+	  @retval None
+  */
+void CheckEBDDirectories(bool withGUI)
+{
+	if (SDCardMountStatus)
+	{
+		bool success;
+		FILINFO lese;
+		if (f_stat("EBD/Records", &lese) != FR_OK)
+			success = MakeEBDDirectories();
+		if (withGUI)
+		{
+			if (success)
+			{
+				xQueueSend(InitStatusMsg, "Directories made", 0);
+			}
+			else
+			{
+				xQueueSend(InitStatusMsg, "mkdir failed", 0);
+			}
+		}
+	}
 }

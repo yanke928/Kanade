@@ -103,6 +103,7 @@ void MountOrUnMountDisk()
 	if(capp) 
 	{
 	  sprintf(tempString,SettingsMounted_Str[CurrentSettings->Language],capp,true);
+		CheckEBDDirectories(false);
 		ShowSmallDialogue(tempString,1000,true);
 		SDCardMountStatus=true;	 
 	}

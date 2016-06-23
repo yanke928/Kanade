@@ -4,6 +4,10 @@
 #include "stm32f10x.h"
 #include "stdbool.h"
 
+#include "sdcard.h"
+#include "sdcardff.h"
+#include "EBProtocol.h"
+
 #define LEGACY_TEST 2
 
 typedef struct {

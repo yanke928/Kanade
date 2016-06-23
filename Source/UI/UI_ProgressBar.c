@@ -32,11 +32,11 @@ void UI_ProgressBar_Handler(void *pvParameters)
 				vTaskDelete(NULL);
 			}
 			currentPos = (progressBar_Params->Pos1.x - 1) + progressBarLength*((currentValue - progressBar_Params->MinValue) /
-				(progressBar_Params->MaxValue - progressBar_Params->MinValue))+1;
+				(progressBar_Params->MaxValue - progressBar_Params->MinValue)) + 1;
 			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-			if (lastPos != currentPos&&currentPos > progressBar_Params->Pos1.x-1&&currentPos < progressBar_Params->Pos2.x+1)
+			if (lastPos != currentPos&&currentPos > progressBar_Params->Pos1.x - 1 && currentPos < progressBar_Params->Pos2.x + 1)
 			{
-				if (currentPos >=lastPos)
+				if (currentPos >= lastPos)
 					OLED_InvertRect(lastPos + 1, progressBar_Params->Pos1.y, currentPos, progressBar_Params->Pos2.y);
 				else
 					OLED_InvertRect(currentPos, progressBar_Params->Pos1.y, lastPos - 1, progressBar_Params->Pos2.y);

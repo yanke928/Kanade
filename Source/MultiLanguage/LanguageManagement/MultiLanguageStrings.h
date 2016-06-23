@@ -55,6 +55,9 @@ extern const char* const StepUpTestDialgramVoltage_Str[LanguageNum];
 extern const char* const StepUpTestExitBroswer_Str[LanguageNum];
 extern const char* const LegacyTestConfirm_Str[LanguageNum];
 extern const char* const LegacyTestSetCurrent_Str[LanguageNum];
+extern const char* const NoDiskConfirm_Str[LanguageNum];
+extern const char* const FileCreated_Str[LanguageNum];
+extern const char* const FileCreateFailed_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 

@@ -19,11 +19,15 @@
 #include "UI_Confirmation.h"
 #include "MultiLanguageStrings.h"
 #include "Keys.h"
+#include "sdcard.h"
+#include "sdcardff.h"
 
 #include "Settings.h"
 #include "StepUpTest.h"
 #include "FastCharge_Trigger.h"
 #include "LegacyTest.h"
+
+#include "UI_Dialogue.h"
 
 #include "USBMeter.h"
 
@@ -45,13 +49,15 @@ void USBMeter(void *pvParameters)
 	{
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		DisplayBasicData(tempString, status);
-		if (status == USBMETER_RECORD)
+		if (status == USBMETER_RECORD||status == LEGACY_TEST)
 		{
 			DisplayRecordData(tempString);
 		}
 		xSemaphoreGive(OLEDRelatedMutex);
 		if(xQueueReceive(Key_Message, & keyMessage, 1000 / portTICK_RATE_MS )==pdPASS)
 		{
+		 if(status == USBMETER_ONLY)
+		 {
 		 switch(keyMessage.KeyEvent)
 		 {
 			 case MidDouble:GetConfirmation(RecordConfirm_Str[CurrentSettings->Language],"");break;
@@ -64,7 +70,26 @@ void USBMeter(void *pvParameters)
 		 switch(keyMessage.AdvancedKeyEvent)
 		 {
 		   case LeftContinous:if (GetConfirmation(QCMTKConfirm_Str[CurrentSettings->Language],""))
-				 		 FastChargeTriggerUI(); ;break;
+				 		 FastChargeTriggerUI(); break;
+		 }
+	 }
+		 else
+		 {
+			 xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+			 OLED_Clear();
+			 xSemaphoreGive(OLEDRelatedMutex);
+			 if(keyMessage.KeyEvent==MidDouble)
+			 {
+				 GetConfirmation("Stop Record?","");break;
+			 }
+			 else
+			 {
+		  ShowDialogue("Hint","A Record is","running!!!");
+			vTaskDelay(1000/portTICK_RATE_MS);
+			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+			 OLED_Clear();
+			 xSemaphoreGive(OLEDRelatedMutex);
+			 }
 		 }
 		}
 	}

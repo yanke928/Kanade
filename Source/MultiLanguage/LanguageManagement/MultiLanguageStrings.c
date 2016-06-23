@@ -297,6 +297,24 @@ const char LegacyTestSetCurrent_CN[] ="电流";
 const char LegacyTestSetCurrent_JP[] ="電流";
 const char* const LegacyTestSetCurrent_Str[] = { LegacyTestSetCurrent_EN,LegacyTestSetCurrent_TW,LegacyTestSetCurrent_CN,LegacyTestSetCurrent_JP };
 
+const char NoDiskConfirm_EN[] ="No SD,Continue?";
+const char NoDiskConfirm_TW[] ="沒有SD卡,繼續?";
+const char NoDiskConfirm_CN[] ="没有SD卡,继续?";
+const char NoDiskConfirm_JP[] ="いいえSD,繼續?";
+const char* const NoDiskConfirm_Str[] = { NoDiskConfirm_EN,NoDiskConfirm_TW,NoDiskConfirm_CN,NoDiskConfirm_JP };
+
+const char FileCreated_EN[] ="File Created";
+const char FileCreated_TW[] ="文件已創建";
+const char FileCreated_CN[] ="文件已创建";
+const char FileCreated_JP[] ="File Created";
+const char* const FileCreated_Str[] = { FileCreated_EN,FileCreated_TW,FileCreated_CN,FileCreated_JP };
+
+const char FileCreateFailed_EN[] ="Create Failed";
+const char FileCreateFailed_TW[] ="文件創建失敗";
+const char FileCreateFailed_CN[] ="文件创建失败";
+const char FileCreateFailed_JP[] ="Create Failed";
+const char* const FileCreateFailed_Str[] = { FileCreateFailed_EN,FileCreateFailed_TW,FileCreateFailed_CN,FileCreateFailed_JP };
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},

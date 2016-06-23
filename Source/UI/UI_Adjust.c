@@ -16,7 +16,7 @@
 
 #define UI_ADJUST_HANDLER_PRIORITY tskIDLE_PRIORITY+2
 
-xQueueHandle UI_AdjustMsg; 
+xQueueHandle UI_AdjustMsg;
 
 void ReFormatNumString(char string[], u8 targetCharNum)
 {
@@ -96,14 +96,14 @@ void UI_Adjust_Handler(void *pvParameters)
 		unitCharNum * 8 + 1, adjustParams->Pos_y + 17, DRAW);
 	OLED_DrawVerticalLine(positions[0].x + 17, adjustParams->Pos_y - 2, adjustParams->Pos_y + 17, DRAW);
 	OLED_DrawVerticalLine(positions[2].x - 2, adjustParams->Pos_y - 2, adjustParams->Pos_y + 17, DRAW);
-	askStringLength=GetStringLength(adjustParams->AskString);
+	askStringLength = GetStringLength(adjustParams->AskString);
 	/*Show askString*/
-	if(askStringLength*8+positions[0].x-2>127)
-	OLED_ShowAnyString(64-askStringLength*8/2, adjustParams->Pos_y - 22,
-		adjustParams->AskString, NotOnSelect, 16);
+	if (askStringLength * 8 + positions[0].x - 2 > 127)
+		OLED_ShowAnyString(64 - askStringLength * 8 / 2, adjustParams->Pos_y - 22,
+			adjustParams->AskString, NotOnSelect, 16);
 	else
-	OLED_ShowAnyString(positions[0].x-2, adjustParams->Pos_y - 22,
-		adjustParams->AskString, NotOnSelect, 16);		
+		OLED_ShowAnyString(positions[0].x - 2, adjustParams->Pos_y - 22,
+			adjustParams->AskString, NotOnSelect, 16);
 	SetKeyBeatRate(adjustParams->FastSpeed);
 	SetUpdateOLEDJustNow();
 	OLED_Refresh_Gram();
@@ -111,7 +111,7 @@ void UI_Adjust_Handler(void *pvParameters)
 	ClearKeyEvent(keyMsg);
 	for (;;)
 	{
-	  xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		/*Print latest value to string*/
 		sprintf(value, "%d", currentValue);
 		/*Resize the currentValueString(to the length of maxValue)*/
@@ -139,25 +139,25 @@ void UI_Adjust_Handler(void *pvParameters)
 				OLED_ShowIcon(positions[2].x, adjustParams->Pos_y, 0x00, DRAW);
 			}
 			xSemaphoreGive(OLEDRelatedMutex);
-			if(xQueueReceive(Key_Message, & keyMsg, 10 )==pdPASS)
+			if (xQueueReceive(Key_Message, &keyMsg, 10) == pdPASS)
 			{
-			 if(keyMsg.KeyEvent==LeftClick || keyMsg.AdvancedKeyEvent==LeftContinous)
-			 {
-			  currentValue = currentValue -adjustParams->Step;
-			  if (currentValue < adjustParams->Min) currentValue = adjustParams->Min;
-			 }
-			 else if(keyMsg.KeyEvent==RightClick || keyMsg.AdvancedKeyEvent==RightContinous)
-			 {
-			  currentValue = currentValue + adjustParams->Step;
-				if (currentValue > adjustParams->Max) currentValue = adjustParams->Max;
-			 }
-			 else if(keyMsg.KeyEvent==MidClick)
-			 {
-			  ResetUpdateOLEDJustNow();
-				xQueueSend(UI_AdjustMsg,&currentValue, portMAX_DELAY);
-				vTaskDelete(NULL);
-			 }
-			 break;
+				if (keyMsg.KeyEvent == LeftClick || keyMsg.AdvancedKeyEvent == LeftContinous)
+				{
+					currentValue = currentValue - adjustParams->Step;
+					if (currentValue < adjustParams->Min) currentValue = adjustParams->Min;
+				}
+				else if (keyMsg.KeyEvent == RightClick || keyMsg.AdvancedKeyEvent == RightContinous)
+				{
+					currentValue = currentValue + adjustParams->Step;
+					if (currentValue > adjustParams->Max) currentValue = adjustParams->Max;
+				}
+				else if (keyMsg.KeyEvent == MidClick)
+				{
+					ResetUpdateOLEDJustNow();
+					xQueueSend(UI_AdjustMsg, &currentValue, portMAX_DELAY);
+					vTaskDelete(NULL);
+				}
+				break;
 			}
 		}
 	}
@@ -171,8 +171,8 @@ void UI_Adjust_Handler(void *pvParameters)
   */
 void UI_Adjust_Init(UI_Adjust_Param_Struct * adjustParams)
 {
-	UI_AdjustMsg=xQueueCreate(1, sizeof(u16));
+	UI_AdjustMsg = xQueueCreate(1, sizeof(u16));
 	xTaskCreate(UI_Adjust_Handler, "UI_Adjust Handler",
-	256, adjustParams, UI_ADJUST_HANDLER_PRIORITY, NULL);
-}		
+		256, adjustParams, UI_ADJUST_HANDLER_PRIORITY, NULL);
+}
 

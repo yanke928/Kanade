@@ -12,5 +12,9 @@ void SystemStart(void);
 
 u8 GetStringLength(const char string[]);
 
+xTaskHandle Logo_Init(void);
+
+xTaskHandle InitStatusHandler_Init(void);
+
 #endif
 

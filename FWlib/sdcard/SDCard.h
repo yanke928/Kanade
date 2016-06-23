@@ -88,5 +88,7 @@ u8 SD_WriteMultiBlock(u32 sector, const u8 *data, u8 count);  //写多个sector
 
 u32 sdcard_Init(bool withGUI);
 
+void CheckEBDDirectories(bool withGUI);
+
 #endif
 
