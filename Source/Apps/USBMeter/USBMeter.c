@@ -47,6 +47,7 @@ void USBMeter(void *pvParameters)
 	ClearKeyEvent(keyMessage);
 	while (1)
 	{
+		Refresh:
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		DisplayBasicData(tempString, status);
 		if (status == USBMETER_RECORD || status == LEGACY_TEST)
@@ -56,9 +57,11 @@ void USBMeter(void *pvParameters)
 		xSemaphoreGive(OLEDRelatedMutex);
 		if(status== LEGACY_TEST)
 			{
-			 if(CurrentMeterData.Voltage*1000<legacy_Test_Params.ProtectVolt)
+			 if(CurrentMeterData.Voltage*1000<legacy_Test_Params.ProtectVolt||
+				 CurrentMeterData.Voltage<0.5)
 			 {
 			  StopRecord(&status,1);
+				goto Refresh;
 			 }
 			}
 		if (xQueueReceive(Key_Message, &keyMessage, 1000 / portTICK_RATE_MS) == pdPASS)
@@ -89,7 +92,10 @@ void USBMeter(void *pvParameters)
 				if (keyMessage.KeyEvent == MidDouble)
 				{
 					if(GetConfirmation(RecordStopConfirm_Str[CurrentSettings->Language], ""))
+					{
 						StopRecord(&status,0);
+					  goto Refresh;
+					}
 				}
 				else
 				{

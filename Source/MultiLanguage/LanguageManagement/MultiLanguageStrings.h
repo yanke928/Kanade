@@ -66,6 +66,13 @@ extern const char* const RecordStarted_Str[LanguageNum];
 extern const char* const LegacyTestVoltLow_Str[LanguageNum];
 extern const char* const LegacyTestStarted_Str[LanguageNum];
 extern const char* const PleaseWait_Str[LanguageNum];
+extern const char* const SaveFailed_Str[LanguageNum];
+
+extern const char* const Summary_Str[LanguageNum];
+extern const char* const SummaryCapacity_Str[LanguageNum];
+extern const char* const SummaryWork_Str[LanguageNum];
+extern const char* const SummaryTime_Str[LanguageNum];
+extern const char* const SummaryPlatVolt_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 

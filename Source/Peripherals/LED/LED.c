@@ -197,6 +197,7 @@ void LED_Animate_DeInit(void)
 {
   LEDColorStruct dark={0,0,0};
   SetLEDColor(dark);
+	if(LEDAnimateTaskHandle!=NULL)
 	vTaskDelete(LEDAnimateTaskHandle);
 	LEDAnimateTaskHandle=NULL;
 }

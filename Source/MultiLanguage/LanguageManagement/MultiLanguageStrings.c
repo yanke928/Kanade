@@ -345,10 +345,10 @@ const char RecordStarted_CN[] ="记录已开始";
 const char RecordStarted_JP[] ="記錄始めます";
 const char* const RecordStarted_Str[] = { RecordStarted_EN,RecordStarted_TW,RecordStarted_CN,RecordStarted_JP };
 
-const char LegacyTestVoltLow_EN[] ="Volt too low!";
-const char LegacyTestVoltLow_TW[] ="電壓過低!";
-const char LegacyTestVoltLow_CN[] ="电压过低!";
-const char LegacyTestVoltLow_JP[] ="低電圧!";
+const char LegacyTestVoltLow_EN[] ="Volt too low";
+const char LegacyTestVoltLow_TW[] ="電壓過低";
+const char LegacyTestVoltLow_CN[] ="电压过低";
+const char LegacyTestVoltLow_JP[] ="低電圧";
 const char* const LegacyTestVoltLow_Str[] = { LegacyTestVoltLow_EN,LegacyTestVoltLow_TW,LegacyTestVoltLow_CN,LegacyTestVoltLow_JP };
 
 const char LegacyTestStarted_EN[] ="Test Started";
@@ -362,6 +362,42 @@ const char PleaseWait_TW[] ="請稍後...";
 const char PleaseWait_CN[] ="请稍后...";
 const char PleaseWait_JP[] ="後ほど...";
 const char* const PleaseWait_Str[] = { PleaseWait_EN,PleaseWait_TW,PleaseWait_CN,PleaseWait_JP };
+
+const char SaveFailed_EN[] ="Save Failed";
+const char SaveFailed_TW[] ="保存失敗";
+const char SaveFailed_CN[] ="保存失败";
+const char SaveFailed_JP[] ="保存失敗";
+const char* const SaveFailed_Str[] = { SaveFailed_EN,SaveFailed_TW,SaveFailed_CN,SaveFailed_JP };
+
+const char Summary_EN[] ="Summary";
+const char Summary_TW[] ="測試統計信息";
+const char Summary_CN[] ="测试统计信息";
+const char Summary_JP[] ="テスト統計";
+const char* const Summary_Str[] = { Summary_EN,Summary_TW,Summary_CN,Summary_JP };
+
+const char SummaryCapacity_EN[] ="Capacity";
+const char SummaryCapacity_TW[] ="容量";
+const char SummaryCapacity_CN[] ="容量";
+const char SummaryCapacity_JP[] ="容量";
+const char* const SummaryCapacity_Str[] = { SummaryCapacity_EN,SummaryCapacity_TW,SummaryCapacity_CN,SummaryCapacity_JP };
+
+const char SummaryWork_EN[] ="Work";
+const char SummaryWork_TW[] ="功";
+const char SummaryWork_CN[] ="功";
+const char SummaryWork_JP[] ="パワー";
+const char* const SummaryWork_Str[] = { SummaryWork_EN,SummaryWork_TW,SummaryWork_CN,SummaryWork_JP };
+
+const char SummaryTime_EN[] ="Time";
+const char SummaryTime_TW[] ="時間";
+const char SummaryTime_CN[] ="时间";
+const char SummaryTime_JP[] ="時間";
+const char* const SummaryTime_Str[] = { SummaryTime_EN,SummaryTime_TW,SummaryTime_CN,SummaryTime_JP };
+
+const char SummaryPlatVolt_EN[] ="Plat.Volt";
+const char SummaryPlatVolt_TW[] ="平台電壓";
+const char SummaryPlatVolt_CN[] ="平台电压";
+const char SummaryPlatVolt_JP[] ="平均電圧";
+const char* const SummaryPlatVolt_Str[] = { SummaryPlatVolt_EN,SummaryPlatVolt_TW,SummaryPlatVolt_CN,SummaryPlatVolt_JP };
 
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {

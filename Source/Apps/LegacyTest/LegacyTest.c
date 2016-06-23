@@ -157,7 +157,8 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	for (;;)
 	{
 		EBD_Sync();
-		if (CurrentMeterData.Voltage < (float)(test_Params->ProtectVolt) / 1000)
+		if (CurrentMeterData.Voltage < (float)(test_Params->ProtectVolt) / 1000||
+			CurrentMeterData.Voltage<0.5)
 		{
 			protectedFlag = true;
 			vTaskDelay(200 / portTICK_RATE_MS);
@@ -177,6 +178,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 		vTaskDelete(logoHandle);
 	if (initStatusUpdateHandle != NULL)
 		vTaskDelete(initStatusUpdateHandle);
+	UpdateOLEDJustNow=false;
 	xSemaphoreGive(OLEDRelatedMutex);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
@@ -245,10 +247,10 @@ const LEDAnimateSliceStruct LEDSummaryAnimate[] =
   */
 void ShowSummary(u8 reason)
 {
-	Key_Message_Struct keyMessage;
+	Key_Message_Struct key_Message;
 	char tempString[10];
 	float platVolt;
-	ShowDialogue("Test Summary","","");
+	ShowDialogue(Summary_Str[CurrentSettings->Language],"","");
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_InvertRect(1, 1, 126, 14);
 	if(reason)
@@ -256,10 +258,10 @@ void ShowSummary(u8 reason)
 	 SoundStart(Ichiban_no_takaramono);
 	 LED_Animate_Init(LEDSummaryAnimate);
 	}
-	OLED_ShowAnyString(3, 14, "Capacity", NotOnSelect, 12);
-	OLED_ShowAnyString(3, 26, "Work", NotOnSelect, 12);
-	OLED_ShowAnyString(3, 38, "Time", NotOnSelect, 12);
-	OLED_ShowAnyString(3, 50, "Plat.Volt", NotOnSelect, 12);
+	OLED_ShowAnyString(3, 14, SummaryCapacity_Str[CurrentSettings->Language], NotOnSelect, 12);
+	OLED_ShowAnyString(3, 26, SummaryWork_Str[CurrentSettings->Language], NotOnSelect, 12);
+	OLED_ShowAnyString(3, 38, SummaryTime_Str[CurrentSettings->Language], NotOnSelect, 12);
+	OLED_ShowAnyString(3, 51, SummaryPlatVolt_Str[CurrentSettings->Language], NotOnSelect, 12);
 	if (CurrentSumUpData.Capacity >= 10000)
 		sprintf(tempString, "%05.2fAh", CurrentSumUpData.Capacity);
 	else
@@ -298,19 +300,29 @@ void ShowSummary(u8 reason)
 	xSemaphoreGive(OLEDRelatedMutex);
 	for(;;)
 	{
-   xQueueReceive(Key_Message, &keyMessage, portMAX_DELAY);
+   xQueueReceive(Key_Message, &key_Message, portMAX_DELAY);
 	 SoundStop();
 	 LED_Animate_DeInit();
-	 if(keyMessage.KeyEvent==MidDouble) return;
+	 if(key_Message.KeyEvent==MidDouble) 
+   {
+		 return;
+	 }
 	}
 }
 
 void StopRecord(u8* status,u8 reason)
 {
+	FRESULT res;
 	if (RecordHandle != NULL)
 		vTaskDelete(RecordHandle);
 	if(IsRecording)
-	f_close(&RecordFile);
+	{
+	 res=f_close(&RecordFile);
+	 if(res==FR_OK)
+		 ShowSmallDialogue(Saved_Str[CurrentSettings->Language], 1000, true);
+	 else
+		 ShowSmallDialogue(SaveFailed_Str[CurrentSettings->Language], 1000, true);
+	}
 	if(*status==LEGACY_TEST) EBDSendLoadCommand(0, StopTest);
 	VirtualRTC_DeInit();
 	if(reason)
@@ -318,5 +330,8 @@ void StopRecord(u8* status,u8 reason)
 	 ShowSmallDialogue(StepUpTestProtected_Str[CurrentSettings->Language], 1000, true);
 	}
 	ShowSummary(reason);
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
 	*status = USBMETER_ONLY;
 }
