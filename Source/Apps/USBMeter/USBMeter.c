@@ -49,48 +49,59 @@ void USBMeter(void *pvParameters)
 	{
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		DisplayBasicData(tempString, status);
-		if (status == USBMETER_RECORD||status == LEGACY_TEST)
+		if (status == USBMETER_RECORD || status == LEGACY_TEST)
 		{
 			DisplayRecordData(tempString);
 		}
 		xSemaphoreGive(OLEDRelatedMutex);
-		if(xQueueReceive(Key_Message, & keyMessage, 1000 / portTICK_RATE_MS )==pdPASS)
+		if(status== LEGACY_TEST)
+			{
+			 if(CurrentMeterData.Voltage*1000<legacy_Test_Params.ProtectVolt)
+			 {
+			  StopRecord(&status,1);
+			 }
+			}
+		if (xQueueReceive(Key_Message, &keyMessage, 1000 / portTICK_RATE_MS) == pdPASS)
 		{
-		 if(status == USBMETER_ONLY)
-		 {
-		 switch(keyMessage.KeyEvent)
-		 {
-			 case MidDouble:GetConfirmation(RecordConfirm_Str[CurrentSettings->Language],"");break;
-			 case MidLong:Settings();break;
-			 case LeftClick:if (GetConfirmation(StepUpConfirm_Str[CurrentSettings->Language],""))
-				 		 RunAStepUpTest();break;
-			 case RightClick:if (GetConfirmation(LegacyTestConfirm_Str[CurrentSettings->Language],""))
-				     RunLegacyTest(&status,&legacy_Test_Params);break;
-		 }
-		 switch(keyMessage.AdvancedKeyEvent)
-		 {
-		   case LeftContinous:if (GetConfirmation(QCMTKConfirm_Str[CurrentSettings->Language],""))
-				 		 FastChargeTriggerUI(); break;
-		 }
-	 }
-		 else
-		 {
-			 xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-			 OLED_Clear();
-			 xSemaphoreGive(OLEDRelatedMutex);
-			 if(keyMessage.KeyEvent==MidDouble)
-			 {
-				 GetConfirmation("Stop Record?","");break;
-			 }
-			 else
-			 {
-		  ShowDialogue("Hint","A Record is","running!!!");
-			vTaskDelay(1000/portTICK_RATE_MS);
-			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-			 OLED_Clear();
-			 xSemaphoreGive(OLEDRelatedMutex);
-			 }
-		 }
+			if (status == USBMETER_ONLY)
+			{
+				switch (keyMessage.KeyEvent)
+				{
+				case MidDouble:if(GetConfirmation(RecordConfirm_Str[CurrentSettings->Language], ""))
+					StartRecord(&status);break;
+				case MidLong:Settings(); break;
+				case LeftClick:if (GetConfirmation(StepUpConfirm_Str[CurrentSettings->Language], ""))
+					RunAStepUpTest(); break;
+				case RightClick:if (GetConfirmation(LegacyTestConfirm_Str[CurrentSettings->Language], ""))
+					RunLegacyTest(&status, &legacy_Test_Params); break;
+				}
+				switch (keyMessage.AdvancedKeyEvent)
+				{
+				case LeftContinous:if (GetConfirmation(QCMTKConfirm_Str[CurrentSettings->Language], ""))
+					FastChargeTriggerUI(); break;
+				}
+			}
+			else
+			{
+				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+				OLED_Clear();
+				xSemaphoreGive(OLEDRelatedMutex);
+				if (keyMessage.KeyEvent == MidDouble)
+				{
+					if(GetConfirmation(RecordStopConfirm_Str[CurrentSettings->Language], ""))
+						StopRecord(&status,0);
+				}
+				else
+				{
+					ShowDialogue(Hint_Str[CurrentSettings->Language],
+					RecordIsRunningHint1_Str[CurrentSettings->Language], 
+					RecordIsRunningHint2_Str[CurrentSettings->Language]);
+					vTaskDelay(1000 / portTICK_RATE_MS);
+					xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+					OLED_Clear();
+					xSemaphoreGive(OLEDRelatedMutex);
+				}
+			}
 		}
 	}
 }
@@ -186,6 +197,6 @@ void DisplayRecordData(char tempString[])
 void USBMeter_Init(u8 status)
 {
 	xTaskCreate(USBMeter, "USBMeter",
-		384, &status, USB_METER_PRIORITY, NULL);
-  vTaskDelay(100/portTICK_RATE_MS);
+		448, &status, USB_METER_PRIORITY, NULL);
+	vTaskDelay(100 / portTICK_RATE_MS);
 }

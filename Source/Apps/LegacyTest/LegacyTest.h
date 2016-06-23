@@ -17,4 +17,8 @@ typedef struct {
 
 void RunLegacyTest(u8* status,Legacy_Test_Param_Struct* test_Params);
 
+void StartRecord(u8* status);
+
+void StopRecord(u8* status,u8 reason);
+
 #endif /* __STEPUPTEST_H */

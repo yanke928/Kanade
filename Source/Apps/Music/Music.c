@@ -60,7 +60,7 @@ u16 MusicFREQTab[]={131,147,165,174,196,220,247,
                     1046,1175,1318,1397,1568,1760,1976,
                     2092};
 
-xTaskHandle SoundPlayerHandle;
+xTaskHandle SoundPlayerHandle=NULL;
 
 const SingleToneStruct Tori_No_Uta[] =
 {
@@ -261,6 +261,7 @@ void SoundStart(const SingleToneStruct sound[])
 void SoundStop(void)
 {
 	TIM_DeInit(TIM4);
+	if(SoundPlayerHandle!=NULL)
 	vTaskDelete(SoundPlayerHandle);
 	SoundPlayerHandle=NULL;
 }

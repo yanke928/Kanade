@@ -58,6 +58,14 @@ extern const char* const LegacyTestSetCurrent_Str[LanguageNum];
 extern const char* const NoDiskConfirm_Str[LanguageNum];
 extern const char* const FileCreated_Str[LanguageNum];
 extern const char* const FileCreateFailed_Str[LanguageNum];
+extern const char* const Hint_Str[LanguageNum];
+extern const char* const RecordIsRunningHint1_Str[LanguageNum];
+extern const char* const RecordIsRunningHint2_Str[LanguageNum];
+extern const char* const RecordStopConfirm_Str[LanguageNum];
+extern const char* const RecordStarted_Str[LanguageNum];
+extern const char* const LegacyTestVoltLow_Str[LanguageNum];
+extern const char* const LegacyTestStarted_Str[LanguageNum];
+extern const char* const PleaseWait_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 

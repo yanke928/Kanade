@@ -315,6 +315,54 @@ const char FileCreateFailed_CN[] ="文件创建失败";
 const char FileCreateFailed_JP[] ="Create Failed";
 const char* const FileCreateFailed_Str[] = { FileCreateFailed_EN,FileCreateFailed_TW,FileCreateFailed_CN,FileCreateFailed_JP };
 
+const char Hint_EN[] ="Hint";
+const char Hint_TW[] ="提示";
+const char Hint_CN[] ="提示";
+const char Hint_JP[] ="プロンプト";
+const char* const Hint_Str[] = { Hint_EN,Hint_TW,Hint_CN,Hint_JP };
+
+const char RecordIsRunningHint1_EN[] ="A record is";
+const char RecordIsRunningHint1_TW[] ="記錄正在運行,";
+const char RecordIsRunningHint1_CN[] ="记录正在运行,";
+const char RecordIsRunningHint1_JP[] ="記録中,";
+const char* const RecordIsRunningHint1_Str[] = { RecordIsRunningHint1_EN,RecordIsRunningHint1_TW,RecordIsRunningHint1_CN,RecordIsRunningHint1_JP };
+
+const char RecordIsRunningHint2_EN[] ="runnning!!";
+const char RecordIsRunningHint2_TW[] ="請先停止記錄!";
+const char RecordIsRunningHint2_CN[] ="请先停止记录!";
+const char RecordIsRunningHint2_JP[] ="停止どうぞ!";
+const char* const RecordIsRunningHint2_Str[] = { RecordIsRunningHint2_EN,RecordIsRunningHint2_TW,RecordIsRunningHint2_CN,RecordIsRunningHint2_JP };
+
+const char RecordStopConfirm_EN[] ="Stop record?";
+const char RecordStopConfirm_TW[] ="停止記錄?";
+const char RecordStopConfirm_CN[] ="停止记录?";
+const char RecordStopConfirm_JP[] ="記錄停止?";
+const char* const RecordStopConfirm_Str[] = { RecordStopConfirm_EN,RecordStopConfirm_TW,RecordStopConfirm_CN,RecordStopConfirm_JP };
+
+const char RecordStarted_EN[] ="Record Started";
+const char RecordStarted_TW[] ="記錄已開始";
+const char RecordStarted_CN[] ="记录已开始";
+const char RecordStarted_JP[] ="記錄始めます";
+const char* const RecordStarted_Str[] = { RecordStarted_EN,RecordStarted_TW,RecordStarted_CN,RecordStarted_JP };
+
+const char LegacyTestVoltLow_EN[] ="Volt too low!";
+const char LegacyTestVoltLow_TW[] ="電壓過低!";
+const char LegacyTestVoltLow_CN[] ="电压过低!";
+const char LegacyTestVoltLow_JP[] ="低電圧!";
+const char* const LegacyTestVoltLow_Str[] = { LegacyTestVoltLow_EN,LegacyTestVoltLow_TW,LegacyTestVoltLow_CN,LegacyTestVoltLow_JP };
+
+const char LegacyTestStarted_EN[] ="Test Started";
+const char LegacyTestStarted_TW[] ="一般測試已開始";
+const char LegacyTestStarted_CN[] ="一般测试已开始";
+const char LegacyTestStarted_JP[] ="テスト始めます";
+const char* const LegacyTestStarted_Str[] = { LegacyTestStarted_EN,LegacyTestStarted_TW,LegacyTestStarted_CN,LegacyTestStarted_JP };
+
+const char PleaseWait_EN[] ="Wait for seconds...";
+const char PleaseWait_TW[] ="請稍後...";
+const char PleaseWait_CN[] ="请稍后...";
+const char PleaseWait_JP[] ="後ほど...";
+const char* const PleaseWait_Str[] = { PleaseWait_EN,PleaseWait_TW,PleaseWait_CN,PleaseWait_JP };
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},
