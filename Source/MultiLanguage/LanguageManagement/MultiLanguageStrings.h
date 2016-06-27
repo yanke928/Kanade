@@ -67,12 +67,18 @@ extern const char* const LegacyTestVoltLow_Str[LanguageNum];
 extern const char* const LegacyTestStarted_Str[LanguageNum];
 extern const char* const PleaseWait_Str[LanguageNum];
 extern const char* const SaveFailed_Str[LanguageNum];
-
 extern const char* const Summary_Str[LanguageNum];
 extern const char* const SummaryCapacity_Str[LanguageNum];
 extern const char* const SummaryWork_Str[LanguageNum];
 extern const char* const SummaryTime_Str[LanguageNum];
 extern const char* const SummaryPlatVolt_Str[LanguageNum];
+extern const char* const USBMassStorage_Str[LanguageNum];
+extern const char* const MountUSBMassStorageConfirm_Str[LanguageNum];
+extern const char* const UnMountUSBMassStorage_Str[LanguageNum];
+extern const char* const USBMassStorageStatus_Str[LanguageNum];
+extern const char* const USBMassStorageStatusReading_Str[LanguageNum];
+extern const char* const USBMassStorageStatusWriting_Str[LanguageNum];
+extern const char* const USBMassStorageStatusIdling_Str[LanguageNum];
 
 extern const OLED_PositionStruct ComfirmationPositions[LanguageNum][2];
 

@@ -17,12 +17,16 @@
 #ifndef __MASS_MAL_H
 #define __MASS_MAL_H
 
+#include "stdbool.h"
+
 /* Includes ------------------------------------------------------------------*/
-/* Exported types ------------------------------------------------------------*/
+/* Exported types -------------------- ----------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 #define MAL_OK   0
 #define MAL_FAIL 1
 #define MAX_LUN  1
+
+extern u8 Usb_Status_Reg;
 
 extern u32 Mass_Memory_Size[2];
 extern u32 Mass_Block_Size[2];
@@ -33,6 +37,7 @@ u16 MAL_Init (u8 lun);
 u16 MAL_GetStatus (u8 lun);
 u16 MAL_Read(u8 lun, u32 Memory_Offset, u32 *Readbuff, u16 Transfer_Length);
 u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length);
+bool MAL_Mount(void);
 #endif /* __MASS_MAL_H */
 
 /******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/

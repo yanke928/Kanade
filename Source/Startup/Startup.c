@@ -216,7 +216,6 @@ xTaskHandle InitStatusHandler_Init(void)
   */
 void SystemStartup(void *pvParameters)
 {
-	long long sd_size;
 	xTaskHandle logoHandle;
 	xTaskHandle initStatusUpdateHandle;
 	Key_Init();
@@ -248,16 +247,9 @@ void SystemStartup(void *pvParameters)
 	
 	ShowCurrentTempSensor();
 	CheckEBDDirectories(true);
-	
-	sd_size=(long long)SD_GetCapacity()*512;
-	
-	Mass_Memory_Size[0]=sd_size%4294967296;
-	Mass_Memory_Size[1]=sd_size>>32;
-  Mass_Block_Size[0] =512;
-  Mass_Block_Count[0]=sd_size/Mass_Block_Size[0];
+
 	USB_Interrupts_Config();    
-	Set_USBClock();   
-	USB_Init();	  	
+	Set_USBClock();   	  	
 	
 	LED_Animate_DeInit();
 	vTaskDelete(initStatusUpdateHandle);

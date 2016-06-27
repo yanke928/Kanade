@@ -22,10 +22,13 @@
 #include "sdcard.h"
 #include "sdcardff.h"
 
+#include "mass_mal.h"
+
 #include "Settings.h"
 #include "StepUpTest.h"
 #include "FastCharge_Trigger.h"
 #include "LegacyTest.h"
+#include "MassStorage.h"
 
 #include "UI_Dialogue.h"
 
@@ -82,6 +85,9 @@ void USBMeter(void *pvParameters)
 				{
 				case LeftContinous:if (GetConfirmation(QCMTKConfirm_Str[CurrentSettings->Language], ""))
 					FastChargeTriggerUI(); break;
+				case RightContinous:if 
+					(GetConfirmation(MountUSBMassStorageConfirm_Str[CurrentSettings->Language], ""))
+					MassStorage_App();break;
 				}
 			}
 			else

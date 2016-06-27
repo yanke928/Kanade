@@ -399,6 +399,48 @@ const char SummaryPlatVolt_CN[] ="平台电压";
 const char SummaryPlatVolt_JP[] ="平均電圧";
 const char* const SummaryPlatVolt_Str[] = { SummaryPlatVolt_EN,SummaryPlatVolt_TW,SummaryPlatVolt_CN,SummaryPlatVolt_JP };
 
+const char USBMassStorage_EN[] ="USB MassStorage";
+const char USBMassStorage_TW[] ="USB大容量存儲";
+const char USBMassStorage_CN[] ="USB大容量存储";
+const char USBMassStorage_JP[] ="マスストレージ";
+const char* const USBMassStorage_Str[] = { USBMassStorage_EN,USBMassStorage_TW,USBMassStorage_CN,USBMassStorage_JP };
+
+const char MountUSBMassStorageConfirm_EN[] ="Mount USB?";
+const char MountUSBMassStorageConfirm_TW[] ="掛載USB存儲?";
+const char MountUSBMassStorageConfirm_CN[] ="挂载USB存储?";
+const char MountUSBMassStorageConfirm_JP[] ="マウントUSB?";
+const char* const MountUSBMassStorageConfirm_Str[] = { MountUSBMassStorageConfirm_EN,MountUSBMassStorageConfirm_TW,MountUSBMassStorageConfirm_CN,MountUSBMassStorageConfirm_JP };
+
+const char UnMountUSBMassStorage_EN[] ="Unmount";
+const char UnMountUSBMassStorage_TW[] =" 彈出 ";
+const char UnMountUSBMassStorage_CN[] =" 弹出 ";
+const char UnMountUSBMassStorage_JP[] ="取り出し";
+const char* const UnMountUSBMassStorage_Str[] = { UnMountUSBMassStorage_EN,UnMountUSBMassStorage_TW,UnMountUSBMassStorage_CN,UnMountUSBMassStorage_JP };
+
+const char USBMassStorageStatus_EN[] ="Status:";
+const char USBMassStorageStatus_TW[] ="狀態:";
+const char USBMassStorageStatus_CN[] ="状态:";
+const char USBMassStorageStatus_JP[] ="状態:";
+const char* const USBMassStorageStatus_Str[] = { USBMassStorageStatus_EN,USBMassStorageStatus_TW,USBMassStorageStatus_CN,USBMassStorageStatus_JP };
+
+const char USBMassStorageStatusReading_EN[] =" Reading";
+const char USBMassStorageStatusReading_TW[] ="正在讀取";
+const char USBMassStorageStatusReading_CN[] ="正在读取";
+const char USBMassStorageStatusReading_JP[] ="読みます";
+const char* const USBMassStorageStatusReading_Str[] = { USBMassStorageStatusReading_EN,USBMassStorageStatusReading_TW,USBMassStorageStatusReading_CN,USBMassStorageStatusReading_JP };
+
+const char USBMassStorageStatusWriting_EN[] =" Writing";
+const char USBMassStorageStatusWriting_TW[] ="正在寫入";
+const char USBMassStorageStatusWriting_CN[] ="正在写入";
+const char USBMassStorageStatusWriting_JP[] ="書きます";
+const char* const USBMassStorageStatusWriting_Str[] = { USBMassStorageStatusWriting_EN,USBMassStorageStatusWriting_TW,USBMassStorageStatusWriting_CN,USBMassStorageStatusWriting_JP };
+
+const char USBMassStorageStatusIdling_EN[] ="--Idle--";
+const char USBMassStorageStatusIdling_TW[] ="--空閒--";
+const char USBMassStorageStatusIdling_CN[] ="--空闲--";
+const char USBMassStorageStatusIdling_JP[] ="アイドル";
+const char* const USBMassStorageStatusIdling_Str[] = { USBMassStorageStatusIdling_EN,USBMassStorageStatusIdling_TW,USBMassStorageStatusIdling_CN,USBMassStorageStatusIdling_JP };
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},

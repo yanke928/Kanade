@@ -17,6 +17,7 @@
 #include "platform_config.h"  	 
 //#include "mmc_sd.h"
 #include "mass_mal.h"
+#include "usb_lib.h"
 #include "sdcard.h"
 																			   
 u32 Mass_Memory_Size[2];
@@ -127,5 +128,19 @@ u16 MAL_GetStatus (u8 lun)
         return MAL_FAIL;
     }
 }
+
+bool MAL_Mount()
+{
+  long long sd_size;
+  sd_size=(long long)SD_GetCapacity()*512;
+	Mass_Memory_Size[0]=sd_size%4294967296;
+	Mass_Memory_Size[1]=sd_size>>32;
+  Mass_Block_Size[0] =512;
+  Mass_Block_Count[0]=sd_size/Mass_Block_Size[0]; 
+	if(sd_size<1024) return false;
+	USB_Init();
+	return true;
+}
+
 
 /******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
