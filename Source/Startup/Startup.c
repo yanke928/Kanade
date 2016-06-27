@@ -18,8 +18,12 @@
 #include "BadApplePlayer.h"
 #include "CPU_Usage.h"
 #include "MultiLanguageStrings.h"
-#include "USBCDC.h"
 #include "UI_Utilities.h"
+
+#include "mass_mal.h"
+#include "usb_lib.h"
+#include "hw_config.h"
+#include "usb_pwr.h"
 
 #include "Settings.h"
 
@@ -212,6 +216,7 @@ xTaskHandle InitStatusHandler_Init(void)
   */
 void SystemStartup(void *pvParameters)
 {
+	long long sd_size;
 	xTaskHandle logoHandle;
 	xTaskHandle initStatusUpdateHandle;
 	Key_Init();
@@ -220,22 +225,40 @@ void SystemStartup(void *pvParameters)
 	{
 	 OSStatInit();	
 	}
-	USBCDC_Init();
-	CommandLine_Init();
+	//USBCDC_Init();
+	//CommandLine_Init();
 	Settings_Init();
+	
 	LED_Animate_Init(LEDAnimation_Startup);
+	
 	RTC_Init();
+	
 	logoHandle = Logo_Init();
 	initStatusUpdateHandle = InitStatusHandler_Init();
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);
+	
 	vTaskDelay(100 / portTICK_RATE_MS);
 	TemperatureSensors_Init();
+	
 	EBD_Init();
 	vTaskDelay(50 / portTICK_RATE_MS);
+	
 	sdcard_Init(true);
 	vTaskDelay(500 / portTICK_RATE_MS);
+	
 	ShowCurrentTempSensor();
 	CheckEBDDirectories(true);
+	
+	sd_size=(long long)SD_GetCapacity()*512;
+	
+	Mass_Memory_Size[0]=sd_size%4294967296;
+	Mass_Memory_Size[1]=sd_size>>32;
+  Mass_Block_Size[0] =512;
+  Mass_Block_Count[0]=sd_size/Mass_Block_Size[0];
+	USB_Interrupts_Config();    
+	Set_USBClock();   
+	USB_Init();	  	
+	
 	LED_Animate_DeInit();
 	vTaskDelete(initStatusUpdateHandle);
 	vTaskDelete(logoHandle);

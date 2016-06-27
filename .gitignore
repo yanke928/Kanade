@@ -4,4 +4,5 @@
 /USER/*
 !Kanade.uvproj
 !Kanade.bat
-Kanade.uvopt
+*.uvopt
+*.dep

@@ -24,7 +24,10 @@
 #include "stm32f10x_it.h"
 #include "stm32f10x_dma.h"
 
-#include "USBCDC.h"
+#include "usb_istr.h"
+#include "usb_lib.h"
+
+//#include "USBCDC.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -64,7 +67,7 @@
   */
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
-	__USBCDC_ISR();
+ USB_Istr();
 }
 
 /**

@@ -205,7 +205,6 @@ u8 SD_SendCommand(u8 cmd, u32 arg, u8 crc)
 	unsigned char r1;
 	unsigned char Retry = 0;
 
-	//????????
 	SPI_ReadWriteByte(0xff);
 	//片选端置低，选中SD卡
 	SD_CS_ENABLE();
@@ -616,26 +615,23 @@ u32 SD_GetCapacity(void)
 	u8 n;
 	u32 csize;
 
-	//取CSD信息，如果期间出错，返回0
 	if (SD_GetCSD(csd) != 0)
 	{
 		return 0;
 	}
 
-	//È¡CSDÐÅÏ¢£¬Èç¹ûÆÚ¼ä³ö´í£¬·µ»Ø0
 	if (SD_GetCSD(csd) != 0) return 0;
-	//Èç¹ûÎªSDHC¿¨£¬°´ÕÕÏÂÃæ·½Ê½¼ÆËã
 
-	if ((csd[0] & 0xC0) == 0x40)	 //V2.00µÄ¿¨
+	if ((csd[0] & 0xC0) == 0x40)	
 	{
 		csize = csd[9] + ((u32)csd[8] << 8) + 1;
-		Capacity = (u32)csize << 10;//µÃµ½ÉÈÇøÊý	 		   
+		Capacity = (u32)csize << 10; 		   
 	}
-	else//V1.XXµÄ¿¨
+	else
 	{
 		n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
 		csize = (csd[8] >> 6) + ((u16)csd[7] << 2) + ((u16)(csd[6] & 3) << 10) + 1;
-		Capacity = (u32)csize << (n - 9);//µÃµ½ÉÈÇøÊý   
+		Capacity = (u32)csize << (n - 9); 
 	}
 	return Capacity;
 }
