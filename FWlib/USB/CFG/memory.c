@@ -79,7 +79,7 @@ void Read_Memory(u8 lun, u32 Memory_Offset, u32 Transfer_Length)
 					     Offset ,
 			   	  		 Data_Buffer,
 		    	   	 	 Mass_Block_Size[lun]);
-			if(STA)Usb_Status_Reg|=0X08;//SD¿¨¶Á´íÎó!
+			if(STA)Usb_Status_Reg|=0X08;
 			UserToPMABufferCopy((u8 *)Data_Buffer, ENDP1_TXADDR, BULK_MAX_PACKET_SIZE);
 			Block_Read_count = Mass_Block_Size[lun] - BULK_MAX_PACKET_SIZE;
 			Block_offset = BULK_MAX_PACKET_SIZE;

@@ -36,6 +36,14 @@ xQueueHandle InitAnimatePosHandle;
 
 xQueueHandle InitStatusMsg;
 
+xTaskHandle LogoAnimateHandle=NULL;
+
+xTaskHandle InitStatusHandle=NULL;
+
+bool IsOLEDMutexTokenByLogoAnimateHandler;
+
+bool IsOLEDMutexTokenByInitStatusHandler;
+
 const unsigned char logo[128][4] =
 {
 0x00,0x00,0x18,0x00,0x00,0x00,0x18,0x00,0x00,0x00,0x18,0x00,0x00,0x00,0x18,0x00,
@@ -90,10 +98,13 @@ void LogoHandler(void *pvParameters)
 	while (1)
 	{
 		xQueueReceive(InitAnimatePosHandle, &LoadingAddr, 0);
+		
 		if (xSemaphoreTake(OLEDRelatedMutex, 0) != pdPASS)
 		{
 			goto Wait;
 		}
+		IsOLEDMutexTokenByLogoAnimateHandler=true;
+		
 		UpdateOLEDJustNow = true;
 		/*If it's drawing's turn,draw the respective line at respective verticalAddr*/
 		if (DrawOrUnDraw)
@@ -132,6 +143,7 @@ void LogoHandler(void *pvParameters)
 		OLED_FillRect(LoadingAddr, 45, LoadingAddr + 5, 50, !(n & 8));
 		UpdateOLEDJustNow = false;
 		xSemaphoreGive(OLEDRelatedMutex);
+	  IsOLEDMutexTokenByLogoAnimateHandler=false;
 	Wait:
 		vTaskDelayUntil(&xLastWakeTime, 8 / portTICK_RATE_MS);
 	}
@@ -160,7 +172,10 @@ void InitStatusUpdateHandler(void *pvParameters)
 		startAddr = GetCentralPosition(0, 127, stringLength);
 		/*Make room for "blocks animation"*/
 		startAddr = startAddr + 9;
+		
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+		IsOLEDMutexTokenByInitStatusHandler=true;
+		
 		/*Clear the area that last initString occupies*/
 		OLED_FillRect(0, 39, 127, 55, 0);
 		/*Show the new initString*/
@@ -168,7 +183,10 @@ void InitStatusUpdateHandler(void *pvParameters)
 		UpdateOLEDJustNow = true;
 		OLED_Refresh_Gram();
 		UpdateOLEDJustNow = false;
+		
+		IsOLEDMutexTokenByInitStatusHandler=false;
 		xSemaphoreGive(OLEDRelatedMutex);
+		
 		/*Adjust the position of "blocks animation"(loadingAnimation)*/
 		loadingAddr = startAddr - 16;
 		if (xQueueSend(InitAnimatePosHandle, &loadingAddr, 100 / portTICK_RATE_MS) != pdPASS)
@@ -185,13 +203,12 @@ void InitStatusUpdateHandler(void *pvParameters)
 
 	  @retval None
   */
-xTaskHandle Logo_Init()
+void Logo_Init()
 {
-	xTaskHandle logoHandle;
+	if(LogoAnimateHandle==NULL)
 	xTaskCreate(LogoHandler, "Logo handler",
-		56, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &logoHandle);
+		56, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &LogoAnimateHandle);
 	InitAnimatePosHandle = xQueueCreate(1, sizeof(u8));
-	return(logoHandle);
 }
 
 
@@ -200,13 +217,48 @@ xTaskHandle Logo_Init()
 
 	  @retval None
   */
-xTaskHandle InitStatusHandler_Init(void)
+void InitStatusHandler_Init(void)
 {
-	xTaskHandle initStatusHandle;
+	if(LogoAnimateHandle==NULL)
 	xTaskCreate(InitStatusUpdateHandler, "Init Status Handler",
-		64, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &initStatusHandle);
+		64, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &InitStatusHandle);
 	InitStatusMsg = xQueueCreate(1, 30);
-	return(initStatusHandle);
+}
+
+/**
+  * @brief  DeInit  logo
+
+	  @retval None
+  */
+void Logo_DeInit()
+{
+ if(LogoAnimateHandle!=NULL)
+ {
+  vTaskDelete(LogoAnimateHandle);
+ }
+ if(IsOLEDMutexTokenByLogoAnimateHandler)
+ {
+  xSemaphoreGive(OLEDRelatedMutex);
+ }
+ LogoAnimateHandle=NULL;
+}
+
+/**
+  * @brief  DeInit InitStatus handler
+
+	  @retval None
+  */
+void InitStatus_DeInit()
+{
+ if(InitStatusHandle!=NULL)
+ {
+  vTaskDelete(InitStatusHandle);
+ }
+ if(IsOLEDMutexTokenByInitStatusHandler)
+ {
+  xSemaphoreGive(OLEDRelatedMutex);
+ }
+ InitStatusHandle=NULL;
 }
 
 /**
@@ -216,8 +268,6 @@ xTaskHandle InitStatusHandler_Init(void)
   */
 void SystemStartup(void *pvParameters)
 {
-	xTaskHandle logoHandle;
-	xTaskHandle initStatusUpdateHandle;
 	Key_Init();
 	OLED_Init();
 	if(RIGHT_KEY==KEY_ON)
@@ -227,13 +277,12 @@ void SystemStartup(void *pvParameters)
 	//USBCDC_Init();
 	//CommandLine_Init();
 	Settings_Init();
-	
 	LED_Animate_Init(LEDAnimation_Startup);
 	
 	RTC_Init();
 	
-	logoHandle = Logo_Init();
-	initStatusUpdateHandle = InitStatusHandler_Init();
+	Logo_Init();
+	InitStatusHandler_Init();
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);
 	
 	vTaskDelay(100 / portTICK_RATE_MS);
@@ -252,9 +301,9 @@ void SystemStartup(void *pvParameters)
 	Set_USBClock();   	  	
 	
 	LED_Animate_DeInit();
-	vTaskDelete(initStatusUpdateHandle);
-	vTaskDelete(logoHandle);
-	xSemaphoreGive(OLEDRelatedMutex);
+	Logo_DeInit();
+	InitStatus_DeInit();
+	
 	UpdateOLEDJustNow=false;
 	OLED_Clear();
 	if(LEFT_KEY==KEY_ON)

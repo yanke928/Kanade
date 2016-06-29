@@ -49,6 +49,13 @@ bool IsRecording;
 
 xTaskHandle RecordHandle;
 
+
+/**
+  * @brief  Record task,update summary data and write 
+current data into sdcard
+
+	  @Hint   This task can be killed by StopRecord()
+  */
 void Record_Handler(void *pvParameters)
 {
 	u8 lastSec = RTCCurrent.Sec;
@@ -57,6 +64,7 @@ void Record_Handler(void *pvParameters)
 	SecondNum=0;
 	for (;;)
 	{
+		/*Write current meter data into sdcard*/
 		if (IsRecording)
 		{
 			if (CurrentTemperatureSensor == Internal)
@@ -68,9 +76,11 @@ void Record_Handler(void *pvParameters)
 			stringLength = GetStringLength(tempString);
 			f_write(&RecordFile, tempString, stringLength, &RecordFileWriteCount);
 		}
+		/*Update summary data*/
 		CurrentSumUpData.Capacity += (CurrentMeterData.Current / 3600);
 		CurrentSumUpData.Work += (CurrentMeterData.Power / 3600);
 		CurrentSumUpData.PlatformVolt = CurrentMeterData.Power / CurrentMeterData.Current;
+		/*Keep blocked until a new second reached*/
 		for (;;)
 		{
 			if (lastSec != RTCCurrent.Sec)
@@ -83,6 +93,9 @@ void Record_Handler(void *pvParameters)
 	}
 }
 
+/**
+  * @brief  Clear summary data 
+  */
 void ClearRecordData()
 {
 	CurrentSumUpData.Capacity = 0;
@@ -90,6 +103,11 @@ void ClearRecordData()
 	CurrentSumUpData.PlatformVolt = 0;
 }
 
+/**
+  * @brief  Create a record file(with name of RTC time)
+
+    @rtval: true(success) false(failed)
+  */
 bool CreateRecordFile()
 {
 	FRESULT res;
@@ -101,18 +119,24 @@ bool CreateRecordFile()
 	return false;
 }
 
+/**
+  * @brief  Create the header of a record
+  */
 void CreateRecordFileHeader()
 {
 	f_write(&RecordFile, "Time(s),Curt(A),Volt(V),Temp(C)\r\n",
 		sizeof("Time(s),Curt(A),Volt(V),Temp(C)\r\n"), &RecordFileWriteCount);
 }
 
+/**
+  * @brief  Run a legacy test with params from user
+  */
 void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 {
-	xTaskHandle logoHandle;
-	xTaskHandle initStatusUpdateHandle;
 	bool protectedFlag;
 	*status = LEGACY_TEST;
+	
+	/*Get parameters of the legacy test*/
 	test_Params->Current =
 		GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language], 100, LEGACY_TEST_CURRENT_MAX,
 			1000, 100, "mA", 20);
@@ -120,6 +144,8 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0,
 		(int)(1000 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (1000 * CurrentMeterData.Voltage) / 10 * 10 : 100,
 			(int)(900 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (900 * CurrentMeterData.Voltage) / 10 * 10 : 100, 10, "mV", 25);
+		
+	/*Warn user of the unmounted sdcard*/
 	if (!SDCardMountStatus)
 	{
 		IsRecording = false;
@@ -131,7 +157,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	}
 	else
 	{
-
+    /*Try to create a record file,show hint if failed*/
 		if (!CreateRecordFile())
 		{
 			ShowSmallDialogue(FileCreateFailed_Str[CurrentSettings->Language], 1000, true);
@@ -144,19 +170,30 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 			IsRecording = true;
 		}
 	}
+	/*Clear the screen*/
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	OLED_Refresh_Gram();
 	xSemaphoreGive(OLEDRelatedMutex);
-	logoHandle = Logo_Init();
-	initStatusUpdateHandle = InitStatusHandler_Init();
+	
+	/*Init logo*/
+	Logo_Init();
+	InitStatusHandler_Init();
+	
+	/*Show waiting string*/
 	xQueueSend(InitStatusMsg, PleaseWait_Str[CurrentSettings->Language], 0);
+	
+	/*Sync EBD to meet the chance to send load command*/
 	EBD_Sync();
 	vTaskDelay(200);
 	EBDSendLoadCommand(test_Params->Current, StartTest);
+	
+	/*Wait for load command effects*/
 	for (;;)
 	{
 		EBD_Sync();
+		
+		/*If protection triggered,undo the legacy test*/
 		if (CurrentMeterData.Voltage < (float)(test_Params->ProtectVolt) / 1000||
 			CurrentMeterData.Voltage<0.5)
 		{
@@ -165,6 +202,8 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 			EBDSendLoadCommand(0, StopTest);
 			break;
 		}
+		
+		/*Break if the load command effects*/
 		if (CurrentMeterData.Current > (float)(test_Params->Current) / 1010 &&
 			CurrentMeterData.Current < (float)(test_Params->Current) / 990)
 		{
@@ -174,10 +213,11 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 		vTaskDelay(200 / portTICK_RATE_MS);
 		EBDSendLoadCommand(test_Params->Current, StartTest);
 	}
-	if (logoHandle != NULL)
-		vTaskDelete(logoHandle);
-	if (initStatusUpdateHandle != NULL)
-		vTaskDelete(initStatusUpdateHandle);
+	
+	/*Delete logo and initStatus tasks*/
+	Logo_DeInit();
+	InitStatus_DeInit();
+	
 	UpdateOLEDJustNow=false;
 	xSemaphoreGive(OLEDRelatedMutex);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
@@ -200,6 +240,9 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	}
 }
 
+/**
+  * @brief  Start a record(without load)
+  */
 void StartRecord(u8* status)
 {
 	if (!SDCardMountStatus)
@@ -253,15 +296,22 @@ void ShowSummary(u8 reason)
 	ShowDialogue(Summary_Str[CurrentSettings->Language],"","");
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_InvertRect(1, 1, 126, 14);
+	
+	/*If the stop of the record is caused by protection,play sound to notice the 
+	user*/
 	if(reason)
 	{
 	 SoundStart(Ichiban_no_takaramono);
 	 LED_Animate_Init(LEDSummaryAnimate);
 	}
+	
+	/*Show item strings*/
 	OLED_ShowAnyString(3, 14, SummaryCapacity_Str[CurrentSettings->Language], NotOnSelect, 12);
 	OLED_ShowAnyString(3, 26, SummaryWork_Str[CurrentSettings->Language], NotOnSelect, 12);
 	OLED_ShowAnyString(3, 38, SummaryTime_Str[CurrentSettings->Language], NotOnSelect, 12);
 	OLED_ShowAnyString(3, 51, SummaryPlatVolt_Str[CurrentSettings->Language], NotOnSelect, 12);
+	
+	/*Print summary*/
 	if (CurrentSumUpData.Capacity >= 10000)
 		sprintf(tempString, "%05.2fAh", CurrentSumUpData.Capacity);
 	else
@@ -298,9 +348,12 @@ void ShowSummary(u8 reason)
 		OLED_ShowAnyString(81, 50, tempString, NotOnSelect, 12);
 	}
 	xSemaphoreGive(OLEDRelatedMutex);
+	
+	/*Keep in blocked until middle key double clicked*/
 	for(;;)
 	{
    xQueueReceive(Key_Message, &key_Message, portMAX_DELAY);
+	 /*Stop sound when any key event occurred*/
 	 SoundStop();
 	 LED_Animate_DeInit();
 	 if(key_Message.KeyEvent==MidDouble) 
@@ -310,11 +363,19 @@ void ShowSummary(u8 reason)
 	}
 }
 
+/**
+  * @brief  Stop a record
+  */
 void StopRecord(u8* status,u8 reason)
 {
 	FRESULT res;
+	
+	/*Delete record task*/
 	if (RecordHandle != NULL)
 		vTaskDelete(RecordHandle);
+	
+	/*If it is a record with file recording,close record file
+	and show success or not*/
 	if(IsRecording)
 	{
 	 res=f_close(&RecordFile);
@@ -323,15 +384,27 @@ void StopRecord(u8* status,u8 reason)
 	 else
 		 ShowSmallDialogue(SaveFailed_Str[CurrentSettings->Language], 1000, true);
 	}
+	
+	/*If it is a record with load,stop EBD*/
 	if(*status==LEGACY_TEST) EBDSendLoadCommand(0, StopTest);
+	
+	/*DeInit virtual RTC*/
 	VirtualRTC_DeInit();
+	
+	/*If the stop operation is caused by protection,show "protected"*/
 	if(reason)
 	{
 	 ShowSmallDialogue(StepUpTestProtected_Str[CurrentSettings->Language], 1000, true);
 	}
+	
+	/*Show summary on the screen*/
 	ShowSummary(reason);
+	
+	/*Wipe your ass*/
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
+	
+	/*Reset status flag*/
 	*status = USBMETER_ONLY;
 }

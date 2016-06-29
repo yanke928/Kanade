@@ -15,7 +15,7 @@ unsigned int      OSIdleCtrRun;             /* Val. reached by idle ctr at run t
 float     OSCPUUsage;               /* Percentage of CPU used  */
 bool CPU_Stat_Running = false;
 
-void OS_TaskStat(void * pvParameters)//统计任务
+void OS_TaskStat(void * pvParameters)
 {
 	portTickType xLastWakeTime;
 	OSIdleCtrMax /= 100;
