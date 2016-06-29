@@ -22,7 +22,7 @@
 bool GetConfirmation(const char subString0[], const char subString1[])
 {
 	u8 i;
-	Key_Message_Struct keyMessage;
+	//Key_Message_Struct keyMessage;
 	UI_Button_Param_Struct buttonParams;
 	buttonParams.ButtonString = ConfirmCancel_Str[CurrentSettings->Language];
 	buttonParams.ButtonNum = 2;
@@ -40,7 +40,8 @@ bool GetConfirmation(const char subString0[], const char subString1[])
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
-	xQueueReceive(Key_Message, &keyMessage, portMAX_DELAY);
+	IgnoreNextKeyEvent();
+	//xQueueReceive(Key_Message, &keyMessage, portMAX_DELAY);
 	if (i) return true;
 	else return false;
 }

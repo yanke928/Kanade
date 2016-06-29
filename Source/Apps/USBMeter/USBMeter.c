@@ -89,6 +89,7 @@ void USBMeter(void *pvParameters)
 					(GetConfirmation(MountUSBMassStorageConfirm_Str[CurrentSettings->Language], ""))
 					MassStorage_App();break;
 				}
+				goto Refresh;
 			}
 			else
 			{
@@ -113,6 +114,7 @@ void USBMeter(void *pvParameters)
 					OLED_Clear();
 					xSemaphoreGive(OLEDRelatedMutex);
 				}
+				goto Refresh;
 			}
 		}
 	}

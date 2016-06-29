@@ -214,7 +214,9 @@ void KeyEvents(void)
 	{
 		MidInterval = 0;
 		MidKeyPressed = false;
+	  if (IgnoreNextEvent == false)
 		KeyEvent = MidClick;
+		IgnoreNextEvent=false;
 	}
 }
 

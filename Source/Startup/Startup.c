@@ -219,7 +219,7 @@ void Logo_Init()
   */
 void InitStatusHandler_Init(void)
 {
-	if(LogoAnimateHandle==NULL)
+	if(InitStatusHandle==NULL)
 	xTaskCreate(InitStatusUpdateHandler, "Init Status Handler",
 		64, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &InitStatusHandle);
 	InitStatusMsg = xQueueCreate(1, 30);

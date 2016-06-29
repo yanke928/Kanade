@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stm32f10x.h>
 
-
 //Define the key state with the pin state
 #define KEY_ON	0
 #define KEY_OFF	1
@@ -89,5 +88,7 @@ void Key_Init(void);
 void Key_Debug_Init(void);
 
 void ClearKeyEvent(Key_Message_Struct message);
+
+#define IgnoreNextKeyEvent() IgnoreNextEvent=true
 
 #endif /* __KEYS_H */

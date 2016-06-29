@@ -424,7 +424,7 @@ void Dialgram_Broswer(void *pvParameters)
 				screenSide = LeftHalf;
 			}
 			//xQueueReceive(Key_Message, & keyMessage, portMAX_DELAY);
-				  /*ReDraw the detailed data of selected point as soon as key released*/
+			/*ReDraw the detailed data of selected point as soon as key released*/
 			if (LEFT_KEY == KEY_OFF&&RIGHT_KEY == KEY_OFF)
 			{
 				DrawCurrentPosData(dialgram_Params->DataSprintfCommandStrings, currentPos,
