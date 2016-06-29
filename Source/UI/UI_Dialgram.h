@@ -13,9 +13,9 @@ typedef struct
 	float MaxValues[2];
 	float MinValues[2];
 	u16 RecordLength;
-	char MaxAndMinSprintfCommandStrings[2][10];
-	char DataSprintfCommandStrings[2][10];
-	char DataNumSprintfCommandString[10];
+	const char *MaxAndMinSprintfCommandStrings[2];
+	const char *DataSprintfCommandStrings[2];
+	const char *DataNumSprintfCommandString;
 	float *DataPointers[2];
 	u8 Item1AutoNumStart;
 	u8 Item1AutoNumStep;

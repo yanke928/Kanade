@@ -199,7 +199,7 @@ format the max/min values
 
 	  @retval None
   */
-void DrawDashedGridsAndMinMax(char sprintfCommandStrings[2][10], float maxValues[2], float minValues[2], bool drawMinAndMax, u8 gridsDensity)
+void DrawDashedGridsAndMinMax(const char *sprintfCommandStrings[2], float maxValues[2], float minValues[2], bool drawMinAndMax, u8 gridsDensity)
 {
 	u8 i;
 	u8 tempLength;
@@ -255,8 +255,8 @@ data or just "CLEAR" the area where data is drawn
 
 	  @retval None
   */
-void DrawCurrentPosData(char sprintfCommandStrings[2][10], u16 currentPos,
-	u8 leftOrRight, float *dataSetPointers[2], char dataNumSprintfCommandString[10], u8 item1AutoNumStart,
+void DrawCurrentPosData(const char *sprintfCommandStrings[2], u16 currentPos,
+	u8 leftOrRight, float *dataSetPointers[2],const char *dataNumSprintfCommandString, u8 item1AutoNumStart,
 	u8 item1AutoNumStep, bool clear)
 {
 	u16 i = 0;

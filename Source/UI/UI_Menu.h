@@ -8,7 +8,7 @@
 
 typedef struct
 {
- char * ItemString;
+ const char * ItemString;
  u8 DefaultPos;
  u8 ItemNum;
  u8 FastSpeed;
