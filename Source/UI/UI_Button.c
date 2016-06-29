@@ -46,6 +46,7 @@ void UI_Button_Handler(void *pvParameters)
  u16 stringsAddr[4];//Relative individual string addr in buttonString
  u16 lengths[4];//Lengths of every seperate string
  char buttons[4][32];//Cache contains the button strings
+ bool firstIn=true;
  stringsAddr[0] = 0;//Set addr[0] to the first byte of buttonString
 	
 	/*Find the addrs for every string in buttonString*/
@@ -101,6 +102,18 @@ void UI_Button_Handler(void *pvParameters)
 		}
 		ResetUpdateOLEDJustNow();
 		xSemaphoreGive(OLEDRelatedMutex);
+		if(firstIn)
+		{
+		 for(;;) 		
+        {
+				 vTaskDelay(10/portTICK_RATE_MS);
+				 if(MIDDLE_KEY==KEY_OFF)
+				 {
+				  firstIn=false;
+					break;
+				 }
+				}			
+		}
 		for(;;)
 		{
 		 if (MIDDLE_KEY == KEY_ON)

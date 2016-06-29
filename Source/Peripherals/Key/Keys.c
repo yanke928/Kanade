@@ -83,7 +83,7 @@ void Keys_GPIO_Init(void)
 
 void KeyEvents(void)
 {
-	if ((MidTime > PRESSTIME) && (MIDDLE_KEY == KEY_OFF) && (MidKeyLongPressed == false))
+	if((MidTime > PRESSTIME) && (MidKeyLongPressed == false))
 	{
 		if (MidKeyPressed == true)
 		{
@@ -94,7 +94,10 @@ void KeyEvents(void)
 			MidTime = 0;
 			MidKeyPressed = false;
 			return;
-		}
+		}	 
+	}
+	if ((MidTime > PRESSTIME) && (MIDDLE_KEY == KEY_OFF) && (MidKeyLongPressed == false))
+	{
 		MidKeyPressed = true;
 	}
 	if ((MidTime > PRESSTIME) && (MidKeyPressed == false) && (MidTime > LONGPRESSTIME))
