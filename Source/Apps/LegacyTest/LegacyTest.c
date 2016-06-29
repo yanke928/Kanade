@@ -177,8 +177,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	xSemaphoreGive(OLEDRelatedMutex);
 	
 	/*Init logo*/
-	Logo_Init();
-	InitStatusHandler_Init();
+  LogoWithInitStatus_Init();
 	
 	/*Show waiting string*/
 	xQueueSend(InitStatusMsg, PleaseWait_Str[CurrentSettings->Language], 0);
@@ -215,8 +214,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	}
 	
 	/*Delete logo and initStatus tasks*/
-	Logo_DeInit();
-	InitStatus_DeInit();
+  LogoWithInitStatus_DeInit();
 	
 	UpdateOLEDJustNow=false;
 	xSemaphoreGive(OLEDRelatedMutex);

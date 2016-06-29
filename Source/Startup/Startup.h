@@ -12,13 +12,9 @@ void SystemStart(void);
 
 u8 GetStringLength(const char string[]);
 
-void Logo_Init(void);
+void LogoWithInitStatus_Init(void);
 
-void InitStatusHandler_Init(void);
-
-void Logo_DeInit(void);
-
-void InitStatus_DeInit(void);
+void LogoWithInitStatus_DeInit(void);
 
 #endif
 

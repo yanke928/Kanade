@@ -9,12 +9,12 @@
 
 typedef struct
 {
-	char *AskString;
+	const char *AskString;
+	const char *UnitString;
   u16  Min;
   u16  Max;
   u16  Step;
 	u16  DefaultValue;
-	char *UnitString;
 	u8   Pos_y;
 	u8   FastSpeed;
 }UI_Adjust_Param_Struct;

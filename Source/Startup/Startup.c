@@ -241,6 +241,7 @@ void Logo_DeInit()
   xSemaphoreGive(OLEDRelatedMutex);
  }
  LogoAnimateHandle=NULL;
+ vQueueUnregisterQueue(InitAnimatePosHandle);
 }
 
 /**
@@ -259,6 +260,29 @@ void InitStatus_DeInit()
   xSemaphoreGive(OLEDRelatedMutex);
  }
  InitStatusHandle=NULL;
+ vQueueUnregisterQueue(InitStatusMsg);
+}
+
+/**
+  * @brief  Init logo and InitStatusHandler
+
+	  @retval None
+  */
+void LogoWithInitStatus_Init()
+{
+ Logo_Init();
+ InitStatusHandler_Init();
+}
+
+/**
+  * @brief  DeInit logo and InitStatusHandler
+
+	  @retval None
+  */
+void LogoWithInitStatus_DeInit()
+{
+ Logo_DeInit();
+ InitStatus_DeInit();
 }
 
 /**
@@ -281,8 +305,7 @@ void SystemStartup(void *pvParameters)
 	
 	RTC_Init();
 	
-	Logo_Init();
-	InitStatusHandler_Init();
+	LogoWithInitStatus_Init();
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);
 	
 	vTaskDelay(100 / portTICK_RATE_MS);
@@ -301,8 +324,7 @@ void SystemStartup(void *pvParameters)
 	Set_USBClock();   	  	
 	
 	LED_Animate_DeInit();
-	Logo_DeInit();
-	InitStatus_DeInit();
+	LogoWithInitStatus_DeInit();
 	
 	UpdateOLEDJustNow=false;
 	OLED_Clear();

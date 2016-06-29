@@ -173,6 +173,12 @@ void SetLanguage()
  ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language],1000,true);	
 }
 
+/**
+  * @brief  Check settings
+
+  * @param  None
+
+  */
 bool CheckSettings()
 {
  if(CurrentSettings->Language>LanguageNum-1) return false;
@@ -205,7 +211,7 @@ void Settings_Init()
   * @param  None
 
   */
-u16 GetTimeParam(char *askString,char *unitString,u16 min,u16 max,u16 defaultValue)
+u16 GetTimeParam(const char *askString,const char *unitString,u16 min,u16 max,u16 defaultValue)
 {
  u16 tmp; 
  UI_Adjust_Param_Struct timeAdjustParams;
@@ -232,34 +238,34 @@ u16 GetTimeParam(char *askString,char *unitString,u16 min,u16 max,u16 defaultVal
 void TimeSettings()
 {
  struct Data_Time newTime;
- newTime.w_year=GetTimeParam((char*)SetYear_Str[CurrentSettings->Language],
-	 (char*)SetYearUnit_Str[CurrentSettings->Language],
+ newTime.w_year=GetTimeParam(SetYear_Str[CurrentSettings->Language],
+	 SetYearUnit_Str[CurrentSettings->Language],
 	 2016,2099,RTCTime.w_year);
- newTime.w_month=GetTimeParam((char*)SetMonth_Str[CurrentSettings->Language],
-	 (char*)SetMonthUnit_Str[CurrentSettings->Language],
+ newTime.w_month=GetTimeParam(SetMonth_Str[CurrentSettings->Language],
+	 SetMonthUnit_Str[CurrentSettings->Language],
 	 1,12,RTCTime.w_month);
  if(newTime.w_year%4==0 && newTime.w_month==2)
  {
-  newTime.w_date=GetTimeParam((char*)SetDay_Str[CurrentSettings->Language],
-	 (char*)SetDayUnit_Str[CurrentSettings->Language],
+  newTime.w_date=GetTimeParam(SetDay_Str[CurrentSettings->Language],
+	 SetDayUnit_Str[CurrentSettings->Language],
 		 1,29,RTCTime.w_date>29?29:RTCTime.w_date);
  }
  else	 
- newTime.w_date=GetTimeParam((char*)SetDay_Str[CurrentSettings->Language],
-	 (char*)SetDayUnit_Str[CurrentSettings->Language],
+ newTime.w_date=GetTimeParam(SetDay_Str[CurrentSettings->Language],
+	 SetDayUnit_Str[CurrentSettings->Language],
 	 1,mon_table[newTime.w_month-1],RTCTime.w_date>mon_table[newTime.w_month-1]?
 	 mon_table[newTime.w_month-1]:RTCTime.w_date);
- newTime.hour=GetTimeParam((char*)SetHour_Str[CurrentSettings->Language],
-	 (char*)SetHourUnit_Str[CurrentSettings->Language],
+ newTime.hour=GetTimeParam(SetHour_Str[CurrentSettings->Language],
+	 SetHourUnit_Str[CurrentSettings->Language],
 	 0,23,RTCTime.hour);
- newTime.min=GetTimeParam((char*)SetMin_Str[CurrentSettings->Language],
-	 (char*)SetMinUnit_Str[CurrentSettings->Language],
+ newTime.min=GetTimeParam(SetMin_Str[CurrentSettings->Language],
+	 SetMinUnit_Str[CurrentSettings->Language],
 	 0,59,RTCTime.min);
- newTime.sec=GetTimeParam((char*)SetSec_Str[CurrentSettings->Language],
-	 (char*)SetSecUnit_Str[CurrentSettings->Language],
+ newTime.sec=GetTimeParam(SetSec_Str[CurrentSettings->Language],
+	 SetSecUnit_Str[CurrentSettings->Language],
 	 0,59,RTCTime.sec);
  Time_Update(newTime.w_year,newTime.w_month,newTime.w_date,
  newTime.hour,newTime.min,newTime.sec);
- ShowSmallDialogue((char *)TimeSetting_Str[CurrentSettings->Language],1000,true);
+ ShowSmallDialogue(TimeSetting_Str[CurrentSettings->Language],1000,true);
 }
 
