@@ -21,6 +21,10 @@ typedef struct
 
 extern xQueueHandle UI_AdjustMsg; 
 
+//see .c for details
 void UI_Adjust_Init(UI_Adjust_Param_Struct * adjustParams);
+
+//see .c for details
+void UI_Adjust_DeInit(void);
 
 #endif /* __UI_ADJUST_H */

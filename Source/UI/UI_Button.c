@@ -22,6 +22,8 @@
 
 xQueueHandle UI_ButtonMsg; 
 
+xTaskHandle UI_ButtonHandle=NULL;
+
 /**
   * @brief  Show buttons on screen
 
@@ -133,7 +135,7 @@ void UI_Button_Handler(void *pvParameters)
 			 ResetUpdateOLEDJustNow();
 		   xSemaphoreGive(OLEDRelatedMutex);
 			 xQueueSend(UI_ButtonMsg,&selection, 100/portTICK_RATE_MS);
-			 vTaskDelete(NULL);
+			 for(;;) vTaskDelay(portMAX_DELAY);
 		 }
 		 else
 		 {
@@ -162,10 +164,18 @@ void UI_Button_Handler(void *pvParameters)
   */
 void UI_Button_Init(UI_Button_Param_Struct * buttonParams)
 {
-	portBASE_TYPE success;
 	UI_ButtonMsg=xQueueCreate(1, sizeof(u8));
-	success=xTaskCreate(UI_Button_Handler, "UI_Button Handler",
-	256, buttonParams, UI_BUTTON_HANDLER_PRIORITY, NULL);
-	if(success!=pdPASS) ApplicationNewFailed("UI_Button_Handler");
+	CreateTaskWithExceptionControl(UI_Button_Handler, "UI_Button Handler",
+	 256, buttonParams, UI_BUTTON_HANDLER_PRIORITY, &UI_ButtonHandle);
 }		
 
+/**
+  * @brief DeInit button UI
+  */
+void UI_Button_DeInit()
+{
+ if(UI_ButtonHandle!=NULL)
+	 vTaskDelete(UI_ButtonHandle);
+ vQueueDelete(UI_ButtonMsg);
+ UI_ButtonHandle=NULL;
+}

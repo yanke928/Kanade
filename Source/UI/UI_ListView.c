@@ -25,6 +25,8 @@
 
 xQueueHandle UI_ListViewMsg;
 
+xTaskHandle UI_ListView_Handle=NULL;
+
 void UI_ListView_Handler(void *pvParameters)
 {
 	ListView_Param_Struct* listView_Params = pvParameters;
@@ -189,12 +191,12 @@ void UI_ListView_Handler(void *pvParameters)
 		{
 			currentPos = 32767;
 			xQueueSend(UI_ListViewMsg, &currentPos, portMAX_DELAY);
-			vTaskDelete(NULL);
+			for(;;) vTaskDelay(portMAX_DELAY);
 		}
 		else if (key_Message.KeyEvent == MidClick)
 		{
 			xQueueSend(UI_ListViewMsg, &currentPos, portMAX_DELAY);
-			vTaskDelete(NULL);
+			for(;;) vTaskDelay(portMAX_DELAY);
 		}
 	}
 }
@@ -207,11 +209,22 @@ void UI_ListView_Handler(void *pvParameters)
   */
 void UI_ListView_Init(ListView_Param_Struct * listViewParams)
 {
-	portBASE_TYPE success;
 	UI_ListViewMsg = xQueueCreate(1, sizeof(int));
-	success=xTaskCreate(UI_ListView_Handler, "UI_ListView Handler",
-		256, listViewParams, UI_LISTVIEW_HANDLER_PRIORITY, NULL);
-	if(success!=pdPASS) ApplicationNewFailed("UI_ListView_Handler");
+	CreateTaskWithExceptionControl(UI_ListView_Handler, "UI_ListView Handler",
+		256, listViewParams, UI_LISTVIEW_HANDLER_PRIORITY, &UI_ListView_Handle);
 }
 
+/**
+  * @brief  DeInit ListView
+  */
+void UI_ListView_DeInit()
+{
+ if(UI_ListView_Handle!=NULL)
+	 vTaskDelete(UI_ListView_Handle);
+ vQueueDelete(UI_ListViewMsg);
+ UI_ListView_Handle=NULL;
+}
+
+	
+	
 

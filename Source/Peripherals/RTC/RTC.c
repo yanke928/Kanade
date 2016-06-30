@@ -369,5 +369,5 @@ void RTC_Init(void)
 {
  RTC_Hardware_Init();
  xTaskCreate(RTCUpdateHandler,"RTC Update Handler",
-	64,NULL,RTC_UPDATE_PRIORITY,NULL);
+	128,NULL,RTC_UPDATE_PRIORITY,NULL);
 }

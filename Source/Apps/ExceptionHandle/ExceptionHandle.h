@@ -3,7 +3,7 @@
 
 #include "stm32f10x.h"
 
-void ApplicationNewFailed(char * appName);
+void ApplicationNewFailed(const char * appName);
 
 void EBD_Exception_Handler_Init(void);
 

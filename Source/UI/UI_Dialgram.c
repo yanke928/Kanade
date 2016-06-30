@@ -46,6 +46,8 @@ enum { LeftHalf = 1, RightHalf = 0 };
 
 xQueueHandle UI_DialogueMsg;
 
+xTaskHandle UI_DialogueHandle;
+
 /**
   * @brief  Draw a single curve
 
@@ -491,8 +493,7 @@ void Dialgram_Broswer(void *pvParameters)
 Done:
 	xSemaphoreGive(OLEDRelatedMutex);
 	xQueueSend(UI_DialogueMsg, &i, portMAX_DELAY);
-	vTaskDelay(100);
-	vTaskDelete(NULL);
+	for(;;) vTaskDelay(portMAX_DELAY);
 }
 
 /**
@@ -503,9 +504,19 @@ Done:
   */
 void UI_Dialgram_Init(Dialgram_Param_Struct * dialgramParams)
 {
-	portBASE_TYPE success;
 	UI_DialogueMsg = xQueueCreate(1, sizeof(int));
-	success=xTaskCreate(Dialgram_Broswer, "UI_Dialgram_Broswer",
-		384, dialgramParams, UI_DIALGRAM_BROSWER_PRIORITY, NULL);
-	if(success!=pdPASS) ApplicationNewFailed("UI_Dialgram_Browswer");
+	CreateTaskWithExceptionControl(Dialgram_Broswer, "UI_Dialgram_Broswer",
+		256, dialgramParams, UI_DIALGRAM_BROSWER_PRIORITY, &UI_DialogueHandle);
+}
+
+/**
+  * @brief  DeInit UI_Dialgram
+
+  */
+void UI_Dialgram_DeInit()
+{
+ if(UI_DialogueHandle!=NULL)
+	 vTaskDelete(UI_DialogueHandle);
+ vQueueDelete(UI_DialogueMsg);
+ UI_DialogueHandle=NULL;
 }

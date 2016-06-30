@@ -209,7 +209,7 @@ void Logo_Init()
 {
 	if(LogoAnimateHandle==NULL)
 	xTaskCreate(LogoHandler, "Logo handler",
-		56, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &LogoAnimateHandle);
+		128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &LogoAnimateHandle);
 	InitAnimatePosHandle = xQueueCreate(1, sizeof(u8));
 }
 
@@ -223,7 +223,7 @@ void InitStatusHandler_Init(void)
 {
 	if(InitStatusHandle==NULL)
 	xTaskCreate(InitStatusUpdateHandler, "Init Status Handler",
-		64, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &InitStatusHandle);
+		128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &InitStatusHandle);
 	InitStatusMsg = xQueueCreate(1, 30);
 }
 
@@ -243,7 +243,7 @@ void Logo_DeInit()
   xSemaphoreGive(OLEDRelatedMutex);
  }
  LogoAnimateHandle=NULL;
- vQueueUnregisterQueue(InitAnimatePosHandle);
+ vQueueDelete(InitAnimatePosHandle);
 }
 
 /**
@@ -262,7 +262,7 @@ void InitStatus_DeInit()
   xSemaphoreGive(OLEDRelatedMutex);
  }
  InitStatusHandle=NULL;
- vQueueUnregisterQueue(InitStatusMsg);
+ vQueueDelete(InitStatusMsg);
 }
 
 /**

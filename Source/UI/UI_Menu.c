@@ -1,4 +1,4 @@
-//File Name   £ºUI_Menu.c
+//File Name     UI_Menu.c
 //Description : UI Menu
 
 #include <string.h>
@@ -17,7 +17,7 @@
 
 xQueueHandle UI_MenuMsg; 
 
-
+xTaskHandle UI_MenuHandle=NULL;
 /**
   * @brief  Show menu on screen
 
@@ -142,13 +142,13 @@ void UI_Menu_Handler(void *pvParameters)
 		{
 		 selection=255;
 		 xQueueSend(UI_MenuMsg,&selection, 100/portTICK_RATE_MS);
-		 vTaskDelete(NULL);
+		 for(;;) vTaskDelay(portMAX_DELAY);
 		}
 		else if(keyMessage.KeyEvent == MidClick)
 		{
 		 selection=currentPos + currentRelativePos;
 		 xQueueSend(UI_MenuMsg,&selection, 100/portTICK_RATE_MS);
-		 vTaskDelete(NULL);		 
+		  for(;;) vTaskDelay(portMAX_DELAY);
 		}
 	}
 }
@@ -162,10 +162,18 @@ void UI_Menu_Handler(void *pvParameters)
   */
 void UI_Menu_Init(UI_Menu_Param_Struct * menuParams)
 {
-	portBASE_TYPE success;
 	UI_MenuMsg=xQueueCreate(1, sizeof(u8));
-	success=xTaskCreate(UI_Menu_Handler, "UI_Menu Handler",
-	256, menuParams, UI_MENU_HANDLER_PRIORITY, NULL);
-	if(success!=pdPASS) ApplicationNewFailed("UI_Menu_Handler");
+	CreateTaskWithExceptionControl(UI_Menu_Handler, "UI_Menu Handler",
+	256, menuParams, UI_MENU_HANDLER_PRIORITY, &UI_MenuHandle);
 }		
 
+/**
+  * @brief  DeInit UI_Menu
+  */
+void UI_Menu_DeInit()
+{
+ if(UI_MenuHandle!=NULL)
+	 vTaskDelete(UI_MenuHandle);
+ vQueueDelete(UI_MenuMsg);
+ UI_MenuHandle=NULL;
+}

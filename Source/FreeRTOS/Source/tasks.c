@@ -82,6 +82,8 @@ task.h is included from an application file. */
 #include "timers.h"
 #include "StackMacros.h"
 
+#include "ExceptionHandle.h"
+
 /* Lint e961 and e750 are suppressed as a MISRA exception justified because the
 MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined for the
 header files above, but not in this file, in order to generate the correct
@@ -96,6 +98,7 @@ functions but without including stdio.h here. */
 	uxTaskGetSystemState() function.  Note the formatting functions are provided
 	for convenience only, and are NOT considered part of the kernel. */
 	#include <stdio.h>
+
 #endif /* configUSE_STATS_FORMATTING_FUNCTIONS == 1 ) */
 
 #if( configUSE_PREEMPTION == 0 )
@@ -4798,6 +4801,27 @@ const TickType_t xConstTickCount = xTickCount;
 		( void ) xCanBlockIndefinitely;
 	}
 	#endif /* INCLUDE_vTaskSuspend */
+}
+
+void CreateTaskWithExceptionControl(
+	TaskFunction_t pxTaskCode,
+	const char * const pcName,
+	const uint16_t usStackDepth,
+	void * const pvParameters,
+	UBaseType_t uxPriority,
+	TaskHandle_t * const pxCreatedTask
+	)
+{
+	u8 retryCnt=20;
+	portBASE_TYPE success;
+	while(retryCnt--)
+	{
+	 success=xTaskCreate(pxTaskCode, pcName,
+	 usStackDepth, pvParameters, uxPriority, pxCreatedTask);
+	 if(success==pdPASS) return;
+   vTaskDelay(20/portTICK_RATE_MS);		
+	}
+	if(success!=pdPASS) ApplicationNewFailed(pcName);
 }
 
 

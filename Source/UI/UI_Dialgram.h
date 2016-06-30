@@ -25,4 +25,6 @@ extern xQueueHandle UI_DialogueMsg;
 
 void UI_Dialgram_Init(Dialgram_Param_Struct * dialgramParams);
 
+void UI_Dialgram_DeInit(void);
+
 #endif /* __UI_DIALGRAM_H */

@@ -2258,6 +2258,15 @@ eSleepModeStatus eTaskConfirmSleepModeStatus( void ) PRIVILEGED_FUNCTION;
  */
 void *pvTaskIncrementMutexHeldCount( void ) PRIVILEGED_FUNCTION;
 
+void CreateTaskWithExceptionControl(
+	TaskFunction_t pxTaskCode,
+	const char * const pcName,
+	const uint16_t usStackDepth,
+	void * const pvParameters,
+	UBaseType_t uxPriority,
+	TaskHandle_t * const pxCreatedTask
+	);
+
 #ifdef __cplusplus
 }
 #endif

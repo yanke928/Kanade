@@ -59,8 +59,12 @@ void Settings()
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
  OLED_Clear();
  xSemaphoreGive(OLEDRelatedMutex);
+ 
  UI_Menu_Init(&menuParams);
+ 
  xQueueReceive(UI_MenuMsg, & selection, portMAX_DELAY );
+ UI_Menu_DeInit();
+ 
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
  OLED_Clear();
  xSemaphoreGive(OLEDRelatedMutex);
@@ -157,8 +161,12 @@ void SetLanguage()
  menuParams.FastSpeed=5;
  memcpy(&SettingsBkp,CurrentSettings,sizeof(Settings_Struct));
  ShowSmallDialogue("Language",1000,true);
+	
  UI_Menu_Init(&menuParams);
+	
  xQueueReceive(UI_MenuMsg, & selection, portMAX_DELAY );
+ UI_Menu_DeInit();
+	
  xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
  OLED_Clear();
  xSemaphoreGive(OLEDRelatedMutex); 
@@ -225,6 +233,8 @@ u16 GetTimeParam(const char *askString,const char *unitString,u16 min,u16 max,u1
  timeAdjustParams.FastSpeed=20;
  UI_Adjust_Init(&timeAdjustParams);
  xQueueReceive(UI_AdjustMsg, & tmp, portMAX_DELAY );
+ UI_Adjust_DeInit();
+ vTaskDelay(20/portTICK_RATE_MS);
  OLED_Clear();
  return tmp;
 }

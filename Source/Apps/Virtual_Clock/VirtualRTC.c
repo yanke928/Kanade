@@ -85,5 +85,5 @@ void VirtualRTC_Init(void)
 	if (VirtualRTCHandle != NULL)
 		vTaskDelete(VirtualRTCHandle);
 	xTaskCreate(VirtualRTC_Handler, "VirtualClock",
-		64, NULL, VIRTUAL_CLOCK_UPDATE_PRIORITY, &VirtualRTCHandle);
+		128, NULL, VIRTUAL_CLOCK_UPDATE_PRIORITY, &VirtualRTCHandle);
 }

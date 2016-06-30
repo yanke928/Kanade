@@ -93,5 +93,6 @@ void MassStorage_App()
 	xSemaphoreGive(OLEDRelatedMutex);
 	LED_Animate_DeInit();
 	PowerOff();
+	UI_Button_DeInit();
 }
 

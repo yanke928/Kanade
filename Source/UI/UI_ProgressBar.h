@@ -22,4 +22,6 @@ extern xQueueHandle UI_ProgressBarMsg;
 
 void UI_ProgressBar_Init(ProgressBar_Param_Struct * progressBarParams);
 
+void UI_ProgressBar_DeInit(void);
+
 #endif /* __UI_PROGRESSBAR_H */

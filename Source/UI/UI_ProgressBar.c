@@ -18,6 +18,8 @@
 
 xQueueHandle UI_ProgressBarMsg;
 
+xTaskHandle UI_ProgressBarHandle=NULL;
+
 void UI_ProgressBar_Handler(void *pvParameters)
 {
 	ProgressBar_Param_Struct* progressBar_Params = (ProgressBar_Param_Struct*)pvParameters;
@@ -31,7 +33,7 @@ void UI_ProgressBar_Handler(void *pvParameters)
 		{
 			if (currentValue < 0)
 			{
-				vTaskDelete(NULL);
+				for(;;) vTaskDelay(portMAX_DELAY);
 			}
 			currentPos = (progressBar_Params->Pos1.x - 1) + progressBarLength*((currentValue - progressBar_Params->MinValue) /
 				(progressBar_Params->MaxValue - progressBar_Params->MinValue)) + 1;
@@ -51,9 +53,15 @@ void UI_ProgressBar_Handler(void *pvParameters)
 
 void UI_ProgressBar_Init(ProgressBar_Param_Struct * progressBarParams)
 {
-	portBASE_TYPE success;
 	UI_ProgressBarMsg = xQueueCreate(1, sizeof(float));
-	success=xTaskCreate(UI_ProgressBar_Handler, "UI_ProgressBar Handler",
-		128, progressBarParams, UI_PROGRESSBAR_HANDLER_PRIORITY, NULL);
-	if(success!=pdPASS) ApplicationNewFailed("UI_ProgressBar_Handler");
+	CreateTaskWithExceptionControl(UI_ProgressBar_Handler, "UI_ProgressBar Handler",
+		128, progressBarParams, UI_PROGRESSBAR_HANDLER_PRIORITY, &UI_ProgressBarHandle);
+}
+
+void UI_ProgressBar_DeInit()
+{
+ if(UI_ProgressBarHandle!=NULL)
+	 vTaskDelete(UI_ProgressBarHandle);
+ vQueueDelete(UI_ProgressBarMsg);
+ UI_ProgressBarHandle=NULL;
 }

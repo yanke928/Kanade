@@ -211,6 +211,6 @@ void DisplayRecordData(char tempString[])
 void USBMeter_Init(u8 status)
 {
 	xTaskCreate(USBMeter, "USBMeter",
-		448, &status, USB_METER_PRIORITY, NULL);
+		512, &status, USB_METER_PRIORITY, NULL);
 	vTaskDelay(100 / portTICK_RATE_MS);
 }

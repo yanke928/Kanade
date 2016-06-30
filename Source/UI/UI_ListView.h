@@ -28,4 +28,6 @@ extern xQueueHandle UI_ListViewMsg;
 
 void UI_ListView_Init(ListView_Param_Struct * listViewParams);
 
+void UI_ListView_DeInit(void);
+
 #endif /* __UI_LISTVIEW_H */

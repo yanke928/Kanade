@@ -71,6 +71,7 @@ void QC2Trigger_Init(void)
 			vTaskDelay(50 / portTICK_RATE_MS);
 			ShowCurrentVoltCurt();
 		}
+		UI_Button_DeInit();
 		button_params.DefaultValue = i;
 		switch (i)
 		{

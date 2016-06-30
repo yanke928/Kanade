@@ -20,6 +20,8 @@
 
 xQueueHandle UI_AdjustMsg;
 
+xTaskHandle UI_Adjust_Handle=NULL;
+
 void ReFormatNumString(char string[], u8 targetCharNum)
 {
 	u8 i, p;
@@ -141,7 +143,7 @@ void UI_Adjust_Handler(void *pvParameters)
 				OLED_ShowIcon(positions[2].x, adjustParams->Pos_y, 0x00, DRAW);
 			}
 			xSemaphoreGive(OLEDRelatedMutex);
-			if (xQueueReceive(Key_Message, &keyMsg, 10) == pdPASS)
+			if (xQueueReceive(Key_Message, &keyMsg, 20) == pdPASS)
 			{
 				if (keyMsg.KeyEvent == LeftClick || keyMsg.AdvancedKeyEvent == LeftContinous)
 				{
@@ -157,7 +159,7 @@ void UI_Adjust_Handler(void *pvParameters)
 				{
 					ResetUpdateOLEDJustNow();
 					xQueueSend(UI_AdjustMsg, &currentValue, portMAX_DELAY);
-					vTaskDelete(NULL);
+					for(;;) vTaskDelay(portMAX_DELAY);
 				}
 				break;
 			}
@@ -173,10 +175,22 @@ void UI_Adjust_Handler(void *pvParameters)
   */
 void UI_Adjust_Init(UI_Adjust_Param_Struct * adjustParams)
 {
-	portBASE_TYPE success;
 	UI_AdjustMsg = xQueueCreate(1, sizeof(u16));
-	success=xTaskCreate(UI_Adjust_Handler, "UI_Adjust Handler",
-		256, adjustParams, UI_ADJUST_HANDLER_PRIORITY, NULL);
-	if(success!=pdPASS) ApplicationNewFailed("UI_Adjust_Handler");
+	CreateTaskWithExceptionControl(UI_Adjust_Handler, "UI_Adjust Handler",
+		256, adjustParams, UI_ADJUST_HANDLER_PRIORITY, &UI_Adjust_Handle);
+}
+
+/**
+  * @brief  DeInit UI_Adjust
+
+  * @param  Adjust param struct pointer
+
+  */
+void UI_Adjust_DeInit(void)
+{
+	if(UI_Adjust_Handle!=NULL)
+		vTaskDelete(UI_Adjust_Handle);
+	vQueueDelete(UI_AdjustMsg);
+  UI_Adjust_Handle=NULL;
 }
 

@@ -37,7 +37,7 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask,
  while(1);
 }
 
-void ApplicationNewFailed(char * appName)
+void ApplicationNewFailed(const char * appName)
 {
  char tempString[60];
  xSemaphoreGive(OLEDRelatedMutex);

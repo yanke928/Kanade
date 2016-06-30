@@ -19,4 +19,7 @@ extern xQueueHandle UI_MenuMsg;
 //see .c for details
 void UI_Menu_Init(UI_Menu_Param_Struct * menuParams);
 
+//see .c for details
+void UI_Menu_DeInit(void);
+
 #endif /* __UI_MENU_H */

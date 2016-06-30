@@ -17,6 +17,7 @@ bool CPU_Stat_Running = false;
 
 void OS_TaskStat(void * pvParameters)
 {
+	char tempString[10];
 	portTickType xLastWakeTime;
 	OSIdleCtrMax /= 100;
 	if (OSIdleCtrMax == 0)
@@ -30,7 +31,11 @@ void OS_TaskStat(void * pvParameters)
 		OSIdleCtr = 0;                      /* Reset the idle counter for the next second         */
 		OSCPUUsage = (100 - OSIdleCtrRun / (float)OSIdleCtrMax);
 		OSCPUUsage = ABS(OSCPUUsage);
-		vTaskDelayUntil(&xLastWakeTime, 100 / portTICK_RATE_MS);
+		sprintf(tempString,"%03.0f%%",OSCPUUsage);
+	  xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY); 
+		OLED_ShowAnyString(0,0,tempString,NotOnSelect,12);
+	  xSemaphoreGive(OLEDRelatedMutex); 
+		vTaskDelayUntil(&xLastWakeTime, 100 / portTICK_RATE_MS);		
 	}
 }
 

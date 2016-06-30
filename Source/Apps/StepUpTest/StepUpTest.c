@@ -135,6 +135,7 @@ void StepUpTest_UI_Handler(void *pvParameters)
 		{
 			progressTime=-100;
 			xQueueSend(UI_ProgressBarMsg, &progressTime, portMAX_DELAY);
+	    UI_ProgressBar_DeInit();
 			xQueueSend(StepUpTest_UI_Test_DoneMsg, &currentState, portMAX_DELAY);
 			vTaskDelete(NULL);
 		}
@@ -168,7 +169,7 @@ void StepUpTestOnTimeUI(u16 timeNow)
 void StepUpTest_Init(StepUpTestParamsStruct* test_Params)
 {
 	StepUpTest_UI_UpdateMsg = xQueueCreate(2, sizeof(StepUpTestStateStruct));
-	xTaskCreate(StepUpTest_Handler, "Stepup test Handler",
+	CreateTaskWithExceptionControl(StepUpTest_Handler, "Stepup test Handler",
 		256, test_Params, STEPUPTEST_HANDLER_PRIORITY, NULL);
 }
 
@@ -182,7 +183,7 @@ void StepUpTest_Init(StepUpTestParamsStruct* test_Params)
 void StepUpTest_UI_Init(u16* testTime)
 {
 	StepUpTest_UI_Test_DoneMsg = xQueueCreate(1, sizeof(StepUpTestStateStruct));
-	xTaskCreate(StepUpTest_UI_Handler, "Stepup test UI Handler",
+	CreateTaskWithExceptionControl(StepUpTest_UI_Handler, "Stepup test UI Handler",
 		160, testTime, STEPUPTEST_HANDLER_PRIORITY, NULL);
 }
 
@@ -241,6 +242,7 @@ u16 GetTestParam(const char askString[], u16 min, u16 max, u16 defaultValue, u16
 	adjust_params.Pos_y = 33;
 	UI_Adjust_Init(&adjust_params);
 	xQueueReceive(UI_AdjustMsg, &t, portMAX_DELAY);
+	UI_Adjust_DeInit();
 	return t;
 }
 
@@ -276,6 +278,7 @@ bool ShowStepUpTestResultInListView(u16 time)
 	listView_Params.ListLength = time / 2;
 	UI_ListView_Init(&listView_Params);
 	xQueueReceive(UI_ListViewMsg, &i, portMAX_DELAY);
+	UI_ListView_DeInit();
 	if (i == 32767) return true;
 	else return false;
 }
@@ -360,6 +363,7 @@ bool ShowStepUpTestResultInDialgram(u16 time)
 	
 	/*Keep blocked until exit*/
 	xQueueReceive(UI_DialogueMsg, &i, portMAX_DELAY);
+	UI_Dialgram_DeInit();
 	
 	if (i) return true;
 	else return false;
@@ -372,14 +376,12 @@ void ShowStepUpTestResult(u16 time)
 	{
 		ListView:
 		exit = ShowStepUpTestResultInListView(time - 1);
-		vTaskDelay(20/portTICK_RATE_MS);
 		if (exit == true) 
 			if(GetConfirmation(StepUpTestExitBroswer_Str[CurrentSettings->Language],"")) return;
 		  else goto ListView;
 		ShowSmallDialogue(StepUpTestDialgram_Str[CurrentSettings->Language], 800, true);
 		Dialgram:
 		exit = ShowStepUpTestResultInDialgram(time - 1);
-		vTaskDelay(20/portTICK_RATE_MS);
 		if (exit == true) 
 			if(GetConfirmation(StepUpTestExitBroswer_Str[CurrentSettings->Language],"")) return;
 		  else goto Dialgram;
@@ -418,12 +420,16 @@ void RunAStepUpTest()
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
 	
-	/*Init StepUpTest*/
+	/*Init StepUpTest Tasks*/
 	StepUpTest_Init(&test_Params);
 	StepUpTest_UI_Init(&testTime);
 	
 	/*Keep blocked until test done*/
 	xQueueReceive(StepUpTest_UI_Test_DoneMsg, &testInfo, portMAX_DELAY);
+	
+	/*DeInit StepUpTest queues*/
+	vQueueDelete(StepUpTest_UI_UpdateMsg);
+	vQueueDelete(StepUpTest_UI_Test_DoneMsg);
 	
 	/*Clear the screen*/
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
