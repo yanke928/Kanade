@@ -45,7 +45,7 @@ void ShowSmallDialogue(const char string[], u16 time, bool occupyThread)
 {
 	u8 startAddr, endAddr;
 	u8 stringLength;
-	stringLength = GetStringLength(string);
+	stringLength = GetStringGraphicalLength(string);
 	startAddr = 63 - stringLength * 4;
 	endAddr = startAddr + stringLength * 8;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);

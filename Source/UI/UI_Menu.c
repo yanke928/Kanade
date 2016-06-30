@@ -11,6 +11,8 @@
 
 #include "UI_Menu.h" 
 
+#include "ExceptionHandle.h" 
+
 #define UI_MENU_HANDLER_PRIORITY tskIDLE_PRIORITY+2
 
 xQueueHandle UI_MenuMsg; 
@@ -74,7 +76,7 @@ void UI_Menu_Handler(void *pvParameters)
 		{
 			for (i = 0; i < displayedItemNum; i++)
 			{
-				p = GetStringLength(itemStrings[currentPos + i]);
+				p = GetStringGraphicalLength(itemStrings[currentPos + i]);
 				q = GetCentralPosition(0, 127, p);
 				OLED_FillRect(2, i * 15 + 2, 125, i * 15 + 14, 0);
 				OLED_ShowAnyString(q, i * 15 + 2, (char *)itemStrings[currentPos + i], NotOnSelect, 12);
@@ -160,8 +162,10 @@ void UI_Menu_Handler(void *pvParameters)
   */
 void UI_Menu_Init(UI_Menu_Param_Struct * menuParams)
 {
+	portBASE_TYPE success;
 	UI_MenuMsg=xQueueCreate(1, sizeof(u8));
-	xTaskCreate(UI_Menu_Handler, "UI_Menu Handler",
+	success=xTaskCreate(UI_Menu_Handler, "UI_Menu Handler",
 	256, menuParams, UI_MENU_HANDLER_PRIORITY, NULL);
+	if(success!=pdPASS) ApplicationNewFailed("UI_Menu");
 }		
 

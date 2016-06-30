@@ -238,7 +238,7 @@ void OLED_InvertPoint(u8 x, u8 y)
 #else
 	LCD_Set_Pos(x, y);
 #endif
-	if (x > 127 || y > 64)return;//Out of range
+	if (x > 127 || y > 63)return;//Out of range
 	pos = 7 - y / 8;
 	bx = y % 8;
 	temp = 1 << (7 - bx);

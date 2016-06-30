@@ -19,6 +19,8 @@
 #include "UI_ListView.h"
 #include "UI_Utilities.h"
 
+#include "ExceptionHandle.h"
+
 #define UI_LISTVIEW_HANDLER_PRIORITY tskIDLE_PRIORITY+2
 
 xQueueHandle UI_ListViewMsg;
@@ -51,7 +53,7 @@ void UI_ListView_Handler(void *pvParameters)
 	/*Get the lengths of the itemNames*/
 	for (i = 0; i < listView_Params->ItemNum; i++)
 	{
-		itemStringLengths[i] = GetStringLength(listView_Params->ItemNames[i]);
+		itemStringLengths[i] = GetStringGraphicalLength(listView_Params->ItemNames[i]);
 	}
 	pos[0] = listView_Params->ItemPositions[0];
 	/*Make the positions of the itemStrings centural between two grids*/
@@ -106,7 +108,7 @@ void UI_ListView_Handler(void *pvParameters)
 			for (m = 0; m < displayLineNumInSinglePage; m++)
 			{
 				sprintf(tempString, listView_Params->sprintfCommandStrings[i], dataPointers[i + p][currentPos + m]);
-				lengthTemp = GetStringLength(tempString);
+				lengthTemp = GetStringGraphicalLength(tempString);
 				posTemp = GetCentralPosition(listView_Params->ItemPositions[i + p],
 					listView_Params->ItemPositions[i + p + 1], lengthTemp);
 				OLED_ShowAnyString(posTemp - 1, 15 + 10 * m, tempString, NotOnSelect, 8);
@@ -127,7 +129,7 @@ void UI_ListView_Handler(void *pvParameters)
 			for (i = 0; i < displayLineNumInSinglePage; i++)
 			{
 				sprintf(tempString, "%d", listView_Params->Item1AutoNumStart + (currentPos + i)*listView_Params->Item1AutoNumStep);
-				lengthTemp = GetStringLength(tempString);
+				lengthTemp = GetStringGraphicalLength(tempString);
 				posTemp = GetCentralPosition(listView_Params->ItemPositions[0],
 					listView_Params->ItemPositions[1], lengthTemp);
 				if (currentRelativePos != i&&lastSelected != i)
@@ -205,9 +207,11 @@ void UI_ListView_Handler(void *pvParameters)
   */
 void UI_ListView_Init(ListView_Param_Struct * listViewParams)
 {
+	portBASE_TYPE success;
 	UI_ListViewMsg = xQueueCreate(1, sizeof(int));
-	xTaskCreate(UI_ListView_Handler, "UI_ListView Handler",
+	success=xTaskCreate(UI_ListView_Handler, "UI_ListView Handler",
 		256, listViewParams, UI_LISTVIEW_HANDLER_PRIORITY, NULL);
+	if(success!=pdPASS) ApplicationNewFailed("UI_ListView");
 }
 
 

@@ -28,13 +28,13 @@ u8 GetCentralPosition(u8 startPos, u8 endPos, u8 stringLength)
 }
 
 /**
-  * @brief  Get length of given string
+  * @brief  Get Graphical length of given string
 
   * @param  string[]:Given string
 
 	  @retval Length of given string
   */
-u8 GetStringLength(const char string[])
+u8 GetStringGraphicalLength(const char string[])
 {
 	u8 length = 0;
 	for (; *string != 0; string++)

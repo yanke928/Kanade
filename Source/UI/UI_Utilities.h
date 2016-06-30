@@ -11,7 +11,7 @@ enum { HighDensity = 1, LowDensity = 0 };
 u8 GetCentralPosition(u8 startPos, u8 endPos, u8 stringLength);
 
 //see .c for details
-u8 GetStringLength(const char string[]);
+u8 GetStringGraphicalLength(const char string[]);
 
 //see .c for details
 void DrawVerticalDashedGrid(u8 x, bool drawOrUnDraw, u8 gridsDensity);

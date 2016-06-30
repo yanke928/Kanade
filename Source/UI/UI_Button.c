@@ -16,6 +16,8 @@
 #include "UI_Button.h" 
 #include "UI_Utilities.h" 
 
+#include "ExceptionHandle.h" 
+
 #define UI_BUTTON_HANDLER_PRIORITY tskIDLE_PRIORITY+2
 
 xQueueHandle UI_ButtonMsg; 
@@ -72,7 +74,7 @@ void UI_Button_Handler(void *pvParameters)
 	}
 	for (i = 0; i < buttonParams->ButtonNum; i++)
 	{
-	 lengths[i]=GetStringLength(buttons[i]);
+	 lengths[i]=GetStringGraphicalLength(buttons[i]);
 	}
 	/*Print the strings with respective positions to screen*/
 	xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
@@ -160,8 +162,10 @@ void UI_Button_Handler(void *pvParameters)
   */
 void UI_Button_Init(UI_Button_Param_Struct * buttonParams)
 {
+	portBASE_TYPE success;
 	UI_ButtonMsg=xQueueCreate(1, sizeof(u8));
-	xTaskCreate(UI_Button_Handler, "UI_Button Handler",
+	success=xTaskCreate(UI_Button_Handler, "UI_Button Handler",
 	256, buttonParams, UI_BUTTON_HANDLER_PRIORITY, NULL);
+	if(success!=pdPASS) ApplicationNewFailed("UI_Button");
 }		
 

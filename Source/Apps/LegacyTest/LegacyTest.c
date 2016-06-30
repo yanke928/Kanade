@@ -73,7 +73,7 @@ void Record_Handler(void *pvParameters)
 			else
 				sprintf(tempString, "%ld,%6.3f,%6.3f,%5.1f\r\n", SecondNum, CurrentMeterData.Current,
 					CurrentMeterData.Voltage, ExternalTemperature);
-			stringLength = GetStringLength(tempString);
+			stringLength = GetStringGraphicalLength(tempString);
 			f_write(&RecordFile, tempString, stringLength, &RecordFileWriteCount);
 		}
 		/*Update summary data*/

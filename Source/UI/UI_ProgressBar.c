@@ -12,6 +12,8 @@
 
 #include "UI_ProgressBar.h"
 
+#include "ExceptionHandle.h"
+
 #define UI_PROGRESSBAR_HANDLER_PRIORITY tskIDLE_PRIORITY+2
 
 xQueueHandle UI_ProgressBarMsg;
@@ -49,7 +51,9 @@ void UI_ProgressBar_Handler(void *pvParameters)
 
 void UI_ProgressBar_Init(ProgressBar_Param_Struct * progressBarParams)
 {
+	portBASE_TYPE success;
 	UI_ProgressBarMsg = xQueueCreate(1, sizeof(float));
-	xTaskCreate(UI_ProgressBar_Handler, "UI_ProgressBar Handler",
+	success=xTaskCreate(UI_ProgressBar_Handler, "UI_ProgressBar Handler",
 		128, progressBarParams, UI_PROGRESSBAR_HANDLER_PRIORITY, NULL);
+	if(success!=pdPASS) ApplicationNewFailed("UI_ProgressBar");
 }

@@ -25,6 +25,8 @@
 #include "hw_config.h"
 #include "usb_pwr.h"
 
+#include "UI_Print.h"
+
 #include "Settings.h"
 
 #include "Startup.h"
@@ -167,7 +169,7 @@ void InitStatusUpdateHandler(void *pvParameters)
 	{
 		while (xQueueReceive(InitStatusMsg, &initStatus, portMAX_DELAY) != pdPASS);
 		/*Get the length of the string to calculate the central position*/
-		stringLength = GetStringLength(initStatus);
+		stringLength = GetStringGraphicalLength(initStatus);
 		/*Calculate central addr*/
 		startAddr = GetCentralPosition(0, 127, stringLength);
 		/*Make room for "blocks animation"*/
@@ -328,6 +330,7 @@ void SystemStartup(void *pvParameters)
 	
 	UpdateOLEDJustNow=false;
 	OLED_Clear();
+	
 	if(LEFT_KEY==KEY_ON)
 	{
 	 BadApplePlayer_Init();	

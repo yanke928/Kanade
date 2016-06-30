@@ -1,4 +1,4 @@
-//File Name   £ºCPU_Usage.c
+//File Name     CPU_Usage.c
 //Description : This app measures the cpu usage
 
 #include "FreeRTOS.h"

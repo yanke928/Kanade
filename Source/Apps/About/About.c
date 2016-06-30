@@ -39,8 +39,8 @@ void About()
  SoundStart((SingleToneStruct*)Ichiban_no_takaramono);
 	
  /*Prepare foe the display of product version and product name*/
- productNameLength=GetStringLength(ProductName_Str[CurrentSettings->Language]);
- productVersionLength=GetStringLength(ProductVersion_Str[CurrentSettings->Language]);
+ productNameLength=GetStringGraphicalLength(ProductName_Str[CurrentSettings->Language]);
+ productVersionLength=GetStringGraphicalLength(ProductVersion_Str[CurrentSettings->Language]);
  prodectInfoAddr=63-(productNameLength+productVersionLength+1)*3;
 	
  /*Draw dialogue*/
@@ -53,15 +53,15 @@ void About()
  OLED_InvertRect(1,1,126,13);
  
  /*Display designer,provider strings*/
- tmp=GetStringLength(ProductDesigner_Str[CurrentSettings->Language]);
+ tmp=GetStringGraphicalLength(ProductDesigner_Str[CurrentSettings->Language]);
  tmp=GetCentralPosition(0,127,tmp);
  OLED_ShowAnyString(tmp,15,ProductDesigner_Str[CurrentSettings->Language],NotOnSelect,12);	
  DrawHorizonalDashedGrid(29,true,HighDensity);	
- tmp=GetStringLength(ProductVendor_Str[CurrentSettings->Language]);
+ tmp=GetStringGraphicalLength(ProductVendor_Str[CurrentSettings->Language]);
  tmp=GetCentralPosition(0,127,tmp);
  OLED_ShowAnyString(tmp,32,ProductVendor_Str[CurrentSettings->Language],NotOnSelect,12);		
  DrawHorizonalDashedGrid(46,true,HighDensity);	
- tmp=GetStringLength(CustomString_Str[CurrentSettings->Language]);
+ tmp=GetStringGraphicalLength(CustomString_Str[CurrentSettings->Language]);
  tmp=GetCentralPosition(0,127,tmp);
  OLED_ShowAnyString(tmp,49,CustomString_Str[CurrentSettings->Language],NotOnSelect,12);		
  xSemaphoreGive(OLEDRelatedMutex);

@@ -14,6 +14,8 @@
 #include "UI_Adjust.h"
 #include "UI_Utilities.h"
 
+#include "ExceptionHandle.h"
+
 #define UI_ADJUST_HANDLER_PRIORITY tskIDLE_PRIORITY+2
 
 xQueueHandle UI_AdjustMsg;
@@ -96,7 +98,7 @@ void UI_Adjust_Handler(void *pvParameters)
 		unitCharNum * 8 + 1, adjustParams->Pos_y + 17, DRAW);
 	OLED_DrawVerticalLine(positions[0].x + 17, adjustParams->Pos_y - 2, adjustParams->Pos_y + 17, DRAW);
 	OLED_DrawVerticalLine(positions[2].x - 2, adjustParams->Pos_y - 2, adjustParams->Pos_y + 17, DRAW);
-	askStringLength = GetStringLength(adjustParams->AskString);
+	askStringLength = GetStringGraphicalLength(adjustParams->AskString);
 	/*Show askString*/
 	if (askStringLength * 8 + positions[0].x - 2 > 127)
 		OLED_ShowAnyString(64 - askStringLength * 8 / 2, adjustParams->Pos_y - 22,
@@ -171,8 +173,10 @@ void UI_Adjust_Handler(void *pvParameters)
   */
 void UI_Adjust_Init(UI_Adjust_Param_Struct * adjustParams)
 {
+	portBASE_TYPE success;
 	UI_AdjustMsg = xQueueCreate(1, sizeof(u16));
-	xTaskCreate(UI_Adjust_Handler, "UI_Adjust Handler",
+	success=xTaskCreate(UI_Adjust_Handler, "UI_Adjust Handler",
 		256, adjustParams, UI_ADJUST_HANDLER_PRIORITY, NULL);
+	if(success!=pdPASS) ApplicationNewFailed("UI_Adjust");
 }
 

@@ -26,10 +26,26 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask,
  OLED_Clear();
  ShowDialogue("StackOverFlow","","");
  OLED_ShowAnyString(4,16,"StackOverFlow in",NotOnSelect,12);
- OLED_ShowAnyString(4,28,"'",NotOnSelect,12);
+ OLED_ShowAnyString(4,28,"\"",NotOnSelect,12);
  OLED_ShowAnyString(10,28,(char *)pcTaskName,NotOnSelect,12);
- t=GetStringLength((char *)pcTaskName);
- OLED_ShowAnyString(10+t*6,28,"'",NotOnSelect,12);
+ t=GetStringGraphicalLength((char *)pcTaskName);
+ OLED_ShowAnyString(10+t*6,28,"\"",NotOnSelect,12);
+ taskENTER_CRITICAL();
+ while(1);
+}
+
+void ApplicationNewFailed(char * appName)
+{
+ u8 t;
+ xSemaphoreGive(OLEDRelatedMutex);
+ SetUpdateOLEDJustNow();
+ OLED_Clear();
+ ShowDialogue("App Create Failure","","");
+ OLED_ShowAnyString(4,16,"RAM full creating",NotOnSelect,12);
+ OLED_ShowAnyString(4,28,"\"",NotOnSelect,12);
+ OLED_ShowAnyString(10,28,appName,NotOnSelect,12);
+ t=GetStringGraphicalLength(appName);
+ OLED_ShowAnyString(10+t*6,28,"\"",NotOnSelect,12); 
  taskENTER_CRITICAL();
  while(1);
 }

@@ -8,8 +8,9 @@
 #include "Keys.h" 
 
 #include "UI_Utilities.h" 
-
 #include "UI_Dialgram.h"
+
+#include "ExceptionHandle.h" 
 
 #define UI_DIALGRAM_BROSWER_PRIORITY tskIDLE_PRIORITY+2
 
@@ -223,10 +224,10 @@ void DrawDashedGridsAndMinMax(const char *sprintfCommandStrings[2], float maxVal
 	sprintf(tempString, sprintfCommandStrings[0], minValues[0]);
 	OLED_ShowAnyString(0, 56, tempString, NotOnSelect, 8);
 	sprintf(tempString, sprintfCommandStrings[1], maxValues[1]);
-	tempLength = GetStringLength(tempString);
+	tempLength = GetStringGraphicalLength(tempString);
 	OLED_ShowAnyString(127 - 6 * tempLength, 0, tempString, NotOnSelect, 8);
 	sprintf(tempString, sprintfCommandStrings[1], minValues[1]);
-	tempLength = GetStringLength(tempString);
+	tempLength = GetStringGraphicalLength(tempString);
 	OLED_ShowAnyString(127 - 6 * tempLength, 56, tempString, NotOnSelect, 8);
 }
 
@@ -273,7 +274,7 @@ void DrawCurrentPosData(const char *sprintfCommandStrings[2], u16 currentPos,
 	/*Get the lengths of the those strings*/
 	for (i = 0; i < 3; i++)
 	{
-		stringLengths[i] = GetStringLength(strings[i]);
+		stringLengths[i] = GetStringGraphicalLength(strings[i]);
 	}
 	/*Compare the strings,get the max length among strings*/
 	maxLength = stringLengths[0];
@@ -502,7 +503,9 @@ Done:
   */
 void UI_Dialgram_Init(Dialgram_Param_Struct * dialgramParams)
 {
+	portBASE_TYPE success;
 	UI_DialogueMsg = xQueueCreate(1, sizeof(int));
-	xTaskCreate(Dialgram_Broswer, "UI_Dialgram_Broswer",
+	success=xTaskCreate(Dialgram_Broswer, "UI_Dialgram_Broswer",
 		384, dialgramParams, UI_DIALGRAM_BROSWER_PRIORITY, NULL);
+	if(success!=pdPASS) ApplicationNewFailed("UI_Dialgram");
 }
