@@ -42,6 +42,7 @@ const LEDAnimateSliceStruct MAL_Write_Animate[] =
 void MassStorage_App()
 {
 	bool success;
+	bool exitFlag=false;
 	u8 i;
 	u8 status;
 	UI_Button_Param_Struct button_params;
@@ -62,7 +63,8 @@ void MassStorage_App()
 	UI_Button_Init(&button_params);
 	for (;;)
 	{
-		if (xQueueReceive(UI_ButtonMsg, &i, 0) == pdPASS) break;
+		if(exitFlag&&(!Usb_Status_Reg)) break;
+		if (xQueueReceive(UI_ButtonMsg, &i, 0) == pdPASS) exitFlag=true;
 		if (status != Usb_Status_Reg)
 		{
 			if (Usb_Status_Reg & 0x01)
@@ -82,6 +84,7 @@ void MassStorage_App()
 				LED_Animate_DeInit();
 				OLED_ShowAnyString(60,16,
 				USBMassStorageStatusIdling_Str[CurrentSettings->Language],NotOnSelect,16);
+				if(exitFlag) break;
 			}
 			status = Usb_Status_Reg;
 		}
