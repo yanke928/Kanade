@@ -7,4 +7,6 @@ void ApplicationNewFailed(char * appName);
 
 void EBD_Exception_Handler_Init(void);
 
+void ShowFault(char * string);
+
 #endif /* __EXCEPTIONHANDLE_H */

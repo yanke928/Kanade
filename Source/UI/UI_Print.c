@@ -7,8 +7,23 @@
 #include "SSD1306.h" 
 
 #include "UI_Utilities.h" 
-#include "UI_Print.h" 
+#include "UI_Print.h"
+#include "ExceptionHandle.h" 
 
+
+/**
+  * @brief Find the split addr for a string to be displayed in lines
+	
+	  @param xLengthAvailable:Available space for one line (in pixels)
+		
+		string:Target string
+		
+		startAddr:The addr which FindSplitAddr() begins to seek
+		
+		fontWidth:Graphical width for a ANSI char,
+
+	  @retval The offset 
+  */
 u16 FindSplitAddr(u8 xLengthAvailable,const char *string,u16 startAddr,u8 fontWidth)
 {
  int nbrOfGraphicalCharMax=xLengthAvailable/fontWidth;
@@ -36,16 +51,48 @@ u16 FindSplitAddr(u8 xLengthAvailable,const char *string,u16 startAddr,u8 fontWi
  return(offset);
 }
 
+/**
+  * @brief Get string length in bytes
+
+	  @retval The offset 
+  */
+u16 GetStringLengthInBytes(const char *string)
+{
+ u16 i=0;
+ while(string[i]!=0) i++;
+ i++;
+ return i;
+}
+
+/**
+  * @brief  Show string in a box-like area
+
+	 @param  x1,y1,x2,y2;Rectangular area
+
+			*string: TargetString
+
+			select:Invert(OnSelect) or not(NotOnSelect)
+
+			size:Size of the string(in Y)
+
+	  @retval None
+  */
 void UI_PrintMultiLineString(u8 x1,u8 y1,u8 x2,u8 y2,const char *string,bool select,u8 fontSize)
 {
  char tmpChar;
- char tempString[200];
+ char *tempString;
  u16 offset=0;
  u16 lastOffset=0;
  u8 nbrOfLine=0;
  u8 fontWidth;
  u8 xDisplayArea=x2-x1+1;
+ u16 stringLength=GetStringLengthInBytes(string);
+	
+ tempString=pvPortMalloc(stringLength);
+ if(tempString!=NULL)
  strcpy(tempString,string);
+ else ShowFault("A Malloc Err");
+ 
  switch(fontSize)
  {
 	 case 8:fontWidth=6;break;
@@ -64,10 +111,13 @@ void UI_PrintMultiLineString(u8 x1,u8 y1,u8 x2,u8 y2,const char *string,bool sel
 	nbrOfLine++;
 	if(y1+fontSize*nbrOfLine>y2)break;
  }
+ 
  if(select)
  {
   OLED_InvertRect(x1,y1,x2,y2);
  }
+ 
+ vPortFree(tempString);
 }
 
 

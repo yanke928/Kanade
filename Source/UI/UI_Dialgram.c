@@ -507,5 +507,5 @@ void UI_Dialgram_Init(Dialgram_Param_Struct * dialgramParams)
 	UI_DialogueMsg = xQueueCreate(1, sizeof(int));
 	success=xTaskCreate(Dialgram_Broswer, "UI_Dialgram_Broswer",
 		384, dialgramParams, UI_DIALGRAM_BROSWER_PRIORITY, NULL);
-	if(success!=pdPASS) ApplicationNewFailed("UI_Dialgram");
+	if(success!=pdPASS) ApplicationNewFailed("UI_Dialgram_Browswer");
 }

@@ -5,8 +5,11 @@
 #include "task.h"
 #include "queue.h"
 
+#include <stdio.h>
+
 #include "UI_Dialogue.h"
 #include "UI_Utilities.h"
+#include "UI_Print.h"
 
 #include "SSD1306.h"
 #include "Keys.h"
@@ -36,16 +39,13 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask,
 
 void ApplicationNewFailed(char * appName)
 {
- u8 t;
+ char tempString[60];
  xSemaphoreGive(OLEDRelatedMutex);
  SetUpdateOLEDJustNow();
  OLED_Clear();
  ShowDialogue("App Create Failure","","");
- OLED_ShowAnyString(4,16,"RAM full creating",NotOnSelect,12);
- OLED_ShowAnyString(4,28,"\"",NotOnSelect,12);
- OLED_ShowAnyString(10,28,appName,NotOnSelect,12);
- t=GetStringGraphicalLength(appName);
- OLED_ShowAnyString(10+t*6,28,"\"",NotOnSelect,12); 
+ sprintf(tempString,"RAM full while creating task \"%s\"",appName);
+ UI_PrintMultiLineString(4,15,125,63,tempString,NotOnSelect,12);
  taskENTER_CRITICAL();
  while(1);
 }

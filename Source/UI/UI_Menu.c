@@ -166,6 +166,6 @@ void UI_Menu_Init(UI_Menu_Param_Struct * menuParams)
 	UI_MenuMsg=xQueueCreate(1, sizeof(u8));
 	success=xTaskCreate(UI_Menu_Handler, "UI_Menu Handler",
 	256, menuParams, UI_MENU_HANDLER_PRIORITY, NULL);
-	if(success!=pdPASS) ApplicationNewFailed("UI_Menu");
+	if(success!=pdPASS) ApplicationNewFailed("UI_Menu_Handler");
 }		
 

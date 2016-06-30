@@ -177,6 +177,6 @@ void UI_Adjust_Init(UI_Adjust_Param_Struct * adjustParams)
 	UI_AdjustMsg = xQueueCreate(1, sizeof(u16));
 	success=xTaskCreate(UI_Adjust_Handler, "UI_Adjust Handler",
 		256, adjustParams, UI_ADJUST_HANDLER_PRIORITY, NULL);
-	if(success!=pdPASS) ApplicationNewFailed("UI_Adjust");
+	if(success!=pdPASS) ApplicationNewFailed("UI_Adjust_Handler");
 }
 

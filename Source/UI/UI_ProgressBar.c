@@ -55,5 +55,5 @@ void UI_ProgressBar_Init(ProgressBar_Param_Struct * progressBarParams)
 	UI_ProgressBarMsg = xQueueCreate(1, sizeof(float));
 	success=xTaskCreate(UI_ProgressBar_Handler, "UI_ProgressBar Handler",
 		128, progressBarParams, UI_PROGRESSBAR_HANDLER_PRIORITY, NULL);
-	if(success!=pdPASS) ApplicationNewFailed("UI_ProgressBar");
+	if(success!=pdPASS) ApplicationNewFailed("UI_ProgressBar_Handler");
 }
