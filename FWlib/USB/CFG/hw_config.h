@@ -24,7 +24,7 @@
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported define -----------------------------------------------------------*/
-#define BULK_MAX_PACKET_SIZE  0x00000040
+#define BULK_MAX_PACKET_SIZE  64
 
 /* Exported functions ------------------------------------------------------- */
 void Set_System(void);

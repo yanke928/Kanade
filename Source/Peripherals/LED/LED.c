@@ -182,7 +182,7 @@ void LED_Animate_Init(const LEDAnimateSliceStruct animate[])
  LED_GPIO_Init();
  if(LEDAnimateTaskHandle!=NULL)
  vTaskDelete(LEDAnimateTaskHandle);
- xTaskCreate(LEDAnimateHandler,"LED Animation Handler",
+ CreateTaskWithExceptionControl(LEDAnimateHandler,"LED Animation Handler",
 	128,(LEDAnimateSliceStruct*)animate,LED_ANIMATION_PRIORITY,&LEDAnimateTaskHandle);
 }
 
