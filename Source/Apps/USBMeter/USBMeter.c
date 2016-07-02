@@ -66,6 +66,8 @@ void USBMeter(void *pvParameters)
 				StopRecord(&status, 1);
 				goto Refresh;
 			}
+			if(legacy_Test_Params.TestMode==ConstantPower)
+				EBDSendLoadCommand((float)legacy_Test_Params.Power/CurrentMeterData.Voltage, KeepTest);	
 		}
 		if (xQueueReceive(Key_Message, &keyMessage, 1000 / portTICK_RATE_MS) == pdPASS)
 		{

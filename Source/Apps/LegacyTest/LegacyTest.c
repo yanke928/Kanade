@@ -23,6 +23,7 @@
 #include "UI_Adjust.h"
 #include "UI_Dialogue.h"
 #include "UI_Confirmation.h"
+#include "UI_Button.h"
 #include "UI_Utilities.h"
 
 #include "MultiLanguageStrings.h"
@@ -40,6 +41,7 @@
 
 #define RECORD_HANDLER_PRIORITY tskIDLE_PRIORITY+7
 #define LEGACY_TEST_CURRENT_MAX 5000
+#define LEGACY_TEST_POWER_MAX 50000
 
 FIL RecordFile;
 
@@ -128,6 +130,42 @@ void CreateRecordFileHeader()
 		sizeof("Time(s),Curt(A),Volt(V),Temp(C)\r\n"), &RecordFileWriteCount);
 }
 
+
+/**
+  * @brief  Select the mode of legacy test(CC or CP)
+
+    @rtval mode
+  */
+u8 SelectLegacyTestMode()
+{
+ u8 mode;
+ UI_Button_Param_Struct selectModeButtonParams;
+	
+ selectModeButtonParams.ButtonString=SelectLeagcyTestModeButtons_Str[CurrentSettings->Language];
+ selectModeButtonParams.ButtonNum=2;
+ selectModeButtonParams.DefaultValue=0;
+ selectModeButtonParams.Positions=SelectLegacyTestModePositions[CurrentSettings->Language];
+ 
+ xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+ OLED_Clear();
+ xSemaphoreGive(OLEDRelatedMutex);
+ 
+ ShowDialogue(SelectLeagcyTestMode_Str[CurrentSettings->Language],
+	SelectLeagcyTestModeSubString_Str[CurrentSettings->Language],"");
+ 
+ UI_Button_Init(&selectModeButtonParams);
+ 
+ xQueueReceive(UI_ButtonMsg, &mode, portMAX_DELAY);
+ UI_Button_DeInit();
+ IgnoreNextKeyEvent();
+ 
+ xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+ OLED_Clear();
+ xSemaphoreGive(OLEDRelatedMutex);
+ 
+ return mode;
+}
+
 /**
   * @brief  Run a legacy test with params from user
   */
@@ -135,11 +173,16 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 {
 	bool protectedFlag;
 	*status = LEGACY_TEST;
-
+	
+	test_Params->TestMode=SelectLegacyTestMode();
+	
 	/*Get parameters of the legacy test*/
-	test_Params->Current =
+	if(test_Params->TestMode==ConstantCurrent)test_Params->Current =
 		GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language], 100, LEGACY_TEST_CURRENT_MAX,
 			1000, 100, "mA", 20);
+	else test_Params->Power=
+			GetTestParam(LegacyTestSetPower_Str[CurrentSettings->Language], 500, LEGACY_TEST_POWER_MAX,
+			10000, 500, "mW", 20);
 	test_Params->ProtectVolt =
 		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0,
 		(int)(1000 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (1000 * CurrentMeterData.Voltage) / 10 * 10 : 100,
@@ -185,7 +228,11 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	/*Sync EBD to meet the chance to send load command*/
 	EBD_Sync();
 	vTaskDelay(200);
+	
+	if(test_Params->TestMode==ConstantCurrent)
 	EBDSendLoadCommand(test_Params->Current, StartTest);
+	else
+	EBDSendLoadCommand((float)test_Params->Power/CurrentMeterData.Voltage, StartTest);	
 
 	/*Wait for load command effects*/
 	for (;;)
@@ -204,13 +251,26 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 
 		/*Break if the load command effects*/
 		if (CurrentMeterData.Current > (float)(test_Params->Current) / 1010 &&
-			CurrentMeterData.Current < (float)(test_Params->Current) / 990)
+			CurrentMeterData.Current < (float)(test_Params->Current) / 990&&
+		test_Params->TestMode==ConstantCurrent)
 		{
 			protectedFlag = false;
 			break;
 		}
+		
+		if (CurrentMeterData.Power > (float)(test_Params->Power) / 1050 &&
+			CurrentMeterData.Power < (float)(test_Params->Power) / 950&&
+		test_Params->TestMode==ConstantPower)		
+		{
+			protectedFlag = false;
+			break;
+		}
+		
 		vTaskDelay(200 / portTICK_RATE_MS);
-		EBDSendLoadCommand(test_Params->Current, StartTest);
+	  if(test_Params->TestMode==ConstantCurrent)
+   	EBDSendLoadCommand(test_Params->Current, StartTest);
+	  else
+	  EBDSendLoadCommand((float)test_Params->Power/CurrentMeterData.Voltage, KeepTest);	
 	}
 
 	/*Delete logo and initStatus tasks*/
@@ -226,7 +286,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	{
 		ClearRecordData();
 		VirtualRTC_Init();
-		xTaskCreate(Record_Handler, "Record Handler",
+		CreateTaskWithExceptionControl(Record_Handler, "Record Handler",
 			256, NULL, RECORD_HANDLER_PRIORITY, &RecordHandle);
 		ShowSmallDialogue(LegacyTestStarted_Str[CurrentSettings->Language], 1000, true);
 	}

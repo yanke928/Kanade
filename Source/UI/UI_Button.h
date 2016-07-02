@@ -12,7 +12,7 @@ typedef struct
  const char *ButtonString;
  u8 ButtonNum;
  u8 DefaultValue;
- OLED_PositionStruct * Positions;
+ const OLED_PositionStruct * Positions;
 }UI_Button_Param_Struct;
 
 extern xQueueHandle UI_ButtonMsg;

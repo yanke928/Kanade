@@ -441,12 +441,47 @@ const char USBMassStorageStatusIdling_CN[] ="--空闲--";
 const char USBMassStorageStatusIdling_JP[] ="アイドル";
 const char* const USBMassStorageStatusIdling_Str[] = { USBMassStorageStatusIdling_EN,USBMassStorageStatusIdling_TW,USBMassStorageStatusIdling_CN,USBMassStorageStatusIdling_JP };
 
+const char SelectLeagcyTestMode_EN[] ="Mode";
+const char SelectLeagcyTestMode_TW[] ="模式";
+const char SelectLeagcyTestMode_CN[] ="模式";
+const char SelectLeagcyTestMode_JP[] ="モード";
+const char* const SelectLeagcyTestMode_Str[] = { SelectLeagcyTestMode_EN,SelectLeagcyTestMode_TW,SelectLeagcyTestMode_CN,SelectLeagcyTestMode_JP };
+
+const char SelectLeagcyTestModeSubString_EN[] ="Select Mode:";
+const char SelectLeagcyTestModeSubString_TW[] ="選擇測試模式:";
+const char SelectLeagcyTestModeSubString_CN[] ="选择测试模式:";
+const char SelectLeagcyTestModeSubString_JP[] ="モード選択:";
+const char* const SelectLeagcyTestModeSubString_Str[] = { SelectLeagcyTestModeSubString_EN,SelectLeagcyTestModeSubString_TW,SelectLeagcyTestModeSubString_CN,SelectLeagcyTestModeSubString_JP };
+
+const char SelectLeagcyTestModeButtons_EN[] ="C.Current%C.Power";
+const char SelectLeagcyTestModeButtons_TW[] =" 恆電流 % 恆功率 ";
+const char SelectLeagcyTestModeButtons_CN[] =" 恒电流 % 恒功率 ";
+const char SelectLeagcyTestModeButtons_JP[] =" 定電流 % 定電力 ";
+const char* const SelectLeagcyTestModeButtons_Str[] = { SelectLeagcyTestModeButtons_EN,SelectLeagcyTestModeButtons_TW,SelectLeagcyTestModeButtons_CN,SelectLeagcyTestModeButtons_JP };
+
+const char LegacyTestSetPower_EN[] ="Power";
+const char LegacyTestSetPower_TW[] ="電功率";
+const char LegacyTestSetPower_CN[] ="电功率";
+const char LegacyTestSetPower_JP[] ="電力";
+const char* const LegacyTestSetPower_Str[] = { LegacyTestSetPower_EN,LegacyTestSetPower_TW,LegacyTestSetPower_CN,LegacyTestSetPower_JP };
+
+
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},
 {36,45,84,45},
 {36,45,84,45},
-{8,45,84,45}
+{8 ,45,84,45}
 };
+
+const OLED_PositionStruct SelectLegacyTestModePositions[LanguageNum][2] =
+{
+{10,44,74,44},
+{10,44,71,44},
+{10,44,71,44},
+{10,44,71,44}
+};
+
 
 
