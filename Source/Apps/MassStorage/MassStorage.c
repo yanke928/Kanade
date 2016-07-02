@@ -42,7 +42,7 @@ const LEDAnimateSliceStruct MAL_Write_Animate[] =
 void MassStorage_App()
 {
 	bool success;
-	bool exitFlag=false;
+	bool exitFlag = false;
 	u8 i;
 	u8 status;
 	UI_Button_Param_Struct button_params;
@@ -53,8 +53,8 @@ void MassStorage_App()
 		ShowSmallDialogue(SettingsMountFailed_Str[CurrentSettings->Language], 1000, true);
 		return;
 	}
-	ShowDialogue(USBMassStorage_Str[CurrentSettings->Language], 
-	USBMassStorageStatus_Str[CurrentSettings->Language], "");
+	ShowDialogue(USBMassStorage_Str[CurrentSettings->Language],
+		USBMassStorageStatus_Str[CurrentSettings->Language], "");
 	/*Set the positions for the voltage options*/
 	button_params.ButtonString = UnMountUSBMassStorage_Str[CurrentSettings->Language];
 	button_params.ButtonNum = 1;
@@ -63,28 +63,28 @@ void MassStorage_App()
 	UI_Button_Init(&button_params);
 	for (;;)
 	{
-		if(exitFlag&&(!Usb_Status_Reg)) break;
-		if (xQueueReceive(UI_ButtonMsg, &i, 0) == pdPASS) exitFlag=true;
+		if (exitFlag && (!Usb_Status_Reg)) break;
+		if (xQueueReceive(UI_ButtonMsg, &i, 0) == pdPASS) exitFlag = true;
 		if (status != Usb_Status_Reg)
 		{
 			if (Usb_Status_Reg & 0x01)
 			{
 				LED_Animate_Init(MAL_Write_Animate);
-				OLED_ShowAnyString(60,16,
-				USBMassStorageStatusWriting_Str[CurrentSettings->Language],NotOnSelect,16);
+				OLED_ShowAnyString(60, 16,
+					USBMassStorageStatusWriting_Str[CurrentSettings->Language], NotOnSelect, 16);
 			}
 			else if (Usb_Status_Reg & 0x02)
 			{
 				LED_Animate_Init(MAL_Read_Animate);
-				OLED_ShowAnyString(60,16,
-				USBMassStorageStatusReading_Str[CurrentSettings->Language],NotOnSelect,16);
+				OLED_ShowAnyString(60, 16,
+					USBMassStorageStatusReading_Str[CurrentSettings->Language], NotOnSelect, 16);
 			}
 			else
 			{
 				LED_Animate_DeInit();
-				OLED_ShowAnyString(60,16,
-				USBMassStorageStatusIdling_Str[CurrentSettings->Language],NotOnSelect,16);
-				if(exitFlag) break;
+				OLED_ShowAnyString(60, 16,
+					USBMassStorageStatusIdling_Str[CurrentSettings->Language], NotOnSelect, 16);
+				if (exitFlag) break;
 			}
 			status = Usb_Status_Reg;
 		}

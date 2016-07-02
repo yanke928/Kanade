@@ -19,14 +19,14 @@ u8 SPI_ReadWriteByte(u8 TxData);
 void W25X_CS_Init()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
-	
+
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 
-	GPIO_Init(GPIOA, &GPIO_InitStructure);	
-	
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
 	FLASH_CS_DISABLE();
-	
+
 }
 
 /**
@@ -34,7 +34,7 @@ void W25X_CS_Init()
   */
 u8 SPI_Read_Byte(void)
 {
- return ( SPI_ReadWriteByte( DUMMY_BYTE ) );
+	return (SPI_ReadWriteByte(DUMMY_BYTE));
 }
 
 #if USE_GETCHIPID
@@ -44,7 +44,7 @@ u8 SPI_Read_Byte(void)
 int W25X_GetChipID(void)
 {
 	int nID = 0;
-	
+
 	FLASH_CS_ENABLE();
 
 	SPI_ReadWriteByte(W25X_JedecDeviceID);
@@ -53,7 +53,7 @@ int W25X_GetChipID(void)
 	nID |= SPI_Read_Byte();
 	nID <<= 8;
 	nID |= SPI_Read_Byte();
-	
+
 	FLASH_CS_DISABLE();
 
 	return nID;
@@ -65,14 +65,14 @@ int W25X_GetChipID(void)
   * @brief Read status register
   */
 u8 W25X_Read_StatusReg(void)
-{	
+{
 	u8 u8 = 0;
 	FLASH_CS_ENABLE();
-	
+
 	SPI_ReadWriteByte(W25X_ReadStatusReg);
 	u8 = SPI_Read_Byte();
-	
-	FLASH_CS_DISABLE();	
+
+	FLASH_CS_DISABLE();
 	return u8;
 }
 #endif
@@ -82,7 +82,7 @@ u8 W25X_Read_StatusReg(void)
   * @brief Write status register
   */
 void W25X_Write_StatusReg(u8 reg)
-{	
+{
 	FLASH_CS_ENABLE();
 	SPI_Write_Byte(W25X_WriteStatusReg);
 	SPI_Write_Byte(reg);
@@ -95,7 +95,7 @@ void W25X_Write_StatusReg(u8 reg)
   * @brief Disable write protection
   */
 void W25X_Write_Enable(void)
-{	
+{
 	FLASH_CS_ENABLE();
 	SPI_ReadWriteByte(W25X_WriteEnable);
 	FLASH_CS_DISABLE();
@@ -107,7 +107,7 @@ void W25X_Write_Enable(void)
   * @brief Enable write protection
   */
 void W25X_Write_Disable(void)
-{	
+{
 	FLASH_CS_ENABLE();
 	SPI_ReadWriteByte(W25X_WriteDisable);
 	FLASH_CS_DISABLE();
@@ -119,8 +119,8 @@ void W25X_Write_Disable(void)
   * @brief Wait busy
   */
 void W25X_Wait_Busy(void)
-{	
-	while(W25X_Read_StatusReg() == 0x03)
+{
+	while (W25X_Read_StatusReg() == 0x03)
 		W25X_Read_StatusReg();
 }
 #endif
@@ -132,8 +132,8 @@ void W25X_Wait_Busy(void)
 void W25X_Erase_Sector(uint32_t nDest)
 {
 	nDest *= FLASH_SECTOR_SIZE;
-	
-	FLASH_CS_ENABLE();			
+
+	FLASH_CS_ENABLE();
 	W25X_Write_Enable();
 	FLASH_CS_ENABLE();
 	SPI_ReadWriteByte(W25X_SectorErase);
@@ -152,8 +152,8 @@ void W25X_Erase_Sector(uint32_t nDest)
 void W25X_Erase_Block(uint32_t nDest)
 {
 	nDest *= FLASH_BLOCK_SIZE;
-	
-	FLASH_CS_ENABLE();			
+
+	FLASH_CS_ENABLE();
 	W25X_Write_Enable();
 	FLASH_CS_ENABLE();
 	SPI_ReadWriteByte(W25X_SectorErase);
@@ -187,15 +187,16 @@ void W25X_Erase_Chip(void)
   * @brief Read into buffer
   */
 void W25X_Read_Bytes(uint32_t nDest, u8* pBuffer, u8 nBytes)
-{	uint16_t i;
-	
+{
+	uint16_t i;
+
 	FLASH_CS_ENABLE();
 	SPI_ReadWriteByte(W25X_ReadData);
 	SPI_ReadWriteByte((u8)(nDest >> 16));
 	SPI_ReadWriteByte((u8)(nDest >> 8));
 	SPI_ReadWriteByte((u8)nDest);
-	for(i=0;i<nBytes;i++)
-	{	
+	for (i = 0; i < nBytes; i++)
+	{
 		pBuffer[i] = SPI_Read_Byte();
 	}
 	FLASH_CS_DISABLE();
@@ -210,17 +211,17 @@ void W25X_Read_Bytes(uint32_t nDest, u8* pBuffer, u8 nBytes)
 void W25X_Read_Sector(uint32_t nSector, u8* pBuffer)
 {
 	uint16_t i;
-	
+
 	nSector *= FLASH_SECTOR_SIZE;
-	
+
 	FLASH_CS_ENABLE();
 	SPI_ReadWriteByte(W25X_ReadData);
 	SPI_ReadWriteByte((u8)(nSector >> 16));
-	SPI_ReadWriteByte((u8)(nSector>> 8));
-	SPI_ReadWriteByte((u8) nSector);
-	
-	for(i=0;i<FLASH_SECTOR_SIZE;i++)
-	{	
+	SPI_ReadWriteByte((u8)(nSector >> 8));
+	SPI_ReadWriteByte((u8)nSector);
+
+	for (i = 0; i < FLASH_SECTOR_SIZE; i++)
+	{
 		pBuffer[i] = SPI_Read_Byte();
 	}
 	FLASH_CS_DISABLE();
@@ -232,20 +233,20 @@ void W25X_Read_Sector(uint32_t nSector, u8* pBuffer)
 /**
   * @brief Write from buffer
   */
-void W25X_Write_Bytes(uint32_t nSector,u8* pBuffer, u8 nBytes)
+void W25X_Write_Bytes(uint32_t nSector, u8* pBuffer, u8 nBytes)
 {
 	int i;
-	
+
 	FLASH_CS_ENABLE();
 	W25X_Write_Enable();
 	FLASH_CS_ENABLE();
-				
+
 	SPI_ReadWriteByte(W25X_PageProgram);
 	SPI_ReadWriteByte((u8)(nSector >> 16));
 	SPI_ReadWriteByte((u8)(nSector >> 8));
-	SPI_ReadWriteByte((u8) nSector);
-	for(i=0;i<nBytes;i++)
-	{	
+	SPI_ReadWriteByte((u8)nSector);
+	for (i = 0; i < nBytes; i++)
+	{
 		SPI_ReadWriteByte(pBuffer[i]);
 	}
 	FLASH_CS_DISABLE();
@@ -258,25 +259,25 @@ void W25X_Write_Bytes(uint32_t nSector,u8* pBuffer, u8 nBytes)
   * @brief Write a sector
   */
 void W25X_Write_Sector(uint32_t nSector, u8* pBuffer)
-{	
-	int i,j;
-	
+{
+	int i, j;
+
 	nSector *= FLASH_SECTOR_SIZE;
-	
-	for(j=0;j<FLASH_PAGES_PER_SECTOR;j++)
+
+	for (j = 0; j < FLASH_PAGES_PER_SECTOR; j++)
 	{
 		FLASH_CS_ENABLE();
 		W25X_Write_Enable();
 		FLASH_CS_ENABLE();
-		
+
 		SPI_ReadWriteByte(W25X_PageProgram);
 		SPI_ReadWriteByte((u8)(nSector >> 16));
-		SPI_ReadWriteByte((u8)(nSector >> 8));	
-		SPI_ReadWriteByte((u8) nSector);
-		
-		for(i=0;i<FLASH_PAGE_SIZE;i++)								
+		SPI_ReadWriteByte((u8)(nSector >> 8));
+		SPI_ReadWriteByte((u8)nSector);
+
+		for (i = 0; i < FLASH_PAGE_SIZE; i++)
 			SPI_ReadWriteByte(pBuffer[i]);
-		
+
 		pBuffer += FLASH_PAGE_SIZE;
 		nSector += FLASH_PAGE_SIZE;
 

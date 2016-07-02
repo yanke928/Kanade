@@ -38,9 +38,9 @@ xQueueHandle InitAnimatePosHandle;
 
 xQueueHandle InitStatusMsg;
 
-xTaskHandle LogoAnimateHandle=NULL;
+xTaskHandle LogoAnimateHandle = NULL;
 
-xTaskHandle InitStatusHandle=NULL;
+xTaskHandle InitStatusHandle = NULL;
 
 bool IsOLEDMutexTokenByLogoAnimateHandler;
 
@@ -100,13 +100,13 @@ void LogoHandler(void *pvParameters)
 	while (1)
 	{
 		xQueueReceive(InitAnimatePosHandle, &LoadingAddr, 0);
-		
+
 		if (xSemaphoreTake(OLEDRelatedMutex, 0) != pdPASS)
 		{
 			goto Wait;
 		}
-		IsOLEDMutexTokenByLogoAnimateHandler=true;
-		
+		IsOLEDMutexTokenByLogoAnimateHandler = true;
+
 		UpdateOLEDJustNow = true;
 		/*If it's drawing's turn,draw the respective line at respective verticalAddr*/
 		if (DrawOrUnDraw)
@@ -145,7 +145,7 @@ void LogoHandler(void *pvParameters)
 		OLED_FillRect(LoadingAddr, 45, LoadingAddr + 5, 50, !(n & 8));
 		UpdateOLEDJustNow = false;
 		xSemaphoreGive(OLEDRelatedMutex);
-	  IsOLEDMutexTokenByLogoAnimateHandler=false;
+		IsOLEDMutexTokenByLogoAnimateHandler = false;
 	Wait:
 		vTaskDelayUntil(&xLastWakeTime, 8 / portTICK_RATE_MS);
 	}
@@ -174,10 +174,10 @@ void InitStatusUpdateHandler(void *pvParameters)
 		startAddr = GetCentralPosition(0, 127, stringLength);
 		/*Make room for "blocks animation"*/
 		startAddr = startAddr + 9;
-		
+
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-		IsOLEDMutexTokenByInitStatusHandler=true;
-		
+		IsOLEDMutexTokenByInitStatusHandler = true;
+
 		/*Clear the area that last initString occupies*/
 		OLED_FillRect(0, 39, 127, 55, 0);
 		/*Show the new initString*/
@@ -185,10 +185,10 @@ void InitStatusUpdateHandler(void *pvParameters)
 		UpdateOLEDJustNow = true;
 		OLED_Refresh_Gram();
 		UpdateOLEDJustNow = false;
-		
-		IsOLEDMutexTokenByInitStatusHandler=false;
+
+		IsOLEDMutexTokenByInitStatusHandler = false;
 		xSemaphoreGive(OLEDRelatedMutex);
-		
+
 		/*Adjust the position of "blocks animation"(loadingAnimation)*/
 		loadingAddr = startAddr - 16;
 		if (xQueueSend(InitAnimatePosHandle, &loadingAddr, 100 / portTICK_RATE_MS) != pdPASS)
@@ -207,9 +207,9 @@ void InitStatusUpdateHandler(void *pvParameters)
   */
 void Logo_Init()
 {
-	if(LogoAnimateHandle==NULL)
-	xTaskCreate(LogoHandler, "Logo handler",
-		128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &LogoAnimateHandle);
+	if (LogoAnimateHandle == NULL)
+		xTaskCreate(LogoHandler, "Logo handler",
+			128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &LogoAnimateHandle);
 	InitAnimatePosHandle = xQueueCreate(1, sizeof(u8));
 }
 
@@ -221,9 +221,9 @@ void Logo_Init()
   */
 void InitStatusHandler_Init(void)
 {
-	if(InitStatusHandle==NULL)
-	xTaskCreate(InitStatusUpdateHandler, "Init Status Handler",
-		128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &InitStatusHandle);
+	if (InitStatusHandle == NULL)
+		xTaskCreate(InitStatusUpdateHandler, "Init Status Handler",
+			128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &InitStatusHandle);
 	InitStatusMsg = xQueueCreate(1, 30);
 }
 
@@ -234,16 +234,16 @@ void InitStatusHandler_Init(void)
   */
 void Logo_DeInit()
 {
- if(LogoAnimateHandle!=NULL)
- {
-  vTaskDelete(LogoAnimateHandle);
- }
- if(IsOLEDMutexTokenByLogoAnimateHandler)
- {
-  xSemaphoreGive(OLEDRelatedMutex);
- }
- LogoAnimateHandle=NULL;
- vQueueDelete(InitAnimatePosHandle);
+	if (LogoAnimateHandle != NULL)
+	{
+		vTaskDelete(LogoAnimateHandle);
+	}
+	if (IsOLEDMutexTokenByLogoAnimateHandler)
+	{
+		xSemaphoreGive(OLEDRelatedMutex);
+	}
+	LogoAnimateHandle = NULL;
+	vQueueDelete(InitAnimatePosHandle);
 }
 
 /**
@@ -253,16 +253,16 @@ void Logo_DeInit()
   */
 void InitStatus_DeInit()
 {
- if(InitStatusHandle!=NULL)
- {
-  vTaskDelete(InitStatusHandle);
- }
- if(IsOLEDMutexTokenByInitStatusHandler)
- {
-  xSemaphoreGive(OLEDRelatedMutex);
- }
- InitStatusHandle=NULL;
- vQueueDelete(InitStatusMsg);
+	if (InitStatusHandle != NULL)
+	{
+		vTaskDelete(InitStatusHandle);
+	}
+	if (IsOLEDMutexTokenByInitStatusHandler)
+	{
+		xSemaphoreGive(OLEDRelatedMutex);
+	}
+	InitStatusHandle = NULL;
+	vQueueDelete(InitStatusMsg);
 }
 
 /**
@@ -272,8 +272,8 @@ void InitStatus_DeInit()
   */
 void LogoWithInitStatus_Init()
 {
- Logo_Init();
- InitStatusHandler_Init();
+	Logo_Init();
+	InitStatusHandler_Init();
 }
 
 /**
@@ -283,8 +283,8 @@ void LogoWithInitStatus_Init()
   */
 void LogoWithInitStatus_DeInit()
 {
- Logo_DeInit();
- InitStatus_DeInit();
+	Logo_DeInit();
+	InitStatus_DeInit();
 }
 
 /**
@@ -296,49 +296,49 @@ void SystemStartup(void *pvParameters)
 {
 	Key_Init();
 	OLED_Init();
-	if(RIGHT_KEY==KEY_ON)
+	if (RIGHT_KEY == KEY_ON)
 	{
-	 OSStatInit();	
+		OSStatInit();
 	}
 	//USBCDC_Init();
 	//CommandLine_Init();
 	Settings_Init();
 	LED_Animate_Init(LEDAnimation_Startup);
-	
-  //W25X_CS_Init();
-	
+
+	//W25X_CS_Init();
+
 	RTC_Init();
-	
+
 	LogoWithInitStatus_Init();
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);
-	
+
 	vTaskDelay(100 / portTICK_RATE_MS);
 	TemperatureSensors_Init();
-	
+
 	EBD_Init();
 	vTaskDelay(50 / portTICK_RATE_MS);
-	
+
 	sdcard_Init(true);
 	vTaskDelay(500 / portTICK_RATE_MS);
-	
+
 	ShowCurrentTempSensor();
 	CheckEBDDirectories(true);
 
-	USB_Interrupts_Config();    
-	Set_USBClock();   	  	
-	
+	USB_Interrupts_Config();
+	Set_USBClock();
+
 	LED_Animate_DeInit();
 	LogoWithInitStatus_DeInit();
-	
-	UpdateOLEDJustNow=false;
+
+	UpdateOLEDJustNow = false;
 	OLED_Clear();
-	
-	if(LEFT_KEY==KEY_ON)
+
+	if (LEFT_KEY == KEY_ON)
 	{
-	 BadApplePlayer_Init();	
+		BadApplePlayer_Init();
 	}
 	else
-	USBMeter_Init(USBMETER_ONLY);
+		USBMeter_Init(USBMETER_ONLY);
 	vTaskDelete(NULL);
 }
 

@@ -50,7 +50,7 @@ void USBMeter(void *pvParameters)
 	ClearKeyEvent(keyMessage);
 	while (1)
 	{
-		Refresh:
+	Refresh:
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		DisplayBasicData(tempString, status);
 		if (status == USBMETER_RECORD || status == LEGACY_TEST)
@@ -58,23 +58,23 @@ void USBMeter(void *pvParameters)
 			DisplayRecordData(tempString);
 		}
 		xSemaphoreGive(OLEDRelatedMutex);
-		if(status== LEGACY_TEST)
+		if (status == LEGACY_TEST)
+		{
+			if (CurrentMeterData.Voltage * 1000 < legacy_Test_Params.ProtectVolt ||
+				CurrentMeterData.Voltage < 0.5)
 			{
-			 if(CurrentMeterData.Voltage*1000<legacy_Test_Params.ProtectVolt||
-				 CurrentMeterData.Voltage<0.5)
-			 {
-			  StopRecord(&status,1);
+				StopRecord(&status, 1);
 				goto Refresh;
-			 }
 			}
+		}
 		if (xQueueReceive(Key_Message, &keyMessage, 1000 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (status == USBMETER_ONLY)
 			{
 				switch (keyMessage.KeyEvent)
 				{
-				case MidDouble:if(GetConfirmation(RecordConfirm_Str[CurrentSettings->Language], ""))
-					StartRecord(&status);break;
+				case MidDouble:if (GetConfirmation(RecordConfirm_Str[CurrentSettings->Language], ""))
+					StartRecord(&status); break;
 				case MidLong:Settings(); break;
 				case LeftClick:if (GetConfirmation(StepUpConfirm_Str[CurrentSettings->Language], ""))
 					RunAStepUpTest(); break;
@@ -85,9 +85,9 @@ void USBMeter(void *pvParameters)
 				{
 				case LeftContinous:if (GetConfirmation(QCMTKConfirm_Str[CurrentSettings->Language], ""))
 					FastChargeTriggerUI(); break;
-				case RightContinous:if 
+				case RightContinous:if
 					(GetConfirmation(MountUSBMassStorageConfirm_Str[CurrentSettings->Language], ""))
-					MassStorage_App();break;
+					MassStorage_App(); break;
 				}
 				goto Refresh;
 			}
@@ -98,17 +98,17 @@ void USBMeter(void *pvParameters)
 				xSemaphoreGive(OLEDRelatedMutex);
 				if (keyMessage.KeyEvent == MidDouble)
 				{
-					if(GetConfirmation(RecordStopConfirm_Str[CurrentSettings->Language], ""))
+					if (GetConfirmation(RecordStopConfirm_Str[CurrentSettings->Language], ""))
 					{
-						StopRecord(&status,0);
-					  goto Refresh;
+						StopRecord(&status, 0);
+						goto Refresh;
 					}
 				}
 				else
 				{
 					ShowDialogue(Hint_Str[CurrentSettings->Language],
-					RecordIsRunningHint1_Str[CurrentSettings->Language], 
-					RecordIsRunningHint2_Str[CurrentSettings->Language]);
+						RecordIsRunningHint1_Str[CurrentSettings->Language],
+						RecordIsRunningHint2_Str[CurrentSettings->Language]);
 					vTaskDelay(1000 / portTICK_RATE_MS);
 					xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 					OLED_Clear();

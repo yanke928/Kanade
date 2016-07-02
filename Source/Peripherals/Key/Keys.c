@@ -53,7 +53,7 @@ bool MidKeyLongPressed, LeftKeyLongPressed, RightKeyLongPressed;
 
 volatile bool IgnoreNextEvent = false;
 
-xQueueHandle Key_Message; 
+xQueueHandle Key_Message;
 
 /**
   * @brief  Configure the pins that the keys use
@@ -83,7 +83,7 @@ void Keys_GPIO_Init(void)
 
 void KeyEvents(void)
 {
-	if((MidTime > PRESSTIME) && (MidKeyLongPressed == false))
+	if ((MidTime > PRESSTIME) && (MidKeyLongPressed == false))
 	{
 		if (MidKeyPressed == true)
 		{
@@ -94,7 +94,7 @@ void KeyEvents(void)
 			MidTime = 0;
 			MidKeyPressed = false;
 			return;
-		}	 
+		}
 	}
 	if ((MidTime > PRESSTIME) && (MIDDLE_KEY == KEY_OFF) && (MidKeyLongPressed == false))
 	{
@@ -217,15 +217,15 @@ void KeyEvents(void)
 	{
 		MidInterval = 0;
 		MidKeyPressed = false;
-	  if (IgnoreNextEvent == false)
-		KeyEvent = MidClick;
-		IgnoreNextEvent=false;
+		if (IgnoreNextEvent == false)
+			KeyEvent = MidClick;
+		IgnoreNextEvent = false;
 	}
 }
 
 void ClearKeyEvent(Key_Message_Struct message)
 {
- xQueueReceive(Key_Message, & message, 0 );
+	xQueueReceive(Key_Message, &message, 0);
 }
 
 /**
@@ -234,47 +234,47 @@ void ClearKeyEvent(Key_Message_Struct message)
   */
 void KeyEventHandler(void *pvParameters)
 {
- Key_Message_Struct message;
- Key_Message_Struct outOfDateMessage;
- while(1)
- {
-	/*Get status of keys*/
-  KeyEvents();
-	/*If a key event takes place*/
-	if((KeyEvent!=0&&AdvancedKeyEvent==0)||(AdvancedKeyEvent!=0&&ContinousPressBeats!=0))
+	Key_Message_Struct message;
+	Key_Message_Struct outOfDateMessage;
+	while (1)
 	{
-	 /*Handle advanced key event priorly*/
-	 if(AdvancedKeyEvent!=0)
-	 {
-	  message.KeyEvent=0;
-		message.AdvancedKeyEvent=AdvancedKeyEvent;
-		ContinousPressBeats=0;
-		//KeyEvent=0;
-		/*Try to send a new message to the queue,at least 100ms is given for the receiver to handle the last event*/
-		if (xQueueSend(Key_Message , & message, 100/portTICK_RATE_MS)!=pdPASS)
+		/*Get status of keys*/
+		KeyEvents();
+		/*If a key event takes place*/
+		if ((KeyEvent != 0 && AdvancedKeyEvent == 0) || (AdvancedKeyEvent != 0 && ContinousPressBeats != 0))
 		{
-		 /*Clear the queue and resend the message*/
-		 xQueueReceive(Key_Message, & outOfDateMessage, 0 );
-		 xQueueSend(Key_Message , & message, 100/portTICK_RATE_MS);
+			/*Handle advanced key event priorly*/
+			if (AdvancedKeyEvent != 0)
+			{
+				message.KeyEvent = 0;
+				message.AdvancedKeyEvent = AdvancedKeyEvent;
+				ContinousPressBeats = 0;
+				//KeyEvent=0;
+				/*Try to send a new message to the queue,at least 100ms is given for the receiver to handle the last event*/
+				if (xQueueSend(Key_Message, &message, 100 / portTICK_RATE_MS) != pdPASS)
+				{
+					/*Clear the queue and resend the message*/
+					xQueueReceive(Key_Message, &outOfDateMessage, 0);
+					xQueueSend(Key_Message, &message, 100 / portTICK_RATE_MS);
+				}
+			}
+			else
+			{
+				message.KeyEvent = KeyEvent;
+				message.AdvancedKeyEvent = 0;
+				ContinousPressBeats = 0;
+				KeyEvent = 0;
+				/*Try to send a new message to the queue,at least 100ms is given for the receiver to handle the last event*/
+				if (xQueueSend(Key_Message, &message, 100 / portTICK_RATE_MS) != pdPASS)
+				{
+					/*Clear the queue and resend the message*/
+					xQueueReceive(Key_Message, &outOfDateMessage, 10);
+					xQueueSend(Key_Message, &message, 100 / portTICK_RATE_MS);
+				}
+			}
 		}
-	 }
-	 else
-	 {
-	  message.KeyEvent=KeyEvent;
-		message.AdvancedKeyEvent=0;	
-		ContinousPressBeats=0;
-		KeyEvent=0;		 
-		/*Try to send a new message to the queue,at least 100ms is given for the receiver to handle the last event*/
-		if (xQueueSend(Key_Message , & message, 100/portTICK_RATE_MS)!=pdPASS)
-		{
-		 /*Clear the queue and resend the message*/
-		 xQueueReceive(Key_Message, & outOfDateMessage, 10 );
-		 xQueueSend(Key_Message , & message, 100/portTICK_RATE_MS);
-		}	 
-	 }
+		vTaskDelay(10 / portTICK_RATE_MS);
 	}
-	vTaskDelay(10/portTICK_RATE_MS);
- }
 }
 
 /**
@@ -283,33 +283,33 @@ void KeyEventHandler(void *pvParameters)
   */
 void KeyDebugHandler(void *pvParameters)
 {
- Key_Message_Struct message;
- while(1)
- {
-  while(xQueueReceive(Key_Message, & message, portMAX_DELAY ) != pdPASS ); 
-	OLED_Clear();
-	if(message.KeyEvent!=0)
+	Key_Message_Struct message;
+	while (1)
 	{
-	 switch(message.KeyEvent)
-	 {
-		 case LeftLong:OLED_ShowString(0,0,"LeftLong");break;
-		 case LeftClick:OLED_ShowString(0,0,"LeftClick");break;
-		 case MidLong:OLED_ShowString(0,0,"MidLong");break;
-		 case MidClick:OLED_ShowString(0,0,"MidClick");break;
-		 case MidDouble:OLED_ShowString(0,0,"MidDouble");break;
-		 case RightClick:OLED_ShowString(0,0,"RightClick");break;
-		 case RightLong:OLED_ShowString(0,0,"RightLong");break;
-	 }
+		while (xQueueReceive(Key_Message, &message, portMAX_DELAY) != pdPASS);
+		OLED_Clear();
+		if (message.KeyEvent != 0)
+		{
+			switch (message.KeyEvent)
+			{
+			case LeftLong:OLED_ShowString(0, 0, "LeftLong"); break;
+			case LeftClick:OLED_ShowString(0, 0, "LeftClick"); break;
+			case MidLong:OLED_ShowString(0, 0, "MidLong"); break;
+			case MidClick:OLED_ShowString(0, 0, "MidClick"); break;
+			case MidDouble:OLED_ShowString(0, 0, "MidDouble"); break;
+			case RightClick:OLED_ShowString(0, 0, "RightClick"); break;
+			case RightLong:OLED_ShowString(0, 0, "RightLong"); break;
+			}
+		}
+		else
+		{
+			switch (message.AdvancedKeyEvent)
+			{
+			case LeftContinous:OLED_ShowString(0, 0, "LeftContinous"); break;
+			case RightContinous:OLED_ShowString(0, 0, "RightContinous"); break;
+			}
+		}
 	}
-	else
-	{
-	 switch(message.AdvancedKeyEvent)
-	 {
-		 case LeftContinous:OLED_ShowString(0,0,"LeftContinous");break;
-		 case RightContinous:OLED_ShowString(0,0,"RightContinous");break;
-	 }	 
-	}
- }
 }
 
 /**
@@ -318,10 +318,10 @@ void KeyDebugHandler(void *pvParameters)
   */
 void Key_Init(void)
 {
- Keys_GPIO_Init();
- Key_Message=xQueueCreate(1, sizeof(Key_Message_Struct));
- xTaskCreate(KeyEventHandler,"Key Event Handler",
-	128,NULL,KEY_EVENT_HANDLER_PRIORITY,NULL); 
+	Keys_GPIO_Init();
+	Key_Message = xQueueCreate(1, sizeof(Key_Message_Struct));
+	xTaskCreate(KeyEventHandler, "Key Event Handler",
+		128, NULL, KEY_EVENT_HANDLER_PRIORITY, NULL);
 }
 
 /**
@@ -330,9 +330,9 @@ void Key_Init(void)
   */
 void Key_Debug_Init(void)
 {
- Key_Init(); 
- xTaskCreate(KeyDebugHandler,"Key Debug Handler",
-	32,NULL,KEY_EVENT_HANDLER_PRIORITY,NULL);  
+	Key_Init();
+	xTaskCreate(KeyDebugHandler, "Key Debug Handler",
+		32, NULL, KEY_EVENT_HANDLER_PRIORITY, NULL);
 }
 
 /**

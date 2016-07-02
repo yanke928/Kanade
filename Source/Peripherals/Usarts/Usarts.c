@@ -32,7 +32,7 @@ void USART1_Init(void)
 	USART_InitStructure.USART_BaudRate = 9600;
 	USART_Init(USART1, &USART_InitStructure);
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-	USART_ClearFlag(USART2, USART_FLAG_TC); 
+	USART_ClearFlag(USART2, USART_FLAG_TC);
 
 	/*Usart1 NVIC configurations*/
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_3);
@@ -87,7 +87,7 @@ void USART1_TX_DMA_Init()
 
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST; //PeripheralDST
 
-	DMA_InitStructure.DMA_BufferSize =EBD_COMMAND_LENGTH;//Buffer length
+	DMA_InitStructure.DMA_BufferSize = EBD_COMMAND_LENGTH;//Buffer length
 
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;//Memory increse mode
@@ -103,10 +103,10 @@ void USART1_TX_DMA_Init()
 	DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
 }
 
-void DMA1_Channel4_IRQHandler(void)  
-{  
+void DMA1_Channel4_IRQHandler(void)
+{
 	//portBASE_TYPE xHigherPriorityTaskWoken = pdPASS;
-  DMA_ClearFlag(DMA1_FLAG_TC4);  
-  DMA_Cmd(DMA1_Channel4,DISABLE);  
- // xQueueSendFromISR(InitStatusMsg, "DGD", &xHigherPriorityTaskWoken);
-}  
+	DMA_ClearFlag(DMA1_FLAG_TC4);
+	DMA_Cmd(DMA1_Channel4, DISABLE);
+	// xQueueSendFromISR(InitStatusMsg, "DGD", &xHigherPriorityTaskWoken);
+}

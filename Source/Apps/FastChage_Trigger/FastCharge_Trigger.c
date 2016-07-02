@@ -189,12 +189,12 @@ void FastChargeTriggerUI(void)
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
-	
+
 	UI_Menu_Init(&menu_params);
-	
+
 	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
 	UI_Menu_DeInit();
-	
+
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
@@ -204,7 +204,7 @@ void FastChargeTriggerUI(void)
 	case 1:QC3Trigger_Init(); break;
 	case 2:MTKTrigger_Init();
 	}
-	UpdateOLEDJustNow=false;
+	UpdateOLEDJustNow = false;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);

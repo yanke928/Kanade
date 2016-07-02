@@ -35,8 +35,8 @@ void BadApplePlayer(void *pvParameters)
 	res = f_open(&video, "0:/BadApple.bin", FA_READ);
 	if (res != FR_OK)
 	{
-		if(SDCardMountStatus!=true) OLED_ShowString(0, 0, "No Memory");
-    else OLED_ShowString(0, 0, "No File");
+		if (SDCardMountStatus != true) OLED_ShowString(0, 0, "No Memory");
+		else OLED_ShowString(0, 0, "No File");
 		vTaskDelete(NULL);
 	}
 	fileSize = f_size(&video);
@@ -67,11 +67,11 @@ void BadApplePlayer(void *pvParameters)
 		f_lseek(&video, 0);
 		dataRead = 0;
 	}
-	 ReadFileFailed:
-	 {
-	  OLED_ShowString(0,0,"File Read Failed");
-		 vTaskDelete(NULL);
-	 }
+ReadFileFailed:
+	{
+		OLED_ShowString(0, 0, "File Read Failed");
+		vTaskDelete(NULL);
+	}
 }
 
 void BadApplePlayer_Init()

@@ -24,7 +24,7 @@ volatile unsigned long SecondNumNow;
 
 unsigned long StartSecondNum;
 
-xTaskHandle VirtualRTCHandle=NULL;
+xTaskHandle VirtualRTCHandle = NULL;
 
 /**
   * @brief   Update RTCCurrent struct according to SecondNum
@@ -71,7 +71,7 @@ void VirtualRTC_Handler(void *pvParameters)
 void VirtualRTC_DeInit(void)
 {
 	vTaskDelete(VirtualRTCHandle);
-	VirtualRTCHandle=NULL;
+	VirtualRTCHandle = NULL;
 }
 
 

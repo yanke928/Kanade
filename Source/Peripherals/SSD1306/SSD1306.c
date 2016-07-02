@@ -25,7 +25,7 @@
 #define English 0
 
 
-xSemaphoreHandle OLEDRelatedMutex=NULL;
+xSemaphoreHandle OLEDRelatedMutex = NULL;
 
 //#include "delay.h"
 
@@ -51,7 +51,7 @@ volatile bool GRAM_No_Change_Timeout = false;
 
 volatile bool UpdateOLEDJustNow = false;
 
-volatile bool UpdateOLEDJustNow_Backup= false;
+volatile bool UpdateOLEDJustNow_Backup = false;
 
 /**
   * @brief  Read/Write single byte to/from SPI2
@@ -66,14 +66,14 @@ unsigned char SPI2_ReadWriteByte(unsigned char TxData)
 		retry++;
 		if (retry > 2000)return 0;
 	}
-	SPI2->DR = TxData;	 	 
+	SPI2->DR = TxData;
 	retry = 0;
 	while ((SPI2->SR & 1 << 0) == 0)
 	{
 		retry++;
 		if (retry > 2000)return 0;
 	}
-	return SPI2->DR;         	    
+	return SPI2->DR;
 }
 
 
@@ -386,7 +386,7 @@ void OLED_ShowIcon(unsigned char  x, unsigned char  y, unsigned char  no, unsign
 	for (t = 0; t < 32; t++)
 	{
 
-		temp = Icons[no][t];		 
+		temp = Icons[no][t];
 		for (t1 = 0; t1 < 8; t1++)
 		{
 			if (temp & 0x80)OLED_DrawPoint(x, y, drawOrUnDraw);
@@ -441,20 +441,20 @@ void OLED_ShowString(unsigned char  x, unsigned char  y, const char  *p)
 
 void OLED_ShowNotASCChar(unsigned char  x, unsigned char  y, char *chr, unsigned char  size, unsigned char  mode)
 {
- u16 addr;
- unsigned char  temp, t, t1, m;
- unsigned char  y0 = y;
- addr=GetUTF8IndexInFontTab((s8 *)chr,size);
- if (size == 12) m = 24;
- else if (size==16) m=32;
- else m=0;
-  temp=255;
+	u16 addr;
+	unsigned char  temp, t, t1, m;
+	unsigned char  y0 = y;
+	addr = GetUTF8IndexInFontTab((s8 *)chr, size);
+	if (size == 12) m = 24;
+	else if (size == 16) m = 32;
+	else m = 0;
+	temp = 255;
 	for (t = 0; t < m; t++)
 	{
-		if(size==12)
-		temp=UTF8FontTab12[addr].Msk[t];
-		else if(size==16) temp=UTF8FontTab16[addr].Msk[t];
-		
+		if (size == 12)
+			temp = UTF8FontTab12[addr].Msk[t];
+		else if (size == 16) temp = UTF8FontTab16[addr].Msk[t];
+
 		for (t1 = 0; t1 < 8; t1++)
 		{
 			if (temp & 0x80)OLED_DrawPoint(x, y, mode);
@@ -488,29 +488,29 @@ void OLED_ShowAnyString(unsigned char  x, unsigned char  y, const char  *p, bool
 {
 #define MAX_CHAR_POSX 127
 #define MAX_CHAR_POSY 63  
-	
+
 	while (*p != '\0')
 	{
 		if (x > MAX_CHAR_POSX) { x = 0; y += 16; }
 		if (y > MAX_CHAR_POSY) { y = x = 0; OLED_Clear(); }
-		if (*p>127) 
+		if (*p > 127)
 		{
-			OLED_ShowNotASCChar(x, y,(char *) p, size, (!OnSelection));
+			OLED_ShowNotASCChar(x, y, (char *)p, size, (!OnSelection));
 			if (size == 16)
 				x += 16;
 			else
-			x += 12;
-			p+=3;
+				x += 12;
+			p += 3;
 		}
 		else
 		{
-		OLED_ShowChar(x, y, *p, size, (!OnSelection));
-		if (size == 16)
-			x += 8;
-		else
-			x += 6;
-		p++;
-	}
+			OLED_ShowChar(x, y, *p, size, (!OnSelection));
+			if (size == 16)
+				x += 8;
+			else
+				x += 6;
+			p++;
+		}
 	}
 }
 
@@ -685,39 +685,39 @@ void SPI2_Init(void)
   */
 void OLED_Refresh_Handler(void *pvParameters)
 {
- while(1)
- {
-  if(UpdateOLEDJustNow==false)
+	while (1)
 	{
-		if (GRAM_Changed == true)
+		if (UpdateOLEDJustNow == false)
 		{
-			if (GRAM_Changing == false)
+			if (GRAM_Changed == true)
 			{
-				GRAM_Changed = false;
-				xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
-				OLED_Refresh_Gram();
-				xSemaphoreGive(OLEDRelatedMutex);
+				if (GRAM_Changing == false)
+				{
+					GRAM_Changed = false;
+					xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+					OLED_Refresh_Gram();
+					xSemaphoreGive(OLEDRelatedMutex);
+				}
+				else
+				{
+					GRAM_Changing = false;
+				}
 			}
-			else
-			{
-				GRAM_Changing = false;
-			}
-		}	 
+		}
+		vTaskDelay(30 / portTICK_RATE_MS);
 	}
-	vTaskDelay(30/portTICK_RATE_MS);
- }
 }
 #endif
 
 void SetUpdateOLEDJustNow()
 {
- UpdateOLEDJustNow_Backup=UpdateOLEDJustNow;
- UpdateOLEDJustNow=true;
+	UpdateOLEDJustNow_Backup = UpdateOLEDJustNow;
+	UpdateOLEDJustNow = true;
 }
 
 void ResetUpdateOLEDJustNow()
 {
- UpdateOLEDJustNow=UpdateOLEDJustNow_Backup;
+	UpdateOLEDJustNow = UpdateOLEDJustNow_Backup;
 }
 
 /**
@@ -773,31 +773,31 @@ void OLED_Init(void)
 	UpdateOLEDJustNow = true;
 	OLED_Clear();
 	UpdateOLEDJustNow = false;
-  xTaskCreate(OLED_Refresh_Handler,"OLED Refresh Handler",
-	configMINIMAL_STACK_SIZE,NULL,OLED_REFRESH_PRIORITY,NULL);
-	OLEDRelatedMutex=xSemaphoreCreateMutex();
+	xTaskCreate(OLED_Refresh_Handler, "OLED Refresh Handler",
+		configMINIMAL_STACK_SIZE, NULL, OLED_REFRESH_PRIORITY, NULL);
+	OLEDRelatedMutex = xSemaphoreCreateMutex();
 }
 
-void Draw_BMP(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,unsigned char bmp[])
-{ 	
-  unsigned int ii=0;
-  unsigned char x,y;
-  unsigned char c;
-  if(y1%8==0) 
-  y=y1/8;      
-  else 
-  y=y1/8+1;
-	for(y=y0;y<=y1;y++) 
+void Draw_BMP(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1, unsigned char bmp[])
+{
+	unsigned int ii = 0;
+	unsigned char x, y;
+	unsigned char c;
+	if (y1 % 8 == 0)
+		y = y1 / 8;
+	else
+		y = y1 / 8 + 1;
+	for (y = y0; y <= y1; y++)
 	{
-		LCD_Set_Pos(x0,y*8);	
-    for(x=x0;x<x1;x++)
-	    {      
-				c=bmp[ii++];
-        c = ( c & 0x55 ) << 1 | ( c & 0xAA ) >> 1;
-        c = ( c & 0x33 ) << 2 | ( c & 0xCC ) >> 2;
-        c = ( c & 0x0F ) << 4 | ( c & 0xF0 ) >> 4;
-	    	OLED_WR_Byte(c,OLED_DATA);	    	
-	    }
+		LCD_Set_Pos(x0, y * 8);
+		for (x = x0; x < x1; x++)
+		{
+			c = bmp[ii++];
+			c = (c & 0x55) << 1 | (c & 0xAA) >> 1;
+			c = (c & 0x33) << 2 | (c & 0xCC) >> 2;
+			c = (c & 0x0F) << 4 | (c & 0xF0) >> 4;
+			OLED_WR_Byte(c, OLED_DATA);
+		}
 	}
 }
 

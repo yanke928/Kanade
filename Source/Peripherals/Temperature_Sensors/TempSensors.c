@@ -122,76 +122,76 @@ void UpdateTemperatureSensors(short lese, short lese2, unsigned char lese3)
   */
 void TemperatureHandler(void *pvParameters)
 {
-	u8 m, n,updateTempCount;
+	u8 m, n, updateTempCount;
 	u32 p;
-  volatile uint16_t FirstLevelADCFilterTank[ADC_FILTER_ITEM_NUM][ADC_FILTER_TANK_SIZE];
-  volatile uint16_t SecondLevelADCFilterTank[ADC_FILTER_ITEM_NUM][ADC_FILTER_TANK_SIZE];
-	updateTempCount=0;
-	p=0;
-	while(1)
+	volatile uint16_t FirstLevelADCFilterTank[ADC_FILTER_ITEM_NUM][ADC_FILTER_TANK_SIZE];
+	volatile uint16_t SecondLevelADCFilterTank[ADC_FILTER_ITEM_NUM][ADC_FILTER_TANK_SIZE];
+	updateTempCount = 0;
+	p = 0;
+	while (1)
 	{
 		SecondLevelFilterCount++;
 		updateTempCount++;
-	/*If the sub-filter tank is full(10 effective records got)*/
-	if (SecondLevelFilterCount == ADC_FILTER_TANK_SIZE)
-	{
-		SecondLevelFilterCount = 0;
-		for (m = 0; m < ADC_FILTER_ITEM_NUM; m++)
+		/*If the sub-filter tank is full(10 effective records got)*/
+		if (SecondLevelFilterCount == ADC_FILTER_TANK_SIZE)
 		{
-			p = 0;
-			for (n = 0; n < ADC_FILTER_TANK_SIZE; n++)
+			SecondLevelFilterCount = 0;
+			for (m = 0; m < ADC_FILTER_ITEM_NUM; m++)
 			{
-				p = p + FirstLevelADCFilterTank[m][n];
+				p = 0;
+				for (n = 0; n < ADC_FILTER_TANK_SIZE; n++)
+				{
+					p = p + FirstLevelADCFilterTank[m][n];
+				}
+				for (n = 1; n < ADC_FILTER_TANK_SIZE; n++)
+				{
+					SecondLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n] =
+						SecondLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n - 1];
+				}
+				SecondLevelADCFilterTank[m][0] = p / ADC_FILTER_TANK_SIZE;
+				p = 0;
+				for (n = 0; n < ADC_FILTER_TANK_SIZE; n++)
+				{
+					p = p + SecondLevelADCFilterTank[m][n];
+				}
+				FilteredADCValue[m] = p / ADC_FILTER_TANK_SIZE;
 			}
-			for (n = 1; n < ADC_FILTER_TANK_SIZE; n++)
-			{
-				SecondLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n] =
-					SecondLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n - 1];
-			}
-			SecondLevelADCFilterTank[m][0] = p / ADC_FILTER_TANK_SIZE;
-			p = 0;
-			for (n = 0; n < ADC_FILTER_TANK_SIZE; n++)
-			{
-				p = p + SecondLevelADCFilterTank[m][n];
-			}
-			FilteredADCValue[m] = p / ADC_FILTER_TANK_SIZE;
 		}
-	}
-	/*Else add a new record to sub-filter tank*/
-	else
-	{
-		for (m = 0; m < ADC_FILTER_ITEM_NUM; m++)
+		/*Else add a new record to sub-filter tank*/
+		else
 		{
-			for (n = 1; n < ADC_FILTER_TANK_SIZE; n++)
+			for (m = 0; m < ADC_FILTER_ITEM_NUM; m++)
 			{
-				FirstLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n] =
-					FirstLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n - 1];
+				for (n = 1; n < ADC_FILTER_TANK_SIZE; n++)
+				{
+					FirstLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n] =
+						FirstLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n - 1];
+				}
+				FirstLevelADCFilterTank[m][0] =
+					ADCConvertedValue[m];
 			}
-			FirstLevelADCFilterTank[m][0] =
-				ADCConvertedValue[m];
 		}
+		if (SecondLevelADCFilterTank[2][0] >= 200)
+		{
+			CurrentTemperatureSensor = External;
+		}
+		else
+		{
+			CurrentTemperatureSensor = Internal;
+		}
+		if (updateTempCount >= 40)
+		{
+			updateTempCount = 0;
+			PowerSourceVoltage = (1.2 / (float)FilteredADCValue[1]) * 4096;
+			InternalTemperature = (1.43 - (float)FilteredADCValue[0] *
+				(PowerSourceVoltage / 4096)) * 1000 / 4.35 + 25;
+			if (CurrentTemperatureSensor == External)
+			{
+				CalculateExtTemp();
+			}
+		}
+		vTaskDelay(10 / portTICK_RATE_MS);
 	}
-	if (SecondLevelADCFilterTank[2][0] >= 200)
-	{
-	 CurrentTemperatureSensor=External;
-	}
-	else
-	{
-	 CurrentTemperatureSensor=Internal;
-	}
-	if(updateTempCount>=40)
-	{
-	 updateTempCount=0;
-	 PowerSourceVoltage = (1.2 / (float)FilteredADCValue[1]) * 4096;
-	 InternalTemperature = (1.43 - (float)FilteredADCValue[0] *
-		(PowerSourceVoltage / 4096)) * 1000 / 4.35 + 25;
-	 if(CurrentTemperatureSensor==External)
-	 {
-	  CalculateExtTemp();
-	 }
-	}
-	vTaskDelay(10/portTICK_RATE_MS);
-}
 }
 
 /**
@@ -202,8 +202,8 @@ void TemperatureSensors_Init(void)
 {
 	TempADC_AND_DMA_Init();
 	CurrentTemperatureSensor = Internal;
-  xTaskCreate(TemperatureHandler,"Temperature Handler",
-	128,NULL,TEMP_UPDATE_PRIORITY,NULL);
+	xTaskCreate(TemperatureHandler, "Temperature Handler",
+		128, NULL, TEMP_UPDATE_PRIORITY, NULL);
 }
 
 
@@ -211,7 +211,7 @@ void TemperatureSensors_Init(void)
   * @brief   Generate a string for INTTemperature in format xx.xC
   * @retval : None
   */
-void GenerateTempString(char string[],u8 sensorNo)
+void GenerateTempString(char string[], u8 sensorNo)
 {
 	if (sensorNo == Internal)
 		sprintf(string, "%5.1fC", InternalTemperature);
@@ -321,12 +321,12 @@ void CalculateExtTemp(void)
   */
 void ShowCurrentTempSensor(void)
 {
-	if(CurrentTemperatureSensor==Internal)
+	if (CurrentTemperatureSensor == Internal)
 	{
-	 xQueueSend(InitStatusMsg, "No Ext.Sensor", 0);
+		xQueueSend(InitStatusMsg, "No Ext.Sensor", 0);
 	}
 	else
 	{
-	 xQueueSend(InitStatusMsg, "Ext.Sensor Plugged", 0);
+		xQueueSend(InitStatusMsg, "Ext.Sensor Plugged", 0);
 	}
 }

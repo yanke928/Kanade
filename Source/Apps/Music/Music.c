@@ -54,13 +54,13 @@
 
 #define STOP 29
 
-u16 MusicFREQTab[]={131,147,165,174,196,220,247,
-	                  262,294,330,349,392,440,494,
-                    523,578,659,698,784,880,988,
-                    1046,1175,1318,1397,1568,1760,1976,
-                    2092};
+u16 MusicFREQTab[] = { 131,147,165,174,196,220,247,
+					  262,294,330,349,392,440,494,
+					523,578,659,698,784,880,988,
+					1046,1175,1318,1397,1568,1760,1976,
+					2092 };
 
-xTaskHandle SoundPlayerHandle=NULL;
+xTaskHandle SoundPlayerHandle = NULL;
 
 const SingleToneStruct Tori_No_Uta[] =
 {
@@ -119,45 +119,45 @@ const SingleToneStruct Tori_No_Uta[] =
 const SingleToneStruct Ichiban_no_takaramono[] =
 {
  {50,-7},
-// 
-// {M4,1},{L7|HALF_LOW,2},{M1,2},{M1,1},{M4,1},{M1,2},{M1,2},{M1,1},{M4,1},
-// {M4,1},{L6,2},{L1,2},{M1,1},{M4,1},{M4,1},{M4,1},{L7|HALF_LOW,1},{M1,1},
-// {M4,1},{L7|HALF_LOW,2},{M1,2},{M1,1},{M4,1},{M4,1},{M1,2},{M1,2},{M1,1},
-// {M4,1},{M4,1},{L6,2},{M1,2},{M1,1},{M4,1},{M4,1},{M4,1},{M1,1},
-// {M1,1},//pre
- 
- {M6,2},{M7|HALF_LOW,2},{H1,1},{M7|HALF_LOW,2},{H1,2},{H1,2},{M6,2},{M5,2},{M4,2},
- {M4,1},{STOP,1},{M6|HALF_LOW,2},{M7,2},{H1,1},{H1,2},{H1,2},{H1,2},{H4,2},
- {H4,2},{H4,2},{H3,1},{STOP,1},{M6|HALF_LOW,2},{M7,2},{H1,1},{M7|HALF_LOW,2},{H1,2},
- {H1,2},{M6,2},{M5,2},{M5,2},{M4,1},{M4,2},{M5,1},{M5,2},{M6,1},
- {M6,1},{M6,2},{M6,1},{M6,1},{STOP,2},{M6,2},{M7|HALF_LOW,2},{M6,2},//main1
- 
- {H1,1},{H2,2},{H1,1},{H3,1},{H4,2},{H4,2},{H1,1},{H4,1},{H5,1},
- {H6,2},{H6,2},{H7|HALF_LOW,1},{H6,1},{H4,1},{H1,2},{H1,2},{H4,2},{H4,1},
- {H4,2},{H6,2},{H7|HALF_LOW,1},{HH1,1},{H5,2},{H4,1},{H2,1},{H1,1},{H1,2},
- {H4,2},{H4,1},{H4,2},{H6,2},{H7|HALF_LOW,1},{HH1,1},{H5,2},{H4,1},{H3|HALF_LOW,1},
- {H4,2},{H4,2},{H6,2},{H7|HALF_LOW,1},{H6,2},{H7|HALF_LOW,1},//main2
- 
- {HH1,1},{HH1,1},{HH1,1},{HH1,1},{STOP,1},{STOP,1},{STOP,1},{STOP,1},
- //{STOP,1},{STOP,1},{STOP,1},{STOP,1},{STOP,1},{STOP,1},{STOP,2},
- {H6,1},{H5|HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1|HALF_HIGH,1},
- {HH1|HALF_HIGH,1},{H6,1},{H5|HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},
- {HH1|HALF_HIGH,1},{HH1|HALF_HIGH,1},{H6,1},{H5|HALF_HIGH,2},//main3
- 
- {H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1|HALF_HIGH,1},{HH1|HALF_HIGH,2},{H6,2},
- {H7,1},{H6,2},{H6,2},{H2,1},{H1|HALF_HIGH,1},{M7,1},{M7,2},{M7,2},{M6,2},
- {M6,1},{STOP,2},{H6,1},{H5|HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},
- {H7,2},{HH1|HALF_HIGH,1},{HH1|HALF_HIGH,1},{H6,1},{H5|HALF_HIGH,2},//main4
- 
- {H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1|HALF_HIGH,2},{H6,1},{STOP,2},
- {H6,1},{H5|HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1|HALF_HIGH,1},
- {HH1|HALF_HIGH,2},{H6,2},{H7,1},{H6,2},{H6,2},{H2,1},{H1|HALF_HIGH,1},
- {M7,1},{M7,2},{M7,2},{M6,2},{M6,1},{M6,1},{STOP,1},//main5
- 
-// {H7,1},{H4|HALF_HIGH,2},{H3,1},{H7,1},{HH1|HALF_HIGH,2},{HH1|HALF_HIGH,2},
-// {HH2|HALF_HIGH,2},{HH2|HALF_HIGH,2},{H7,1},{H6|HALF_HIGH,2},//main6
- 
- {0,0}
+ // 
+ // {M4,1},{L7|HALF_LOW,2},{M1,2},{M1,1},{M4,1},{M1,2},{M1,2},{M1,1},{M4,1},
+ // {M4,1},{L6,2},{L1,2},{M1,1},{M4,1},{M4,1},{M4,1},{L7|HALF_LOW,1},{M1,1},
+ // {M4,1},{L7|HALF_LOW,2},{M1,2},{M1,1},{M4,1},{M4,1},{M1,2},{M1,2},{M1,1},
+ // {M4,1},{M4,1},{L6,2},{M1,2},{M1,1},{M4,1},{M4,1},{M4,1},{M1,1},
+ // {M1,1},//pre
+
+  {M6,2},{M7 | HALF_LOW,2},{H1,1},{M7 | HALF_LOW,2},{H1,2},{H1,2},{M6,2},{M5,2},{M4,2},
+  {M4,1},{STOP,1},{M6 | HALF_LOW,2},{M7,2},{H1,1},{H1,2},{H1,2},{H1,2},{H4,2},
+  {H4,2},{H4,2},{H3,1},{STOP,1},{M6 | HALF_LOW,2},{M7,2},{H1,1},{M7 | HALF_LOW,2},{H1,2},
+  {H1,2},{M6,2},{M5,2},{M5,2},{M4,1},{M4,2},{M5,1},{M5,2},{M6,1},
+  {M6,1},{M6,2},{M6,1},{M6,1},{STOP,2},{M6,2},{M7 | HALF_LOW,2},{M6,2},//main1
+
+  {H1,1},{H2,2},{H1,1},{H3,1},{H4,2},{H4,2},{H1,1},{H4,1},{H5,1},
+  {H6,2},{H6,2},{H7 | HALF_LOW,1},{H6,1},{H4,1},{H1,2},{H1,2},{H4,2},{H4,1},
+  {H4,2},{H6,2},{H7 | HALF_LOW,1},{HH1,1},{H5,2},{H4,1},{H2,1},{H1,1},{H1,2},
+  {H4,2},{H4,1},{H4,2},{H6,2},{H7 | HALF_LOW,1},{HH1,1},{H5,2},{H4,1},{H3 | HALF_LOW,1},
+  {H4,2},{H4,2},{H6,2},{H7 | HALF_LOW,1},{H6,2},{H7 | HALF_LOW,1},//main2
+
+  {HH1,1},{HH1,1},{HH1,1},{HH1,1},{STOP,1},{STOP,1},{STOP,1},{STOP,1},
+  //{STOP,1},{STOP,1},{STOP,1},{STOP,1},{STOP,1},{STOP,1},{STOP,2},
+  {H6,1},{H5 | HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1 | HALF_HIGH,1},
+  {HH1 | HALF_HIGH,1},{H6,1},{H5 | HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},
+  {HH1 | HALF_HIGH,1},{HH1 | HALF_HIGH,1},{H6,1},{H5 | HALF_HIGH,2},//main3
+
+  {H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1 | HALF_HIGH,1},{HH1 | HALF_HIGH,2},{H6,2},
+  {H7,1},{H6,2},{H6,2},{H2,1},{H1 | HALF_HIGH,1},{M7,1},{M7,2},{M7,2},{M6,2},
+  {M6,1},{STOP,2},{H6,1},{H5 | HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},
+  {H7,2},{HH1 | HALF_HIGH,1},{HH1 | HALF_HIGH,1},{H6,1},{H5 | HALF_HIGH,2},//main4
+
+  {H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1 | HALF_HIGH,2},{H6,1},{STOP,2},
+  {H6,1},{H5 | HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1 | HALF_HIGH,1},
+  {HH1 | HALF_HIGH,2},{H6,2},{H7,1},{H6,2},{H6,2},{H2,1},{H1 | HALF_HIGH,1},
+  {M7,1},{M7,2},{M7,2},{M6,2},{M6,1},{M6,1},{STOP,1},//main5
+
+ // {H7,1},{H4|HALF_HIGH,2},{H3,1},{H7,1},{HH1|HALF_HIGH,2},{HH1|HALF_HIGH,2},
+ // {HH2|HALF_HIGH,2},{HH2|HALF_HIGH,2},{H7,1},{H6|HALF_HIGH,2},//main6
+
+  {0,0}
 };
 
 const SingleToneStruct Alarm[] =
@@ -188,26 +188,26 @@ void SoundPlayer(void *pvParameters)
 	{
 		if (sound[addr].BeatTimeDivide != 0) //If it is not the end of the score
 		{
-			if(sound[addr].ToneFREQIndex&HALF_HIGH)
+			if (sound[addr].ToneFREQIndex&HALF_HIGH)
 			{
-			 nextFREQ = (MusicFREQTab[sound[addr].ToneFREQIndex+sound[0].BeatTimeDivide-128]+
-				MusicFREQTab[sound[addr].ToneFREQIndex+sound[0].BeatTimeDivide-127])/2;
+				nextFREQ = (MusicFREQTab[sound[addr].ToneFREQIndex + sound[0].BeatTimeDivide - 128] +
+					MusicFREQTab[sound[addr].ToneFREQIndex + sound[0].BeatTimeDivide - 127]) / 2;
 			}
-			else if(sound[addr].ToneFREQIndex&HALF_LOW)
+			else if (sound[addr].ToneFREQIndex&HALF_LOW)
 			{
-			 nextFREQ = (MusicFREQTab[sound[addr].ToneFREQIndex+sound[0].BeatTimeDivide-65]+
-				MusicFREQTab[sound[addr].ToneFREQIndex+sound[0].BeatTimeDivide-64])/2;		 
+				nextFREQ = (MusicFREQTab[sound[addr].ToneFREQIndex + sound[0].BeatTimeDivide - 65] +
+					MusicFREQTab[sound[addr].ToneFREQIndex + sound[0].BeatTimeDivide - 64]) / 2;
 			}
 			else
 			{
-				nextFREQ = MusicFREQTab[sound[addr].ToneFREQIndex+sound[0].BeatTimeDivide];//Get the FREQ of the tone in the next pitch
+				nextFREQ = MusicFREQTab[sound[addr].ToneFREQIndex + sound[0].BeatTimeDivide];//Get the FREQ of the tone in the next pitch
 			}
-			nextTime = sound[0].ToneFREQIndex*10/ sound[addr].BeatTimeDivide;//Calculate the time of the next tone 
+			nextTime = sound[0].ToneFREQIndex * 10 / sound[addr].BeatTimeDivide;//Calculate the time of the next tone 
 		}
 		else
 		{
-			nextFREQ = MusicFREQTab[sound[1].ToneFREQIndex+sound[0].BeatTimeDivide];//Go to the start of the score
-			nextTime = sound[0].ToneFREQIndex*10/ sound[1].BeatTimeDivide;//The first pitch of the score
+			nextFREQ = MusicFREQTab[sound[1].ToneFREQIndex + sound[0].BeatTimeDivide];//Go to the start of the score
+			nextTime = sound[0].ToneFREQIndex * 10 / sound[1].BeatTimeDivide;//The first pitch of the score
 			addr = 1;
 		}
 		TIM_Cmd(TIM4, DISABLE);//Turn off the timer for safety
@@ -224,8 +224,8 @@ void SoundPlayer(void *pvParameters)
 //		TimOCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 //		TIM_OC1Init(TIM4, &TimOCInitStructure);
 		TIM4->CCR1 = (50000 * 72) / nextFREQ;
-		TIM4->ARR  = (100000 * 72) / nextFREQ - 1;
-		TIM4->PSC  = 10;
+		TIM4->ARR = (100000 * 72) / nextFREQ - 1;
+		TIM4->PSC = 10;
 		//TIM_CtrlPWMOutputs(TIM4, ENABLE);
 		if (sound[addr].ToneFREQIndex != STOP)
 			TIM_Cmd(TIM4, ENABLE);
@@ -261,7 +261,7 @@ void SoundStart(const SingleToneStruct sound[])
 void SoundStop(void)
 {
 	TIM_DeInit(TIM4);
-	if(SoundPlayerHandle!=NULL)
-	vTaskDelete(SoundPlayerHandle);
-	SoundPlayerHandle=NULL;
+	if (SoundPlayerHandle != NULL)
+		vTaskDelete(SoundPlayerHandle);
+	SoundPlayerHandle = NULL;
 }
