@@ -1,4 +1,4 @@
-//File Name   £ºEBProtocol.c
+//File Name     EBProtocol.c
 //Description : Protocol for EBTester
 
 #include "stm32f10x_gpio.h"
@@ -195,11 +195,14 @@ void PacketDecode(void)
 	}
 	
 	CurrentMeterData.Voltage = DecodeVoltage(EBD_MAIN_VOLATGE_ADDR);
+	
+#if VOLTAGE_DATA_PIN_SUPPORT
 	CurrentMeterData.VoltageDP=DecodeVoltage(EBD_DP_VOLATGE_ADDR);
 	CurrentMeterData.VoltageDM=DecodeVoltage(EBD_DM_VOLATGE_ADDR);
+#endif
 	
 	CurrentMeterData.Current = (float)((EBDBackPacket[2] * 256 + EBDBackPacket[3]) -
-		(EBDBackPacket[2] * 256 + EBDBackPacket[3]) / 256 * 16) / 10000;
+		(EBDBackPacket[2] * 256 + EBDBackPacket[3]) / 256 * 16) / CURRENT_DIVIDER;
 
 	CurrentMeterData.Power = CurrentMeterData.Voltage*CurrentMeterData.Current;
 }

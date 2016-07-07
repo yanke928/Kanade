@@ -8,6 +8,30 @@
 #include "task.h"
 #include "queue.h"
 
+#define EBD_USB_PLUS 0
+#define EBD_USB_V1 1
+
+#define EBD_MODEL EBD_USB_V1
+
+#if EBD_MODEL==EBD_USB_PLUS
+#define CURRENT_MA_PER_DIGIT 0.1
+#define VOLTAGE_DATA_PIN_SUPPORT true
+#define UPDATE_RATE_PER_SECOND 0.5
+#define CURRENT_MAX 5000
+#define POWER_MAX 50000
+#endif
+
+#if EBD_MODEL==EBD_USB_V1
+#define CURRENT_MA_PER_DIGIT 1
+#define VOLTAGE_DATA_PIN_SUPPORT false
+#define UPDATE_RATE_PER_SECOND 1
+#define CURRENT_MAX 3000
+#define POWER_MAX 24000
+#endif
+
+#define CURRENT_DIVIDER (u16)1000/CURRENT_MA_PER_DIGIT
+#define TIME_PER_UPDATE (u16)1/UPDATE_RATE_PER_SECOND
+
 //EBD CommandSet,ignore if not needed
 #define EBD_STOP_BYTE       0xf8
 #define EBD_COMMAND_LENGTH  10
@@ -73,8 +97,10 @@ typedef struct {
 	float Voltage;
 	float Current;
 	float Power;
+#if VOLTAGE_DATA_PIN_SUPPORT
 	float VoltageDP;
 	float VoltageDM;
+#endif
 }USBMeterStruct;
 
 typedef struct {

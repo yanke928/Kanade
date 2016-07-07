@@ -169,6 +169,7 @@ void DisplayBasicData(char tempString[], u8 currentStatus)
 		OLED_ShowAnyString(80, 24, "In", NotOnSelect, 8);
 		OLED_ShowAnyString(92, 24, tempString, NotOnSelect, 8);
 	}
+#if VOLTAGE_DATA_PIN_SUPPORT
 	if (currentStatus == USBMETER_ONLY)
 	{
 		GenerateRTCDateString(tempString);
@@ -184,6 +185,17 @@ void DisplayBasicData(char tempString[], u8 currentStatus)
 		OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
 		OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
 	}
+#else
+	if (currentStatus == USBMETER_ONLY)
+	{
+		GenerateRTCDateString(tempString);
+		OLED_ShowString(0, 32, tempString);
+		GenerateRTCTimeString(tempString);
+		OLED_ShowString(24, 48, tempString);
+		GenerateRTCWeekString(tempString);
+		OLED_ShowString(96, 32, tempString);
+	}	
+ #endif
 }
 
 /**

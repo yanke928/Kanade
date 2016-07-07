@@ -36,7 +36,7 @@
 
 /*Step-up test params*/
 #define STEP_UP_TEST_INTERVAL_MAX 30
-#define STEP_UP_TEST_CURRENT_MAX 5000
+#define STEP_UP_TEST_CURRENT_MAX CURRENT_MAX
 
 #define STEPUPTEST_HANDLER_PRIORITY tskIDLE_PRIORITY+5
 
@@ -71,7 +71,7 @@ void StepUpTest_Handler(void *pvParameters)
 		Flash_ProgramFloat(FLASH_VOLTAGE_ADDR + currentAddr * sizeof(float), CurrentMeterData.Voltage);
 		Flash_ProgramFloat(FLASH_CURRENT_ADDR + currentAddr * sizeof(float), CurrentMeterData.Current);
 		xQueueSend(StepUpTest_UI_UpdateMsg, &currentState, 0);
-		currentState.CurrentTime = currentState.CurrentTime + 2;
+		currentState.CurrentTime = currentState.CurrentTime + TIME_PER_UPDATE;
 		currentAddr++;
 		currentCurrent = (currentState.CurrentTime / test_Params->TimeInterval)*test_Params->Step + test_Params->StartCurrent;
 		if ((CurrentMeterData.Voltage < (float)test_Params->ProtectVolt / 1000) ||
@@ -274,8 +274,8 @@ bool ShowStepUpTestResultInListView(u16 time)
 	listView_Params.FastSpeed = 25;
 	listView_Params.Item1AutoNum = true;
 	listView_Params.Item1AutoNumStart = 0;
-	listView_Params.Item1AutoNumStep = 2;
-	listView_Params.ListLength = time / 2;
+	listView_Params.Item1AutoNumStep = TIME_PER_UPDATE;
+	listView_Params.ListLength = time / TIME_PER_UPDATE;
 	UI_ListView_Init(&listView_Params);
 	xQueueReceive(UI_ListViewMsg, &i, portMAX_DELAY);
 	UI_ListView_DeInit();
@@ -342,12 +342,12 @@ bool ShowStepUpTestResultInDialgram(u16 time)
 	dialgram_Params.DataSprintfCommandStrings[0] = "%0.3fV";
 	dialgram_Params.DataSprintfCommandStrings[1] = "%0.3fA";
 	dialgram_Params.RecordLength = time / 2;
-	dialgram_Params.MaxValues[0] = FindMax((float*)(FLASH_VOLTAGE_ADDR), time / 2);
-	dialgram_Params.MinValues[0] = FindMin((float*)(FLASH_VOLTAGE_ADDR), time / 2);
-	dialgram_Params.MaxValues[1] = FindMax((float*)(FLASH_CURRENT_ADDR), time / 2);
-	dialgram_Params.MinValues[1] = FindMin((float*)(FLASH_CURRENT_ADDR), time / 2);
+	dialgram_Params.MaxValues[0] = FindMax((float*)(FLASH_VOLTAGE_ADDR), time / TIME_PER_UPDATE);
+	dialgram_Params.MinValues[0] = FindMin((float*)(FLASH_VOLTAGE_ADDR), time / TIME_PER_UPDATE);
+	dialgram_Params.MaxValues[1] = FindMax((float*)(FLASH_CURRENT_ADDR), time / TIME_PER_UPDATE);
+	dialgram_Params.MinValues[1] = FindMin((float*)(FLASH_CURRENT_ADDR), time / TIME_PER_UPDATE);
 	dialgram_Params.Item1AutoNumStart = 0;
-	dialgram_Params.Item1AutoNumStep = 2;
+	dialgram_Params.Item1AutoNumStep = TIME_PER_UPDATE;
 
 	/*Calculate the premium max/min values for display*/
 	for (i = 0; i < 2; i++)
