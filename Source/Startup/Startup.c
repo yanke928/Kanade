@@ -302,12 +302,11 @@ void SystemStartup(void *pvParameters)
 	}
 	//USBCDC_Init();
 	//CommandLine_Init();
+	RTC_Init();
 	Settings_Init();
 	LED_Animate_Init(LEDAnimation_Startup);
 
 	//W25X_CS_Init();
-
-	RTC_Init();
 
 	LogoWithInitStatus_Init();
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);

@@ -75,16 +75,16 @@ const char Saved_CN[] = "已保存";
 const char Saved_JP[] = "保存";
 const char* const Saved_Str[] = { Saved_EN,Saved_TW,Saved_CN,Saved_JP };
 
-const char Settings_EN[]="Unmount Disk%Clock Settings%Buzzer Settings%Language%System Scan%System Info";
-const char Settings_TW[]="彈出SD卡%時間設置%警報設置%Language%系統掃描%系統資訊";
-const char Settings_CN[] = "安全弹出存储卡%时间设置%蜂鸣器设置%Language%系统扫描%系统信息" ;
-const char Settings_JP[] ="トメモリイジェク%時刻の設定%警告の設定%Language%システムスキャン%システム情報";
+const char Settings_EN[]="Unmount Disk%Clock Settings%Buzzer Settings%Language%Set Model%System Info";
+const char Settings_TW[]="彈出SD卡%時間設置%警報設置%Language%型號設置%系統資訊";
+const char Settings_CN[] = "安全弹出存储卡%时间设置%蜂鸣器设置%Language%型号设置%系统信息" ;
+const char Settings_JP[] ="トメモリイジェク%時刻の設定%警告の設定%Language%タイプの設定%システム情報";
 const char* const Settings_Str[] = { Settings_EN,Settings_TW,Settings_CN,Settings_JP };
 
-const char SettingsNoDisk_EN[]="Mount Disk%Clock Settings%Buzzer Settings%Language%System Scan%System Info";
-const char SettingsNoDisk_TW[]="掛載SD卡%時間設置%警報設置%Language%系統掃描%系統資訊";
-const char SettingsNoDisk_CN[] = "挂载存储卡%时间设置%蜂鸣器设置%Language%系统扫描%系统信息" ;
-const char SettingsNoDisk_JP[] ="トメモリマウント%時刻の設定%警告の設定%Language%システムスキャン%システム情報";
+const char SettingsNoDisk_EN[]="Mount Disk%Clock Settings%Buzzer Settings%Language%Set Model%System Info";
+const char SettingsNoDisk_TW[]="掛載SD卡%時間設置%警報設置%Language%型號設置%系統資訊";
+const char SettingsNoDisk_CN[] = "挂载存储卡%时间设置%蜂鸣器设置%Language%型号设置%系统信息" ;
+const char SettingsNoDisk_JP[] ="トメモリマウント%時刻の設定%警告の設定%Language%タイプの設定%システム情報";
 const char* const SettingsNoDisk_Str[] = { SettingsNoDisk_EN,SettingsNoDisk_TW,SettingsNoDisk_CN,SettingsNoDisk_JP };
 
 const char SettingsUnmounted_EN[]="Unmounted";
@@ -465,7 +465,17 @@ const char LegacyTestSetPower_CN[] ="电功率";
 const char LegacyTestSetPower_JP[] ="電力";
 const char* const LegacyTestSetPower_Str[] = { LegacyTestSetPower_EN,LegacyTestSetPower_TW,LegacyTestSetPower_CN,LegacyTestSetPower_JP };
 
+const char SetTimeHint_EN[] ="Set Time";
+const char SetTimeHint_TW[] ="時間設置";
+const char SetTimeHint_CN[] ="时间设置";
+const char SetTimeHint_JP[] ="時刻の設定";
+const char* const SetTimeHint_Str[] = { SetTimeHint_EN,SetTimeHint_TW,SetTimeHint_CN,SetTimeHint_JP };
 
+const char SetModelHint_EN[] ="Set Model";
+const char SetModelHint_TW[] ="型號設置";
+const char SetModelHint_CN[] ="型号设置";
+const char SetModelHint_JP[] ="タイプの設定";
+const char* const SetModelHint_Str[] = { SetModelHint_EN,SetModelHint_TW,SetModelHint_CN,SetModelHint_JP };
 
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {

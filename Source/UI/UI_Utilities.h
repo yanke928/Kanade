@@ -19,4 +19,7 @@ void DrawVerticalDashedGrid(u8 x, bool drawOrUnDraw, u8 gridsDensity);
 //see .c for details
 void DrawHorizonalDashedGrid(u8 y, bool drawOrUnDraw, u8 gridsDensity);
 
+//see .c for details
+u16 GetStringLengthInBytes(const char *string);
+
 #endif /* __UI_UTILITIES_H */

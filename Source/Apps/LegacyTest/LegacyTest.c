@@ -39,6 +39,8 @@
 
 #include "LegacyTest.h"
 
+#include "EBProtocolConfig.h"
+
 #define RECORD_HANDLER_PRIORITY tskIDLE_PRIORITY+7
 #define LEGACY_TEST_CURRENT_MAX CURRENT_MAX
 #define LEGACY_TEST_POWER_MAX POWER_MAX
@@ -178,10 +180,12 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	
 	/*Get parameters of the legacy test*/
 	if(test_Params->TestMode==ConstantCurrent)test_Params->Current =
-		GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language], 100, LEGACY_TEST_CURRENT_MAX,
+		GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language], 100, 
+	  EBD_Protocol_Config[CurrentSettings->EBD_Model]->CurrentMax,
 			1000, 100, "mA", 20);
 	else test_Params->Power=
-			GetTestParam(LegacyTestSetPower_Str[CurrentSettings->Language], 500, LEGACY_TEST_POWER_MAX,
+			GetTestParam(LegacyTestSetPower_Str[CurrentSettings->Language], 500, 
+	EBD_Protocol_Config[CurrentSettings->EBD_Model]->PowerMax,
 			10000, 500, "mW", 20);
 	test_Params->ProtectVolt =
 		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0,

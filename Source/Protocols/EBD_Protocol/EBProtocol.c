@@ -18,6 +18,8 @@
 #include "Settings.h"
 #include "ExceptionHandle.h"
 
+#include "EBProtocolConfig.h"
+
 #include "Startup.h"
 
 #define EBD_PACKET_RECEIVER_PRIORITY tskIDLE_PRIORITY+6
@@ -169,16 +171,16 @@ void USART1_IRQHandler(void)
 
 float DecodeVoltage(u8 startAddr)
 {
- float voltage;
- voltage=(float)((EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr+1] - 320) -
-		((int)(EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr+1]) - 5120) / 256 * 16) / 1000;
-	if (EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr+1] < 5120)
+	float voltage;
+	voltage = (float)((EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr + 1] - 320) -
+		((int)(EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr + 1]) - 5120) / 256 * 16) / 1000;
+	if (EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr + 1] < 5120)
 	{
-		voltage = (float)((EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr+1] - 320) +
-			((int)5376 - (EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr+1])) / 256 * 16) / 1000;
+		voltage = (float)((EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr + 1] - 320) +
+			((int)5376 - (EBDBackPacket[startAddr] * 256 + EBDBackPacket[startAddr + 1])) / 256 * 16) / 1000;
 	}
-	if (voltage< 0.1) voltage= 0; 
- return(voltage);
+	if (voltage < 0.1) voltage = 0;
+	return(voltage);
 }
 
 /**
@@ -193,16 +195,18 @@ void PacketDecode(void)
 	{
 		return;
 	}
-	
+
 	CurrentMeterData.Voltage = DecodeVoltage(EBD_MAIN_VOLATGE_ADDR);
-	
-#if VOLTAGE_DATA_PIN_SUPPORT
-	CurrentMeterData.VoltageDP=DecodeVoltage(EBD_DP_VOLATGE_ADDR);
-	CurrentMeterData.VoltageDM=DecodeVoltage(EBD_DM_VOLATGE_ADDR);
-#endif
-	
+
+	if (EBD_Protocol_Config[CurrentSettings->EBD_Model]->DataPinSupport)
+	{
+		CurrentMeterData.VoltageDP = DecodeVoltage(EBD_DP_VOLATGE_ADDR);
+		CurrentMeterData.VoltageDM = DecodeVoltage(EBD_DM_VOLATGE_ADDR);
+	}
+
 	CurrentMeterData.Current = (float)((EBDBackPacket[2] * 256 + EBDBackPacket[3]) -
-		(EBDBackPacket[2] * 256 + EBDBackPacket[3]) / 256 * 16) / CURRENT_DIVIDER;
+		(EBDBackPacket[2] * 256 + EBDBackPacket[3]) / 256 * 16) /
+		EBD_Protocol_Config[CurrentSettings->EBD_Model]->CurrentDivider;
 
 	CurrentMeterData.Power = CurrentMeterData.Voltage*CurrentMeterData.Current;
 }
@@ -354,9 +358,9 @@ void EBDPacketTransmitter(void *pvParameters)
 }
 
 /**
-  * @brief   
+  * @brief
 			 Send a message to EBDRxDataMsg to notice other apps
-       that a new EBD packet was fully received
+	   that a new EBD packet was fully received
 			 When flag "EBDPacketReceivingFlag"keeps false for
 			 5 times(about 50ms),delt with a timeout, if the
 			 new packet passed the check,ebdNewPacketHandleOnegai
@@ -366,7 +370,7 @@ void EBDPacketTransmitter(void *pvParameters)
 void EBDPacketReceiver(void *pvParameters)
 {
 	u8 i;
-	u8 ReceiveTimeOut=0;
+	u8 ReceiveTimeOut = 0;
 	while (1)
 	{
 		//If a new packet is being(or is)received
@@ -386,13 +390,13 @@ void EBDPacketReceiver(void *pvParameters)
 				EBDWatchCount = 0;//Clear WatchDog
 				ReceiveAddr = 0;//Clear ReceiveAddr for the next packet
 				PacketDecode();
-				xQueueSend(EBDRxDataMsg, &i, 0);	
-        EBDAliveFlag=true;				
+				xQueueSend(EBDRxDataMsg, &i, 0);
+				EBDAliveFlag = true;
 			}
 		}
 		if (EBDPacketReceivingFlag == true)
-		//If  "EBDPacketReceivingFlag" is reset to true by USART1_IRQHandler()
-		//,means the receiving process is still active
+			//If  "EBDPacketReceivingFlag" is reset to true by USART1_IRQHandler()
+			//,means the receiving process is still active
 		{
 			ReceiveTimeOut = 0;//Clear TimeOut
 		}
@@ -405,9 +409,9 @@ void EBDPacketReceiver(void *pvParameters)
 
 void EBD_Sync()
 {
- u8 i;
- xQueueReceive(EBDRxDataMsg, & i, portMAX_DELAY);
- xQueueReceive(EBDRxDataMsg, & i, portMAX_DELAY);
+	u8 i;
+	xQueueReceive(EBDRxDataMsg, &i, portMAX_DELAY);
+	xQueueReceive(EBDRxDataMsg, &i, portMAX_DELAY);
 }
 
 /**
@@ -439,13 +443,13 @@ void EBD_Init(void)
 	/*Send connection start string to EBD*/
 	vTaskDelay(100 / portTICK_RATE_MS);
 	EBDUSB_LinkStart(true);
-	EBDAliveFlag=true;
+	EBDAliveFlag = true;
 	/*Keep waiting until EBD responses*/
-	xQueueSend(InitStatusMsg,WaitingForEBD_Str[CurrentSettings->Language], 0);
-	while (xQueueReceive(EBDRxDataMsg, &i, 3000/ portTICK_RATE_MS) != pdPASS)
+	xQueueSend(InitStatusMsg, WaitingForEBD_Str[CurrentSettings->Language], 0);
+	while (xQueueReceive(EBDRxDataMsg, &i, 3000 / portTICK_RATE_MS) != pdPASS)
 	{
-	 EBDUSB_LinkStart(true);
-	}		
+		EBDUSB_LinkStart(true);
+	}
 	EBD_Exception_Handler_Init();
 	/*Update initStatus*/
 	xQueueSend(InitStatusMsg, EBDConnected_Str[CurrentSettings->Language], 0);

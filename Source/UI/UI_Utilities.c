@@ -50,6 +50,20 @@ u8 GetStringGraphicalLength(const char string[])
 }
 
 /**
+  * @brief Get string length in bytes
+
+	  @retval The offset
+  */
+u16 GetStringLengthInBytes(const char *string)
+{
+	u16 i = 0;
+	while (string[i] != 0) i++;
+	i++;
+	return i;
+}
+
+
+/**
   * @brief  Draw or unDraw a vertical dashed grid with given density
 
 * @param    x:Position

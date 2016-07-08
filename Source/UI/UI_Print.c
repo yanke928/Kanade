@@ -52,19 +52,6 @@ u16 FindSplitAddr(u8 xLengthAvailable, const char *string, u16 startAddr, u8 fon
 }
 
 /**
-  * @brief Get string length in bytes
-
-	  @retval The offset
-  */
-u16 GetStringLengthInBytes(const char *string)
-{
-	u16 i = 0;
-	while (string[i] != 0) i++;
-	i++;
-	return i;
-}
-
-/**
   * @brief  Show string in a box-like area
 
 	 @param  x1,y1,x2,y2;Rectangular area

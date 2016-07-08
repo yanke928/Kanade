@@ -32,6 +32,8 @@
 
 #include "UI_Dialogue.h"
 
+#include "EBProtocolConfig.h"
+
 #include "USBMeter.h"
 
 #define USB_METER_PRIORITY tskIDLE_PRIORITY+3
@@ -169,7 +171,8 @@ void DisplayBasicData(char tempString[], u8 currentStatus)
 		OLED_ShowAnyString(80, 24, "In", NotOnSelect, 8);
 		OLED_ShowAnyString(92, 24, tempString, NotOnSelect, 8);
 	}
-#if VOLTAGE_DATA_PIN_SUPPORT
+if(EBD_Protocol_Config[CurrentSettings->EBD_Model]->DataPinSupport)	
+{
 	if (currentStatus == USBMETER_ONLY)
 	{
 		GenerateRTCDateString(tempString);
@@ -185,7 +188,9 @@ void DisplayBasicData(char tempString[], u8 currentStatus)
 		OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
 		OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
 	}
-#else
+}
+else
+{
 	if (currentStatus == USBMETER_ONLY)
 	{
 		GenerateRTCDateString(tempString);
@@ -195,7 +200,7 @@ void DisplayBasicData(char tempString[], u8 currentStatus)
 		GenerateRTCWeekString(tempString);
 		OLED_ShowString(96, 32, tempString);
 	}	
- #endif
+}
 }
 
 /**

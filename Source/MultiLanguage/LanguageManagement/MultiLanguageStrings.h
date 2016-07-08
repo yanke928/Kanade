@@ -83,6 +83,8 @@ extern const char* const SelectLeagcyTestMode_Str[LanguageNum];
 extern const char* const SelectLeagcyTestModeSubString_Str[LanguageNum];
 extern const char* const SelectLeagcyTestModeButtons_Str[LanguageNum];
 extern const char* const LegacyTestSetPower_Str[LanguageNum];
+extern const char* const SetTimeHint_Str[LanguageNum];
+extern const char* const SetModelHint_Str[LanguageNum];
 
 extern const OLED_PositionStruct  ComfirmationPositions[LanguageNum][2];
 extern const OLED_PositionStruct  SelectLegacyTestModePositions[LanguageNum][2];

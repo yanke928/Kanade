@@ -14,8 +14,11 @@ void Settings_Init(void);
 typedef struct
 {
  u8 Language;
+ u8 EBD_Model;
 }Settings_Struct;
 
 extern Settings_Struct* CurrentSettings;
+
+void GetNecessarySettings(void);
 
 #endif /* __SETTINGS_H */

@@ -22,20 +22,24 @@
 #include "UI_Menu.h"
 #include "UI_Dialogue.h"
 #include "UI_Adjust.h"
+#include "UI_Utilities.h"
 #include "MultiLanguageStrings.h"
 
 #include "Settings.h"
+#include "EBProtocolConfig.h"
 #include "About.h"
 
 Settings_Struct* CurrentSettings = (Settings_Struct*)0x0801c000;
 
 Settings_Struct SettingsBkp;
 
-const Settings_Struct DefaultSettings = { 0 };
+const Settings_Struct DefaultSettings = { 0 , 2 };
 
 void SetLanguage(void);
 
 void TimeSettings(void);
+
+void ModelSettings(void);
 
 void MountOrUnMountDisk(void);
 
@@ -73,6 +77,7 @@ void Settings()
 	case 0:MountOrUnMountDisk(); break;
 	case 1:TimeSettings(); break;
 	case 3:SetLanguage(); break;
+	case 4:ModelSettings(); break;
 	case 5:About();
 	}
 }
@@ -159,7 +164,7 @@ void SetLanguage()
 	menuParams.ItemNum = 4;
 	menuParams.FastSpeed = 5;
 	memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
-	ShowSmallDialogue("Language", 1000, true);
+	//ShowSmallDialogue("Language", 1000, true);
 
 	UI_Menu_Init(&menuParams);
 
@@ -189,6 +194,7 @@ void SetLanguage()
 bool CheckSettings()
 {
 	if (CurrentSettings->Language > LanguageNum - 1) return false;
+	if (CurrentSettings->EBD_Model > EBD_MODEL_NUM - 1) return false;
 	return true;
 }
 
@@ -209,6 +215,7 @@ void Settings_Init()
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		OLED_Refresh_Gram();
 		xSemaphoreGive(OLEDRelatedMutex);
+		GetNecessarySettings();
 	}
 }
 
@@ -278,3 +285,48 @@ void TimeSettings()
 	ShowSmallDialogue(TimeSetting_Str[CurrentSettings->Language], 1000, true);
 }
 
+void ModelSettings()
+{
+	u16 addr = 0;
+	u8 i;
+	UI_Menu_Param_Struct menuParams;
+	u8 selection;
+	char tempString[100];
+	for (i = 0; i < EBD_MODEL_NUM; i++)
+	{
+		strcpy(tempString + addr, EBD_Protocol_Descriptors[i]);
+		addr += GetStringLengthInBytes(EBD_Protocol_Descriptors[i]);
+		if (i < EBD_MODEL_NUM - 1)
+			tempString[addr - 1] = '%';
+	}
+	menuParams.ItemString = tempString;
+	menuParams.DefaultPos = 0;
+	menuParams.ItemNum = EBD_MODEL_NUM;
+	menuParams.FastSpeed = 5;
+	memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
+
+	UI_Menu_Init(&menuParams);
+
+	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
+	UI_Menu_DeInit();
+	SettingsBkp.EBD_Model = selection;
+	SaveSettings();
+	ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language], 1000, true);
+}
+
+/**
+  * @brief  Get necessary settings when current settings is not right
+
+  * @param  None
+
+  */
+void GetNecessarySettings()
+{
+	ShowSmallDialogue("Set Language", 1000, true);
+	SetLanguage();
+	ShowSmallDialogue(SetTimeHint_Str[CurrentSettings->Language], 1000, true);
+	TimeSettings();
+	ShowSmallDialogue(SetModelHint_Str[CurrentSettings->Language], 1000, true);
+	ModelSettings();
+	ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language], 1000, true);
+}
