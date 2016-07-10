@@ -29,4 +29,10 @@ void GenerateVirtualRTCString(char string[]);
 //see .c for details
 void VirtualRTC_Init(void);
 
+//see .c for details
+void VirtualRTC_Pause(void);
+
+//see .c for details
+void VirtualRTC_Resume(void);
+
 #endif /* __VirtualRTC_H */

@@ -136,36 +136,85 @@ void CreateRecordFileHeader()
 /**
   * @brief  Select the mode of legacy test(CC or CP)
 
-    @rtval mode
+	@rtval mode
   */
 u8 SelectLegacyTestMode()
 {
- u8 mode;
- UI_Button_Param_Struct selectModeButtonParams;
-	
- selectModeButtonParams.ButtonString=SelectLeagcyTestModeButtons_Str[CurrentSettings->Language];
- selectModeButtonParams.ButtonNum=2;
- selectModeButtonParams.DefaultValue=0;
- selectModeButtonParams.Positions=SelectLegacyTestModePositions[CurrentSettings->Language];
- 
- xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
- OLED_Clear();
- xSemaphoreGive(OLEDRelatedMutex);
- 
- ShowDialogue(SelectLeagcyTestMode_Str[CurrentSettings->Language],
-	SelectLeagcyTestModeSubString_Str[CurrentSettings->Language],"");
- 
- UI_Button_Init(&selectModeButtonParams);
- 
- xQueueReceive(UI_ButtonMsg, &mode, portMAX_DELAY);
- UI_Button_DeInit();
- IgnoreNextKeyEvent();
- 
- xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
- OLED_Clear();
- xSemaphoreGive(OLEDRelatedMutex);
- 
- return mode;
+	u8 mode;
+	UI_Button_Param_Struct selectModeButtonParams;
+
+	selectModeButtonParams.ButtonString = SelectLeagcyTestModeButtons_Str[CurrentSettings->Language];
+	selectModeButtonParams.ButtonNum = 2;
+	selectModeButtonParams.DefaultValue = 0;
+	selectModeButtonParams.Positions = SelectLegacyTestModePositions[CurrentSettings->Language];
+
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
+
+	ShowDialogue(SelectLeagcyTestMode_Str[CurrentSettings->Language],
+		SelectLeagcyTestModeSubString_Str[CurrentSettings->Language], "");
+
+	UI_Button_Init(&selectModeButtonParams);
+
+	xQueueReceive(UI_ButtonMsg, &mode, portMAX_DELAY);
+	UI_Button_DeInit();
+	IgnoreNextKeyEvent();
+
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
+
+	return mode;
+}
+
+/**
+  * @brief Start or recover load
+  */
+void StartOrRecoverLoad(Legacy_Test_Param_Struct* test_Params, bool *protectedFlag)
+{
+	if (test_Params->TestMode == ConstantCurrent)
+		EBDSendLoadCommand(test_Params->Current, StartTest);
+	else
+		EBDSendLoadCommand((float)test_Params->Power / CurrentMeterData.Voltage, StartTest);
+	for (;;)
+	{
+		EBD_Sync();
+
+		/*If protection triggered,undo the legacy test*/
+		if (CurrentMeterData.Voltage < (float)(test_Params->ProtectVolt) / 1000 ||
+			CurrentMeterData.Voltage < 0.5)
+		{
+			*protectedFlag = true;
+			vTaskDelay(200 / portTICK_RATE_MS);
+			EBDSendLoadCommand(0, StopTest);
+			break;
+		}
+
+		/*Break if the load command effects*/
+		if (CurrentMeterData.Current > (float)(test_Params->Current) / 1010 &&
+			CurrentMeterData.Current < (float)(test_Params->Current) / 990 &&
+			test_Params->TestMode == ConstantCurrent)
+		{
+			*protectedFlag = false;
+			break;
+		}
+
+		if (CurrentMeterData.Power > (float)(test_Params->Power) / 1050 &&
+			CurrentMeterData.Power < (float)(test_Params->Power) / 950 &&
+			test_Params->TestMode == ConstantPower)
+		{
+			*protectedFlag = false;
+			break;
+		}
+
+		vTaskDelay(200 / portTICK_RATE_MS);
+		if (test_Params->TestMode == ConstantCurrent)
+			EBDSendLoadCommand(test_Params->Current, StartTest);
+		else
+			EBDSendLoadCommand((float)test_Params->Power / CurrentMeterData.Voltage, KeepTest);
+	}
+
 }
 
 /**
@@ -175,17 +224,17 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 {
 	bool protectedFlag;
 	*status = LEGACY_TEST;
-	
-	test_Params->TestMode=SelectLegacyTestMode();
-	
+
+	test_Params->TestMode = SelectLegacyTestMode();
+
 	/*Get parameters of the legacy test*/
-	if(test_Params->TestMode==ConstantCurrent)test_Params->Current =
-		GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language], 100, 
-	  EBD_Protocol_Config[CurrentSettings->EBD_Model]->CurrentMax,
+	if (test_Params->TestMode == ConstantCurrent)test_Params->Current =
+		GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language], 100,
+			EBD_Protocol_Config[CurrentSettings->EBD_Model]->CurrentMax,
 			1000, 100, "mA", 20);
-	else test_Params->Power=
-			GetTestParam(LegacyTestSetPower_Str[CurrentSettings->Language], 500, 
-	EBD_Protocol_Config[CurrentSettings->EBD_Model]->PowerMax,
+	else test_Params->Power =
+		GetTestParam(LegacyTestSetPower_Str[CurrentSettings->Language], 500,
+			EBD_Protocol_Config[CurrentSettings->EBD_Model]->PowerMax,
 			10000, 500, "mW", 20);
 	test_Params->ProtectVolt =
 		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0,
@@ -232,50 +281,8 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	/*Sync EBD to meet the chance to send load command*/
 	EBD_Sync();
 	vTaskDelay(200);
-	
-	if(test_Params->TestMode==ConstantCurrent)
-	EBDSendLoadCommand(test_Params->Current, StartTest);
-	else
-	EBDSendLoadCommand((float)test_Params->Power/CurrentMeterData.Voltage, StartTest);	
 
-	/*Wait for load command effects*/
-	for (;;)
-	{
-		EBD_Sync();
-
-		/*If protection triggered,undo the legacy test*/
-		if (CurrentMeterData.Voltage < (float)(test_Params->ProtectVolt) / 1000 ||
-			CurrentMeterData.Voltage < 0.5)
-		{
-			protectedFlag = true;
-			vTaskDelay(200 / portTICK_RATE_MS);
-			EBDSendLoadCommand(0, StopTest);
-			break;
-		}
-
-		/*Break if the load command effects*/
-		if (CurrentMeterData.Current > (float)(test_Params->Current) / 1010 &&
-			CurrentMeterData.Current < (float)(test_Params->Current) / 990&&
-		test_Params->TestMode==ConstantCurrent)
-		{
-			protectedFlag = false;
-			break;
-		}
-		
-		if (CurrentMeterData.Power > (float)(test_Params->Power) / 1050 &&
-			CurrentMeterData.Power < (float)(test_Params->Power) / 950&&
-		test_Params->TestMode==ConstantPower)		
-		{
-			protectedFlag = false;
-			break;
-		}
-		
-		vTaskDelay(200 / portTICK_RATE_MS);
-	  if(test_Params->TestMode==ConstantCurrent)
-   	EBDSendLoadCommand(test_Params->Current, StartTest);
-	  else
-	  EBDSendLoadCommand((float)test_Params->Power/CurrentMeterData.Voltage, KeepTest);	
-	}
+	StartOrRecoverLoad(test_Params, &protectedFlag);
 
 	/*Delete logo and initStatus tasks*/
 	LogoWithInitStatus_DeInit();

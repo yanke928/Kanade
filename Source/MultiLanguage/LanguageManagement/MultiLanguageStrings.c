@@ -477,6 +477,18 @@ const char SetModelHint_CN[] ="型号设置";
 const char SetModelHint_JP[] ="タイプの設定";
 const char* const SetModelHint_Str[] = { SetModelHint_EN,SetModelHint_TW,SetModelHint_CN,SetModelHint_JP };
 
+const char SystemOverHeat_EN[] ="System OverHeat";
+const char SystemOverHeat_TW[] ="系統過熱";
+const char SystemOverHeat_CN[] ="系统过热";
+const char SystemOverHeat_JP[] ="オーバーヒート";
+const char* const SystemOverHeat_Str[] = { SystemOverHeat_EN,SystemOverHeat_TW,SystemOverHeat_CN,SystemOverHeat_JP };
+
+const char TestPaused_EN[] ="Test paused";
+const char TestPaused_TW[] ="測試已暫停";
+const char TestPaused_CN[] ="测试已暂停";
+const char TestPaused_JP[] ="テスト一時停止";
+const char* const TestPaused_Str[] = { TestPaused_EN,TestPaused_TW,TestPaused_CN,TestPaused_JP };
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},

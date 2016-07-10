@@ -29,6 +29,7 @@
 #include "FastCharge_Trigger.h"
 #include "LegacyTest.h"
 #include "MassStorage.h"
+#include "ExceptionHandle.h"
 
 #include "UI_Dialogue.h"
 
@@ -60,6 +61,10 @@ void USBMeter(void *pvParameters)
 			DisplayRecordData(tempString);
 		}
 		xSemaphoreGive(OLEDRelatedMutex);
+		if (InternalTemperature > SYSTEM_OVERHEAT_TEMPERATURE)
+		{
+			System_OverHeat_Exception_Handler(status, &legacy_Test_Params);
+		}
 		if (status == LEGACY_TEST)
 		{
 			if (CurrentMeterData.Voltage * 1000 < legacy_Test_Params.ProtectVolt ||
@@ -68,8 +73,13 @@ void USBMeter(void *pvParameters)
 				StopRecord(&status, 1);
 				goto Refresh;
 			}
-			if(legacy_Test_Params.TestMode==ConstantPower)
-				EBDSendLoadCommand((float)legacy_Test_Params.Power/CurrentMeterData.Voltage, KeepTest);	
+			if (legacy_Test_Params.TestMode == ConstantPower)
+			{
+				if (CurrentMeterData.Current < 0.1)
+					EBDSendLoadCommand((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, StartTest);
+				else
+					EBDSendLoadCommand((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, KeepTest);
+			}
 		}
 		if (xQueueReceive(Key_Message, &keyMessage, 1000 / portTICK_RATE_MS) == pdPASS)
 		{
@@ -171,36 +181,36 @@ void DisplayBasicData(char tempString[], u8 currentStatus)
 		OLED_ShowAnyString(80, 24, "In", NotOnSelect, 8);
 		OLED_ShowAnyString(92, 24, tempString, NotOnSelect, 8);
 	}
-if(EBD_Protocol_Config[CurrentSettings->EBD_Model]->DataPinSupport)	
-{
-	if (currentStatus == USBMETER_ONLY)
+	if (EBD_Protocol_Config[CurrentSettings->EBD_Model]->DataPinSupport)
 	{
-		GenerateRTCDateString(tempString);
-		OLED_ShowString(0, 32, tempString);
-		GenerateRTCTimeString(tempString);
-		OLED_ShowString(0, 48, tempString);
-		GenerateRTCWeekString(tempString);
-		OLED_ShowString(104, 32, tempString);
-		sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDP);
-		OLED_ShowAnyString(92, 48, tempString, NotOnSelect, 8);
-		sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDM);
-		OLED_ShowAnyString(92, 56, tempString, NotOnSelect, 8);
-		OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
-		OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
+		if (currentStatus == USBMETER_ONLY)
+		{
+			GenerateRTCDateString(tempString);
+			OLED_ShowString(0, 32, tempString);
+			GenerateRTCTimeString(tempString);
+			OLED_ShowString(0, 48, tempString);
+			GenerateRTCWeekString(tempString);
+			OLED_ShowString(104, 32, tempString);
+			sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDP);
+			OLED_ShowAnyString(92, 48, tempString, NotOnSelect, 8);
+			sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDM);
+			OLED_ShowAnyString(92, 56, tempString, NotOnSelect, 8);
+			OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
+			OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
+		}
 	}
-}
-else
-{
-	if (currentStatus == USBMETER_ONLY)
+	else
 	{
-		GenerateRTCDateString(tempString);
-		OLED_ShowString(0, 32, tempString);
-		GenerateRTCTimeString(tempString);
-		OLED_ShowString(24, 48, tempString);
-		GenerateRTCWeekString(tempString);
-		OLED_ShowString(96, 32, tempString);
-	}	
-}
+		if (currentStatus == USBMETER_ONLY)
+		{
+			GenerateRTCDateString(tempString);
+			OLED_ShowString(0, 32, tempString);
+			GenerateRTCTimeString(tempString);
+			OLED_ShowString(24, 48, tempString);
+			GenerateRTCWeekString(tempString);
+			OLED_ShowString(96, 32, tempString);
+		}
+	}
 }
 
 /**

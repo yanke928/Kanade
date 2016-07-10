@@ -124,6 +124,7 @@ void TemperatureHandler(void *pvParameters)
 {
 	u8 m, n, updateTempCount;
 	u32 p;
+	bool firstStart=true;
 	volatile uint16_t FirstLevelADCFilterTank[ADC_FILTER_ITEM_NUM][ADC_FILTER_TANK_SIZE];
 	volatile uint16_t SecondLevelADCFilterTank[ADC_FILTER_ITEM_NUM][ADC_FILTER_TANK_SIZE];
 	updateTempCount = 0;
@@ -149,6 +150,13 @@ void TemperatureHandler(void *pvParameters)
 						SecondLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n - 1];
 				}
 				SecondLevelADCFilterTank[m][0] = p / ADC_FILTER_TANK_SIZE;
+				if(firstStart) 
+				{
+				 for(n = 1; n < ADC_FILTER_TANK_SIZE; n++)
+					{
+					 SecondLevelADCFilterTank[m][n] = p / ADC_FILTER_TANK_SIZE;
+					}
+				}
 				p = 0;
 				for (n = 0; n < ADC_FILTER_TANK_SIZE; n++)
 				{
@@ -156,6 +164,7 @@ void TemperatureHandler(void *pvParameters)
 				}
 				FilteredADCValue[m] = p / ADC_FILTER_TANK_SIZE;
 			}
+			firstStart=false;
 		}
 		/*Else add a new record to sub-filter tank*/
 		else
@@ -190,7 +199,7 @@ void TemperatureHandler(void *pvParameters)
 				CalculateExtTemp();
 			}
 		}
-		vTaskDelay(10 / portTICK_RATE_MS);
+		vTaskDelay(5 / portTICK_RATE_MS);
 	}
 }
 

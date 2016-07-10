@@ -24,6 +24,8 @@ volatile unsigned long SecondNumNow;
 
 unsigned long StartSecondNum;
 
+unsigned long SecondBkp;
+
 xTaskHandle VirtualRTCHandle = NULL;
 
 /**
@@ -87,3 +89,27 @@ void VirtualRTC_Init(void)
 	xTaskCreate(VirtualRTC_Handler, "VirtualClock",
 		128, NULL, VIRTUAL_CLOCK_UPDATE_PRIORITY, &VirtualRTCHandle);
 }
+
+/**
+  * @brief   Pause virtual RTC
+  * @retval : None
+  */
+void VirtualRTC_Pause(void)
+{
+	SecondBkp = SecondNum;
+	if (VirtualRTCHandle != NULL)
+		vTaskSuspend(VirtualRTCHandle);
+}
+
+/**
+  * @brief   Resume virtual RTC
+  * @retval : None
+  */
+void VirtualRTC_Resume(void)
+{
+	SecondNumNow = RTC_GetCounter();
+	StartSecondNum = SecondNumNow - SecondBkp;
+	if (VirtualRTCHandle != NULL)
+		vTaskResume(VirtualRTCHandle);
+}
+

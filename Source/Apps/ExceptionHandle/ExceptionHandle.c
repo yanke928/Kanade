@@ -12,14 +12,28 @@
 #include "UI_Print.h"
 
 #include "SSD1306.h"
+#include "TempSensors.h"
 #include "Keys.h"
 #include "LED.h"
+#include "Music.h"
 #include "EBProtocol.h"
+#include "VirtualRTC.h"
+
+#include "USBMeter.h"
+#include "LegacyTest.h"
+
+#include "Settings.h"
+#include "MultiLanguageStrings.h"
 
 #include "ExceptionHandle.h"
 
 #define EBD_EXCEPTION_HANDLER_PRIORITY tskIDLE_PRIORITY+6
 
+/**
+  * @brief This hook function helps to report stackoverflow exception
+
+  * @retval None
+  */
 void vApplicationStackOverflowHook(TaskHandle_t xTask,
 	signed char *pcTaskName)
 {
@@ -37,6 +51,11 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask,
 	while (1);
 }
 
+/**
+  * @brief Show application create failed
+
+  * @retval None
+  */
 void ApplicationNewFailed(const char * appName)
 {
 	char tempString[60];
@@ -50,6 +69,11 @@ void ApplicationNewFailed(const char * appName)
 	while (1);
 }
 
+/**
+  * @brief Show xx Fault occurred
+
+  * @retval None
+  */
 void ShowFault(char * string)
 {
 	xSemaphoreGive(OLEDRelatedMutex);
@@ -72,6 +96,12 @@ void ShowFault(char * string)
 	}
 }
 
+/**
+  * @brief Try to reconnect EBD automatically when EBD keeps not
+responding for 3s
+
+  * @retval None
+  */
 void EBD_Exception_Handler(void *pvParameters)
 {
 	portTickType xLastWakeTime;
@@ -97,6 +127,89 @@ void EBD_Exception_Handler(void *pvParameters)
 	}
 }
 
+/**
+  * @brief  Stop EBD unconditionally
+
+  * @retval None
+  */
+void Stop_Any_EBD_Load()
+{
+	for (;;)
+	{
+		EBDSendLoadCommand(0, StopTest);
+		EBD_Sync();
+		if (CurrentMeterData.Current < 0.05) break;
+		vTaskDelay(200 / portTICK_RATE_MS);
+	}
+}
+
+void Show_OverHeat_Temperature()
+{
+	char tempString[20];
+	u8 addr;
+	u8 length;
+	sprintf(tempString, "%.1fC-->%.1fC", InternalTemperature, (float)SYSTEM_OVERHEAT_RECOVER_TEMPERATURE);
+	length = GetStringGraphicalLength(tempString);
+	addr = 63 - length * 4;
+	OLED_ShowAnyString(addr, 42, tempString, NotOnSelect, 16);
+}
+
+/**
+  * @brief  This function helps to deal with overheat exception
+
+  * @retval None
+  */
+void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* params)
+{
+	bool i;
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
+	SoundStart(Alarm);
+	Show_OverHeat_Temperature();
+	if (status != USBMETER_ONLY)
+	{
+		ShowDialogue(SystemOverHeat_Str[CurrentSettings->Language],
+			TestPaused_Str[CurrentSettings->Language], "");
+		vTaskSuspend(RecordHandle);
+		VirtualRTC_Pause();
+		if (status == LEGACY_TEST)
+			Stop_Any_EBD_Load();
+	}
+	else
+	{
+		ShowDialogue(SystemOverHeat_Str[CurrentSettings->Language],
+			SystemOverHeat_Str[CurrentSettings->Language], "");
+	}
+	for (;;)
+	{
+		Show_OverHeat_Temperature();
+		vTaskDelay(500 / portTICK_RATE_MS);
+		if (InternalTemperature < SYSTEM_OVERHEAT_RECOVER_TEMPERATURE)
+		{
+			if (status == LEGACY_TEST)
+			{
+				StartOrRecoverLoad(params, &i);
+			}
+			break;
+		}
+	}
+	SoundStop();
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
+	if (status != USBMETER_ONLY)
+	{
+		vTaskResume(RecordHandle);
+		VirtualRTC_Resume();
+	}
+}
+
+/**
+  * @brief  Init EBD exception handler
+
+  * @retval None
+  */
 void EBD_Exception_Handler_Init(void)
 {
 	xTaskCreate(EBD_Exception_Handler, "EBD Exception Handler",
