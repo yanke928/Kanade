@@ -15,6 +15,9 @@ typedef struct
 {
  u8 Language;
  u8 EBD_Model;
+ u16 InternalTemperature_Max;
+ u16 ExternalTemperature_Max;
+ u16 Protection_Resume_Gap;
 }Settings_Struct;
 
 extern Settings_Struct* CurrentSettings;

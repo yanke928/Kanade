@@ -61,7 +61,8 @@ void USBMeter(void *pvParameters)
 			DisplayRecordData(tempString);
 		}
 		xSemaphoreGive(OLEDRelatedMutex);
-		if (InternalTemperature > SYSTEM_OVERHEAT_TEMPERATURE)
+		if (InternalTemperature > CurrentSettings->InternalTemperature_Max||
+			  ExternalTemperature > CurrentSettings->ExternalTemperature_Max)
 		{
 			System_OverHeat_Exception_Handler(status, &legacy_Test_Params);
 		}

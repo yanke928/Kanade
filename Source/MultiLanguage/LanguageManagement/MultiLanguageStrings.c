@@ -75,16 +75,16 @@ const char Saved_CN[] = "已保存";
 const char Saved_JP[] = "保存";
 const char* const Saved_Str[] = { Saved_EN,Saved_TW,Saved_CN,Saved_JP };
 
-const char Settings_EN[]="Unmount Disk%Clock Settings%Buzzer Settings%Language%Set Model%System Info";
-const char Settings_TW[]="彈出SD卡%時間設置%警報設置%Language%型號設置%系統資訊";
-const char Settings_CN[] = "安全弹出存储卡%时间设置%蜂鸣器设置%Language%型号设置%系统信息" ;
-const char Settings_JP[] ="トメモリイジェク%時刻の設定%警告の設定%Language%タイプの設定%システム情報";
+const char Settings_EN[]="Unmount Disk%Clock Settings%OverHeat Control%Language%Set Model%System Info";
+const char Settings_TW[]="彈出SD卡%時間設置%溫度保護設置%Language%型號設置%系統資訊";
+const char Settings_CN[] = "安全弹出存储卡%时间设置%温度保护设置%Language%型号设置%系统信息" ;
+const char Settings_JP[] ="トメモリイジェク%時刻の設定%温度保護設定%Language%タイプの設定%システム情報";
 const char* const Settings_Str[] = { Settings_EN,Settings_TW,Settings_CN,Settings_JP };
 
-const char SettingsNoDisk_EN[]="Mount Disk%Clock Settings%Buzzer Settings%Language%Set Model%System Info";
-const char SettingsNoDisk_TW[]="掛載SD卡%時間設置%警報設置%Language%型號設置%系統資訊";
-const char SettingsNoDisk_CN[] = "挂载存储卡%时间设置%蜂鸣器设置%Language%型号设置%系统信息" ;
-const char SettingsNoDisk_JP[] ="トメモリマウント%時刻の設定%警告の設定%Language%タイプの設定%システム情報";
+const char SettingsNoDisk_EN[]="Mount Disk%Clock Settings%OverHeat Control%Language%Set Model%System Info";
+const char SettingsNoDisk_TW[]="掛載SD卡%時間設置%溫度保護設置%Language%型號設置%系統資訊";
+const char SettingsNoDisk_CN[] = "挂载存储卡%时间设置%温度保护设置%Language%型号设置%系统信息" ;
+const char SettingsNoDisk_JP[] ="トメモリマウント%時刻の設定%温度保護設定%Language%タイプの設定%システム情報";
 const char* const SettingsNoDisk_Str[] = { SettingsNoDisk_EN,SettingsNoDisk_TW,SettingsNoDisk_CN,SettingsNoDisk_JP };
 
 const char SettingsUnmounted_EN[]="Unmounted";
@@ -483,11 +483,41 @@ const char SystemOverHeat_CN[] ="系统过热";
 const char SystemOverHeat_JP[] ="オーバーヒート";
 const char* const SystemOverHeat_Str[] = { SystemOverHeat_EN,SystemOverHeat_TW,SystemOverHeat_CN,SystemOverHeat_JP };
 
+const char ExternalOverHeat_EN[] ="Device OverHeat";
+const char ExternalOverHeat_TW[] ="被測設備過熱";
+const char ExternalOverHeat_CN[] ="被测设备过热";
+const char ExternalOverHeat_JP[] ="被試験過熱";
+const char* const ExternalOverHeat_Str[] = { ExternalOverHeat_EN,ExternalOverHeat_TW,ExternalOverHeat_CN,ExternalOverHeat_JP };
+
 const char TestPaused_EN[] ="Test paused";
 const char TestPaused_TW[] ="測試已暫停";
 const char TestPaused_CN[] ="测试已暂停";
 const char TestPaused_JP[] ="テスト一時停止";
 const char* const TestPaused_Str[] = { TestPaused_EN,TestPaused_TW,TestPaused_CN,TestPaused_JP };
+
+const char Temperature_Unit_EN[] ="C";
+const char Temperature_Unit_TW[] ="度";
+const char Temperature_Unit_CN[] ="度";
+const char Temperature_Unit_JP[] ="摂氏";
+const char* const Temperature_Unit_Str[] = { Temperature_Unit_EN,Temperature_Unit_TW,Temperature_Unit_CN,Temperature_Unit_JP };
+
+const char SetInternalTemp_Max_EN[] ="Int.Temp Max";
+const char SetInternalTemp_Max_TW[] ="系统保護温度";
+const char SetInternalTemp_Max_CN[] ="系統保护溫度";
+const char SetInternalTemp_Max_JP[] ="本体温度保護";
+const char* const SetInternalTemp_Max_Str[] = { SetInternalTemp_Max_EN,SetInternalTemp_Max_TW,SetInternalTemp_Max_CN,SetInternalTemp_Max_JP };
+
+const char SetExternalTemp_Max_EN[] ="Ext.Temp Max";
+const char SetExternalTemp_Max_TW[] ="外部保護温度";
+const char SetExternalTemp_Max_CN[] ="外部保护溫度";
+const char SetExternalTemp_Max_JP[] ="外部温度保護";
+const char* const SetExternalTemp_Max_Str[] = { SetExternalTemp_Max_EN,SetExternalTemp_Max_TW,SetExternalTemp_Max_CN,SetExternalTemp_Max_JP };
+
+const char SetTempProtectResumeGap_EN[] ="Resume Gap";
+const char SetTempProtectResumeGap_TW[] ="保護恢復門限";
+const char SetTempProtectResumeGap_CN[] ="保护恢复门限";
+const char SetTempProtectResumeGap_JP[] ="回復しきい値";
+const char* const SetTempProtectResumeGap_Str[] = { SetTempProtectResumeGap_EN,SetTempProtectResumeGap_TW,SetTempProtectResumeGap_CN,SetTempProtectResumeGap_JP };
 
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {

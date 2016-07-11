@@ -143,12 +143,18 @@ void Stop_Any_EBD_Load()
 	}
 }
 
-void Show_OverHeat_Temperature()
+void Show_OverHeat_Temperature(u8 sensor)
 {
 	char tempString[20];
 	u8 addr;
 	u8 length;
-	sprintf(tempString, "%.1fC-->%.1fC", InternalTemperature, (float)SYSTEM_OVERHEAT_RECOVER_TEMPERATURE);
+	OLED_ShowAnyString(1, 42, "               ", NotOnSelect, 16);
+	if(sensor==0)
+	sprintf(tempString, "%.1fC>>%.1fC", InternalTemperature, 
+	(float)CurrentSettings->InternalTemperature_Max-CurrentSettings->Protection_Resume_Gap);
+	else
+	sprintf(tempString, "%.1fC>>%.1fC", ExternalTemperature, 
+	(float)CurrentSettings->ExternalTemperature_Max-CurrentSettings->Protection_Resume_Gap);		
 	length = GetStringGraphicalLength(tempString);
 	addr = 63 - length * 4;
 	OLED_ShowAnyString(addr, 42, tempString, NotOnSelect, 16);
@@ -162,15 +168,25 @@ void Show_OverHeat_Temperature()
 void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* params)
 {
 	bool i;
+	u8 sensor;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
 	SoundStart(Alarm);
-	Show_OverHeat_Temperature();
+	if(InternalTemperature > CurrentSettings->InternalTemperature_Max)
+	{
+	 sensor=0;
+	}
+	else sensor=1;
+	Show_OverHeat_Temperature(sensor);
 	if (status != USBMETER_ONLY)
 	{
+	  if(sensor==0)
 		ShowDialogue(SystemOverHeat_Str[CurrentSettings->Language],
 			TestPaused_Str[CurrentSettings->Language], "");
+		else
+		ShowDialogue(ExternalOverHeat_Str[CurrentSettings->Language],
+			TestPaused_Str[CurrentSettings->Language], "");			
 		vTaskSuspend(RecordHandle);
 		VirtualRTC_Pause();
 		if (status == LEGACY_TEST)
@@ -178,14 +194,21 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 	}
 	else
 	{
+		if(sensor==0)
 		ShowDialogue(SystemOverHeat_Str[CurrentSettings->Language],
 			SystemOverHeat_Str[CurrentSettings->Language], "");
+		else
+		ShowDialogue(ExternalOverHeat_Str[CurrentSettings->Language],
+			ExternalOverHeat_Str[CurrentSettings->Language], "");			
 	}
 	for (;;)
 	{
-		Show_OverHeat_Temperature();
+		Show_OverHeat_Temperature(sensor);
 		vTaskDelay(500 / portTICK_RATE_MS);
-		if (InternalTemperature < SYSTEM_OVERHEAT_RECOVER_TEMPERATURE)
+		if (((InternalTemperature < CurrentSettings->InternalTemperature_Max-CurrentSettings->Protection_Resume_Gap)
+			  &&(sensor==0))||
+		   ((ExternalTemperature < CurrentSettings->ExternalTemperature_Max-CurrentSettings->Protection_Resume_Gap)
+			  &&(sensor==1)))
 		{
 			if (status == LEGACY_TEST)
 			{

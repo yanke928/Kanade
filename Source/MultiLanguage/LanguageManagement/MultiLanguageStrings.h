@@ -87,6 +87,11 @@ extern const char* const SetTimeHint_Str[LanguageNum];
 extern const char* const SetModelHint_Str[LanguageNum];
 extern const char* const SystemOverHeat_Str[LanguageNum];
 extern const char* const TestPaused_Str[LanguageNum];
+extern const char* const Temperature_Unit_Str[LanguageNum];
+extern const char* const SetInternalTemp_Max_Str[LanguageNum];
+extern const char* const SetExternalTemp_Max_Str[LanguageNum];
+extern const char* const SetTempProtectResumeGap_Str[LanguageNum];
+extern const char* const ExternalOverHeat_Str[LanguageNum];
 
 extern const OLED_PositionStruct  ComfirmationPositions[LanguageNum][2];
 extern const OLED_PositionStruct  SelectLegacyTestModePositions[LanguageNum][2];

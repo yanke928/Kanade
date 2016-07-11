@@ -33,13 +33,15 @@ Settings_Struct* CurrentSettings = (Settings_Struct*)0x0801c000;
 
 Settings_Struct SettingsBkp;
 
-const Settings_Struct DefaultSettings = { 0 , 2 };
+const Settings_Struct DefaultSettings = { 0 , 2 ,75 ,120 ,5};
 
 void SetLanguage(void);
 
 void TimeSettings(void);
 
 void ModelSettings(void);
+
+void OverHeatSettings(void);
 
 void MountOrUnMountDisk(void);
 
@@ -76,6 +78,7 @@ void Settings()
 	{
 	case 0:MountOrUnMountDisk(); break;
 	case 1:TimeSettings(); break;
+	case 2:OverHeatSettings(); break;
 	case 3:SetLanguage(); break;
 	case 4:ModelSettings(); break;
 	case 5:About();
@@ -138,13 +141,13 @@ void SaveSettings()
 	FLASH_SetLatency(FLASH_Latency_2);
 	FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
 	FLASH_ErasePage(FLASH_SETTINGS_BLOCK);
+	p = (u16*)(&SettingsBkp);
 	do
 	{
-		p = (u16*)(&SettingsBkp);
 		FLASH_ProgramHalfWord(m + FLASH_SETTINGS_ADDR, *p);
 		i -= 2;
 		m += 2;
-		p += 2;
+		p++;
 	} while (i >= 0);
 	FLASH_Lock();
 }
@@ -195,6 +198,15 @@ bool CheckSettings()
 {
 	if (CurrentSettings->Language > LanguageNum - 1) return false;
 	if (CurrentSettings->EBD_Model > EBD_MODEL_NUM - 1) return false;
+	
+	if (CurrentSettings->InternalTemperature_Max > 85||
+		  CurrentSettings->InternalTemperature_Max < 55) return false;
+	
+	if (CurrentSettings->ExternalTemperature_Max > 200||
+		  CurrentSettings->ExternalTemperature_Max < 40) return false;
+	
+	if (CurrentSettings->Protection_Resume_Gap > 20||
+		  CurrentSettings->Protection_Resume_Gap < 5) return false;
 	return true;
 }
 
@@ -310,6 +322,28 @@ void ModelSettings()
 	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
 	UI_Menu_DeInit();
 	SettingsBkp.EBD_Model = selection;
+	SaveSettings();
+	ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language], 1000, true);
+}
+
+/**
+  * @brief  OverHeat settings
+
+  * @param  None
+
+  */
+void OverHeatSettings(void)
+{
+ memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
+ SettingsBkp.InternalTemperature_Max = GetTimeParam(SetInternalTemp_Max_Str[CurrentSettings->Language],
+		Temperature_Unit_Str[CurrentSettings->Language],
+		55, 85, CurrentSettings->InternalTemperature_Max);
+ SettingsBkp.ExternalTemperature_Max = GetTimeParam(SetExternalTemp_Max_Str[CurrentSettings->Language],
+		Temperature_Unit_Str[CurrentSettings->Language],
+		40, 200, CurrentSettings->ExternalTemperature_Max);
+ SettingsBkp.Protection_Resume_Gap = GetTimeParam(SetTempProtectResumeGap_Str[CurrentSettings->Language],
+		Temperature_Unit_Str[CurrentSettings->Language],
+		5, 20, CurrentSettings->Protection_Resume_Gap);
 	SaveSettings();
 	ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language], 1000, true);
 }

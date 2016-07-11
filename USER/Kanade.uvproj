@@ -679,6 +679,11 @@
               <FileType>1</FileType>
               <FilePath>..\Source\Protocols\EBD_Protocol\EBProtocol.c</FilePath>
             </File>
+            <File>
+              <FileName>EBProtocolConfig.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Protocols\EBD_Protocol\EBProtocolConfig.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
