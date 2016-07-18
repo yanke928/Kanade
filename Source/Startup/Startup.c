@@ -18,6 +18,7 @@
 #include "BadApplePlayer.h"
 #include "CPU_Usage.h"
 #include "MultiLanguageStrings.h"
+#include "W25Q64.h"
 #include "UI_Utilities.h"
 
 #include "mass_mal.h"
@@ -294,6 +295,8 @@ void LogoWithInitStatus_DeInit()
   */
 void SystemStartup(void *pvParameters)
 {
+	int i;
+	char tempString[20];
 	Key_Init();
 	OLED_Init();
 	if (RIGHT_KEY == KEY_ON)
@@ -305,8 +308,11 @@ void SystemStartup(void *pvParameters)
 	//SoundStart(Alarm);
 	LED_Animate_Init(LEDAnimation_Startup);
 	Settings_Init();
-	
-	//W25X_CS_Init();
+
+	W25Q64_Init();
+	i = W25X_GetChipID();
+	sprintf(tempString, "%d", i);
+	ShowSmallDialogue(tempString, 1000, true);
 
 	LogoWithInitStatus_Init();
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);

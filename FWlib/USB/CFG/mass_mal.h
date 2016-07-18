@@ -33,8 +33,8 @@ extern u32 Mass_Block_Size[2];
 extern u32 Mass_Block_Count[2];
 
 
-u16 MAL_Init (u8 lun);
-u16 MAL_GetStatus (u8 lun);
+u16 MAL_Init(u8 lun);
+u16 MAL_GetStatus(u8 lun);
 u16 MAL_Read(u8 lun, u32 Memory_Offset, u32 *Readbuff, u16 Transfer_Length);
 u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length);
 bool MAL_Mount(void);

@@ -50,8 +50,8 @@
 #define FLASH_BLOCK_SIZE		65536
 #define FLASH_PAGES_PER_SECTOR	FLASH_SECTOR_SIZE/FLASH_PAGE_SIZE
 
-#define FLASH_CS_ENABLE()      GPIO_ResetBits(GPIOA,GPIO_Pin_8)   
-#define FLASH_CS_DISABLE()     GPIO_SetBits(GPIOA,GPIO_Pin_8)    
+#define FLASH_CS_ENABLE()      GPIO_ResetBits(GPIOA,GPIO_Pin_4)   
+#define FLASH_CS_DISABLE()     GPIO_SetBits(GPIOA,GPIO_Pin_4)    
 
 void W25X_CS_Init(void);
 
@@ -114,5 +114,7 @@ void	W25X_Read_Sector(uint32_t nSector, u8* pBuffer);
 #if USE_WRITE_SECTOR
 void	W25X_Write_Sector(uint32_t nSector, u8* pBuffer);
 #endif
+
+void W25Q64_Init(void);
 
 #endif /* __W25Q64_H */

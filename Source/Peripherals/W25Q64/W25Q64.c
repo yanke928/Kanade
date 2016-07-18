@@ -6,12 +6,26 @@
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_spi.h"
+#include "stm32f10x_gpio.h"
 
 #define USE_BANK_SIZE         (unsigned long)0X10000
 
 #define DUMMY_BYTE           0xff
 
-u8 SPI_ReadWriteByte(u8 TxData);
+/*******************************************************************************
+* Function Name  : SPI_ReadWriteByte
+* Description    : SPI读写一个字节（发送完成后返回本次通讯读取的数据）
+* Input          : u8 TxData 待发送的数
+* Output         : None
+* Return         : u8 RxData 收到的数
+*******************************************************************************/
+u8 SPI_ReadWriteByte(u8 TxData)
+{
+	while ((SPI1->SR & 1 << 1) == 0);//等待发送区空				  
+	SPI1->DR = TxData;	 	  //发送一个byte   
+	while ((SPI1->SR & 1 << 0) == 0);//等待接收完一个byte  
+	return SPI1->DR;          //返回收到的数据		
+}
 
 /**
   * @brief Init GPIO for SPI FLASH CS pin
@@ -20,12 +34,42 @@ void W25X_CS_Init()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	FLASH_CS_DISABLE();
+
+}
+
+void W25Q64_Init()
+{
+	SPI_InitTypeDef  SPI_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1 | RCC_APB2Periph_AFIO, ENABLE);
+
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+	W25X_CS_Init();
+	FLASH_CS_DISABLE();
+
+	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+	SPI_InitStructure.SPI_Mode = SPI_Mode_Master;                    //设置SPI1为主模式
+	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;                  //SPI发送接收8位帧结构
+	SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;                //串行时钟在不操作时，时钟为高电平
+	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;                //第二个时钟沿开始采样数据
+	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;                //NSS信号由软件（使用SSI位）管理
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2; //定义波特率预分频的值:波特率预分频值为8
+	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;    //数据传输从MSB位开始
+	SPI_InitStructure.SPI_CRCPolynomial = 7;    //CRC值计算的多项式
+	SPI_Init(SPI1, &SPI_InitStructure);
+	/* Enable SPI1  */
+	SPI_Cmd(SPI1, ENABLE);   //使能SPI1外设	
 
 }
 
