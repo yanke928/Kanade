@@ -175,7 +175,7 @@ void UI_Adjust_Handler(void *pvParameters)
   */
 void UI_Adjust_Init(UI_Adjust_Param_Struct * adjustParams)
 {
-	UI_AdjustMsg = xQueueCreate(1, sizeof(u16));
+	UI_AdjustMsg = xQueueCreate(1, sizeof(u32));
 	CreateTaskWithExceptionControl(UI_Adjust_Handler, "UI_Adjust Handler",
 		256, adjustParams, UI_ADJUST_HANDLER_PRIORITY, &UI_Adjust_Handle);
 }

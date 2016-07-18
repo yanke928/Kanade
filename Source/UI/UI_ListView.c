@@ -211,7 +211,7 @@ void UI_ListView_Init(ListView_Param_Struct * listViewParams)
 {
 	UI_ListViewMsg = xQueueCreate(1, sizeof(int));
 	CreateTaskWithExceptionControl(UI_ListView_Handler, "UI_ListView Handler",
-		256, listViewParams, UI_LISTVIEW_HANDLER_PRIORITY, &UI_ListView_Handle);
+		300, listViewParams, UI_LISTVIEW_HANDLER_PRIORITY, &UI_ListView_Handle);
 }
 
 /**

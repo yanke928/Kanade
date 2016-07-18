@@ -166,7 +166,7 @@ void UI_Button_Init(UI_Button_Param_Struct * buttonParams)
 {
 	UI_ButtonMsg=xQueueCreate(1, sizeof(u8));
 	CreateTaskWithExceptionControl(UI_Button_Handler, "UI_Button Handler",
-	 256, buttonParams, UI_BUTTON_HANDLER_PRIORITY, &UI_ButtonHandle);
+	 300, buttonParams, UI_BUTTON_HANDLER_PRIORITY, &UI_ButtonHandle);
 }		
 
 /**

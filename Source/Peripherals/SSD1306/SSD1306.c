@@ -641,10 +641,10 @@ void SPI2_Init(void)
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);//使能IO口时钟
 
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+	//RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
 	/* Configure SPI2 pins: SCK, MISO and MOSI */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13| GPIO_Pin_15;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;//复用推挽输出
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
@@ -664,13 +664,14 @@ void SPI2_Init(void)
 	SPI_InitStructure.SPI_CPOL = SPI_CPOL_High; //时钟悬空高
 	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;//数据捕获于第二个时钟沿
 	SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;	//内部NSS信号有SSI位控制
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;//波特率预分频值为2
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;//波特率预分频值为2
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;//数据传输从MSB位开始
 	SPI_InitStructure.SPI_CRCPolynomial = 7; //SPI_CRCPolynomial定义了用于CRC值计算的多项式
 	SPI_Init(SPI2, &SPI_InitStructure);
 
 	/* Enable SPI2  */
 	SPI_Cmd(SPI2, ENABLE);
+  SPI_I2S_ClearITPendingBit(SPI2, SPI_I2S_IT_RXNE);
 
 }
 
@@ -734,12 +735,13 @@ void OLED_Init(void)
 	//SendLogString("SSD1306 Initializing...\n");
 	SPI2_Init();
 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	GPIO_ResetBits(GPIOC, GPIO_Pin_6);
 
 	OLED_WR_Byte(0xAE, OLED_CMD); //关闭显示
 	OLED_WR_Byte(0xD5, OLED_CMD); //设置时钟分频因子,震荡频率

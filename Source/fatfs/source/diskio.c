@@ -54,14 +54,7 @@ DSTATUS disk_initialize(
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-	int result;
-	if (pdrv)
-	{
-		return STA_NOINIT;
-	}
-	result = SD_Init();
-	if (result == 0) { return RES_OK; }
-	else { return STA_NOINIT; }
+	return 0;
 }
 
 
@@ -80,36 +73,19 @@ DRESULT disk_read(
 	u8 res = 0;
 	if (pdrv || !count)
 	{
-		return RES_PARERR;  //仅支持单磁盘操作，count不能等于0，否则返回参数错误
+		return RES_PARERR; 
 	}
-	//    if(!SD_DET())
-	//    {
-	//        return RES_NOTRDY;  //没有检测到SD卡，报NOT READY错误
-	//    }
-
-
-
-	if (count == 1)            //1个sector的读操作      
+	
+	if (count == 1)            
 	{
-		res = SD_ReadSingleBlock(sector, buff);
+		res = SD_ReadBlock( sector<<9, (u32 *)(&buff[0]) , 512);
 	}
-	else                    //多个sector的读操作     
+	else                 
 	{
-		res = SD_ReadMultiBlock(sector, buff, count);
+		res = SD_ReadMultiBlocks(sector<<9, (u32 *)(&buff[0]) , 512 , count );
 	}
-	/*
-	do
-	{
-		if(SD_ReadSingleBlock(sector, buff)!=0)
-		{
-			res = 1;
-			break;
-		}
-		buff+=512;
-	}while(--count);
-	*/
-	//处理返回值，将SPI_SD_driver.c的返回值转成ff.c的返回值
-	if (res == 0x00)
+	
+	if (res == SD_OK)
 	{
 		return RES_OK;
 	}
@@ -136,24 +112,19 @@ DRESULT disk_write(
 
 	if (pdrv || !count)
 	{
-		return RES_PARERR;  //仅支持单磁盘操作，count不能等于0，否则返回参数错误
+		return RES_PARERR;  
 	}
-	//    if(!SD_DET())
-	//    {
-	//        return RES_NOTRDY;  //没有检测到SD卡，报NOT READY错误
-	//    }
-
-		// 读写操作
+	
 	if (count == 1)
 	{
-		res = SD_WriteSingleBlock(sector, buff);
+		res = SD_WriteBlock( sector<<9, (u32 *)(&buff[0]) , 512);
 	}
 	else
 	{
-		res = SD_WriteMultiBlock(sector, buff, count);
+		res = SD_WriteMultiBlocks(sector<<9, (u32 *)(&buff[0]) , 512 , count );
 	}
-	// 返回值转换
-	if (res == 0)
+	
+	if (res == SD_OK)
 	{
 		return RES_OK;
 	}
@@ -180,32 +151,19 @@ DRESULT disk_ioctl(
 
 	if (pdrv)
 	{
-		return RES_PARERR;  //仅支持单磁盘操作，否则返回参数错误
+		return RES_PARERR; 
 	}
 
-	//FATFS目前版本仅需处理CTRL_SYNC，GET_SECTOR_COUNT，GET_BLOCK_SIZ三个命令
 	switch (cmd)
 	{
 	case CTRL_SYNC:
-		SD_CS_ENABLE();
-		if (SD_WaitReady() == 0)
-		{
-			res = RES_OK;
-		}
-		else
-		{
-			res = RES_ERROR;
-		}
-		SD_CS_DISABLE();
-		break;
-
+		   break;
 	case GET_BLOCK_SIZE:
 		*(WORD*)buff = 512;
 		res = RES_OK;
 		break;
 
 	case GET_SECTOR_COUNT:
-		*(DWORD*)buff = SD_GetCapacity();
 		res = RES_OK;
 		break;
 	default:

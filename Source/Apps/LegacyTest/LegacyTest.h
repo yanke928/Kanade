@@ -17,7 +17,7 @@ enum LegacyTestMode{ConstantCurrent=0,ConstantPower=1};
 typedef struct {
 	u16 Current;
 	u16 ProtectVolt;
-	u16 Power;
+	u32 Power;
 	u8 TestMode;
 }Legacy_Test_Param_Struct;
 

@@ -190,7 +190,11 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 		vTaskSuspend(RecordHandle);
 		VirtualRTC_Pause();
 		if (status == LEGACY_TEST)
+		{
 			Stop_Any_EBD_Load();
+			vTaskDelay(200/portTICK_RATE_MS);
+		}
+		EBD_Fan_TurnOn_Only();
 	}
 	else
 	{

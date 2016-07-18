@@ -4,9 +4,9 @@
 #include "stm32f10x.h"
 #include "stdbool.h"
 
-#define  LEDIOLow   GPIO_ResetBits(GPIOB, GPIO_Pin_5) 
+#define  LEDIOLow   GPIO_ResetBits(GPIOC, GPIO_Pin_3) 
 
-#define  LEDIOHigh  GPIO_SetBits(GPIOB, GPIO_Pin_5)
+#define  LEDIOHigh  GPIO_SetBits(GPIOC, GPIO_Pin_3)
 
 #define END true
 

@@ -12,14 +12,14 @@
       <ToolsetName>ARM-ADS</ToolsetName>
       <TargetOption>
         <TargetCommonOption>
-          <Device>STM32F103CB</Device>
+          <Device>STM32F103RD</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <Cpu>IROM(0x08000000,0x20000) IRAM(0x20000000,0x5000) CPUTYPE("Cortex-M3") CLOCK(72000000) ELITTLE</Cpu>
+          <Cpu>IROM(0x08000000,0x60000) IRAM(0x20000000,0x10000) CPUTYPE("Cortex-M3") CLOCK(72000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000 -FP0($$Device:STM32F103CB$Flash\STM32F10x_128.FLM))</FlashDriverDll>
-          <DeviceId>4401</DeviceId>
-          <RegisterFile>$$Device:STM32F103CB$Device\Include\stm32f10x.h</RegisterFile>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_512 -FS08000000 -FL080000 -FP0($$Device:STM32F103RD$Flash\STM32F10x_512.FLM))</FlashDriverDll>
+          <DeviceId>4600</DeviceId>
+          <RegisterFile>$$Device:STM32F103RD$Device\Include\stm32f10x.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -29,7 +29,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:STM32F103CB$SVD\STM32F103xx.svd</SFDFile>
+          <SFDFile>$$Device:STM32F103RD$SVD\STM32F103xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -171,7 +171,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -276,12 +276,12 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x5000</Size>
+                <Size>0x10000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x60000</Size>
               </IROM>
               <XRAM>
                 <Type>0</Type>
@@ -306,7 +306,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x20000</Size>
+                <Size>0x60000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -331,7 +331,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x5000</Size>
+                <Size>0x10000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -359,7 +359,7 @@
             <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD,USE_STM3210B_EVAL</Define>
+              <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD</Define>
               <Undefine></Undefine>
               <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol;..\Source\Peripherals;..\FWlib\sdcard;..\FWlib\usb;..\Source\Apps\USBMeter;..\Source\Apps\Virtual_Clock;..\Source\FreeRTOS_CLI;..\FWlib\usb\inc;..\Source\Apps\CommandLines;..\Source\Apps\BadApplePlayer;..\Source\Apps\CPU_Usage;..\Source\fatfs\include;..\Source\MultiLanguage\LanguageManagement;..\Source\UI;..\Source\Apps\Settings;..\Source\MultiLanguage\ChineseSimplified;..\Source\MultiLanguage\ChineseTraditional;..\Source\MultiLanguage\Japanese;..\Source\Apps\ExceptionHandle;..\Source\Apps\FastChage_Trigger;..\Source\Apps\StepUpTest;..\Source\Apps\LegacyTest;..\Source\Apps\About;..\FWlib\USB\CFG;..\FWlib\USB\CORE;..\Source\Apps\MassStorage</IncludePath>
             </VariousControls>
@@ -405,14 +405,14 @@
           <GroupName>startup</GroupName>
           <Files>
             <File>
-              <FileName>startup_stm32f10x_md.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\CMSIS\startup\startup_stm32f10x_md.s</FilePath>
-            </File>
-            <File>
               <FileName>Startup.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Startup\Startup.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup_stm32f10x_hd.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\CMSIS\startup\startup_stm32f10x_hd.s</FilePath>
             </File>
           </Files>
         </Group>
@@ -483,6 +483,11 @@
               <FileName>stm32f10x_pwr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\FWlib\src\stm32f10x_pwr.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_sdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\src\stm32f10x_sdio.c</FilePath>
             </File>
           </Files>
         </Group>

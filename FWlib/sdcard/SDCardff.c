@@ -18,6 +18,7 @@ FILINFO Finfo;
 char * myts_file = "0:/a.txt";
 
 bool SDCardMountStatus = false;
+SD_CardInfo SDCardInfo;
 
 u32 SD_Capacity = 0;
 

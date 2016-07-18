@@ -31,20 +31,20 @@
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Stack_Size      EQU     0x00000600
+Stack_Size      EQU     0x00000400
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
 __initial_sp
 
-__initial_spTop EQU    0x20000400                 ; stack used for SystemInit_ExtMemCtl
+;__initial_spTop EQU    0x20000500                 ; stack used for SystemInit_ExtMemCtl
                                                   ; always internal RAM used 
                                                   
 ; <h> Heap Configuration
 ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Heap_Size       EQU     0x000000d00
+Heap_Size       EQU     0x000000000
 
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
 __heap_base
@@ -54,6 +54,10 @@ __heap_limit
                 PRESERVE8
                 THUMB
 
+				;修改相关中断服务函数由FreeRTOS管理
+				IMPORT  xPortPendSVHandler
+				IMPORT  xPortSysTickHandler
+				IMPORT  vPortSVCHandler
 
 ; Vector Table Mapped to Address 0 at Reset
                 AREA    RESET, DATA, READONLY
@@ -61,7 +65,7 @@ __heap_limit
                 EXPORT  __Vectors_End
                 EXPORT  __Vectors_Size
 
-__Vectors       DCD     __initial_spTop           ; Top of Stack
+__Vectors       DCD     __initial_sp           ; Top of Stack
                 DCD     Reset_Handler             ; Reset Handler
                 DCD     NMI_Handler               ; NMI Handler
                 DCD     HardFault_Handler         ; Hard Fault Handler
@@ -72,12 +76,15 @@ __Vectors       DCD     __initial_spTop           ; Top of Stack
                 DCD     0                         ; Reserved
                 DCD     0                         ; Reserved
                 DCD     0                         ; Reserved
-                DCD     SVC_Handler               ; SVCall Handler
-                DCD     DebugMon_Handler          ; Debug Monitor Handler
+;                DCD     SVC_Handler                ; SVCall Handler
+				DCD     vPortSVCHandler;由FreeRTOS管理
+                DCD     DebugMon_Handler           ; Debug Monitor Handler
                 DCD     0                         ; Reserved
-                DCD     PendSV_Handler            ; PendSV Handler
-                DCD     SysTick_Handler           ; SysTick Handler
-
+;                DCD     PendSV_Handler            ; PendSV Handler
+;                DCD     SysTick_Handler           ; SysTick Handler
+				DCD     xPortPendSVHandler;
+				DCD     xPortSysTickHandler;
+					
                 ; External Interrupts
                 DCD     WWDG_IRQHandler           ; Window Watchdog
                 DCD     PVD_IRQHandler            ; PVD through EXTI Line detect

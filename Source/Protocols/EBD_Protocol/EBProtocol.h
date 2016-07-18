@@ -65,6 +65,8 @@
 #define EBD_DP_VOLATGE_ADDR            0x06
 #define EBD_DM_VOLATGE_ADDR            0x08
 
+#define EBD_Fan_TurnOn_Only() EBDSendLoadCommand(0,StartTest)
+
 extern xQueueHandle EBDTxDataMsg;
 
 extern xQueueHandle EBDRxDataMsg;

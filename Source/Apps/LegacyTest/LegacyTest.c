@@ -229,7 +229,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 
 	/*Get parameters of the legacy test*/
 	if (test_Params->TestMode == ConstantCurrent)test_Params->Current =
-		GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language], 100,
+		GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language],100,
 			EBD_Protocol_Config[CurrentSettings->EBD_Model]->CurrentMax,
 			1000, 100, "mA", 20);
 	else test_Params->Power =

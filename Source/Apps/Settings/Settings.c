@@ -111,7 +111,7 @@ void MountOrUnMountDisk()
 	}
 	else
 	{
-		capp = sdcard_Init(false);
+		capp = SDCard_Init(false);
 		if (capp)
 		{
 			sprintf(tempString, SettingsMounted_Str[CurrentSettings->Language], capp, true);
@@ -199,7 +199,7 @@ bool CheckSettings()
 	if (CurrentSettings->Language > LanguageNum - 1) return false;
 	if (CurrentSettings->EBD_Model > EBD_MODEL_NUM - 1) return false;
 	
-	if (CurrentSettings->InternalTemperature_Max > 85||
+	if (CurrentSettings->InternalTemperature_Max > 130||
 		  CurrentSettings->InternalTemperature_Max < 55) return false;
 	
 	if (CurrentSettings->ExternalTemperature_Max > 200||
@@ -337,7 +337,7 @@ void OverHeatSettings(void)
  memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
  SettingsBkp.InternalTemperature_Max = GetTimeParam(SetInternalTemp_Max_Str[CurrentSettings->Language],
 		Temperature_Unit_Str[CurrentSettings->Language],
-		55, 85, CurrentSettings->InternalTemperature_Max);
+		55, 130, CurrentSettings->InternalTemperature_Max);
  SettingsBkp.ExternalTemperature_Max = GetTimeParam(SetExternalTemp_Max_Str[CurrentSettings->Language],
 		Temperature_Unit_Str[CurrentSettings->Language],
 		40, 200, CurrentSettings->ExternalTemperature_Max);

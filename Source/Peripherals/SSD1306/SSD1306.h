@@ -30,8 +30,8 @@ typedef struct
 #define OLED_CS_Set()  GPIO_SetBits(GPIOB,GPIO_Pin_12)
 
 
-#define OLED_RS_Clr() GPIO_ResetBits(GPIOB,GPIO_Pin_1)//A0
-#define OLED_RS_Set() GPIO_SetBits(GPIOB,GPIO_Pin_1)
+#define OLED_RS_Clr() GPIO_ResetBits(GPIOC,GPIO_Pin_6)//A0
+#define OLED_RS_Set() GPIO_SetBits(GPIOC,GPIO_Pin_6)
 
 #define DRAW 1
 #define UNDRAW 0

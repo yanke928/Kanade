@@ -165,6 +165,10 @@ const SingleToneStruct Alarm[] =
  {75,0},
  {M7,8},
  {STOP,8},
+ {M7,8},
+ {STOP,8},
+ {M7,8},
+ {STOP,8}, {STOP,1}, {STOP,1}, {STOP,1}, {STOP,1}, {STOP,1}, {STOP,1},
  {0,0}
 };
 

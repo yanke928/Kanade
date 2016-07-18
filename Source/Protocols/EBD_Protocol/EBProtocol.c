@@ -253,6 +253,7 @@ EBDLoadCommandStruct EBDGenerateLoadCommand(u16 current)
 {
 	u16 m;
 	EBDLoadCommandStruct currentCommand;
+	current=current*EBD_Protocol_Config[CurrentSettings->EBD_Model]->LoadSendCoeficient;
 	m = current / 240 * 16 + current;
 	currentCommand.CurrentH = m / 256;
 	currentCommand.CurrentL = m % 256;
@@ -407,6 +408,12 @@ void EBDPacketReceiver(void *pvParameters)
 	}
 }
 
+
+/**
+  * @brief EBD Sync,break blocked until a new packet received
+
+  * @retval : None
+  */
 void EBD_Sync()
 {
 	u8 i;
@@ -415,15 +422,10 @@ void EBD_Sync()
 }
 
 /**
-  * @brief   Setup watchingDog of EBD
+  * @brief Init EBD and create necessary tasks
 
   * @retval : None
   */
-void EBDWatchingDogSetup(void)
-{
-	;
-}
-
 void EBD_Init(void)
 {
 	u8 i;
@@ -455,4 +457,3 @@ void EBD_Init(void)
 	xQueueSend(InitStatusMsg, EBDConnected_Str[CurrentSettings->Language], 0);
 	return;
 }
-

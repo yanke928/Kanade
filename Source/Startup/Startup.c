@@ -300,12 +300,12 @@ void SystemStartup(void *pvParameters)
 	{
 		OSStatInit();
 	}
-	//USBCDC_Init();
 	//CommandLine_Init();
 	RTC_Init();
-	Settings_Init();
+	//SoundStart(Alarm);
 	LED_Animate_Init(LEDAnimation_Startup);
-
+	Settings_Init();
+	
 	//W25X_CS_Init();
 
 	LogoWithInitStatus_Init();
@@ -317,7 +317,7 @@ void SystemStartup(void *pvParameters)
 	EBD_Init();
 	vTaskDelay(50 / portTICK_RATE_MS);
 
-	sdcard_Init(true);
+	SDCard_Init(true);
 	vTaskDelay(500 / portTICK_RATE_MS);
 
 	ShowCurrentTempSensor();

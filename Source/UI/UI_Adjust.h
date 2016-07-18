@@ -11,10 +11,10 @@ typedef struct
 {
 	const char *AskString;
 	const char *UnitString;
-  u16  Min;
-  u16  Max;
-  u16  Step;
-	u16  DefaultValue;
+  u32  Min;
+  u32  Max;
+  u32  Step;
+	u32  DefaultValue;
 	u8   Pos_y;
 	u8   FastSpeed;
 }UI_Adjust_Param_Struct;

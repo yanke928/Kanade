@@ -228,9 +228,9 @@ void Flash_ProgramFloat(u32 addr, float data)
 }
 
 
-u16 GetTestParam(const char askString[], u16 min, u16 max, u16 defaultValue, u16 step, char unitString[], u8 fastSpeed)
+u32 GetTestParam(const char askString[], u32 min, u32 max, u32 defaultValue, u32 step, char unitString[], u8 fastSpeed)
 {
-	u16 t;
+	u32 t;
 	UI_Adjust_Param_Struct adjust_params;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
