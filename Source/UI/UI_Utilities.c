@@ -6,6 +6,10 @@
 
 #include "SSD1306.h" 
 
+#include "ff.h" 
+
+#include "UI_Dialogue.h" 
+
 #include "UI_Utilities.h" 
 
 /**
@@ -137,3 +141,71 @@ void DrawHorizonalDashedGrid(u8 y, bool drawOrUnDraw, u8 gridsDensity)
 		}
 }
 
+/**
+  * @brief  Show Disk IO Status
+
+  * @retval None
+  */
+void ShowDiskIOStatus(u8 res)
+{
+	if (res == FR_OK)
+	{
+		ShowSmallDialogue("File Created", 1000,true);
+		return;
+	}
+	if (res == FR_NO_PATH)
+	{
+		ShowSmallDialogue("Path Not Found", 1000,true);
+		return;
+	}
+	if (res == FR_INVALID_DRIVE)
+	{
+		ShowSmallDialogue("Invalid Disk", 1000,true);
+		return;
+	}
+	if (res == FR_INVALID_NAME)
+	{
+		ShowSmallDialogue("Invalid Path", 1000,true);
+		return;
+	}
+	if (res == FR_DENIED)
+	{
+		ShowSmallDialogue("Disk Full", 1000,true);
+		return;
+	}
+	if (res == FR_EXIST)
+	{
+		ShowSmallDialogue("File Exist", 1000,true);
+		return;
+	}
+	if (res == FR_NOT_READY)
+	{
+		ShowSmallDialogue("Disk Not Ready", 1000,true);
+		return;
+	}
+	if (res == FR_WRITE_PROTECTED)
+	{
+		ShowSmallDialogue("Disk Protected", 1000,true);
+		return;
+	}
+	if (res == FR_INT_ERR)
+	{
+		ShowSmallDialogue("Int. IO Error", 1000,true);
+		return;
+	}
+	if (res == FR_NO_FILESYSTEM)
+	{
+		ShowSmallDialogue("No FATFS", 1000,true);
+		return;
+	}
+	if (res == FR_NOT_ENABLED)
+	{
+		ShowSmallDialogue("Mount Failed", 1000,true);
+		return;
+	}
+	if (res == FR_DISK_ERR)
+	{
+		ShowSmallDialogue("Disk Error", 1000,true);
+		return;
+	}
+}

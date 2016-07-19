@@ -22,4 +22,7 @@ void DrawHorizonalDashedGrid(u8 y, bool drawOrUnDraw, u8 gridsDensity);
 //see .c for details
 u16 GetStringLengthInBytes(const char *string);
 
+//see .c for details
+void ShowDiskIOStatus(u8 res);
+
 #endif /* __UI_UTILITIES_H */

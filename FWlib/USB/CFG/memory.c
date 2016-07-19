@@ -44,12 +44,6 @@ extern Bulk_Only_CSW CSW;
 extern u32 Mass_Memory_Size[2];
 extern u32 Mass_Block_Size[2];
 
-//Usb_Status_Reg
-//bit0:表示电脑正在向SD卡写入数据
-//bit1:表示电脑正从SD卡读出数据
-//bit2:SD卡写数据错误标志位
-//bit3:SD卡读数据错误标志位
-//bit4:1,表示电脑有轮询操作(表明连接还保持着)
 extern u8 Usb_Status_Reg;
 
 
@@ -96,7 +90,6 @@ void Read_Memory(u8 lun, u32 Memory_Offset, u32 Transfer_Length)
 		Length -= BULK_MAX_PACKET_SIZE;
 		
 		CSW.dDataResidue -= BULK_MAX_PACKET_SIZE;
-		Led_RW_ON();//提示正在读写
 	}
 	if (Length == 0)
 	{
@@ -105,7 +98,6 @@ void Read_Memory(u8 lun, u32 Memory_Offset, u32 Transfer_Length)
 		Offset = 0;
 		Bot_State = BOT_DATA_IN_LAST;
 		TransferState = TXFR_IDLE;
-		Led_RW_OFF();//读写完成了
 	}					 
 }
 
@@ -142,18 +134,17 @@ void Write_Memory (u8 lun, u32 Memory_Offset, u32 Transfer_Length)
 					  	  W_Offset - Mass_Block_Size[lun],
 					  	  Data_Buffer,
 					  	  Mass_Block_Size[lun]);
-			if(STA)Usb_Status_Reg|=0X04;//SD卡写错误!	 
+			if(STA)Usb_Status_Reg|=0X04;
 		}				  
 		CSW.dDataResidue -= Data_Len;
 		SetEPRxStatus(ENDP2, EP_RX_VALID); /* enable the next transaction*/		 
-		Led_RW_ON();//提示正在读写
 	}	   
 	if ((W_Length == 0) || (Bot_State == BOT_CSW_Send))
 	{
 		Counter = 0;
 		Set_CSW (CSW_CMD_PASSED, SEND_CSW_ENABLE);
 		TransferState = TXFR_IDLE;
-		Led_RW_OFF();//读写完成了
+		Led_RW_OFF();
 	}
 } 
 

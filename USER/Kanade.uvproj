@@ -609,6 +609,11 @@
               <FileType>1</FileType>
               <FilePath>..\Source\Peripherals\W25Q64\W25Q64.c</FilePath>
             </File>
+            <File>
+              <FileName>W25Q64ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Peripherals\W25Q64\W25Q64ff.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

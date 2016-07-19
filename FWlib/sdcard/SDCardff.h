@@ -1,14 +1,14 @@
 #ifndef __SDCARDFF_H
 #define __SDCARDFF_H
 
-#include "misc.h"
+#include <stdbool.h>
+
 #include "ff.h"
-#include "stdbool.h"
 #include "SDCard.h"
 
 extern bool SDCardMountStatus;
 
-extern FATFS fatfs;
+extern FATFS SD_fatfs;
 
 extern SD_CardInfo SDCardInfo;
 

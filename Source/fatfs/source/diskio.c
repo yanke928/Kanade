@@ -7,15 +7,19 @@
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
 
-#include "diskio.h"		/* FatFs lower layer API */
-//#include "usbdisk.h"	/* Example: Header file of existing USB MSD control module */
-//#include "atadrive.h"	/* Example: Header file of existing ATA harddisk control module */
-#include "sdcard.h"		/* Example: Header file of existing MMC/SDC contorl module */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+
+#include "sdcard.h"		
 #include "sdcardff.h"
+#include "W25Q64.h"		
 
 #include "RTC.h"
 
 #include  <stdio.h>
+
+#include "diskio.h"		/* FatFs lower layer API */
 
 /* Definitions of physical drive number for each drive */
 
@@ -31,17 +35,7 @@ DSTATUS disk_status(
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
-	switch (pdrv)
-	{
-	case 0:
-		return RES_OK;
-	case 1:
-		return RES_OK;
-	case 2:
-		return RES_OK;
-	default:
-		return STA_NOINIT;
-	}
+ return RES_OK;
 }
 
 
@@ -54,7 +48,7 @@ DSTATUS disk_initialize(
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-	return 0;
+	return RES_OK;
 }
 
 
@@ -71,28 +65,38 @@ DRESULT disk_read(
 )
 {
 	u8 res = 0;
-	if (pdrv || !count)
+	switch (pdrv)
 	{
-		return RES_PARERR; 
+	case 0:
+		portENTER_CRITICAL();
+		if (count == 1)
+		{
+			res = SD_ReadBlock(sector << 9, (u32 *)(&buff[0]), 512);
+		}
+		else
+		{
+			res = SD_ReadMultiBlocks(sector << 9, (u32 *)(&buff[0]), 512, count);
+		}
+    portEXIT_CRITICAL();
+		if (res == SD_OK)
+		{
+			return RES_OK;
+		}
+		else
+		{
+			return RES_ERROR;
+		}
+	case 1:
+		if (count == 1)
+		{
+			portENTER_CRITICAL();
+			W25X_Read_Sector(sector, (u8*)buff);
+			portEXIT_CRITICAL();
+			return RES_OK;
+		}
+		else return RES_ERROR;
 	}
-	
-	if (count == 1)            
-	{
-		res = SD_ReadBlock( sector<<9, (u32 *)(&buff[0]) , 512);
-	}
-	else                 
-	{
-		res = SD_ReadMultiBlocks(sector<<9, (u32 *)(&buff[0]) , 512 , count );
-	}
-	
-	if (res == SD_OK)
-	{
-		return RES_OK;
-	}
-	else
-	{
-		return RES_ERROR;
-	}
+	return RES_ERROR;
 }
 
 
@@ -109,29 +113,39 @@ DRESULT disk_write(
 )
 {
 	u8 res;
-
-	if (pdrv || !count)
+	switch (pdrv)
 	{
-		return RES_PARERR;  
+	case 0:
+		portENTER_CRITICAL();
+		if (count == 1)
+		{
+			res = SD_WriteBlock(sector << 9, (u32 *)(&buff[0]), 512);
+		}
+		else
+		{
+			res = SD_WriteMultiBlocks(sector << 9, (u32 *)(&buff[0]), 512, count);
+		}
+    portEXIT_CRITICAL();
+		if (res == SD_OK)
+		{
+			return RES_OK;
+		}
+		else
+		{
+			return RES_ERROR;
+		}
+	case 1:
+		if (count == 1)
+		{
+			portENTER_CRITICAL();
+			W25X_Erase_Sector(sector);
+			W25X_Write_Sector(sector, (u8*)buff);
+			portEXIT_CRITICAL();
+			return RES_OK;
+		}
+		else return RES_ERROR;
 	}
-	
-	if (count == 1)
-	{
-		res = SD_WriteBlock( sector<<9, (u32 *)(&buff[0]) , 512);
-	}
-	else
-	{
-		res = SD_WriteMultiBlocks(sector<<9, (u32 *)(&buff[0]) , 512 , count );
-	}
-	
-	if (res == SD_OK)
-	{
-		return RES_OK;
-	}
-	else
-	{
-		return RES_ERROR;
-	}
+	return RES_ERROR;
 }
 
 
@@ -148,30 +162,27 @@ DRESULT disk_ioctl(
 {
 	DRESULT res;
 
-
-	if (pdrv)
-	{
-		return RES_PARERR; 
-	}
-
 	switch (cmd)
 	{
-	case CTRL_SYNC:
-		   break;
-	case GET_BLOCK_SIZE:
-		*(WORD*)buff = 512;
+//	case CTRL_SYNC:
+//		break;
+	case GET_SECTOR_SIZE:
+		if (pdrv == 0)
+			*(WORD*)buff = 512;
+		else
+			*(WORD*)buff = 4096;
 		res = RES_OK;
 		break;
 
-	case GET_SECTOR_COUNT:
-		res = RES_OK;
-		break;
-	default:
-		res = RES_PARERR;
-		break;
+//	case GET_SECTOR_COUNT:
+//		res = RES_OK;
+//		break;
+//	default:
+//		res = RES_PARERR;
+//		break;
 	}
 
-	return res;
+	return RES_OK;
 }
 
 /*-----------------------------------------------------------------------*/

@@ -24,6 +24,7 @@
 #include "sdcard.h"
 #include "sdcardff.h"
 #include "W25Q64.h"
+#include "W25Q64ff.h"
 
 u32 Mass_Memory_Size[2];
 u32 Mass_Block_Size[2];
@@ -65,11 +66,11 @@ u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length)
 {
 	u8 STA;
 	u8 NbrOfBlock;
-	if (lun == 0) NbrOfBlock = Transfer_Length / 512;
-	else if (lun == 1) NbrOfBlock = Transfer_Length / 4096;
+	
 	switch (lun)
 	{
 	case 0:
+		NbrOfBlock = Transfer_Length / 512;
 		if (NbrOfBlock == 1)
 			STA = SD_WriteBlock(Memory_Offset, (u32*)Writebuff, 512);
 		else
@@ -77,6 +78,7 @@ u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length)
 		break;
 	case 1:
 		STA = 0;
+	  NbrOfBlock = Transfer_Length / 4096;
 		if (NbrOfBlock == 1)
 		{
 			W25X_Erase_Sector(Memory_Offset / 4096);
@@ -102,18 +104,19 @@ u16 MAL_Read(u8 lun, u32 Memory_Offset, u32 *Readbuff, u16 Transfer_Length)
 {
 	u8 STA;
 	u8 NbrOfBlock;
-	if (lun == 0) NbrOfBlock = Transfer_Length / 512;
-	else if (lun == 1) NbrOfBlock = Transfer_Length / 4096;
+	
 	switch (lun)
 	{
 	case 0:
+		NbrOfBlock = Transfer_Length / 512;
 		if (NbrOfBlock == 1)
 			STA = SD_ReadBlock(Memory_Offset, (u32*)Readbuff, 512);
 		else
-			STA = SD_WriteMultiBlocks(Memory_Offset, (u32*)Readbuff, 512, NbrOfBlock);
+			STA = SD_ReadMultiBlocks(Memory_Offset, (u32*)Readbuff, 512, NbrOfBlock);
 		break;
 	case 1:
 		STA = 0;
+	  NbrOfBlock = Transfer_Length / 4096;
 		if (NbrOfBlock == 1)
 			W25X_Read_Sector(Memory_Offset / 4096, (u8*)Readbuff);
 		else return MAL_FAIL;
@@ -168,11 +171,25 @@ u16 MAL_GetStatus(u8 lun)
 			}
 			return MAL_OK;
 		}
+		else
+		{
+		 Mass_Block_Size[0] = 0;
+		 Mass_Block_Count[0] = 0;	
+		}			
+		return MAL_FAIL;
 	}
 	else if (lun == 1)
 	{
-		Mass_Block_Size[1] = 4096;
-		Mass_Block_Count[1] = 2048;
+		if(SPIFlashMountStatus)
+		{
+		 Mass_Block_Size[1] = 4096;
+		 Mass_Block_Count[1] = 2048;
+		}
+		else
+		{
+		 Mass_Block_Size[1] = 0;
+		 Mass_Block_Count[1] = 0;		 
+		}
 		return MAL_OK;
 	}
 	return MAL_FAIL;

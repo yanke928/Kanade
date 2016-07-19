@@ -25,6 +25,7 @@
 #include "SSD1306.h"
 
 #include "sdcardff.h"
+#include "W25Q64ff.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -32,6 +33,7 @@
 
 #include "Startup.h"
 #include "UI_Dialogue.h"
+#include "UI_Utilities.h"
 
 #include "MultiLanguageStrings.h"
 #include "Settings.h"
@@ -3028,20 +3030,13 @@ u32 SDCard_Init(bool withGUI)
 	u32 sd_capacity;
 	char tempString[20];
 	SDIO_NVIC_Configuration();
-	if(SD_Init()!=SD_OK) goto NoSD;
-  if(SD_GetCardInfo(&SDCardInfo)!=SD_OK) goto NoSD;
-  if(SD_SelectDeselect((u32) (SDCardInfo.RCA << 16))!=SD_OK) goto NoSD;
-  if(SD_EnableWideBusOperation(SDIO_BusWide_4b)!=SD_OK) goto NoSD;
-  if(SD_SetDeviceMode(SD_DMA_MODE)!=SD_OK) goto NoSD;
+	if(SD_Init()!=SD_OK||
+		 SD_GetCardInfo(&SDCardInfo)!=SD_OK||
+	   SD_SelectDeselect((u32) (SDCardInfo.RCA << 16))!=SD_OK||
+	   SD_EnableWideBusOperation(SDIO_BusWide_4b)!=SD_OK||
+	   SD_SetDeviceMode(SD_DMA_MODE)!=SD_OK) goto NoSD;
 	sd_capacity=SDCardInfo.SD_csd.DeviceSize/2;
-	res = f_mount(&fatfs, "0:/", 1);
-//		if (withGUI)
-//		{
-//			sprintf(tempString, Capacity_Str[CurrentSettings->Language], sd_capacity);
-//			xQueueSend(InitStatusMsg, tempString, 0);
-//		}
-//		SDCardMountStatus = true;
-//		return sd_capacity;
+	res = f_mount(&SD_fatfs, "0:/", 1);
 	if ((sd_capacity)&&res == FR_OK)
 	{
 		if (withGUI)
@@ -3063,72 +3058,21 @@ u32 SDCard_Init(bool withGUI)
 }
 
 /**
-  * @brief  Show Disk IO Status
+  * @brief  Check and make directory if not exist
 
-  * @retval None
+	  @retval None
   */
-void ShowDiskIOStatus(u8 res)
+bool CheckAndMakeDir(const char* dir)
 {
-	if (res == FR_OK)
+	FRESULT res; 
+  res = f_mkdir(dir);
+	if (res != FR_EXIST)
 	{
-		ShowSmallDialogue("File Created", 1000,true);
-		return;
+		if (res != FR_OK)
+			ShowDiskIOStatus(res);
+			return(false);
 	}
-	if (res == FR_NO_PATH)
-	{
-		ShowSmallDialogue("Path Not Found", 1000,true);
-		return;
-	}
-	if (res == FR_INVALID_DRIVE)
-	{
-		ShowSmallDialogue("Invalid Disk", 1000,true);
-		return;
-	}
-	if (res == FR_INVALID_NAME)
-	{
-		ShowSmallDialogue("Invalid Path", 1000,true);
-		return;
-	}
-	if (res == FR_DENIED)
-	{
-		ShowSmallDialogue("Disk Full", 1000,true);
-		return;
-	}
-	if (res == FR_EXIST)
-	{
-		ShowSmallDialogue("File Exist", 1000,true);
-		return;
-	}
-	if (res == FR_NOT_READY)
-	{
-		ShowSmallDialogue("Disk Not Ready", 1000,true);
-		return;
-	}
-	if (res == FR_WRITE_PROTECTED)
-	{
-		ShowSmallDialogue("Disk Protected", 1000,true);
-		return;
-	}
-	if (res == FR_INT_ERR)
-	{
-		ShowSmallDialogue("Int. IO Error", 1000,true);
-		return;
-	}
-	if (res == FR_NO_FILESYSTEM)
-	{
-		ShowSmallDialogue("No FATFS", 1000,true);
-		return;
-	}
-	if (res == FR_NOT_ENABLED)
-	{
-		ShowSmallDialogue("Mount Failed", 1000,true);
-		return;
-	}
-	if (res == FR_DISK_ERR)
-	{
-		ShowSmallDialogue("Disk Error", 1000,true);
-		return;
-	}
+	return true;
 }
 
 /**
@@ -3138,21 +3082,17 @@ void ShowDiskIOStatus(u8 res)
   */
 bool MakeEBDDirectories(void)
 {
-	FRESULT res;
-	res = f_mkdir("EBD");
-	if (res != FR_EXIST&&res != FR_DISK_ERR)
+	if(SDCardMountStatus)
 	{
-		if (res != FR_OK)
-			ShowDiskIOStatus(res);
-			return(false);
+	if(!CheckAndMakeDir("0:/EBD")) return false;
+	if(!CheckAndMakeDir("0:/EBD/Record")) return false;
 	}
-	res = f_mkdir("EBD/Records");
-	if (res != FR_EXIST&&res != FR_DISK_ERR)
+	if(SPIFlashMountStatus)
 	{
-		ShowDiskIOStatus(res);
-		return(false);
+	if(!CheckAndMakeDir("1:/EBD")) return false;
+	if(!CheckAndMakeDir("1:/EBD/Record")) return false;
 	}
-	return(true);
+	return true;
 }
 
 /**
@@ -3165,9 +3105,7 @@ void CheckEBDDirectories(bool withGUI)
 	if (SDCardMountStatus)
 	{
 		bool success;
-		FILINFO lese;
-		if (f_stat("EBD/Records", &lese) != FR_OK)
-			success = MakeEBDDirectories();
+		success = MakeEBDDirectories();
 		if (withGUI)
 		{
 			if (success)

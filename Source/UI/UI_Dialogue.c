@@ -52,12 +52,17 @@ void ShowSmallDialogue(const char string[], u16 time, bool occupyThread)
 	OLED_Clear();
 	OLED_DrawRect(startAddr - 4, 20, endAddr + 4, 44, DRAW);
 	OLED_ShowAnyString(startAddr, 24, string, NotOnSelect, 16);
-	xSemaphoreGive(OLEDRelatedMutex);
 	if (occupyThread)
+	{
+		OLED_Refresh_Gram();
 		vTaskDelay(time / portTICK_RATE_MS);
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	if (occupyThread)
-		OLED_Clear();
+	}
 	xSemaphoreGive(OLEDRelatedMutex);
+	if (occupyThread)
+	{
+		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+		OLED_Clear();
+		xSemaphoreGive(OLEDRelatedMutex);
+	}
 }
 

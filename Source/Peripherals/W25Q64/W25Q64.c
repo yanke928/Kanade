@@ -1,12 +1,15 @@
 //File Name   W25Q64.c
 //Description SPI FLASH Driver
 
-#include "W25Q64.h"
-
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_spi.h"
 #include "stm32f10x_gpio.h"
+
+#include "W25Q64.h"
+#include "W25Q64ff.h"
+
+#include "UI_Utilities.h"
 
 #define USE_BANK_SIZE         (unsigned long)0X10000
 
@@ -43,7 +46,10 @@ void W25X_CS_Init()
 
 }
 
-void W25Q64_Init()
+/**
+  * @brief Init hardware of W25Q64
+  */
+void W25Q64_Hardware_Init()
 {
 	SPI_InitTypeDef  SPI_InitStructure;
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -69,8 +75,19 @@ void W25Q64_Init()
 	SPI_InitStructure.SPI_CRCPolynomial = 7;    //CRC值计算的多项式
 	SPI_Init(SPI1, &SPI_InitStructure);
 	/* Enable SPI1  */
-	SPI_Cmd(SPI1, ENABLE);   //使能SPI1外设	
+	SPI_Cmd(SPI1, ENABLE);   //使能SPI1外设	 
+}
 
+/**
+  * @brief Init W25Q64
+  */
+void W25Q64_Init()
+{
+ FRESULT res;
+ W25Q64_Hardware_Init();
+ res = f_mount(&SPI_FLASH_fatfs, "1:/", 1);
+ if(res==FR_OK) SPIFlashMountStatus=true;
+ else ShowDiskIOStatus(res);
 }
 
 /**
