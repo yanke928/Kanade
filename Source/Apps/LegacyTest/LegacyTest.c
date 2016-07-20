@@ -116,7 +116,7 @@ bool CreateRecordFile()
 {
 	FRESULT res;
 	char tempString[60];
-	sprintf(tempString, "0:/EBD/Records/%04d_%02d_%02d %02d-%02d-%02d.csv", RTCTime.w_year,
+	sprintf(tempString, "1:/Kanade/Records/%04d_%02d_%02d %02d-%02d-%02d.csv", RTCTime.w_year,
 		RTCTime.w_month, RTCTime.w_date, RTCTime.hour, RTCTime.min, RTCTime.sec);
 	res = f_open(&RecordFile, tempString, FA_CREATE_ALWAYS | FA_WRITE);
 	if (res == FR_OK) return true;
@@ -142,8 +142,12 @@ u8 SelectLegacyTestMode()
 {
 	u8 mode;
 	UI_Button_Param_Struct selectModeButtonParams;
-
-	selectModeButtonParams.ButtonString = SelectLeagcyTestModeButtons_Str[CurrentSettings->Language];
+	const char *modeStrings[2];
+	
+	modeStrings[0]= SelectLeagcyTestModeButtonCC_Str[CurrentSettings->Language];
+	modeStrings[1]= SelectLeagcyTestModeButtonCP_Str[CurrentSettings->Language];
+	
+	selectModeButtonParams.ButtonStrings = modeStrings;
 	selectModeButtonParams.ButtonNum = 2;
 	selectModeButtonParams.DefaultValue = 0;
 	selectModeButtonParams.Positions = SelectLegacyTestModePositions[CurrentSettings->Language];

@@ -65,6 +65,8 @@
 /* This option switches f_forward() function. (0:Disable or 1:Enable)
 /  To enable it, also _FS_TINY need to be 1. */
 
+#define	GET_FATTIME_EN	1
+
 
 /*---------------------------------------------------------------------------/
 / Locale and Namespace Configurations

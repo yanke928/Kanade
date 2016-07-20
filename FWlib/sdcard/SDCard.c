@@ -3084,13 +3084,13 @@ bool MakeEBDDirectories(void)
 {
 	if(SDCardMountStatus)
 	{
-	if(!CheckAndMakeDir("0:/EBD")) return false;
-	if(!CheckAndMakeDir("0:/EBD/Record")) return false;
+	CheckAndMakeDir("0:/Kanade");
+	CheckAndMakeDir("0:/Kanade/Records");
 	}
 	if(SPIFlashMountStatus)
 	{
-	if(!CheckAndMakeDir("1:/EBD")) return false;
-	if(!CheckAndMakeDir("1:/EBD/Record")) return false;
+	CheckAndMakeDir("1:/Kanade");
+	CheckAndMakeDir("1:/Kanade/Records");
 	}
 	return true;
 }

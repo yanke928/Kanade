@@ -12,12 +12,9 @@ extern const char* const NoSD_Str[LanguageNum];
 extern const char* const WaitingForEBD_Str[LanguageNum];
 extern const char* const EBDConnected_Str[LanguageNum];
 extern const char* const Confirmation_Str[LanguageNum];
-extern const char* const ConfirmCancel_Str[LanguageNum];
 extern const char* const RecordConfirm_Str[LanguageNum];
 extern const char* const QCMTKConfirm_Str[LanguageNum] ;
 extern const char* const Saved_Str[LanguageNum] ;
-extern const char* const Settings_Str[LanguageNum];
-extern const char* const SettingsNoDisk_Str[LanguageNum];
 extern const char* const SettingsUnmountFailed_Str[LanguageNum];
 extern const char* const SettingsUnmounted_Str[LanguageNum];
 extern const char* const SettingsMounted_Str[LanguageNum];
@@ -81,7 +78,6 @@ extern const char* const USBMassStorageStatusWriting_Str[LanguageNum];
 extern const char* const USBMassStorageStatusIdling_Str[LanguageNum];
 extern const char* const SelectLeagcyTestMode_Str[LanguageNum];
 extern const char* const SelectLeagcyTestModeSubString_Str[LanguageNum];
-extern const char* const SelectLeagcyTestModeButtons_Str[LanguageNum];
 extern const char* const LegacyTestSetPower_Str[LanguageNum];
 extern const char* const SetTimeHint_Str[LanguageNum];
 extern const char* const SetModelHint_Str[LanguageNum];
@@ -92,6 +88,23 @@ extern const char* const SetInternalTemp_Max_Str[LanguageNum];
 extern const char* const SetExternalTemp_Max_Str[LanguageNum];
 extern const char* const SetTempProtectResumeGap_Str[LanguageNum];
 extern const char* const ExternalOverHeat_Str[LanguageNum];
+
+/*Confirmation items*/
+extern const char* const ConfirmationConfirm_Str[LanguageNum];
+extern const char* const ConfirmationCancel_Str[LanguageNum];
+
+/*Settings items*/
+extern const char* const SettingsItemMountDisk_Str[LanguageNum];
+extern const char* const SettingsItemUnmountDisk_Str[LanguageNum];
+extern const char* const SettingsItemClockSettings_Str[LanguageNum];
+extern const char* const SettingsItemOverHeatControl_Str[LanguageNum];
+extern const char* const SettingsItemLanguage_Str[LanguageNum];
+extern const char* const SettingsItemModel_Str[LanguageNum];
+extern const char* const SettingsItemSystemInfo_Str[LanguageNum];
+
+/*Legacy test mode items*/
+extern const char* const SelectLeagcyTestModeButtonCC_Str[LanguageNum];
+extern const char* const SelectLeagcyTestModeButtonCP_Str[LanguageNum];
 
 extern const OLED_PositionStruct  ComfirmationPositions[LanguageNum][2];
 extern const OLED_PositionStruct  SelectLegacyTestModePositions[LanguageNum][2];

@@ -47,6 +47,10 @@ void MassStorage_App()
 	u8 status;
 	UI_Button_Param_Struct button_params;
 	OLED_PositionStruct position[4] = { {68,44} };
+	const char * unMountString[1];
+	
+	unMountString[0]=UnMountUSBMassStorage_Str[CurrentSettings->Language];
+	
 	success = MAL_Mount();
 	if (!success)
 	{
@@ -55,8 +59,9 @@ void MassStorage_App()
 	}
 	ShowDialogue(USBMassStorage_Str[CurrentSettings->Language],
 		USBMassStorageStatus_Str[CurrentSettings->Language], "");
+	
 	/*Set the positions for the voltage options*/
-	button_params.ButtonString = UnMountUSBMassStorage_Str[CurrentSettings->Language];
+	button_params.ButtonStrings = unMountString;
 	button_params.ButtonNum = 1;
 	button_params.DefaultValue = 0;
 	button_params.Positions = position;

@@ -189,6 +189,7 @@ u16 MAL_GetStatus(u8 lun)
 		{
 		 Mass_Block_Size[1] = 0;
 		 Mass_Block_Count[1] = 0;		 
+		 return MAL_FAIL;
 		}
 		return MAL_OK;
 	}

@@ -38,8 +38,6 @@ void UI_Menu_Handler(void *pvParameters)
 	bool allContentChanged;
 	bool relativePosChanged;
   Key_Message_Struct keyMessage;
-	char itemStrings[10][32];
-	u8 stringsAddr[10];
 	u8 selection;
 	u8 displayedItemNum=(menuParams->ItemNum>=4?4:menuParams->ItemNum);
 	currentPos = menuParams->DefaultPos;
@@ -47,26 +45,6 @@ void UI_Menu_Handler(void *pvParameters)
 	allContentChanged = true;
 	relativePosChanged = false;
 	lastRelativePos = 0;
-	stringsAddr[0] = 0;
-	p = 1;
-	/*Find the addrs for every string in string*/
-	for (i = 0; menuParams->ItemString[i] != 0; i++)
-	{
-		if (menuParams->ItemString[i] == '%')
-		{
-			stringsAddr[p] = i + 1;
-			p++;
-		}
-	}
-	for (i = 0; i < menuParams->ItemNum; i++)
-	{
-		for (p = 0; menuParams->ItemString[stringsAddr[i] + p] !=
-			'%'&&menuParams->ItemString[stringsAddr[i] + p] != 0; p++)
-		{
-			itemStrings[i][p] = menuParams->ItemString[stringsAddr[i] + p];
-		}
-		itemStrings[i][p] = 0;
-	}
 	SetKeyBeatRate(menuParams->FastSpeed);
   for(;;)
 	{
@@ -76,10 +54,10 @@ void UI_Menu_Handler(void *pvParameters)
 		{
 			for (i = 0; i < displayedItemNum; i++)
 			{
-				p = GetStringGraphicalLength(itemStrings[currentPos + i]);
+				p = GetStringGraphicalLength(menuParams->ItemStrings[currentPos + i]);
 				q = GetCentralPosition(0, 127, p);
 				OLED_FillRect(2, i * 15 + 2, 125, i * 15 + 14, 0);
-				OLED_ShowAnyString(q, i * 15 + 2, (char *)itemStrings[currentPos + i], NotOnSelect, 12);
+				OLED_ShowAnyString(q, i * 15 + 2, menuParams->ItemStrings[currentPos + i], NotOnSelect, 12);
 			}
 			OLED_DrawRect(0, 0, 127, displayedItemNum*15, DRAW);
 			for(i = 1; i < displayedItemNum; i++)

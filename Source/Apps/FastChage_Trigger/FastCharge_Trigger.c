@@ -54,10 +54,17 @@ void QC2Trigger_Init(void)
 	u8 i;
 	Key_Message_Struct keyMsg;
 	UI_Button_Param_Struct button_params;
-	/*Set the positions for the voltage options*/
+	const char* voltStrings[4];
 	OLED_PositionStruct voltagesPositions[4] = { {10,22},{36,22},{10,42},{36,42} };
+	
+	voltStrings[0]="5V";
+	voltStrings[1]="9V";
+	voltStrings[2]="12V";
+	voltStrings[3]="20V";
+	
+	/*Set the positions for the voltage options*/	
 	ShowDialogue("QC2.0 Mode", "", "");
-	button_params.ButtonString = "5V%9V%12V%20V";
+	button_params.ButtonStrings = voltStrings;
 	button_params.ButtonNum = 4;
 	button_params.DefaultValue = 0;
 	button_params.Positions = voltagesPositions;
@@ -181,8 +188,14 @@ void QC3Trigger_Init(void)
 void FastChargeTriggerUI(void)
 {
 	u8 selection;
+	const char* protocolTab[3];
 	UI_Menu_Param_Struct menu_params;
-	menu_params.ItemString = "QC2.0%QC3.0%MTK-PE";
+	
+	protocolTab[0]="QC2.0";
+	protocolTab[1]="QC3.0";
+	protocolTab[2]="MTK-PE";
+	
+	menu_params.ItemStrings = protocolTab;
 	menu_params.DefaultPos = 0;
 	menu_params.ItemNum = 3;
 	menu_params.FastSpeed = 5;

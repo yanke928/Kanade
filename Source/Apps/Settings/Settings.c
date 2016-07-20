@@ -55,10 +55,20 @@ void Settings()
 {
 	UI_Menu_Param_Struct menuParams;
 	u8 selection;
+	const char* stringTab[10];
+	
 	if (SDCardMountStatus)
-		menuParams.ItemString = (char *)Settings_Str[CurrentSettings->Language];
+  stringTab[0]=SettingsItemMountDisk_Str[CurrentSettings->Language];
 	else
-		menuParams.ItemString = (char *)SettingsNoDisk_Str[CurrentSettings->Language];
+	stringTab[0]=SettingsItemUnmountDisk_Str[CurrentSettings->Language];
+	
+	stringTab[1]=SettingsItemClockSettings_Str[CurrentSettings->Language];
+	stringTab[2]=SettingsItemOverHeatControl_Str[CurrentSettings->Language];
+	stringTab[3]=SettingsItemLanguage_Str[CurrentSettings->Language];
+	stringTab[4]=SettingsItemModel_Str[CurrentSettings->Language];
+	stringTab[5]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
+	
+	menuParams.ItemStrings=stringTab;
 	menuParams.DefaultPos = 0;
 	menuParams.ItemNum = 6;
 	menuParams.FastSpeed = 10;
@@ -99,6 +109,7 @@ void MountOrUnMountDisk()
 	if (SDCardMountStatus)
 	{
 		res = f_mount(NULL, "0:/", 1);
+		res = f_mount(NULL, "1:/", 1);
 		if (res == FR_OK)
 		{
 			ShowSmallDialogue(SettingsUnmounted_Str[CurrentSettings->Language], 1000, true);
@@ -162,7 +173,14 @@ void SetLanguage()
 {
 	UI_Menu_Param_Struct menuParams;
 	u8 selection;
-	menuParams.ItemString = "English%日本語%日本语(华式)%台灣語";
+	const char *languageTab[4];
+	
+	languageTab[0]="English";
+	languageTab[1]="日本語";
+	languageTab[2]="日本语(华式)";
+	languageTab[3]="台灣語";	
+	
+	menuParams.ItemStrings =languageTab;
 	menuParams.DefaultPos = 0;
 	menuParams.ItemNum = 4;
 	menuParams.FastSpeed = 5;
@@ -299,19 +317,12 @@ void TimeSettings()
 
 void ModelSettings()
 {
-	u16 addr = 0;
-	u8 i;
 	UI_Menu_Param_Struct menuParams;
 	u8 selection;
-	char tempString[100];
-	for (i = 0; i < EBD_MODEL_NUM; i++)
-	{
-		strcpy(tempString + addr, EBD_Protocol_Descriptors[i]);
-		addr += GetStringLengthInBytes(EBD_Protocol_Descriptors[i]);
-		if (i < EBD_MODEL_NUM - 1)
-			tempString[addr - 1] = '%';
-	}
-	menuParams.ItemString = tempString;
+	const char* modelStrings[EBD_MODEL_NUM];
+	memcpy(modelStrings,EBD_Protocol_Descriptors,sizeof(EBD_Protocol_Descriptors));
+	
+	menuParams.ItemStrings = modelStrings;
 	menuParams.DefaultPos = 0;
 	menuParams.ItemNum = EBD_MODEL_NUM;
 	menuParams.FastSpeed = 5;

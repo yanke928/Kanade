@@ -160,12 +160,12 @@ DRESULT disk_ioctl(
 	void *buff		/* Buffer to send/receive control data */
 )
 {
-	DRESULT res;
+	DRESULT res=RES_OK;
 
 	switch (cmd)
 	{
-//	case CTRL_SYNC:
-//		break;
+	case CTRL_SYNC:
+		break;
 	case GET_SECTOR_SIZE:
 		if (pdrv == 0)
 			*(WORD*)buff = 512;
@@ -177,12 +177,12 @@ DRESULT disk_ioctl(
 //	case GET_SECTOR_COUNT:
 //		res = RES_OK;
 //		break;
-//	default:
-//		res = RES_PARERR;
-//		break;
+	default:
+		res = RES_OK;
+		break;
 	}
 
-	return RES_OK;
+	return res;
 }
 
 /*-----------------------------------------------------------------------*/

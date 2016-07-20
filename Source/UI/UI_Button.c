@@ -45,46 +45,16 @@ void UI_Button_Handler(void *pvParameters)
  Key_Message_Struct keyMessage;
  UI_Button_Param_Struct* buttonParams=(UI_Button_Param_Struct*)pvParameters;
  int selection = buttonParams->DefaultValue;
- u16 i;
- u16 p = 1;
- u16 stringsAddr[4];//Relative individual string addr in buttonString
- u16 lengths[4];//Lengths of every seperate string
- char buttons[4][32];//Cache contains the button strings
+ u16 i,p;
  bool firstIn=true;
- stringsAddr[0] = 0;//Set addr[0] to the first byte of buttonString
 	
-	/*Find the addrs for every string in buttonString*/
-	for (i = 0; buttonParams->ButtonString[i] != 0; i++)
-	{
-		if (buttonParams->ButtonString[i] == '%')
-		{
-			stringsAddr[p] = i + 1;
-			p++;
-		}
-	}
-	
-	/*Make the sepearated strings into cache,get the lengths and
-	place the end for sepearated strings*/
-	for (i = 0; i < buttonParams->ButtonNum; i++)
-	{
-		for (p = 0; buttonParams->ButtonString[stringsAddr[i] + p] != '%'&&
-		    buttonParams->ButtonString[stringsAddr[i] + p] != 0; p++)
-		{
-			buttons[i][p] = buttonParams->ButtonString[stringsAddr[i] + p];
-		}
-		buttons[i][p] = 0;
-	}
-	for (i = 0; i < buttonParams->ButtonNum; i++)
-	{
-	 lengths[i]=GetStringGraphicalLength(buttons[i]);
-	}
 	/*Print the strings with respective positions to screen*/
 	xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
 	SetUpdateOLEDJustNow();
 	for (i = 0; i < buttonParams->ButtonNum; i++)
 	{
 		OLED_ShowAnyString(buttonParams->Positions[i].x, buttonParams->Positions[i].y, 
-		buttons[i], NotOnSelect, 12);
+		buttonParams->ButtonStrings[i], NotOnSelect, 12);
 	}
   ClearKeyEvent(keyMessage);
 	ResetUpdateOLEDJustNow();
@@ -96,13 +66,14 @@ void UI_Button_Handler(void *pvParameters)
 		/*Print the selection box to strings*/
 		for (i = 0; i <buttonParams->ButtonNum; i++)
 		{
+			p=GetStringGraphicalLength(buttonParams->ButtonStrings[i]);
 			//Draw the box if button[i] is selected,undraw if not 
 			if (selection == i)
 				OLED_DrawRect(buttonParams->Positions[i].x - 2, buttonParams->Positions[i].y - 2, 
-			  buttonParams->Positions[i].x + lengths[i] * 6 + 1, buttonParams->Positions[i].y + 13, DRAW);
+			  buttonParams->Positions[i].x + p * 6 + 1, buttonParams->Positions[i].y + 13, DRAW);
 			else
 				OLED_DrawRect(buttonParams->Positions[i].x - 2, buttonParams->Positions[i].y - 2,
-			buttonParams->Positions[i].x + lengths[i] * 6 + 1, buttonParams->Positions[i].y + 13, UNDRAW);
+			buttonParams->Positions[i].x + p * 6 + 1, buttonParams->Positions[i].y + 13, UNDRAW);
 		}
 		ResetUpdateOLEDJustNow();
 		xSemaphoreGive(OLEDRelatedMutex);
@@ -125,13 +96,13 @@ void UI_Button_Handler(void *pvParameters)
 			 xSemaphoreTake( OLEDRelatedMutex, portMAX_DELAY );
 		   SetUpdateOLEDJustNow();
 		   OLED_ShowAnyString(buttonParams->Positions[selection].x, buttonParams->Positions[selection].y, 
-			 buttons[selection], OnSelect, 12);
+			 buttonParams->ButtonStrings[selection], OnSelect, 12);
 			 while (MIDDLE_KEY == KEY_ON);
 			 {
 			  vTaskDelay(10/portTICK_RATE_MS);
 			 }
 			 OLED_ShowAnyString(buttonParams->Positions[selection].x, buttonParams->Positions[selection].y, 
-			 buttons[selection], NotOnSelect, 12);
+			  buttonParams->ButtonStrings[selection], NotOnSelect, 12);
 			 ResetUpdateOLEDJustNow();
 		   xSemaphoreGive(OLEDRelatedMutex);
 			 xQueueSend(UI_ButtonMsg,&selection, 100/portTICK_RATE_MS);

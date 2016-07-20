@@ -22,9 +22,14 @@
 bool GetConfirmation(const char subString0[], const char subString1[])
 {
 	u8 i;
-	//Key_Message_Struct keyMessage;
+	const char* yesOrNoStrings[2];
 	UI_Button_Param_Struct buttonParams;
-	buttonParams.ButtonString = ConfirmCancel_Str[CurrentSettings->Language];
+	
+	yesOrNoStrings[0]=ConfirmationCancel_Str[CurrentSettings->Language];
+  yesOrNoStrings[1]=ConfirmationConfirm_Str[CurrentSettings->Language];
+	
+	//Key_Message_Struct keyMessage;
+	buttonParams.ButtonStrings = yesOrNoStrings;
 	buttonParams.ButtonNum = 2;
 	buttonParams.DefaultValue = 0;
 	buttonParams.Positions = (OLED_PositionStruct *)ComfirmationPositions[CurrentSettings->Language];

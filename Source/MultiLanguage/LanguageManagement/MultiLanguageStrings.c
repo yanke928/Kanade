@@ -39,11 +39,17 @@ const char Confirmation_CN[] = "确认";
 const char Confirmation_JP[] = "確認します";
 const char* const Confirmation_Str[] = { Confirmation_EN,Confirmation_TW,Confirmation_CN,Confirmation_JP };
 
-const char ConfirmCancel_EN[] = "Cancel%Comfirm";
-const char ConfirmCancel_TW[] = " 取消 % 確認 ";
-const char ConfirmCancel_CN[] = " 取消 % 确认 " ;
-const char ConfirmCancel_JP[] = " キャンセル % はい ";
-const char* const ConfirmCancel_Str[] = { ConfirmCancel_EN,ConfirmCancel_TW,ConfirmCancel_CN,ConfirmCancel_JP };
+const char ConfirmationConfirm_EN[] = "Comfirm";
+const char ConfirmationConfirm_TW[] = " 確認 ";
+const char ConfirmationConfirm_CN[] = " 确认 " ;
+const char ConfirmationConfirm_JP[] = " はい ";
+const char* const ConfirmationConfirm_Str[] = { ConfirmationConfirm_EN,ConfirmationConfirm_TW,ConfirmationConfirm_CN,ConfirmationConfirm_JP };
+
+const char ConfirmationCancel_EN[] = "Cancel";
+const char ConfirmationCancel_TW[] = " 取消 ";
+const char ConfirmationCancel_CN[] = " 取消 " ;
+const char ConfirmationCancel_JP[] = " キャンセル ";
+const char* const ConfirmationCancel_Str[] = { ConfirmationCancel_EN,ConfirmationCancel_TW,ConfirmationCancel_CN,ConfirmationCancel_JP };
 
 const char RecordConfirm_EN[] = "Start Record?";
 const char RecordConfirm_TW[] = "開始記錄曲線? ";
@@ -75,17 +81,47 @@ const char Saved_CN[] = "已保存";
 const char Saved_JP[] = "保存";
 const char* const Saved_Str[] = { Saved_EN,Saved_TW,Saved_CN,Saved_JP };
 
-const char Settings_EN[]="Unmount Disk%Clock Settings%OverHeat Control%Language%Set Model%System Info";
-const char Settings_TW[]="彈出SD卡%時間設置%溫度保護設置%Language%型號設置%系統資訊";
-const char Settings_CN[] = "安全弹出存储卡%时间设置%温度保护设置%Language%型号设置%系统信息" ;
-const char Settings_JP[] ="トメモリイジェク%時刻の設定%温度保護設定%Language%タイプの設定%システム情報";
-const char* const Settings_Str[] = { Settings_EN,Settings_TW,Settings_CN,Settings_JP };
+const char SettingsItemMountDisk_EN[]="Mount Disk";
+const char SettingsItemMountDisk_TW[]="掛載SD卡";
+const char SettingsItemMountDisk_CN[] = "挂载存储卡" ;
+const char SettingsItemMountDisk_JP[] ="トメモリマウント";
+const char* const SettingsItemMountDisk_Str[] = { SettingsItemMountDisk_EN,SettingsItemMountDisk_TW,SettingsItemMountDisk_CN,SettingsItemMountDisk_JP };
 
-const char SettingsNoDisk_EN[]="Mount Disk%Clock Settings%OverHeat Control%Language%Set Model%System Info";
-const char SettingsNoDisk_TW[]="掛載SD卡%時間設置%溫度保護設置%Language%型號設置%系統資訊";
-const char SettingsNoDisk_CN[] = "挂载存储卡%时间设置%温度保护设置%Language%型号设置%系统信息" ;
-const char SettingsNoDisk_JP[] ="トメモリマウント%時刻の設定%温度保護設定%Language%タイプの設定%システム情報";
-const char* const SettingsNoDisk_Str[] = { SettingsNoDisk_EN,SettingsNoDisk_TW,SettingsNoDisk_CN,SettingsNoDisk_JP };
+const char SettingsItemUnmountDisk_EN[]="Unmount Disk";
+const char SettingsItemUnmountDisk_TW[]="彈出SD卡";
+const char SettingsItemUnmountDisk_CN[] = "安全弹出存储卡" ;
+const char SettingsItemUnmountDisk_JP[] ="トメモリイジェク";
+const char* const SettingsItemUnmountDisk_Str[] = { SettingsItemUnmountDisk_EN,SettingsItemUnmountDisk_TW,SettingsItemUnmountDisk_CN,SettingsItemUnmountDisk_JP };
+
+const char SettingsItemClockSettings_EN[]="Clock Settings";
+const char SettingsItemClockSettings_TW[]="時間設置";
+const char SettingsItemClockSettings_CN[] = "时间设置" ;
+const char SettingsItemClockSettings_JP[] ="時刻の設定";
+const char* const SettingsItemClockSettings_Str[] = { SettingsItemClockSettings_EN,SettingsItemClockSettings_TW,SettingsItemClockSettings_CN,SettingsItemClockSettings_JP };
+
+const char SettingsItemOverHeatControl_EN[]="OverHeat Control";
+const char SettingsItemOverHeatControl_TW[]="溫度保護設置";
+const char SettingsItemOverHeatControl_CN[] = "温度保护设置" ;
+const char SettingsItemOverHeatControl_JP[] ="温度保護設定";
+const char* const SettingsItemOverHeatControl_Str[] = { SettingsItemOverHeatControl_EN,SettingsItemOverHeatControl_TW,SettingsItemOverHeatControl_CN,SettingsItemOverHeatControl_JP };
+
+const char SettingsItemLanguage_EN[]="Language";
+const char SettingsItemLanguage_TW[]="Language";
+const char SettingsItemLanguage_CN[] = "Language" ;
+const char SettingsItemLanguage_JP[] ="Language";
+const char* const SettingsItemLanguage_Str[] = { SettingsItemLanguage_EN,SettingsItemLanguage_TW,SettingsItemLanguage_CN,SettingsItemLanguage_JP };
+
+const char SettingsItemModel_EN[]="Set Model";
+const char SettingsItemModel_TW[]="型號設置";
+const char SettingsItemModel_CN[] = "型号设置" ;
+const char SettingsItemModel_JP[] ="タイプの設定";
+const char* const SettingsItemModel_Str[] = { SettingsItemModel_EN,SettingsItemModel_TW,SettingsItemModel_CN,SettingsItemModel_JP };
+
+const char SettingsItemSystemInfo_EN[]="System Info";
+const char SettingsItemSystemInfo_TW[]="系統資訊";
+const char SettingsItemSystemInfo_CN[] = "系统信息" ;
+const char SettingsItemSystemInfo_JP[] ="システム情報";
+const char* const SettingsItemSystemInfo_Str[] = { SettingsItemSystemInfo_EN,SettingsItemSystemInfo_TW,SettingsItemSystemInfo_CN,SettingsItemSystemInfo_JP };
 
 const char SettingsUnmounted_EN[]="Unmounted";
 const char SettingsUnmounted_TW[]="已彈出";
@@ -453,11 +489,17 @@ const char SelectLeagcyTestModeSubString_CN[] ="选择测试模式:";
 const char SelectLeagcyTestModeSubString_JP[] ="モード選択:";
 const char* const SelectLeagcyTestModeSubString_Str[] = { SelectLeagcyTestModeSubString_EN,SelectLeagcyTestModeSubString_TW,SelectLeagcyTestModeSubString_CN,SelectLeagcyTestModeSubString_JP };
 
-const char SelectLeagcyTestModeButtons_EN[] ="C.Current%C.Power";
-const char SelectLeagcyTestModeButtons_TW[] =" 恆電流 % 恆功率 ";
-const char SelectLeagcyTestModeButtons_CN[] =" 恒电流 % 恒功率 ";
-const char SelectLeagcyTestModeButtons_JP[] =" 定電流 % 定電力 ";
-const char* const SelectLeagcyTestModeButtons_Str[] = { SelectLeagcyTestModeButtons_EN,SelectLeagcyTestModeButtons_TW,SelectLeagcyTestModeButtons_CN,SelectLeagcyTestModeButtons_JP };
+const char SelectLeagcyTestModeButtonCC_EN[] ="C.Current";
+const char SelectLeagcyTestModeButtonCC_TW[] =" 恆電流 ";
+const char SelectLeagcyTestModeButtonCC_CN[] =" 恒电流 ";
+const char SelectLeagcyTestModeButtonCC_JP[] =" 定電流 ";
+const char* const SelectLeagcyTestModeButtonCC_Str[] = { SelectLeagcyTestModeButtonCC_EN,SelectLeagcyTestModeButtonCC_TW,SelectLeagcyTestModeButtonCC_CN,SelectLeagcyTestModeButtonCC_JP };
+
+const char SelectLeagcyTestModeButtonCP_EN[] ="C.Power";
+const char SelectLeagcyTestModeButtonCP_TW[] =" 恆功率 ";
+const char SelectLeagcyTestModeButtonCP_CN[] =" 恒功率 ";
+const char SelectLeagcyTestModeButtonCP_JP[] =" 定電力 ";
+const char* const SelectLeagcyTestModeButtonCP_Str[] = { SelectLeagcyTestModeButtonCP_EN,SelectLeagcyTestModeButtonCP_TW,SelectLeagcyTestModeButtonCP_CN,SelectLeagcyTestModeButtonCP_JP };
 
 const char LegacyTestSetPower_EN[] ="Power";
 const char LegacyTestSetPower_TW[] ="電功率";
