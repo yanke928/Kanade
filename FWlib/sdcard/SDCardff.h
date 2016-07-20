@@ -10,7 +10,6 @@ extern bool SDCardMountStatus;
 
 extern FATFS SD_fatfs;
 
-extern SD_CardInfo SDCardInfo;
 
 #endif /* __SDCARDFF_H */
 

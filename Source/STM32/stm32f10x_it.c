@@ -71,16 +71,16 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
  USB_Istr();
 }
 
-/**
-  * @brief  This function handles SDIO global interrupt request.
-  * @param  None
-  * @retval None
-  */
-void SDIO_IRQHandler(void)
-{
-  /* Process All SDIO Interrupt Sources */
-  SD_ProcessIRQSrc();
-}
+///**
+//  * @brief  This function handles SDIO global interrupt request.
+//  * @param  None
+//  * @retval None
+//  */
+//void SDIO_IRQHandler(void)
+//{
+//  /* Process All SDIO Interrupt Sources */
+//  SD_ProcessIRQSrc();
+//}
 
 /**
   * @brief  This function handles PPP interrupt request.

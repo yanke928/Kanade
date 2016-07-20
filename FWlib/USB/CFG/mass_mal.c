@@ -71,10 +71,9 @@ u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length)
 	{
 	case 0:
 		NbrOfBlock = Transfer_Length / 512;
-		if (NbrOfBlock == 1)
-			STA = SD_WriteBlock(Memory_Offset, (u32*)Writebuff, 512);
-		else
-			STA = SD_WriteMultiBlocks(Memory_Offset, (u32*)Writebuff, 512, NbrOfBlock);
+		STA=SD_WriteDisk((u8*)Writebuff,Memory_Offset/512, Transfer_Length/512);
+	  if(STA==SD_OK) STA=MAL_OK;
+	  else STA=MAL_FAIL;
 		break;
 	case 1:
 		STA = 0;
@@ -109,11 +108,9 @@ u16 MAL_Read(u8 lun, u32 Memory_Offset, u32 *Readbuff, u16 Transfer_Length)
 	{
 	case 0:
 		NbrOfBlock = Transfer_Length / 512;
-		if (NbrOfBlock == 1)
-			STA = SD_ReadBlock(Memory_Offset, (u32*)Readbuff, 512);
-		else
-			STA = SD_ReadMultiBlocks(Memory_Offset, (u32*)Readbuff, 512, NbrOfBlock);
-		break;
+		STA=SD_ReadDisk((u8*)Readbuff,Memory_Offset/512, Transfer_Length/512);
+	  if(STA==SD_OK) STA=MAL_OK;
+	  else STA=MAL_FAIL;
 	case 1:
 		STA = 0;
 	  NbrOfBlock = Transfer_Length / 4096;
@@ -164,7 +161,6 @@ u16 MAL_GetStatus(u8 lun)
 				return MAL_FAIL;
 			}
 
-			Status = SD_SetDeviceMode(SD_DMA_MODE);
 			if (Status != SD_OK)
 			{
 				return MAL_FAIL;
@@ -180,7 +176,7 @@ u16 MAL_GetStatus(u8 lun)
 	}
 	else if (lun == 1)
 	{
-		if(SPIFlashMountStatus)
+		if(1)
 		{
 		 Mass_Block_Size[1] = 4096;
 		 Mass_Block_Count[1] = 2048;

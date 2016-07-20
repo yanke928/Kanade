@@ -561,6 +561,54 @@ const char SetTempProtectResumeGap_CN[] ="保护恢复门限";
 const char SetTempProtectResumeGap_JP[] ="回復しきい値";
 const char* const SetTempProtectResumeGap_Str[] = { SetTempProtectResumeGap_EN,SetTempProtectResumeGap_TW,SetTempProtectResumeGap_CN,SetTempProtectResumeGap_JP };
 
+const char SettingsItemFormatDisks_EN[] ="Format Disks";
+const char SettingsItemFormatDisks_TW[] ="磁盤格式化";
+const char SettingsItemFormatDisks_CN[] ="磁盘格式化";
+const char SettingsItemFormatDisks_JP[] ="フォーマット";
+const char* const SettingsItemFormatDisks_Str[] = { SettingsItemFormatDisks_EN,SettingsItemFormatDisks_TW,SettingsItemFormatDisks_CN,SettingsItemFormatDisks_JP };
+
+const char SettingsItemFormatSD_EN[] ="TF Card";
+const char SettingsItemFormatSD_TW[] ="存儲卡";
+const char SettingsItemFormatSD_CN[] ="存储卡";
+const char SettingsItemFormatSD_JP[] ="メモリカード";
+const char* const SettingsItemFormatSD_Str[] = { SettingsItemFormatSD_EN,SettingsItemFormatSD_TW,SettingsItemFormatSD_CN,SettingsItemFormatSD_JP };
+
+const char SettingsItemFormatInternal_EN[] ="Internal Memory";
+const char SettingsItemFormatInternal_TW[] ="内部存儲器";
+const char SettingsItemFormatInternal_CN[] ="内部存储器";
+const char SettingsItemFormatInternal_JP[] ="内部記憶";
+const char* const SettingsItemFormatInternal_Str[] = { SettingsItemFormatInternal_EN,SettingsItemFormatInternal_TW,SettingsItemFormatInternal_CN,SettingsItemFormatInternal_JP };
+
+const char SettingsItemNoDisk_EN[] ="No Disk";
+const char SettingsItemNoDisk_TW[] ="沒有記憶體";
+const char SettingsItemNoDisk_CN[] ="沒有存储器";
+const char SettingsItemNoDisk_JP[] ="No Memory";
+const char* const SettingsItemNoDisk_Str[] = { SettingsItemNoDisk_EN,SettingsItemNoDisk_TW,SettingsItemNoDisk_CN,SettingsItemNoDisk_JP };
+
+const char FormatInternalConfirm_EN[] ="Format Int.Mem?";
+const char FormatInternalConfirm_TW[] ="格式化内部記憶?";
+const char FormatInternalConfirm_CN[] ="格式化内部记忆?";
+const char FormatInternalConfirm_JP[] ="内部記憶Format?";
+const char* const FormatInternalConfirm_Str[] = { FormatInternalConfirm_EN,FormatInternalConfirm_TW,FormatInternalConfirm_CN,FormatInternalConfirm_JP };
+
+const char FormatSDConfirm_EN[] ="Format TFCard?";
+const char FormatSDConfirm_TW[] ="格式化存儲卡?";
+const char FormatSDConfirm_CN[] ="格式化存储卡?";
+const char FormatSDConfirm_JP[] ="TFCard Format?";
+const char* const FormatSDConfirm_Str[] = { FormatSDConfirm_EN,FormatSDConfirm_TW,FormatSDConfirm_CN,FormatSDConfirm_JP };
+
+const char Formatting_EN[] ="Formatting...";
+const char Formatting_TW[] ="正在格式化...";
+const char Formatting_CN[] ="正在格式化...";
+const char Formatting_JP[] ="Formatting...";
+const char* const Formatting_Str[] = { Formatting_EN,Formatting_TW,Formatting_CN,Formatting_JP };
+
+const char FormatSuccess_EN[] ="Format Done";
+const char FormatSuccess_TW[] ="已格式化";
+const char FormatSuccess_CN[] ="已格式化";
+const char FormatSuccess_JP[] ="Format OK";
+const char* const FormatSuccess_Str[] = { FormatSuccess_EN,FormatSuccess_TW,FormatSuccess_CN,FormatSuccess_JP };
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},

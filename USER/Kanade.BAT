@@ -1,10 +1,10 @@
 SET PATH=C:\Keil_v5\ARM\ARMCC\bin\;C:\Program Files (x86)\STMicroelectronics\st_toolset\asm;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Users\yanke\.dnx\bin;C:\Program Files\Microsoft DNX\Dnvm\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\TortoiseGit\bin
-SET CPU_TYPE=STM32F103CB
+SET CPU_TYPE=STM32F103RD
 SET CPU_VENDOR=STMicroelectronics
 SET UV2_TARGET=Kanade
 SET CPU_CLOCK=0x044AA200
-"C:\Keil_v5\ARM\ARMCC\bin\ArmAsm" --Via ".\output\startup_stm32f10x_md._ia"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\startup.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmAsm" --Via ".\output\startup_stm32f10x_hd._ia"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\stm32f10x_gpio.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\stm32f10x_rcc.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\stm32f10x_usart.__i"
@@ -18,6 +18,7 @@ SET CPU_CLOCK=0x044AA200
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\stm32f10x_rtc.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\stm32f10x_bkp.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\stm32f10x_pwr.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\stm32f10x_sdio.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\core_cm3.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\system_stm32f10x.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\main.__i"
@@ -37,6 +38,8 @@ SET CPU_CLOCK=0x044AA200
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\usarts.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\sdcard.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\sdcardff.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\w25q64.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\w25q64ff.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\music.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\usbmeter.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\virtualrtc.__i"
@@ -49,7 +52,9 @@ SET CPU_CLOCK=0x044AA200
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\stepuptest.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\legacytest.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\about.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\massstorage.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\ebprotocol.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\ebprotocolconfig.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\ccsbcs.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\diskio.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\ff.__i"
@@ -64,6 +69,7 @@ SET CPU_CLOCK=0x044AA200
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\ui_listview.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\ui_dialgram.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\ui_progressbar.__i"
+"C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\ui_print.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\usb_core.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\usb_init.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\usb_int.__i"
@@ -82,3 +88,4 @@ SET CPU_CLOCK=0x044AA200
 "C:\Keil_v5\ARM\ARMCC\bin\ArmCC" --Via ".\output\usb_scsi.__i"
 "C:\Keil_v5\ARM\ARMCC\bin\ArmLink" --Via ".\Output\Kanade.lnp"
 "C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe" ".\Output\Kanade.axf" --i32combined --output ".\Output\Kanade.hex"
+"C:\Keil_v5\UV4\KSPAWN.EXE" C:\Keil_v5\ARM\ARMCC\bin\fromelf.exe --bin -o .\output\Kanade.bin  .\output\Kanade.axf

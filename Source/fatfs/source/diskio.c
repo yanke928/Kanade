@@ -69,14 +69,7 @@ DRESULT disk_read(
 	{
 	case 0:
 		portENTER_CRITICAL();
-		if (count == 1)
-		{
-			res = SD_ReadBlock(sector << 9, (u32 *)(&buff[0]), 512);
-		}
-		else
-		{
-			res = SD_ReadMultiBlocks(sector << 9, (u32 *)(&buff[0]), 512, count);
-		}
+    res=SD_ReadDisk((u8*)buff, sector, count);
     portEXIT_CRITICAL();
 		if (res == SD_OK)
 		{
@@ -117,14 +110,7 @@ DRESULT disk_write(
 	{
 	case 0:
 		portENTER_CRITICAL();
-		if (count == 1)
-		{
-			res = SD_WriteBlock(sector << 9, (u32 *)(&buff[0]), 512);
-		}
-		else
-		{
-			res = SD_WriteMultiBlocks(sector << 9, (u32 *)(&buff[0]), 512, count);
-		}
+		res = SD_WriteDisk((u8*)buff, sector, count);
     portEXIT_CRITICAL();
 		if (res == SD_OK)
 		{
@@ -174,7 +160,18 @@ DRESULT disk_ioctl(
 		res = RES_OK;
 		break;
 
-//	case GET_SECTOR_COUNT:
+	case GET_SECTOR_COUNT:
+		if (pdrv == 0)
+			*(WORD*)buff = SDCardInfo.CardCapacity / SDCardInfo.CardBlockSize;
+		else
+			*(WORD*)buff = 2048;		
+		res = RES_OK;
+		break;
+//	case GET_BLOCK_SIZE:
+//		if (pdrv == 0)
+//			*(DWORD *)buff = 512;
+//		else
+//			*(DWORD *)buff = 4096;
 //		res = RES_OK;
 //		break;
 	default:

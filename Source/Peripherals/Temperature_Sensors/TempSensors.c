@@ -106,17 +106,6 @@ void TempADC_AND_DMA_Init(void)
 }
 
 /**
-  * @brief   Called by SystemBeats,update the INTTemperature every while
-  * @retval : None
-  */
-void UpdateTemperatureSensors(short lese, short lese2, unsigned char lese3)
-{
-	if (lese)  lese = 0;
-	if (lese2) lese = 0;
-	if (lese3) lese = 0;//throw the rubbish
-}
-
-/**
   * @brief   Temperature task
   * @retval : None
   */

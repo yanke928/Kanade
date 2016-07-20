@@ -315,7 +315,7 @@ void SystemStartup(void *pvParameters)
 	vTaskDelay(100 / portTICK_RATE_MS);
 	TemperatureSensors_Init();
 
-	EBD_Init();
+	//EBD_Init();
 	vTaskDelay(50 / portTICK_RATE_MS);
 
 	SDCard_Init(true);

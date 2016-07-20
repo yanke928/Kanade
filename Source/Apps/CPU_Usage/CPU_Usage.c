@@ -50,5 +50,5 @@ void  OSStatInit(void)
 
 void vApplicationIdleHook(void)
 {
-	OSIdleCtr++;
+// __WFI(); 
 }

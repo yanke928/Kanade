@@ -10,5 +10,3 @@
 FATFS SD_fatfs;    
 
 bool SDCardMountStatus = false;
-
-SD_CardInfo SDCardInfo;

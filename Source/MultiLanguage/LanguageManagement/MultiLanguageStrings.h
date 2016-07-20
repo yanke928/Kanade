@@ -104,6 +104,8 @@ extern const char* const ExternalOverHeat_Str[LanguageNum];
 extern const char* const SystemOverHeat_Str[LanguageNum];
 extern const char* const TestPaused_Str[LanguageNum];
 extern const char* const Temperature_Unit_Str[LanguageNum];
+extern const char* const TestPaused_Str[LanguageNum];
+extern const char* const Temperature_Unit_Str[LanguageNum];
 
 /*Settings items*/
 extern const char* const SettingsItemMountDisk_Str[LanguageNum];
@@ -113,10 +115,22 @@ extern const char* const SettingsItemOverHeatControl_Str[LanguageNum];
 extern const char* const SettingsItemLanguage_Str[LanguageNum];
 extern const char* const SettingsItemModel_Str[LanguageNum];
 extern const char* const SettingsItemSystemInfo_Str[LanguageNum];
+extern const char* const SettingsItemFormatInternal_Str[LanguageNum];
 
 /*Legacy test mode items*/
 extern const char* const SelectLeagcyTestModeButtonCC_Str[LanguageNum];
 extern const char* const SelectLeagcyTestModeButtonCP_Str[LanguageNum];
+
+
+/*Disk format related*/
+extern const char* const SettingsItemFormatSD_Str[LanguageNum];
+extern const char* const SettingsItemFormatSD_Str[LanguageNum];
+extern const char* const SettingsItemNoDisk_Str[LanguageNum];
+extern const char* const SettingsItemFormatDisks_Str[LanguageNum];
+extern const char* const FormatInternalConfirm_Str[LanguageNum];
+extern const char* const FormatSDConfirm_Str[LanguageNum];
+extern const char* const Formatting_Str[LanguageNum];
+extern const char* const FormatSuccess_Str[LanguageNum];
 
 /*Public*/
 extern const char* const ConfirmationConfirm_Str[LanguageNum];

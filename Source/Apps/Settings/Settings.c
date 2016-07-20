@@ -18,11 +18,15 @@
 #include "RTC.h"
 #include "sdcard.h"
 #include "sdcardff.h"
+#include "W25Q64.h"
+#include "W25Q64ff.h"
+#include "ff.h"
 
 #include "UI_Menu.h"
 #include "UI_Dialogue.h"
 #include "UI_Adjust.h"
 #include "UI_Utilities.h"
+#include "UI_Confirmation.h"
 #include "MultiLanguageStrings.h"
 
 #include "Settings.h"
@@ -45,6 +49,8 @@ void OverHeatSettings(void);
 
 void MountOrUnMountDisk(void);
 
+void FormatDisks(void);
+
 /**
   * @brief  Settings
 
@@ -65,12 +71,13 @@ void Settings()
 	stringTab[1]=SettingsItemClockSettings_Str[CurrentSettings->Language];
 	stringTab[2]=SettingsItemOverHeatControl_Str[CurrentSettings->Language];
 	stringTab[3]=SettingsItemLanguage_Str[CurrentSettings->Language];
-	stringTab[4]=SettingsItemModel_Str[CurrentSettings->Language];
-	stringTab[5]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
+	stringTab[4]=SettingsItemFormatDisks_Str[CurrentSettings->Language];
+	stringTab[5]=SettingsItemModel_Str[CurrentSettings->Language];
+	stringTab[6]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
 	
 	menuParams.ItemStrings=stringTab;
 	menuParams.DefaultPos = 0;
-	menuParams.ItemNum = 6;
+	menuParams.ItemNum = 7;
 	menuParams.FastSpeed = 10;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
@@ -90,8 +97,9 @@ void Settings()
 	case 1:TimeSettings(); break;
 	case 2:OverHeatSettings(); break;
 	case 3:SetLanguage(); break;
-	case 4:ModelSettings(); break;
-	case 5:About();
+	case 4:FormatDisks();break;
+	case 5:ModelSettings(); break;
+	case 6:About();
 	}
 }
 
@@ -356,7 +364,69 @@ void OverHeatSettings(void)
 		Temperature_Unit_Str[CurrentSettings->Language],
 		5, 20, CurrentSettings->Protection_Resume_Gap);
 	SaveSettings();
-	ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language], 1000, true);
+	ShowSmallDialogue(Saved_Str[CurrentSettings->Language], 1000, true);
+}
+
+/**
+  * @brief  FormatDisk
+
+  * @param  None
+
+  */
+void FormatDisks(void)
+{
+ UI_Menu_Param_Struct menuParams;
+ const char* diskTab[2];
+ FRESULT res;
+	
+ u8 selection;
+ u8 cnt=0;
+ if(1)
+ {
+  diskTab[cnt]=SettingsItemFormatInternal_Str[CurrentSettings->Language];
+	cnt++;
+ }
+ if(1)
+ {
+  diskTab[cnt]=SettingsItemFormatSD_Str[CurrentSettings->Language];
+	cnt++;		
+ }
+ if(cnt==0)
+ {
+  ShowSmallDialogue(SettingsItemNoDisk_Str[CurrentSettings->Language], 1000, true);
+	return;
+ }
+	menuParams.ItemStrings = diskTab;
+	menuParams.DefaultPos = 0;
+	menuParams.ItemNum = cnt;
+	menuParams.FastSpeed = 5;
+ 
+	UI_Menu_Init(&menuParams);
+ 	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
+	UI_Menu_DeInit();
+  if(selection==255) goto Done;
+  if(diskTab[selection]==SettingsItemFormatInternal_Str[CurrentSettings->Language])
+	{
+	 if (GetConfirmation(FormatInternalConfirm_Str[CurrentSettings->Language], ""))
+	 {
+	  ShowSmallDialogue(Formatting_Str[CurrentSettings->Language], 1000, false);
+		res=f_mkfs("1:/",1,4096);
+	 }
+	 else goto Done;
+	}
+	else if(diskTab[selection]==SettingsItemFormatSD_Str[CurrentSettings->Language])
+	{
+	 if (GetConfirmation(FormatSDConfirm_Str[CurrentSettings->Language], ""))
+	 {
+	  ShowSmallDialogue(Formatting_Str[CurrentSettings->Language], 1000, false);
+	  res=f_mkfs("0:/",0,32768);
+	 }
+	 else goto Done;	 
+	}
+ if(res==FR_OK)  ShowSmallDialogue(FormatSuccess_Str[CurrentSettings->Language], 1000, true);
+ else ShowDiskIOStatus(res);
+	Done:
+	OLED_Clear();
 }
 
 /**
