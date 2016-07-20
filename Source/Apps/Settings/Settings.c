@@ -58,9 +58,9 @@ void Settings()
 	const char* stringTab[10];
 	
 	if (SDCardMountStatus)
-  stringTab[0]=SettingsItemMountDisk_Str[CurrentSettings->Language];
+  stringTab[0]=SettingsItemUnmountDisk_Str[CurrentSettings->Language];
 	else
-	stringTab[0]=SettingsItemUnmountDisk_Str[CurrentSettings->Language];
+	stringTab[0]=SettingsItemMountDisk_Str[CurrentSettings->Language];
 	
 	stringTab[1]=SettingsItemClockSettings_Str[CurrentSettings->Language];
 	stringTab[2]=SettingsItemOverHeatControl_Str[CurrentSettings->Language];
