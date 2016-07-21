@@ -120,8 +120,6 @@ u16 MAL_Read(u8 lun, u32 Memory_Offset, u32 *Readbuff, u16 Transfer_Length)
 	default:
 		return MAL_FAIL;
 	}
-	if (STA != 0)return MAL_FAIL;
-	return MAL_OK;
 }
 
 /*******************************************************************************

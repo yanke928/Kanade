@@ -39,8 +39,6 @@
 #include "MultiLanguageStrings.h"
 #include "Settings.h"
 
-__align(4) uint8_t SDIO_DATA_BUFFER[512];
-
 
 /**********************************************************
                        定义相关的变量
@@ -900,7 +898,7 @@ SD_Error SD_SelectDeselect(uint32_t addr)
 * 返回数值 ---> 返回卡应答
 * 功能说明 ---> none
 **********************************************************/
-SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
+SD_Error SD_ReadBlock(uint8_t *readbuff, uint64_t ReadAddr, uint16_t BlockSize)
 {
 	SD_Error errorstatus = SD_OK;
 	uint8_t power = 0;
@@ -1025,7 +1023,7 @@ SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
 * 返回数值 ---> 返回卡应答
 * 功能说明 ---> none
 **********************************************************/
-SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize, uint32_t NumberOfBlocks)
+SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint64_t ReadAddr, uint16_t BlockSize, uint32_t NumberOfBlocks)
 {
 	SD_Error errorstatus = SD_OK;
 	uint32_t timeout = 0;
@@ -1102,7 +1100,7 @@ SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr, uint16_t Block
 * 返回数值 ---> 返回卡应答
 * 功能说明 ---> none
 **********************************************************/
-SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, uint16_t BlockSize)
+SD_Error SD_WriteBlock(uint8_t *writebuff, uint64_t WriteAddr, uint16_t BlockSize)
 {
 	SD_Error errorstatus = SD_OK;
 	uint32_t timeout = 0;
@@ -1280,7 +1278,7 @@ SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, uint16_t BlockSiz
 * 返回数值 ---> 返回卡应答
 * 功能说明 ---> none
 **********************************************************/
-SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAddr, uint16_t BlockSize, uint32_t NumberOfBlocks)
+SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint64_t WriteAddr, uint16_t BlockSize, uint32_t NumberOfBlocks)
 {
 	SD_Error errorstatus = SD_OK;
 	__IO uint32_t count = 0;
@@ -2125,27 +2123,12 @@ void SDIO_IRQHandler(void)
 * 返回数值 ---> 返回卡应答
 * 功能说明 ---> none
 **********************************************************/			  				 
-SD_Error SD_ReadDisk(uint8_t *readbuff, uint32_t sector, uint16_t cnt)
+SD_Error SD_ReadDisk(uint8_t *readbuff, uint64_t sector, uint16_t cnt)
 {
 	SD_Error sta = SD_OK;
-	uint16_t n;
-
 	if(CardType!=SDIO_STD_CAPACITY_SD_CARD_V1_1)	sector<<=9;
-
-	if((uint32_t)readbuff%4!=0)
-	{
-	 	for(n=0;n<cnt;n++)
-		{
-		 	sta = SD_ReadBlock(SDIO_DATA_BUFFER, sector, 512);    	//单个sector的读操作
-			memcpy(readbuff, SDIO_DATA_BUFFER, 512);
-			readbuff+=512;
-		} 
-	}
-	else
-	{
 		if(cnt==1)	sta = SD_ReadBlock(readbuff, sector, 512);    	//单个sector的读操作
 		else	sta = SD_ReadMultiBlocks(readbuff, sector, 512, cnt);//多个sector  
-	}
 	return sta;
 }
 /**********************************************************
@@ -2156,27 +2139,14 @@ SD_Error SD_ReadDisk(uint8_t *readbuff, uint32_t sector, uint16_t cnt)
 * 返回数值 ---> 返回卡应答
 * 功能说明 ---> none
 **********************************************************/	
-SD_Error SD_WriteDisk(uint8_t *writebuff, uint32_t sector, uint16_t cnt)
+SD_Error SD_WriteDisk(uint8_t *writebuff, uint64_t sector, uint16_t cnt)
 {
 	SD_Error sta = SD_OK;
-	uint16_t n;
 
 	if(CardType!=SDIO_STD_CAPACITY_SD_CARD_V1_1)	sector<<=9;
 
-	if((uint32_t)writebuff%4!=0)
-	{
-	 	for(n=0;n<cnt;n++)
-		{
-			memcpy(SDIO_DATA_BUFFER, writebuff, 512);
-		 	sta = SD_WriteBlock(SDIO_DATA_BUFFER, sector, 512);    	//单个sector的写操作
-			writebuff+=512;
-		} 
-	}
-	else
-	{
 		if(cnt==1)	sta = SD_WriteBlock(writebuff, sector, 512);    	//单个sector的写操作
 		else	sta = SD_WriteMultiBlocks(writebuff, sector, 512, cnt);	//多个sector  
-	}
 	return sta;
 }
 

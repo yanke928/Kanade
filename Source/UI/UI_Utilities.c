@@ -148,6 +148,7 @@ void DrawHorizonalDashedGrid(u8 y, bool drawOrUnDraw, u8 gridsDensity)
   */
 void ShowDiskIOStatus(u8 res)
 {
+	char tempString[20];
 	if (res == FR_OK)
 	{
 		ShowSmallDialogue("File Created", 1000,true);
@@ -208,4 +209,6 @@ void ShowDiskIOStatus(u8 res)
 		ShowSmallDialogue("Disk Error", 1000,true);
 		return;
 	}
+	sprintf(tempString,"Unknown_Err:%d",res);
+	ShowSmallDialogue(tempString, 1000,true);
 }

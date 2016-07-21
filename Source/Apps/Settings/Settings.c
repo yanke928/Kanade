@@ -410,7 +410,8 @@ void FormatDisks(void)
 	 if (GetConfirmation(FormatInternalConfirm_Str[CurrentSettings->Language], ""))
 	 {
 	  ShowSmallDialogue(Formatting_Str[CurrentSettings->Language], 1000, false);
-		res=f_mkfs("1:/",1,4096);
+		//res=f_mkfs("1:/",1,4096,SPI_FLASH_fatfs.win,_MAX_SS);
+		 res=f_mkfs("1:/",0,0);
 	 }
 	 else goto Done;
 	}
@@ -419,7 +420,8 @@ void FormatDisks(void)
 	 if (GetConfirmation(FormatSDConfirm_Str[CurrentSettings->Language], ""))
 	 {
 	  ShowSmallDialogue(Formatting_Str[CurrentSettings->Language], 1000, false);
-	  res=f_mkfs("0:/",0,32768);
+	  //res=f_mkfs("0:/",1,512,SD_fatfs.win,_MAX_SS);
+		 res=f_mkfs("0:/",0,0);
 	 }
 	 else goto Done;	 
 	}

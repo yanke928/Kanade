@@ -48,7 +48,19 @@ DSTATUS disk_initialize(
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-	return RES_OK;
+switch(pdrv)
+{
+	case 0:
+		if (SD_Init() != SD_OK) return RES_ERROR;
+			SD_GetCardInfo(&SDCardInfo);
+			SD_SelectDeselect((uint32_t)(SDCardInfo.RCA << 16));
+	    SD_EnableWideBusOperation(SDIO_BusWide_4b);
+	  break;
+	case 1:
+		W25Q64_Hardware_Init();
+	 break;
+}
+return RES_OK;
 }
 
 
@@ -147,7 +159,6 @@ DRESULT disk_ioctl(
 )
 {
 	DRESULT res=RES_OK;
-
 	switch (cmd)
 	{
 	case CTRL_SYNC:
@@ -159,21 +170,33 @@ DRESULT disk_ioctl(
 			*(WORD*)buff = 4096;
 		res = RES_OK;
 		break;
-
 	case GET_SECTOR_COUNT:
 		if (pdrv == 0)
-			*(WORD*)buff = SDCardInfo.CardCapacity / SDCardInfo.CardBlockSize;
+		{
+			u32 NumberOfBlocks;
+			u32 DeviceSizeMul = 0;
+			DeviceSizeMul = (SDCardInfo.SD_csd.DeviceSizeMul + 2);
+			if (SDCardInfo.CardType == SDIO_HIGH_CAPACITY_SD_CARD)
+			{
+				*(DWORD*)buff= (SDCardInfo.SD_csd.DeviceSize + 1) * 1024;
+			}
+			else
+			{
+				NumberOfBlocks = ((1 << (SDCardInfo.SD_csd.RdBlockLen)) / 512);
+				*(DWORD*)buff = ((SDCardInfo.SD_csd.DeviceSize + 1) * (1 << DeviceSizeMul) << (NumberOfBlocks / 2));
+			}
+		}
 		else
-			*(WORD*)buff = 2048;		
+			*(DWORD*)buff = 2048;		
 		res = RES_OK;
 		break;
-//	case GET_BLOCK_SIZE:
-//		if (pdrv == 0)
-//			*(DWORD *)buff = 512;
-//		else
-//			*(DWORD *)buff = 4096;
-//		res = RES_OK;
-//		break;
+	case GET_BLOCK_SIZE:
+		if (pdrv == 0)
+			*(DWORD *)buff = 32;
+		else
+			*(DWORD *)buff = 1;
+		res = RES_OK;
+		break;
 	default:
 		res = RES_OK;
 		break;

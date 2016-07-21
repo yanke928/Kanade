@@ -114,6 +114,7 @@ void	W25X_Read_Sector(uint32_t nSector, u8* pBuffer);
 #if USE_WRITE_SECTOR
 void	W25X_Write_Sector(uint32_t nSector, u8* pBuffer);
 #endif
+void W25Q64_Hardware_Init(void);
 
 void W25Q64_Init(void);
 

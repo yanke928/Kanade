@@ -25,7 +25,7 @@
 /* 计算公式：SDIO_CK = SDIO_CLK / (CLKDIV + 2） */
 
 #define SDIO_INIT_CLK_DIV                  ((uint8_t)0xb2)			//400KHz----> 0xb2(178)
-#define SDIO_TRANSFER_CLK_DIV              ((uint8_t)0x02)
+#define SDIO_TRANSFER_CLK_DIV              ((uint8_t)0x01)
 //24MHz ----> 0x01
 //18MHz ----> 0x02
 //12MHz ----> 0x04
@@ -401,10 +401,10 @@ SD_Error SD_GetCardInfo(SD_CardInfo *cardinfo);
 SD_Error SD_GetCardStatus(SD_CardStatus *cardstatus);
 SD_Error SD_EnableWideBusOperation(uint32_t WideMode);
 SD_Error SD_SelectDeselect(uint32_t addr);
-SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize);
-SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize, uint32_t NumberOfBlocks);
-SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, uint16_t BlockSize);
-SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAddr, uint16_t BlockSize, uint32_t NumberOfBlocks);
+SD_Error SD_ReadBlock(uint8_t *readbuff, uint64_t ReadAddr, uint16_t BlockSize);
+SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint64_t ReadAddr, uint16_t BlockSize, uint32_t NumberOfBlocks);
+SD_Error SD_WriteBlock(uint8_t *writebuff, uint64_t WriteAddr, uint16_t BlockSize);
+SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint64_t WriteAddr, uint16_t BlockSize, uint32_t NumberOfBlocks);
 SDTransferState SD_GetTransferState(void);
 SD_Error SD_StopTransfer(void);
 SD_Error SD_Erase(uint32_t startaddr, uint32_t endaddr);
@@ -413,8 +413,8 @@ SD_Error SD_SendSDStatus(uint32_t *psdstatus);
 SD_Error SD_ProcessIRQSrc(void);
 SD_Error SD_WaitReadOperation(void);
 SD_Error SD_WaitWriteOperation(void);
-SD_Error SD_ReadDisk(uint8_t *readbuff, uint32_t sector, uint16_t cnt);
-SD_Error SD_WriteDisk(uint8_t *writebuff, uint32_t sector, uint16_t cnt);
+SD_Error SD_ReadDisk(uint8_t *readbuff, uint64_t sector, uint16_t cnt);
+SD_Error SD_WriteDisk(uint8_t *writebuff, uint64_t sector, uint16_t cnt);
 
 u32 SDCard_Init(bool withGUI);
 void CheckEBDDirectories(bool withGUI);
