@@ -7,7 +7,7 @@
 #include "stm32f10x.h"
 #include "stdbool.h"
 
-void DisplayBasicData(char tempString[],u8 currentStatus);
+void DisplayBasicData(char tempString[],u8 currentStatus,u8 firstEnter);
 
 void DisplayRecordData(char tempString[]);
 

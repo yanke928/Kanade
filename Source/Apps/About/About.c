@@ -48,9 +48,8 @@ void About()
 
  /*Display product info string and version string*/
  xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
- OLED_ShowAnyString(prodectInfoAddr,1,ProductName_Str[CurrentSettings->Language],NotOnSelect,12);
- OLED_ShowAnyString(prodectInfoAddr+(productNameLength+1)*6,1,ProductVersion_Str[CurrentSettings->Language],NotOnSelect,12);	
- OLED_InvertRect(1,1,126,13);
+ OLED_ShowAnyString(prodectInfoAddr,1,ProductName_Str[CurrentSettings->Language],OnSelect,12);
+ OLED_ShowAnyString(prodectInfoAddr+(productNameLength+1)*6,1,ProductVersion_Str[CurrentSettings->Language],OnSelect,12);	
  
  /*Display designer,provider strings*/
  tmp=GetStringGraphicalLength(ProductDesigner_Str[CurrentSettings->Language]);

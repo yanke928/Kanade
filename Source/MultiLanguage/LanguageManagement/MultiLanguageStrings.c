@@ -609,6 +609,12 @@ const char FormatSuccess_CN[] ="已格式化";
 const char FormatSuccess_JP[] ="Format OK";
 const char* const FormatSuccess_Str[] = { FormatSuccess_EN,FormatSuccess_TW,FormatSuccess_CN,FormatSuccess_JP };
 
+const char SDCardRemovedAccidentally_EN[] ="TFCard Lost";
+const char SDCardRemovedAccidentally_TW[] ="TF卡意外丢失";
+const char SDCardRemovedAccidentally_CN[] ="TF卡意外丢失";
+const char SDCardRemovedAccidentally_JP[] ="TFCard Lost";
+const char* const SDCardRemovedAccidentally_Str[] = { SDCardRemovedAccidentally_EN,SDCardRemovedAccidentally_TW,SDCardRemovedAccidentally_CN,SDCardRemovedAccidentally_JP };
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},

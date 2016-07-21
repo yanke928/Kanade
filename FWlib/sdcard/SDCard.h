@@ -107,6 +107,10 @@
 //SDIO_APP_CMD should be sent before sending these commands.
 #define SDIO_SEND_IF_COND               ((uint32_t)0x00000008)
 
+#define SDCARD_INSERT_GPIO_PIN GPIO_Pin_14
+
+#define SDCard_Exist() !GPIO_ReadInputDataBit(GPIOB,SDCARD_INSERT_GPIO_PIN)
+
 /**********************************************************
             SD卡初始化和读写卡是的状态值定义
 **********************************************************/

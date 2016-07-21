@@ -41,7 +41,7 @@ xSemaphoreHandle OLEDRelatedMutex = NULL;
 //[7]0 1 2 3 ... 127 			   
 unsigned char  OLED_GRAM[128][8];
 
-//unsigned char  OLED_GRAM_Backup[128][8];
+unsigned char  OLED_GRAM_Backup[128][8];
 
 volatile bool GRAM_Changing = false;
 
@@ -710,15 +710,45 @@ void OLED_Refresh_Handler(void *pvParameters)
 }
 #endif
 
+/**
+  * @brief  Make OLED refresh mode into UpdateJustNow
+
+	  @retval None
+  */
 void SetUpdateOLEDJustNow()
 {
 	UpdateOLEDJustNow_Backup = UpdateOLEDJustNow;
 	UpdateOLEDJustNow = true;
 }
 
+/**
+  * @brief  Restore OLED refresh mode
+
+	  @retval None
+  */
 void ResetUpdateOLEDJustNow()
 {
 	UpdateOLEDJustNow = UpdateOLEDJustNow_Backup;
+}
+
+/**
+  * @brief  Backup GRAM into OLED_GRAM_BKP
+
+	  @retval None
+  */
+void OLED_BackupScreen()
+{
+	memcpy(OLED_GRAM_Backup,OLED_GRAM,sizeof(OLED_GRAM));
+}
+
+/**
+  * @brief  Restore GRAM
+
+	  @retval None
+  */
+void OLED_RestoreScreen()
+{
+	memcpy(OLED_GRAM,OLED_GRAM_Backup,sizeof(OLED_GRAM));
 }
 
 /**

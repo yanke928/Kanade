@@ -47,6 +47,7 @@
 void USBMeter(void *pvParameters)
 {
 	char tempString[20];
+	u8 firstEnter=1;
 	Key_Message_Struct keyMessage;
 	u8 status = *(u8*)pvParameters;
 	Legacy_Test_Param_Struct legacy_Test_Params;
@@ -55,14 +56,15 @@ void USBMeter(void *pvParameters)
 	{
 	Refresh:
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-		DisplayBasicData(tempString, status);
+		DisplayBasicData(tempString, status,firstEnter);
 		if (status == USBMETER_RECORD || status == LEGACY_TEST)
 		{
 			DisplayRecordData(tempString);
 		}
 		xSemaphoreGive(OLEDRelatedMutex);
-		if (InternalTemperature > CurrentSettings->InternalTemperature_Max||
-			  ExternalTemperature > CurrentSettings->ExternalTemperature_Max)
+		if ((InternalTemperature > CurrentSettings->InternalTemperature_Max||
+			  ExternalTemperature > CurrentSettings->ExternalTemperature_Max)&&
+		    firstEnter==0)
 		{
 			System_OverHeat_Exception_Handler(status, &legacy_Test_Params);
 		}
@@ -82,6 +84,7 @@ void USBMeter(void *pvParameters)
 					EBDSendLoadCommand((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, KeepTest);
 			}
 		}
+		if(firstEnter) firstEnter--;
 		if (xQueueReceive(Key_Message, &keyMessage, 1000 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (status == USBMETER_ONLY)
@@ -142,7 +145,7 @@ void USBMeter(void *pvParameters)
 	By sharing the tempString,more sources can be saved
 	@retval None
   */
-void DisplayBasicData(char tempString[], u8 currentStatus)
+void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
 {
 	if (CurrentMeterData.Voltage >= 10)
 	{
@@ -170,16 +173,27 @@ void DisplayBasicData(char tempString[], u8 currentStatus)
 	if (CurrentTemperatureSensor == Internal)
 	{
 		GenerateTempString(tempString, Internal);
+		if(firstEnter)
+		OLED_ShowString(80, 16, "-----C");	
+		else
+		{
 		if (tempString[0] != '1')tempString[0] = '0';
 		OLED_ShowString(80, 16, tempString);
+		}
 	}
 	else
 	{
 		GenerateTempString(tempString, External);
 		OLED_ShowAnyString(80, 16, "Ex", NotOnSelect, 8);
+		if(firstEnter) 
+		OLED_ShowAnyString(92, 16, "-----C", NotOnSelect, 8);
+		else
 		OLED_ShowAnyString(92, 16, tempString, NotOnSelect, 8);
 		GenerateTempString(tempString, Internal);
 		OLED_ShowAnyString(80, 24, "In", NotOnSelect, 8);
+		if(firstEnter) 
+		OLED_ShowAnyString(92, 24, "-----C", NotOnSelect, 8);
+		else
 		OLED_ShowAnyString(92, 24, tempString, NotOnSelect, 8);
 	}
 	if (EBD_Protocol_Config[CurrentSettings->EBD_Model]->DataPinSupport)

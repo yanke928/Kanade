@@ -188,7 +188,7 @@ void TemperatureHandler(void *pvParameters)
 				CalculateExtTemp();
 			}
 		}
-		vTaskDelay(5 / portTICK_RATE_MS);
+		vTaskDelay(10 / portTICK_RATE_MS);
 	}
 }
 

@@ -21,6 +21,8 @@
 #include "W25Q64.h"
 #include "UI_Utilities.h"
 
+#include "SDCardff.h"
+
 #include "mass_mal.h"
 #include "usb_lib.h"
 #include "hw_config.h"
@@ -108,7 +110,7 @@ void LogoHandler(void *pvParameters)
 		}
 		IsOLEDMutexTokenByLogoAnimateHandler = true;
 
-		UpdateOLEDJustNow = true;
+		SetUpdateOLEDJustNow();
 		/*If it's drawing's turn,draw the respective line at respective verticalAddr*/
 		if (DrawOrUnDraw)
 			for (m = 0; m < 4; m++)
@@ -144,7 +146,7 @@ void LogoHandler(void *pvParameters)
 		OLED_FillRect(LoadingAddr + 7, 39, LoadingAddr + 11, 44, !(n & 2));
 		OLED_FillRect(LoadingAddr + 7, 45, LoadingAddr + 11, 50, !(n & 4));
 		OLED_FillRect(LoadingAddr, 45, LoadingAddr + 5, 50, !(n & 8));
-		UpdateOLEDJustNow = false;
+		ResetUpdateOLEDJustNow();
 		xSemaphoreGive(OLEDRelatedMutex);
 		IsOLEDMutexTokenByLogoAnimateHandler = false;
 	Wait:
@@ -183,9 +185,9 @@ void InitStatusUpdateHandler(void *pvParameters)
 		OLED_FillRect(0, 39, 127, 55, 0);
 		/*Show the new initString*/
 		OLED_ShowAnyString(startAddr, 39, initStatus, false, 12);
-		UpdateOLEDJustNow = true;
+		SetUpdateOLEDJustNow();
 		OLED_Refresh_Gram();
-		UpdateOLEDJustNow = false;
+		ResetUpdateOLEDJustNow();
 
 		IsOLEDMutexTokenByInitStatusHandler = false;
 		xSemaphoreGive(OLEDRelatedMutex);
@@ -319,13 +321,16 @@ void SystemStartup(void *pvParameters)
 	vTaskDelay(50 / portTICK_RATE_MS);
 
 	SDCard_Init(true);
+	SDCardPlugAndPlay_Service_Init();
 	vTaskDelay(500 / portTICK_RATE_MS);
 
-	ShowCurrentTempSensor();
+	//ShowCurrentTempSensor();
 	CheckEBDDirectories(true);
 
 	USB_Interrupts_Config();
 	Set_USBClock();
+	
+	vTaskDelay(10/portTICK_RATE_MS);
 
 	LED_Animate_DeInit();
 	LogoWithInitStatus_DeInit();

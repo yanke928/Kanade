@@ -116,11 +116,11 @@ void MountOrUnMountDisk()
 	char tempString[20];
 	if (SDCardMountStatus)
 	{
-		res = f_mount(NULL, "0:/", 1);
-		res = f_mount(NULL, "1:/", 1);
+	  res = f_mount(NULL, "0:/", 1);
 		if (res == FR_OK)
 		{
 			ShowSmallDialogue(SettingsUnmounted_Str[CurrentSettings->Language], 1000, true);
+			SDCardUnMountedManually = true;
 			SDCardMountStatus = false;
 		}
 		else
@@ -131,9 +131,10 @@ void MountOrUnMountDisk()
 	else
 	{
 		capp = SDCard_Init(false);
+
 		if (capp)
 		{
-			sprintf(tempString, SettingsMounted_Str[CurrentSettings->Language], capp, true);
+			sprintf(tempString, SettingsMounted_Str[CurrentSettings->Language], capp);
 			CheckEBDDirectories(false);
 			ShowSmallDialogue(tempString, 1000, true);
 			SDCardMountStatus = true;

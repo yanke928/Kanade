@@ -45,7 +45,8 @@ u16 MAL_Init(u8 lun)
 	switch (lun)
 	{
 	case 0:
-		break;
+		if(!SDCard_Init(false)) Status=MAL_FAIL;
+	break;
 	case 1:
 		break;
 	default:
@@ -70,6 +71,7 @@ u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length)
 	switch (lun)
 	{
 	case 0:
+		if(!SDCard_Exist()) return MAL_FAIL;
 		NbrOfBlock = Transfer_Length / 512;
 		STA=SD_WriteDisk((u8*)Writebuff,Memory_Offset/512, Transfer_Length/512);
 	  if(STA==SD_OK) STA=MAL_OK;
@@ -107,6 +109,7 @@ u16 MAL_Read(u8 lun, u32 Memory_Offset, u32 *Readbuff, u16 Transfer_Length)
 	switch (lun)
 	{
 	case 0:
+		if(!SDCard_Exist()) return MAL_FAIL;
 		NbrOfBlock = Transfer_Length / 512;
 		STA=SD_ReadDisk((u8*)Readbuff,Memory_Offset/512, Transfer_Length/512);
 	  if(STA==SD_OK) STA=MAL_OK;
@@ -135,6 +138,7 @@ u16 MAL_GetStatus(u8 lun)
 	SD_Error Status;
 	if (lun == 0)
 	{
+		if(!SDCard_Exist()) return MAL_FAIL;
 		if (SD_Init() == SD_OK)
 		{
 			SD_GetCardInfo(&SDCardInfo);

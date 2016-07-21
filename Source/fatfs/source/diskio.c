@@ -23,9 +23,8 @@
 
 /* Definitions of physical drive number for each drive */
 
-vu8 SD_Card_Ready;
-
-extern u8  SD_Type;
+#define SDIO_SDCARD 0
+#define SPI_FLASH 1
 
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
@@ -35,7 +34,15 @@ DSTATUS disk_status(
 	BYTE pdrv		/* Physical drive nmuber to identify the drive */
 )
 {
- return RES_OK;
+	switch (pdrv)
+	{
+	case SDIO_SDCARD:
+		if (SDCard_Exist()) return RES_OK;
+		   else return RES_ERROR;
+	case SPI_FLASH:
+		return RES_OK;
+	}
+	return RES_ERROR;
 }
 
 
@@ -48,7 +55,19 @@ DSTATUS disk_initialize(
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-  return RES_OK;
+	switch (pdrv)
+	{
+	case SDIO_SDCARD:
+	if(!SDCard_Exist()) return RES_ERROR;
+	if (SD_Init() != SD_OK ||
+		SD_GetCardInfo(&SDCardInfo) != SD_OK ||
+		SD_SelectDeselect((u32)(SDCardInfo.RCA << 16)) != SD_OK ||
+		SD_EnableWideBusOperation(SDIO_BusWide_4b) != SD_OK) 	return RES_ERROR;
+	return RES_OK;
+	case SPI_FLASH:
+		return RES_OK;
+	}
+	return RES_ERROR;
 }
 
 
@@ -67,10 +86,10 @@ DRESULT disk_read(
 	u8 res = 0;
 	switch (pdrv)
 	{
-	case 0:
+	case SDIO_SDCARD:
 		portENTER_CRITICAL();
-    res=SD_ReadDisk((u8*)buff, sector, count);
-    portEXIT_CRITICAL();
+		res = SD_ReadDisk((u8*)buff, sector, count);
+		portEXIT_CRITICAL();
 		if (res == SD_OK)
 		{
 			return RES_OK;
@@ -79,7 +98,7 @@ DRESULT disk_read(
 		{
 			return RES_ERROR;
 		}
-	case 1:
+	case SPI_FLASH:
 		if (count == 1)
 		{
 			portENTER_CRITICAL();
@@ -108,10 +127,10 @@ DRESULT disk_write(
 	u8 res;
 	switch (pdrv)
 	{
-	case 0:
+	case SDIO_SDCARD:
 		portENTER_CRITICAL();
 		res = SD_WriteDisk((u8*)buff, sector, count);
-    portEXIT_CRITICAL();
+		portEXIT_CRITICAL();
 		if (res == SD_OK)
 		{
 			return RES_OK;
@@ -120,7 +139,7 @@ DRESULT disk_write(
 		{
 			return RES_ERROR;
 		}
-	case 1:
+	case SPI_FLASH:
 		if (count == 1)
 		{
 			portENTER_CRITICAL();
@@ -146,7 +165,7 @@ DRESULT disk_ioctl(
 	void *buff		/* Buffer to send/receive control data */
 )
 {
-	DRESULT res=RES_OK;
+	DRESULT res = RES_OK;
 	switch (cmd)
 	{
 	case CTRL_SYNC:
@@ -159,14 +178,14 @@ DRESULT disk_ioctl(
 		res = RES_OK;
 		break;
 	case GET_SECTOR_COUNT:
-		if (pdrv == 0)
+		if (pdrv == SDIO_SDCARD)
 		{
 			u32 NumberOfBlocks;
 			u32 DeviceSizeMul = 0;
 			DeviceSizeMul = (SDCardInfo.SD_csd.DeviceSizeMul + 2);
 			if (SDCardInfo.CardType == SDIO_HIGH_CAPACITY_SD_CARD)
 			{
-				*(DWORD*)buff= (SDCardInfo.SD_csd.DeviceSize + 1) * 1024;
+				*(DWORD*)buff = (SDCardInfo.SD_csd.DeviceSize + 1) * 1024;
 			}
 			else
 			{
@@ -175,11 +194,11 @@ DRESULT disk_ioctl(
 			}
 		}
 		else
-			*(DWORD*)buff = 2048;		
+			*(DWORD*)buff = 2048;
 		res = RES_OK;
 		break;
 	case GET_BLOCK_SIZE:
-		if (pdrv == 0)
+		if (pdrv == SDIO_SDCARD)
 			*(DWORD *)buff = 32;
 		else
 			*(DWORD *)buff = 1;

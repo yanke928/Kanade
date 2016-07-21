@@ -11,6 +11,7 @@ extern const char* const SettingsUnmountFailed_Str[LanguageNum];
 extern const char* const SettingsUnmounted_Str[LanguageNum];
 extern const char* const SettingsMounted_Str[LanguageNum];
 extern const char* const SettingsMountFailed_Str[LanguageNum];
+extern const char* const SDCardRemovedAccidentally_Str[LanguageNum];
 
 /*Model settings related*/
 extern const char* const SetModelHint_Str[LanguageNum];

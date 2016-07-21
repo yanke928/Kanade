@@ -8,8 +8,11 @@
 
 extern bool SDCardMountStatus;
 
+extern bool SDCardUnMountedManually;
+
 extern FATFS SD_fatfs;
 
+void SDCardPlugAndPlay_Service_Init(void);
 
 #endif /* __SDCARDFF_H */
 

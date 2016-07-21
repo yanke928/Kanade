@@ -28,6 +28,7 @@ void ShowDialogue(const char titleString[], const char subString0[], const char 
 	OLED_ShowAnyString(3, 1, titleString, NotOnSelect, 12);
 	OLED_ShowAnyString(4, 16, subString0, NotOnSelect, 16);
 	OLED_ShowAnyString(4, 42, subString1, NotOnSelect, 16);
+	OLED_InvertRect(1, 1, 126, 13);
 	xSemaphoreGive(OLEDRelatedMutex);
 }
 

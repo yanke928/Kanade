@@ -1,4 +1,4 @@
-//File Name   £ºKeys.c
+//File Name     Keys.c
 //Description : Configure the LMR Keys   
 
 #include "stm32f10x.h"
