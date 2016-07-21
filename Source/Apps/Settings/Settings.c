@@ -411,7 +411,7 @@ void FormatDisks(void)
 	 {
 	  ShowSmallDialogue(Formatting_Str[CurrentSettings->Language], 1000, false);
 		//res=f_mkfs("1:/",1,4096,SPI_FLASH_fatfs.win,_MAX_SS);
-		 res=f_mkfs("1:/",0,0);
+		 res=f_mkfs("1:/",1,4096);
 	 }
 	 else goto Done;
 	}

@@ -48,19 +48,7 @@ DSTATUS disk_initialize(
 	BYTE pdrv				/* Physical drive nmuber to identify the drive */
 )
 {
-switch(pdrv)
-{
-	case 0:
-		if (SD_Init() != SD_OK) return RES_ERROR;
-			SD_GetCardInfo(&SDCardInfo);
-			SD_SelectDeselect((uint32_t)(SDCardInfo.RCA << 16));
-	    SD_EnableWideBusOperation(SDIO_BusWide_4b);
-	  break;
-	case 1:
-		W25Q64_Hardware_Init();
-	 break;
-}
-return RES_OK;
+  return RES_OK;
 }
 
 
