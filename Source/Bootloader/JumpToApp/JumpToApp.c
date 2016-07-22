@@ -6,7 +6,7 @@
 #include "JumpToApp.h"
 
 typedef  void(*pFunction)(void);
-#define ApplicationAddress 0x08003000
+#define ApplicationAddress 0x08008000
 uint32_t JumpAddress;
 pFunction Jump_To_Application;
 
@@ -21,9 +21,6 @@ void Jump2App()
 		__set_MSP(*(__IO uint32_t *) ApplicationAddress);
 		Jump_To_Application();
 	}
-	while (1)
-	{
-
-	}
+ return;
 }
 

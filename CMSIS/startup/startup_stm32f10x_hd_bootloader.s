@@ -31,7 +31,7 @@
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Stack_Size      EQU     0x00000100
+Stack_Size      EQU     0x0002000
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
@@ -44,7 +44,7 @@ __initial_spTop EQU    0x20000400                 ; stack used for SystemInit_Ex
 ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Heap_Size       EQU     0x000000100
+Heap_Size       EQU     0x000000200
 
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
 __heap_base

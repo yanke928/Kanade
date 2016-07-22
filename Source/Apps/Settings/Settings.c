@@ -33,7 +33,7 @@
 #include "EBProtocolConfig.h"
 #include "About.h"
 
-Settings_Struct* CurrentSettings = (Settings_Struct*)0x0801c000;
+Settings_Struct* CurrentSettings = (Settings_Struct*)0x0802c000;
 
 Settings_Struct SettingsBkp;
 

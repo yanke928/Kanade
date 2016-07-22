@@ -306,7 +306,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x2500</Size>
+                <Size>0x8000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -361,7 +361,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWlib\inc;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\Peripherals\LED;..\Source\Peripherals\RTC;..\Source\Peripherals\Buzzer;..\Source\Peripherals\SSD1306;..\FWlib\sdcard;..\FWlib\usb;..\Source\Bootloader\JumpToApp;..\Source\Bootloader\Peripherals\Key</IncludePath>
+              <IncludePath>..\CMSIS;..\FWlib\inc;..\Source\STM32;..\Source\Bootloader\JumpToApp;..\Source\Bootloader\Peripherals\Key;..\Source\Bootloader\Peripherals\sdcard;..\Source\Bootloader\Peripherals\SSD1306;..\Source\Bootloader\Peripherals\W25Q64;..\Source\Bootloader\Main;..\Source\Bootloader\fatfs\include;..\Source\Bootloader\UI;..\Source\Bootloader\Hex2Bin;..\Source\Bootloader\stm32_flash</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -518,6 +518,76 @@
               <FileName>Keys.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Bootloader\Peripherals\Key\Keys.c</FilePath>
+            </File>
+            <File>
+              <FileName>SSD1306.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\Peripherals\SSD1306\SSD1306.c</FilePath>
+            </File>
+            <File>
+              <FileName>SDCard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\Peripherals\sdcard\SDCard.c</FilePath>
+            </File>
+            <File>
+              <FileName>SDCardff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\Peripherals\sdcard\SDCardff.c</FilePath>
+            </File>
+            <File>
+              <FileName>W25Q64.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\Peripherals\W25Q64\W25Q64.c</FilePath>
+            </File>
+            <File>
+              <FileName>W25Q64ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\Peripherals\W25Q64\W25Q64ff.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>fatfs</GroupName>
+          <Files>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\fatfs\source\diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\fatfs\source\ff.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>UI</GroupName>
+          <Files>
+            <File>
+              <FileName>UI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\UI\UI.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Hex2Bin</GroupName>
+          <Files>
+            <File>
+              <FileName>Hex2Bin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\Hex2Bin\Hex2Bin.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>stm32_flash</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\stm32_flash\stm32_flash.c</FilePath>
             </File>
           </Files>
         </Group>
