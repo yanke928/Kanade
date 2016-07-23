@@ -83,7 +83,7 @@ void ShowUpdateFailed()
 
 void ShowUpdateSuccess()
 {
-	ShowDialogue("Omededo", "Update success!", "Press to run!");
+	ShowDialogue("Omededo", "Update success!", "Press to reset!");
 }
 
 void ShowFatfsErrorCode(u8 err)

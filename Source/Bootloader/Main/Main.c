@@ -133,6 +133,7 @@ update:
 		while (1);
 	}
 	ShowUpdating();
+	BKP_WriteBackupRegister(BKP_DR3, 0x0001);
 	errCode = WriteHexToROM(&firmware);
 	f_close(&firmware);
 	f_mount(NULL, "0:/", 1);
