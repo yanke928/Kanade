@@ -31,10 +31,12 @@ u8 RTC_Hardware_Init(void)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
-	//使能PWR和BKP外设时钟   		
-	PWR_BackupAccessCmd(ENABLE);									//使能RTC和后备寄存器访问 
+	
+	PWR_BackupAccessCmd(ENABLE);						
 
-	if (BKP_ReadBackupRegister(BKP_DR1) != 0x5555)						//从指定的后备寄存器中读出数据，判断是否为第一次配置
+	//BKP_DeInit();
+	
+	if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A5)						//从指定的后备寄存器中读出数据，判断是否为第一次配置
 	{
 		//printf("时钟配置。。。\r\n");																
 		BKP_DeInit();												//将外设BKP的全部寄存器重设为缺省值 	
@@ -51,27 +53,20 @@ u8 RTC_Hardware_Init(void)
 		RTC_SetPrescaler(32767); 									//设置RTC预分频的值  RTC period = RTCCLK/RTC_PR = (32.768 KHz)/(32767+1)
 		RTC_WaitForLastTask();										//等待最近一次对RTC寄存器的写操作完成
 		Time_Set();													//时间设置	
-		BKP_WriteBackupRegister(BKP_DR1, 0x5555);					//向指定的后备寄存器中写入用户程序数据0X5555做判断标志										
+		BKP_WriteBackupRegister(BKP_DR1, 0xA5A5);					//向指定的后备寄存器中写入用户程序数据0X5555做判断标志										
 	}
 	else															//不是第一次配置 继续计时
 	{
 		if (RCC_GetFlagStatus(RCC_FLAG_PORRST) != RESET)			//检查指定的RCC标志位设置与否:POR/PDR复位
 		{
-			;//printf("上电复位。。。\r\n");
+			;
 		}
 		else if (RCC_GetFlagStatus(RCC_FLAG_PINRST) != RESET)		//检查指定的RCC标志位设置与否:管脚复位
 		{
-			;//printf("外部复位。。。\r\n");
+			;
 		}
-		//printf("不需要配置。。。\r\n");
+		RCC_ClearFlag();
 
-#ifdef  VECT_TAB_RAM  									//向量表基地址选择
-
-		NVIC_SetVectorTable(NVIC_VectTab_RAM, 0x0);  			//将0x20000000地址作为向量表基地址(RAM)
-#else  
-
-		NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0); 		//将0x08000000地址作为向量表基地址(FLASH)  
-#endif
 		NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);		//先占优先级1位,从优先级3位
 
 		NVIC_InitStructure.NVIC_IRQChannel = RTC_IRQn;		//RTC全局中断
@@ -94,15 +89,9 @@ u8 RTC_Hardware_Init(void)
 }
 
 
-//设置时钟
-//把输入的时钟转换为秒钟
-//以1970年1月1日为基准
-//1970~2099年为合法年份
-//返回值:0,成功;其他:错误代码.
-//月份数据表											 
-u8 const table_week[12] = { 0,3,3,6,1,4,6,2,5,0,3,5 }; 			//月修正数据表	  
+u8 const table_week[12] = { 0,3,3,6,1,4,6,2,5,0,3,5 }; 			
 
-const u8 mon_table[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };	//平年的月份日期表
+const u8 mon_table[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };	
 
 
 /**

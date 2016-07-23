@@ -19,6 +19,8 @@ void ShowCheckNotOK(void);
 
 void ShowUpdating(void);
 
+void ShowUpdateSuccess(void);
+
 void UpdateProgressBar(u32 min,u32 max,u32 current);
 
 void ProgressBar_Init(void);

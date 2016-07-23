@@ -2229,8 +2229,8 @@ bool CheckAndMakeDir(const char* dir)
 	res = f_mkdir(dir);
 	if (res != FR_EXIST)
 	{
-		if (res != FR_OK)
-			ShowDiskIOStatus(res);
+		if (res != FR_OK);
+			//ShowDiskIOStatus(res);
 		return(false);
 	}
 	return true;
@@ -2271,11 +2271,11 @@ void CheckEBDDirectories(bool withGUI)
 		{
 			if (success)
 			{
-				xQueueSend(InitStatusMsg, "Directories made", 0);
+				//xQueueSend(InitStatusMsg, "Directories made", 0);
 			}
 			else
 			{
-				xQueueSend(InitStatusMsg, "mkdir failed", 0);
+				//xQueueSend(InitStatusMsg, "mkdir failed", 0);
 			}
 		}
 	}

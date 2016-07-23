@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define BOOTADD	0x08008000 
+//#define BOOTADD	0x08008000 
 
 bool ReadLineInBuff(char *strLine, char* pBuff, u32 nSize, bool bInit)
 {
@@ -150,7 +150,7 @@ bool CheckHexFile(char *source, u32 MaxDataSize, char *hexLineBuffer)
 		if (0x05 == binBuffer[3])
 		{
 			bootAdd = (u32)binBuffer[4] << 24 | (u32)binBuffer[5] << 16 | (u32)binBuffer[6] << 8 | (u32)binBuffer[7];
-			if ((bootAdd & BOOTADD) == BOOTADD)
+			if ((bootAdd & FLASH_APP_ADDR) == FLASH_APP_ADDR)
 			{
 				return true;
 			}
@@ -167,13 +167,13 @@ bool CheckHexFile(char *source, u32 MaxDataSize, char *hexLineBuffer)
 void ShowFatfsErrorCode(u8 err)
 {
 	char string[20] = "ErrCode:";
-	
-	if(err/100)
+
+	if (err / 100)
 	{
 		string[8] = err / 100 + '0';
-		string[9] = err % 100/10+ '0';
-		string[10] = err%10+ '0';	
-    string[11]=0;
+		string[9] = err % 100 / 10 + '0';
+		string[10] = err % 10 + '0';
+		string[11] = 0;
 	}
 	else if (err / 10)
 	{
@@ -228,11 +228,11 @@ bool SD2ROM(char *source, UINT MaxDataSize, char *hexLineBuffer, char *stringBuf
 	char binBuffer[30];
 	u16 lenTemp, loopTemp;
 	u16 checksum;
-	u16 tempOne=0;
+	u16 tempOne = 0;
 	volatile u8 lineType, byteCount;
 
 	volatile static u16 buffAddress = 0;
-  volatile static u16 Page = 0;
+	volatile static u16 Page = 0;
 
 
 	if (MaxDataSize == 0 || source == NULL)
@@ -272,7 +272,7 @@ bool SD2ROM(char *source, UINT MaxDataSize, char *hexLineBuffer, char *stringBuf
 					byteCount = byteCount - tempOne;
 					memcpy(stringBuff + buffAddress, binBuffer + 4, tempOne);
 
-					STMFLASH_WriteOnePage(BOOTADD + Page*STM32_SECTOR_SIZE, (u16*)stringBuff, STM32_SECTOR_SIZE / 2);
+					STMFLASH_WriteOnePage(FLASH_APP_ADDR + Page*STM32_SECTOR_SIZE, (u16*)stringBuff, STM32_SECTOR_SIZE / 2);
 					buffAddress = 0;
 					Page++;
 				}
@@ -285,7 +285,7 @@ bool SD2ROM(char *source, UINT MaxDataSize, char *hexLineBuffer, char *stringBuf
 				break;
 			case 1:
 				tempOne = buffAddress;
-				STMFLASH_WriteOnePage(BOOTADD + STM32_SECTOR_SIZE*Page, (u16*)stringBuff, (tempOne + 1) / 2);
+				STMFLASH_WriteOnePage(FLASH_APP_ADDR + STM32_SECTOR_SIZE*Page, (u16*)stringBuff, (tempOne + 1) / 2);
 				return true;
 			case 2:
 				break;
@@ -305,9 +305,9 @@ bool SD2ROM(char *source, UINT MaxDataSize, char *hexLineBuffer, char *stringBuf
 bool WriteHexToROM(FIL* firmware)
 {
 	FRESULT res;
-	char U8B[STM32_SECTOR_SIZE*2];
+	char U8B[STM32_SECTOR_SIZE * 2];
 	char hexLineBuffer[60];
-	char U8Buff[STM32_SECTOR_SIZE*2];
+	char U8Buff[STM32_SECTOR_SIZE * 2];
 	u32 byteRead;
 	u32 sizeRead = 0;
 	u32 fileSize = firmware->fsize;
@@ -334,9 +334,8 @@ bool WriteHexToROM(FIL* firmware)
 		}
 		if (!SD2ROM(U8B, byteRead, hexLineBuffer, U8Buff))
 		{
-			ShowUpdateFailed();
-			while (1);
+			return false;
 		}
 	}
-
+	return true;
 }

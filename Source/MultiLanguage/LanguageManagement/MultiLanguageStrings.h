@@ -117,6 +117,7 @@ extern const char* const SettingsItemLanguage_Str[LanguageNum];
 extern const char* const SettingsItemModel_Str[LanguageNum];
 extern const char* const SettingsItemSystemInfo_Str[LanguageNum];
 extern const char* const SettingsItemFormatInternal_Str[LanguageNum];
+extern const char* const SettingsItemFirmwareUpdate_Str[LanguageNum];
 
 /*Legacy test mode items*/
 extern const char* const SelectLeagcyTestModeButtonCC_Str[LanguageNum];
@@ -139,6 +140,9 @@ extern const char* const ConfirmationCancel_Str[LanguageNum];
 extern const char* const Confirmation_Str[LanguageNum];
 extern const char* const Hint_Str[LanguageNum];
 extern const char* const Saved_Str[LanguageNum] ;
+
+/*Firmware update related*/
+extern const char* const FirmwareUpdateConfirm_Str[LanguageNum];
 
 /*Confirmation positions*/
 extern const OLED_PositionStruct  ComfirmationPositions[LanguageNum][2];

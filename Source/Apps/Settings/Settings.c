@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "stm32f10x_rtc.h"
+#include "stm32f10x_bkp.h"
 #include "stm32f10x_flash.h"
 
 #include "FreeRTOS.h"
@@ -33,11 +34,16 @@
 #include "EBProtocolConfig.h"
 #include "About.h"
 
-Settings_Struct* CurrentSettings = (Settings_Struct*)0x0802c000;
+Settings_Struct* CurrentSettings = (Settings_Struct*)0x0803b800;
 
 Settings_Struct SettingsBkp;
 
 const Settings_Struct DefaultSettings = { 0 , 2 ,75 ,120 ,5};
+
+typedef  void(*pFunction)(void);
+
+uint32_t JumpAddress;
+pFunction Jump_To_Application;
 
 void SetLanguage(void);
 
@@ -50,6 +56,8 @@ void OverHeatSettings(void);
 void MountOrUnMountDisk(void);
 
 void FormatDisks(void);
+
+void FirmwareUpdate(void);
 
 /**
   * @brief  Settings
@@ -73,11 +81,12 @@ void Settings()
 	stringTab[3]=SettingsItemLanguage_Str[CurrentSettings->Language];
 	stringTab[4]=SettingsItemFormatDisks_Str[CurrentSettings->Language];
 	stringTab[5]=SettingsItemModel_Str[CurrentSettings->Language];
-	stringTab[6]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
+	stringTab[6]=SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
+	stringTab[7]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
 	
 	menuParams.ItemStrings=stringTab;
 	menuParams.DefaultPos = 0;
-	menuParams.ItemNum = 7;
+	menuParams.ItemNum = 8;
 	menuParams.FastSpeed = 10;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
@@ -99,7 +108,8 @@ void Settings()
 	case 3:SetLanguage(); break;
 	case 4:FormatDisks();break;
 	case 5:ModelSettings(); break;
-	case 6:About();
+	case 6:FirmwareUpdate();break;
+	case 7:About();
 	}
 }
 
@@ -433,6 +443,46 @@ void FormatDisks(void)
 }
 
 /**
+  * @brief  Set firmware update flag
+
+  * @param  None
+
+  */
+void SetFirmwareUpdateFlag()
+{
+ BKP_WriteBackupRegister(BKP_DR2, 0x0001);	
+}
+
+__asm void SystemReset(void)
+{
+ MOV R0, #1           //; 
+ MSR FAULTMASK, R0    //; 清除FAULTMASK 禁止一切中断产生
+ LDR R0, =0xE000ED0C  //;
+ LDR R1, =0x05FA0004  //; 
+ STR R1, [R0]         //; 系统软件复位   
+ 
+deadloop
+    B deadloop        //; 死循环使程序运行不到下面的代码
+}
+
+
+/**
+  * @brief  Set firmware update flag and jump to IAP
+
+  * @param  None
+
+  */
+void FirmwareUpdate()
+{
+ if (GetConfirmation(FirmwareUpdateConfirm_Str[CurrentSettings->Language], ""))
+ {
+  SetFirmwareUpdateFlag();
+  SystemReset();
+ }
+ OLED_Clear();
+}
+
+/**
   * @brief  Get necessary settings when current settings is not right
 
   * @param  None
@@ -448,3 +498,4 @@ void GetNecessarySettings()
 	ModelSettings();
 	ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language], 1000, true);
 }
+

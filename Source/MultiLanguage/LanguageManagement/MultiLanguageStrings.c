@@ -585,6 +585,18 @@ const char SettingsItemNoDisk_CN[] ="沒有存储器";
 const char SettingsItemNoDisk_JP[] ="No Memory";
 const char* const SettingsItemNoDisk_Str[] = { SettingsItemNoDisk_EN,SettingsItemNoDisk_TW,SettingsItemNoDisk_CN,SettingsItemNoDisk_JP };
 
+const char SettingsItemFirmwareUpdate_EN[] ="Firmware Update";
+const char SettingsItemFirmwareUpdate_TW[] ="固件升級";
+const char SettingsItemFirmwareUpdate_CN[] ="固件升级";
+const char SettingsItemFirmwareUpdate_JP[] ="ソフトウェアの更新";
+const char* const SettingsItemFirmwareUpdate_Str[] = { SettingsItemFirmwareUpdate_EN,SettingsItemFirmwareUpdate_TW,SettingsItemFirmwareUpdate_CN,SettingsItemFirmwareUpdate_JP };
+
+const char FirmwareUpdateConfirm_EN[] ="Update?";
+const char FirmwareUpdateConfirm_TW[] ="确认升級固件?";
+const char FirmwareUpdateConfirm_CN[] ="確認升级固件?";
+const char FirmwareUpdateConfirm_JP[] ="Update?";
+const char* const FirmwareUpdateConfirm_Str[] = { FirmwareUpdateConfirm_EN,FirmwareUpdateConfirm_TW,FirmwareUpdateConfirm_CN,FirmwareUpdateConfirm_JP };
+
 const char FormatInternalConfirm_EN[] ="Format Int.Mem?";
 const char FormatInternalConfirm_TW[] ="格式化内部記憶?";
 const char FormatInternalConfirm_CN[] ="格式化内部记忆?";

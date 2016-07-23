@@ -4,23 +4,24 @@
 #include "misc.h"
 
 #include "JumpToApp.h"
+#include "stm32_flash.h"
 
 typedef  void(*pFunction)(void);
-#define ApplicationAddress 0x08008000
+
 uint32_t JumpAddress;
 pFunction Jump_To_Application;
 
 void Jump2App()
 {
 	__set_PRIMASK(1);
-	if (((*(__IO uint32_t *) ApplicationAddress) & 0x2FFE0000) == 0x20000000)
+	if (((*(__IO uint32_t *) FLASH_APP_ADDR) & 0x2FFE0000) == 0x20000000)
 	{
-		JumpAddress = *(__IO uint32_t *) (ApplicationAddress + 4);
+		JumpAddress = *(__IO uint32_t *) (FLASH_APP_ADDR + 4);
 		Jump_To_Application = (pFunction)JumpAddress;
 
-		__set_MSP(*(__IO uint32_t *) ApplicationAddress);
+		__set_MSP(*(__IO uint32_t *) FLASH_APP_ADDR);
 		Jump_To_Application();
 	}
- return;
+	return;
 }
 
