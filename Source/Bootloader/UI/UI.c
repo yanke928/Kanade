@@ -58,7 +58,7 @@ void ShowNoFile()
 
 void ShowCheckingFile()
 {
-	ShowDialogue("Firmware Update", "Checking...", "zheyan");
+	ShowDialogue("Firmware Update", "Checking...", "");
 }
 
 void ShowUpdating()
@@ -84,6 +84,31 @@ void ShowUpdateFailed()
 void ShowUpdateSuccess()
 {
 	ShowDialogue("Omededo", "Update success!", "Press to run!");
+}
+
+void ShowFatfsErrorCode(u8 err)
+{
+	char string[20] = "ErrCode:";
+
+	if (err / 100)
+	{
+		string[8] = err / 100 + '0';
+		string[9] = err % 100 / 10 + '0';
+		string[10] = err % 10 + '0';
+		string[11] = 0;
+	}
+	else if (err / 10)
+	{
+		string[8] = err / 10 + '0';
+		string[9] = err % 10 + '0';
+		string[10] = 0;
+	}
+	else
+	{
+		string[8] = err + '0';
+		string[9] = 0;
+	}
+	ShowDialogue("Error", "fatfs:Error", string);
 }
 
 void ProgressBar_Init()

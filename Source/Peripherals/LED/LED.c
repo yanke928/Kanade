@@ -14,6 +14,8 @@ LEDAnimateSliceStruct* LEDAnimatePointer = NULL;
 
 xTaskHandle LEDAnimateTaskHandle;
 
+xQueueHandle LEDAnimateExitMsg;
+
 const LEDAnimateSliceStruct LEDAnimation_Startup[] =
 {
  {Cyan,200,6,false},//Cyan with brightness of 2
@@ -157,6 +159,7 @@ void DisplayBasicColor(u8 color, u8 brightness)
 void LEDAnimateHandler(void *pvParameters)
 {
 	u16 currentPos = 0;
+	u8 exitCode;
 	LEDAnimateSliceStruct * animation = pvParameters;
 	while (1)
 	{
@@ -165,10 +168,38 @@ void LEDAnimateHandler(void *pvParameters)
 		DisplayBasicColor(animation[currentPos].Color,
 			animation[currentPos].Brightness);
 		taskEXIT_CRITICAL();
-		vTaskDelay(animation[currentPos].LastingTime / portTICK_RATE_MS);
+		if(xQueueReceive(LEDAnimateExitMsg, &exitCode, animation[currentPos].LastingTime / portTICK_RATE_MS) == pdPASS)
+		{
+		 vQueueDelete(LEDAnimateExitMsg);
+		 vTaskDelay(1/portTICK_RATE_MS);
+		 LEDAnimateTaskHandle=NULL;
+		 vTaskDelete(NULL);
+		}
 		currentPos++;
 	}
 }
+
+/**
+  * @brief  DeInit an LED animation
+
+  * @param  None
+
+  * @retval None
+  */
+void LED_Animate_DeInit(void)
+{ 
+	u8 exitCode;
+	LEDColorStruct dark = { 0,0,0 };
+	if (LEDAnimateTaskHandle != NULL)
+		xQueueSend(LEDAnimateExitMsg, &exitCode, portMAX_DELAY);
+	while(LEDAnimateTaskHandle!=NULL)
+	{
+	 vTaskDelay(2/portTICK_RATE_MS);
+	}
+	SetLEDColor(dark);
+	LEDAnimateTaskHandle = NULL;
+}
+
 
 /**
   * @brief  Init an LED animation
@@ -181,25 +212,11 @@ void LED_Animate_Init(const LEDAnimateSliceStruct animate[])
 {
 	LED_GPIO_Init();
 	if (LEDAnimateTaskHandle != NULL)
-		vTaskDelete(LEDAnimateTaskHandle);
+		LED_Animate_DeInit();
+  LEDAnimateExitMsg = xQueueCreate(1, sizeof(u8));
 	CreateTaskWithExceptionControl(LEDAnimateHandler, "LED Animation Handler",
 		128, (LEDAnimateSliceStruct*)animate, LED_ANIMATION_PRIORITY, &LEDAnimateTaskHandle);
 }
 
-/**
-  * @brief  DeInit an LED animation
-
-  * @param  None
-
-  * @retval None
-  */
-void LED_Animate_DeInit(void)
-{
-	LEDColorStruct dark = { 0,0,0 };
-	SetLEDColor(dark);
-	if (LEDAnimateTaskHandle != NULL)
-		vTaskDelete(LEDAnimateTaskHandle);
-	LEDAnimateTaskHandle = NULL;
-}
 
 

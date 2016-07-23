@@ -49,7 +49,7 @@ void USBMeter(void *pvParameters)
 	char tempString[20];
 	u8 firstEnter=1;
 	Key_Message_Struct keyMessage;
-	u8 status = *(u8*)pvParameters;
+	u8 status = USBMETER_ONLY;
 	Legacy_Test_Param_Struct legacy_Test_Params;
 	ClearKeyEvent(keyMessage);
 	while (1)
@@ -256,5 +256,4 @@ void USBMeter_Init(u8 status)
 {
 	CreateTaskWithExceptionControl(USBMeter, "USBMeter",
 		384, &status, USB_METER_PRIORITY, NULL);
-	vTaskDelay(50 / portTICK_RATE_MS);
 }

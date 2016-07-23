@@ -21,9 +21,9 @@ void NVIC_DeInit(void);
 
 int main(void)
 { 
- //RCC_DeInit();
- //DMA_DeInit(DMA2_Channel4);
- //DMA_DeInit(DMA1_Channel1);
+ RCC_DeInit();
+ DMA_DeInit(DMA2_Channel4);
+ DMA_DeInit(DMA1_Channel1);
  NVIC_DeInit();
  NVIC_SetVectorTable(NVIC_VectTab_FLASH ,USER_APP_OFFSET);
  STM32_Init();

@@ -465,6 +465,20 @@ deadloop
     B deadloop        //; 死循环使程序运行不到下面的代码
 }
 
+void Jump2Addr(u32 addr)
+{
+	__set_PRIMASK(1);
+	if (((*(__IO uint32_t *) addr) & 0x2FFE0000) == 0x20000000)
+	{
+		JumpAddress = *(__IO uint32_t *) (addr + 4);
+		Jump_To_Application = (pFunction)JumpAddress;
+
+		__set_MSP(*(__IO uint32_t *) addr);
+		Jump_To_Application();
+	}
+	return;
+}
+
 
 /**
   * @brief  Set firmware update flag and jump to IAP
@@ -476,6 +490,7 @@ void FirmwareUpdate()
 {
  if (GetConfirmation(FirmwareUpdateConfirm_Str[CurrentSettings->Language], ""))
  {
+	portENTER_CRITICAL();
   SetFirmwareUpdateFlag();
   SystemReset();
  }

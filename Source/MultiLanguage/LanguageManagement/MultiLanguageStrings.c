@@ -592,8 +592,8 @@ const char SettingsItemFirmwareUpdate_JP[] ="ソフトウェアの更新";
 const char* const SettingsItemFirmwareUpdate_Str[] = { SettingsItemFirmwareUpdate_EN,SettingsItemFirmwareUpdate_TW,SettingsItemFirmwareUpdate_CN,SettingsItemFirmwareUpdate_JP };
 
 const char FirmwareUpdateConfirm_EN[] ="Update?";
-const char FirmwareUpdateConfirm_TW[] ="确认升級固件?";
-const char FirmwareUpdateConfirm_CN[] ="確認升级固件?";
+const char FirmwareUpdateConfirm_TW[] ="確認升級固件?";
+const char FirmwareUpdateConfirm_CN[] ="确认升级固件?";
 const char FirmwareUpdateConfirm_JP[] ="Update?";
 const char* const FirmwareUpdateConfirm_Str[] = { FirmwareUpdateConfirm_EN,FirmwareUpdateConfirm_TW,FirmwareUpdateConfirm_CN,FirmwareUpdateConfirm_JP };
 

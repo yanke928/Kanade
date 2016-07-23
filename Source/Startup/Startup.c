@@ -97,13 +97,20 @@ void LogoHandler(void *pvParameters)
 	portTickType xLastWakeTime;
 	unsigned char VerticalAddr = 0;
 	unsigned char DrawOrUnDraw = 1;
-	unsigned char LoadingAddr;
+	unsigned char LoadingAddr=20;
 	unsigned char m, n;
 	xLastWakeTime = xTaskGetTickCount();
 	while (1)
 	{
 		xQueueReceive(InitAnimatePosHandle, &LoadingAddr, 0);
-
+		
+		if(LoadingAddr==127)
+		{
+	    vQueueDelete(InitAnimatePosHandle);
+			LogoAnimateHandle=NULL;
+			vTaskDelete(NULL);
+		}
+		
 		if (xSemaphoreTake(OLEDRelatedMutex, 0) != pdPASS)
 		{
 			goto Wait;
@@ -171,6 +178,14 @@ void InitStatusUpdateHandler(void *pvParameters)
 	while (1)
 	{
 		while (xQueueReceive(InitStatusMsg, &initStatus, portMAX_DELAY) != pdPASS);
+		
+		if(*initStatus==0)
+		{
+	    vQueueDelete(InitStatusMsg);
+			InitStatusHandle=NULL;
+			vTaskDelete(NULL);
+		}
+		
 		/*Get the length of the string to calculate the central position*/
 		stringLength = GetStringGraphicalLength(initStatus);
 		/*Calculate central addr*/
@@ -237,16 +252,12 @@ void InitStatusHandler_Init(void)
   */
 void Logo_DeInit()
 {
-	if (LogoAnimateHandle != NULL)
+	u8 exitCode=127;
+	xQueueSend(InitAnimatePosHandle, &exitCode, portMAX_DELAY);
+  while(LogoAnimateHandle!=NULL)
 	{
-		vTaskDelete(LogoAnimateHandle);
+	 vTaskDelay(2/portTICK_RATE_MS);
 	}
-	if (IsOLEDMutexTokenByLogoAnimateHandler)
-	{
-		xSemaphoreGive(OLEDRelatedMutex);
-	}
-	LogoAnimateHandle = NULL;
-	vQueueDelete(InitAnimatePosHandle);
 }
 
 /**
@@ -256,16 +267,11 @@ void Logo_DeInit()
   */
 void InitStatus_DeInit()
 {
-	if (InitStatusHandle != NULL)
+	xQueueSend(InitStatusMsg,"", portMAX_DELAY);
+  while(InitStatusHandle!=NULL)
 	{
-		vTaskDelete(InitStatusHandle);
+	 vTaskDelay(2/portTICK_RATE_MS);
 	}
-	if (IsOLEDMutexTokenByInitStatusHandler)
-	{
-		xSemaphoreGive(OLEDRelatedMutex);
-	}
-	InitStatusHandle = NULL;
-	vQueueDelete(InitStatusMsg);
 }
 
 /**
@@ -286,8 +292,8 @@ void LogoWithInitStatus_Init()
   */
 void LogoWithInitStatus_DeInit()
 {
-	Logo_DeInit();
 	InitStatus_DeInit();
+	Logo_DeInit();
 }
 
 /**
@@ -336,7 +342,10 @@ void SystemStartup(void *pvParameters)
 	LogoWithInitStatus_DeInit();
 
 	UpdateOLEDJustNow = false;
+	
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
 
 	if (LEFT_KEY == KEY_ON)
 	{

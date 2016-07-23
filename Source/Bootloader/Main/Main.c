@@ -21,8 +21,6 @@
 #include "ff.h"
 #include "UI.h"
 
-#define UPDATE_FLAG_ADDR 0x08007800
-
 void AppUpdate(void);
 
 void NVIC_DeInit(void);
@@ -82,6 +80,11 @@ int main(void)
 			}
 		}
 	}
+	if(BKP_ReadBackupRegister(BKP_DR3)==0x0001)
+	{
+	tempered = true;
+	goto update;	 
+	}
 	Jump2App();
 	tempered = true;
 	goto update;
@@ -102,10 +105,17 @@ void NVIC_DeInit(void)
   }  
 }
 
+void SetSystemTempered()
+{
+ FLASH_Unlock();	
+ FLASH_ErasePage(FLASH_APP_ADDR);
+ FLASH_Lock();					
+}
+
 void AppUpdate(void)
 {
 	FIL firmware;
-	bool success;
+	u8 errCode;
 	if ((!SDCardMountStatus) && (!SPIFlashMountStatus)) ShowNoStorage();
 	if (f_open(&firmware, "0:/Kanade.hex", FA_OPEN_EXISTING | FA_READ) == FR_OK) goto update;
 	if (f_open(&firmware, "1:/Kanade.hex", FA_OPEN_EXISTING | FA_READ) == FR_OK) goto update;
@@ -113,19 +123,23 @@ void AppUpdate(void)
 	while (1);
 update:
 	ShowCheckingFile();
-	success = CheckAHexFile(&firmware);
-	if (!success)
+	errCode = CheckAHexFile(&firmware);
+	if (errCode)
 	{
+		if(errCode==255) 
 		ShowCheckNotOK();
+		else
+		ShowFatfsErrorCode(errCode);
 		while (1);
 	}
 	ShowUpdating();
-	success = WriteHexToROM(&firmware);
+	errCode = WriteHexToROM(&firmware);
 	f_close(&firmware);
 	f_mount(NULL, "0:/", 1);
 	f_mount(NULL, "1:/", 1);
-	if (success)
+	if (!errCode)
 	{
+		BKP_WriteBackupRegister(BKP_DR3, 0x0000);
 		ShowUpdateSuccess();
 		while (1)
 		{
@@ -135,7 +149,9 @@ update:
 	}
 	else
 	{
-		ShowUpdateFailed();
+    SetSystemTempered();
+		if(errCode==255)ShowUpdateFailed();
+		else ShowFatfsErrorCode(errCode);
 	}
 	while (1);
 }

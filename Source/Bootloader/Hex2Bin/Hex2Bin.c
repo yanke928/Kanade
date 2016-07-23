@@ -164,32 +164,7 @@ bool CheckHexFile(char *source, u32 MaxDataSize, char *hexLineBuffer)
 	return 	true;
 }
 
-void ShowFatfsErrorCode(u8 err)
-{
-	char string[20] = "ErrCode:";
-
-	if (err / 100)
-	{
-		string[8] = err / 100 + '0';
-		string[9] = err % 100 / 10 + '0';
-		string[10] = err % 10 + '0';
-		string[11] = 0;
-	}
-	else if (err / 10)
-	{
-		string[8] = err / 10 + '0';
-		string[9] = err % 10 + '0';
-		string[10] = 0;
-	}
-	else
-	{
-		string[8] = err + '0';
-		string[9] = 0;
-	}
-	ShowDialogue("Error", "fatfs:Error", string);
-}
-
-bool CheckAHexFile(FIL* firmware)
+u8 CheckAHexFile(FIL* firmware)
 {
 	FRESULT res;
 	u32 byteRead;
@@ -197,7 +172,6 @@ bool CheckAHexFile(FIL* firmware)
 	u32 sizeRead = 0;
 	char U8B[STM32_SECTOR_SIZE];
 	char hexLineBuffer[60];
-	bool checkOK;
 	ProgressBar_Init();
 	for (;;)
 	{
@@ -208,19 +182,16 @@ bool CheckAHexFile(FIL* firmware)
 		{
 			if (res != FR_OK)
 			{
-				ShowFatfsErrorCode(res);
-				while (1);
+				return res;
 			}
 			break; /* error or eof */
 		}
 		if (!CheckHexFile(U8B, byteRead, hexLineBuffer))
 		{
-			checkOK = false;
-			break;
+			return 255;
 		}
-		checkOK = true;
 	}
-	return checkOK;
+	return 0;
 }
 
 bool SD2ROM(char *source, UINT MaxDataSize, char *hexLineBuffer, char *stringBuff)
@@ -302,7 +273,7 @@ bool SD2ROM(char *source, UINT MaxDataSize, char *hexLineBuffer, char *stringBuf
 	return true;
 }
 
-bool WriteHexToROM(FIL* firmware)
+u8 WriteHexToROM(FIL* firmware)
 {
 	FRESULT res;
 	char U8B[STM32_SECTOR_SIZE * 2];
@@ -327,15 +298,14 @@ bool WriteHexToROM(FIL* firmware)
 		{
 			if (res != FR_OK)
 			{
-				ShowFatfsErrorCode(res);
-				while (1);
+				return res;
 			}
 			break; /* error or eof */
 		}
 		if (!SD2ROM(U8B, byteRead, hexLineBuffer, U8Buff))
 		{
-			return false;
+			return 255;
 		}
 	}
-	return true;
+	return 0;
 }
