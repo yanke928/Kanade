@@ -9,6 +9,8 @@
 #include "rtc.h"
 #include "LED.h"
 #include "Keys.h"
+#include "PWM_Ref.h"
+
 #include "TempSensors.h"
 #include "SSD1306.h"
 #include "Music.h"
@@ -20,7 +22,7 @@
 #include "MultiLanguageStrings.h"
 #include "W25Q64.h"
 #include "UI_Utilities.h"
-
+#include "Digital_Load.h"
 #include "SDCardff.h"
 
 #include "mass_mal.h"
@@ -316,6 +318,10 @@ void SystemStartup(void *pvParameters)
 	Settings_Init();
 
 	W25Q64_Init();
+	
+	PWMRef_Init();
+	
+	Set_Constant_Current(2);
 
 	LogoWithInitStatus_Init();
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);

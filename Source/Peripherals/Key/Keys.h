@@ -12,9 +12,9 @@
 #define RIGHT 1
 
 //Make the usage like "MIDDLE_KEY==KEY_ON" possible 
-#define MIDDLE_KEY GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_0)
-#define LEFT_KEY   GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_10)
-#define RIGHT_KEY  GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_11)
+#define MIDDLE_KEY GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_4)
+#define LEFT_KEY   GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_5)
+#define RIGHT_KEY  GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_3)
 
 /**Define the time parameters which judge the key events
 

@@ -1,4 +1,4 @@
-//File Name   £ºBuzzer.c
+//File Name     Buzzer.c
 //Description : Configure the Buzzer  
 
 #include "Buzzer.h"

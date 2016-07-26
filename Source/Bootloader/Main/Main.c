@@ -52,6 +52,7 @@ int main(void)
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
   PWR_BackupAccessCmd(ENABLE);		
 	Keys_GPIO_Init();
+
 	if (LEFT_KEY == KEY_ON || BKP_ReadBackupRegister(BKP_DR2) == 0x0001)
 	{
 	update:
