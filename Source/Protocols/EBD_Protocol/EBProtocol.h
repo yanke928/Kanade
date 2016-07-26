@@ -8,6 +8,8 @@
 #include "task.h"
 #include "queue.h"
 
+#include "MCP3421.h"
+
 //#define EBD_USB_PLUS 0
 //#define EBD_USB_V1 1
 
@@ -95,13 +97,13 @@ extern bool EBDAliveFlag;
 
 enum { StopTest = 0, KeepTest = 1, StartTest = 2 };
 
-typedef struct {
-	float Voltage;
-	float Current;
-	float Power;
-	float VoltageDP;
-	float VoltageDM;
-}USBMeterStruct;
+//typedef struct {
+//	float Voltage;
+//	float Current;
+//	float Power;
+//	float VoltageDP;
+//	float VoltageDM;
+//}USBMeterStruct;
 
 typedef struct {
 	float Capacity;

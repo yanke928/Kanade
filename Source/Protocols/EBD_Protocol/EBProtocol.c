@@ -60,8 +60,6 @@ bool SumUpInProgress = false;
 
 u8 EBDWatchCount = 0;
 
-USBMeterStruct CurrentMeterData;
-
 SumupStruct    CurrentSumUpData;
 
 xQueueHandle EBDTxDataMsg;

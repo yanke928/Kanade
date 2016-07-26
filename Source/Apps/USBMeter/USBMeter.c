@@ -15,6 +15,7 @@
 #include "TempSensors.h"
 #include "SSD1306.h"
 #include "RTC.h"
+#include "MCP3421.h"
 #include "VirtualRTC.h"
 #include "UI_Confirmation.h"
 #include "MultiLanguageStrings.h"
@@ -47,6 +48,7 @@
 void USBMeter(void *pvParameters)
 {
 	char tempString[20];
+	long res;
 	u8 firstEnter=1;
 	Key_Message_Struct keyMessage;
 	u8 status = USBMETER_ONLY;

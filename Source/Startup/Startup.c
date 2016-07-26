@@ -17,6 +17,7 @@
 #include "sdcard.h"
 #include "EBProtocol.h"
 #include "USBMeter.h"
+#include "MCP3421.h"
 #include "BadApplePlayer.h"
 #include "CPU_Usage.h"
 #include "MultiLanguageStrings.h"
@@ -320,6 +321,8 @@ void SystemStartup(void *pvParameters)
 	W25Q64_Init();
 	
 	PWMRef_Init();
+	
+	MCP3421_Init();
 	
 	Set_Constant_Current(2);
 
