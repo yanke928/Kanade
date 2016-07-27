@@ -361,7 +361,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol;..\Source\Peripherals;..\FWlib\sdcard;..\FWlib\usb;..\Source\Apps\USBMeter;..\Source\Apps\Virtual_Clock;..\Source\FreeRTOS_CLI;..\FWlib\usb\inc;..\Source\Apps\CommandLines;..\Source\Apps\BadApplePlayer;..\Source\Apps\CPU_Usage;..\Source\fatfs\include;..\Source\MultiLanguage\LanguageManagement;..\Source\UI;..\Source\Apps\Settings;..\Source\MultiLanguage\ChineseSimplified;..\Source\MultiLanguage\ChineseTraditional;..\Source\MultiLanguage\Japanese;..\Source\Apps\ExceptionHandle;..\Source\Apps\FastChage_Trigger;..\Source\Apps\StepUpTest;..\Source\Apps\LegacyTest;..\Source\Apps\About;..\FWlib\USB\CFG;..\FWlib\USB\CORE;..\Source\Apps\MassStorage;..\Source\Peripherals\W25Q64;..\Source\Peripherals\PWM_Ref;..\Source\Apps\Digital_Load;..\Source\Peripherals\MCP3421</IncludePath>
+              <IncludePath>..\CMSIS;..\FWlib\inc;..\Utilities\STM32_EVAL;..\FWlib\USB\inc;..\Utilities\STM32_EVAL\STM3210C_EVAL;..\Utilities\STM32_EVAL\STM3210B_EVAL;..\FWlib\sdcard;..\FWlib\fatfs;..\Source\Main;..\Source\STM32;..\Source\FreeRTOS\Source\include;..\Source\FreeRTOS\Source\portable\RVDS\ARM_CM3;..\Source\FreeRTOS;..\Source\Peripherals\LED;..\Source\Peripherals\SSD1306;..\Source\Peripherals\Key;..\Source\Startup;..\Source\Peripherals\RTC;..\Source\Peripherals\Temperature_Sensors;..\Source\Peripherals\Buzzer;..\Source\Apps\Music;..\Source\Peripherals\Usarts;..\Source\Protocols\EBD_Protocol;..\Source\Peripherals;..\FWlib\sdcard;..\FWlib\usb;..\Source\Apps\USBMeter;..\Source\Apps\Virtual_Clock;..\Source\FreeRTOS_CLI;..\FWlib\usb\inc;..\Source\Apps\CommandLines;..\Source\Apps\BadApplePlayer;..\Source\Apps\CPU_Usage;..\Source\fatfs\include;..\Source\MultiLanguage\LanguageManagement;..\Source\UI;..\Source\Apps\Settings;..\Source\MultiLanguage\ChineseSimplified;..\Source\MultiLanguage\ChineseTraditional;..\Source\MultiLanguage\Japanese;..\Source\Apps\ExceptionHandle;..\Source\Apps\FastChage_Trigger;..\Source\Apps\StepUpTest;..\Source\Apps\LegacyTest;..\Source\Apps\About;..\FWlib\USB\CFG;..\FWlib\USB\CORE;..\Source\Apps\MassStorage;..\Source\Peripherals\W25Q64;..\Source\Peripherals\PWM_Ref;..\Source\Apps\Digital_Load;..\Source\Peripherals\MCP3421;..\Source\Peripherals\FastCharge_Trigger_Circuit</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -623,6 +623,11 @@
               <FileName>MCP3421.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Peripherals\MCP3421\MCP3421.c</FilePath>
+            </File>
+            <File>
+              <FileName>FastCharge_Trigger_Circuit.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Peripherals\FastCharge_Trigger_Circuit\FastCharge_Trigger_Circuit.c</FilePath>
             </File>
           </Files>
         </Group>

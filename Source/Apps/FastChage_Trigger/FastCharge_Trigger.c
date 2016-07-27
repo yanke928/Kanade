@@ -17,6 +17,8 @@
 #include "UI_Button.h"
 #include "UI_Menu.h"
 
+#include "FastCharge_Trigger_Circuit.h"
+
 #include "FastCharge_Trigger.h"
 
 /**
@@ -29,6 +31,7 @@ void ShowCurrentVoltCurt()
 	char tempString[10];
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	SetUpdateOLEDJustNow();
+	xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
 	if (CurrentMeterData.Voltage >= 10)
 	{
 		sprintf(tempString, "%5.2fV", CurrentMeterData.Voltage);
@@ -39,6 +42,7 @@ void ShowCurrentVoltCurt()
 	}
 	OLED_ShowAnyString(68, 20, tempString, NotOnSelect, 16);
 	sprintf(tempString, "%5.3fA", CurrentMeterData.Current);
+	xSemaphoreGive(USBMeterState_Mutex);
 	OLED_ShowAnyString(68, 40, tempString, NotOnSelect, 16);
 	ResetUpdateOLEDJustNow();
 	xSemaphoreGive(OLEDRelatedMutex);
@@ -52,6 +56,8 @@ void ShowCurrentVoltCurt()
 void QC2Trigger_Init(void)
 {
 	u8 i;
+	u8 mode;
+	
 	Key_Message_Struct keyMsg;
 	UI_Button_Param_Struct button_params;
 	const char* voltStrings[4];
@@ -82,10 +88,10 @@ void QC2Trigger_Init(void)
 		button_params.DefaultValue = i;
 		switch (i)
 		{
-		case 0:EBDSendFastChargeCommand(EBD_QC2_5V_COMMAND); break;
-		case 1:EBDSendFastChargeCommand(EBD_QC2_9V_COMMAND); break;
-		case 2:EBDSendFastChargeCommand(EBD_QC2_12V_COMMAND); break;
-		case 3:EBDSendFastChargeCommand(EBD_QC2_20V_COMMAND);
+		case 0:mode=QC2_Normal;xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
+		case 1:mode=QC2_9V;xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
+		case 2:mode=QC2_12V;xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
+		case 3:mode=QC2_20V;xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
 		}
 		vTaskDelay(200 / portTICK_RATE_MS);
 		if (xQueueReceive(Key_Message, &keyMsg, 0) == pdPASS)
@@ -126,7 +132,7 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowIcon(positions[1].x, positions[1].y, 0x01, DRAW);
 				xSemaphoreGive(OLEDRelatedMutex);
-				EBDSendFastChargeCommand(commandSet.Minus);
+				xQueueSend(FastCharge_Msg, &commandSet.Plus, 100 / portTICK_RATE_MS);
 			}
 			else if (RIGHT_KEY == KEY_ON)
 			{
@@ -137,7 +143,7 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowIcon(positions[0].x, positions[0].y, 0x00, DRAW);
 				xSemaphoreGive(OLEDRelatedMutex);
-				EBDSendFastChargeCommand(commandSet.Plus);
+				xQueueSend(FastCharge_Msg, &commandSet.Minus, 100 / portTICK_RATE_MS);
 			}
 			ShowCurrentVoltCurt();
 			if (xQueueReceive(Key_Message, &keyMsg, 20) == pdPASS)
@@ -174,8 +180,8 @@ void QC3Trigger_Init(void)
 {
 	OLED_PositionStruct positions[2] = { {40,28},{10,28} };
 	FastChargeAdjustCommandSetStruct commandSet;
-	commandSet.Minus = EBD_QC3_MINUS_COMMAND;
-	commandSet.Plus = EBD_QC3_PLUS_COMMAND;
+	commandSet.Minus = QC3_Decrease;
+	commandSet.Plus = QC3_Increase;
 	USBTriggerAdjustUI("QC3.0 Mode", commandSet, positions);
 }
 

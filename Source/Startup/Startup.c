@@ -21,6 +21,7 @@
 #include "BadApplePlayer.h"
 #include "CPU_Usage.h"
 #include "MultiLanguageStrings.h"
+#include "FastCharge_Trigger_Circuit.h"
 #include "W25Q64.h"
 #include "UI_Utilities.h"
 #include "Digital_Load.h"
@@ -307,7 +308,10 @@ void LogoWithInitStatus_DeInit()
 void SystemStartup(void *pvParameters)
 {
 	Key_Init();
+	
 	OLED_Init();
+	
+	MCP3421_Init();
 	if (RIGHT_KEY == KEY_ON)
 	{
 		OSStatInit();
@@ -321,9 +325,7 @@ void SystemStartup(void *pvParameters)
 	W25Q64_Init();
 	
 	PWMRef_Init();
-	
-	MCP3421_Init();
-	
+		
 	Set_Constant_Current(2);
 
 	LogoWithInitStatus_Init();
@@ -344,6 +346,8 @@ void SystemStartup(void *pvParameters)
 
 	USB_Interrupts_Config();
 	Set_USBClock();
+	
+	FastCharge_Trigger_Service_Init();
 	
 	vTaskDelay(10/portTICK_RATE_MS);
 

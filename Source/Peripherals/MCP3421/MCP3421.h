@@ -3,6 +3,12 @@
 
 #include "stm32f10x.h"
 #include "misc.h"
+
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"  
+
 #include <stdio.h>
 
 typedef struct {
@@ -14,6 +20,8 @@ typedef struct {
 }USBMeterStruct;
 
 extern USBMeterStruct CurrentMeterData;
+
+extern xSemaphoreHandle USBMeterState_Mutex;
 
 bool MCP3421_Init(void);
 

@@ -26,6 +26,8 @@
 
 USBMeterStruct CurrentMeterData;
 
+xSemaphoreHandle USBMeterState_Mutex = NULL;
+
 void I2C_GPIO_Configuration()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -248,11 +250,16 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
 	{
 	 t=GetResultFromMCP3421(0xd1);
 	 t=t&0x03ffff;
+		
 	 if (t&0x020000)
 	 {
-	  t=t|0xfc0000;
+	  t=0;
 	 }
+	 
+	 xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
 	 CurrentMeterData.Voltage=(double)(*(int32_t*)(&t))/0x20000*2.048*VOLTAGE_GAIN;
+	 xSemaphoreGive(USBMeterState_Mutex);
+	 
 	 vTaskDelay(100 / portTICK_RATE_MS);
 	}
 }
@@ -263,6 +270,9 @@ bool MCP3421_Init(void)
 	
  /*Voltage sensor configuration*/
  WriteMCP3421(0x9c,0xd0); 
+	
+ USBMeterState_Mutex = xSemaphoreCreateMutex();
+	
  CreateTaskWithExceptionControl(MCP3421_MeterData_Update_Service, "MCP3421_Update_Service",
 		128,NULL, MCP3421_UPDATE_SERVICE_PRIORITY, NULL);
  return true;

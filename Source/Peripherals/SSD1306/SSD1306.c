@@ -802,12 +802,15 @@ void OLED_Init(void)
 	OLED_WR_Byte(0xA4, OLED_CMD); //全局显示开启;bit0:1,开启;0,关闭;(白屏/黑屏)
 	OLED_WR_Byte(0xA6, OLED_CMD); //设置显示方式;bit0:1,反相显示;0,正常显示	    						   
 	OLED_WR_Byte(0xAF, OLED_CMD); //开启显示	 
+	
 	UpdateOLEDJustNow = true;
 	OLED_Clear();
 	UpdateOLEDJustNow = false;
+	
+	OLEDRelatedMutex = xSemaphoreCreateMutex();
+
 	xTaskCreate(OLED_Refresh_Handler, "OLED Refresh Handler",
 		configMINIMAL_STACK_SIZE, NULL, OLED_REFRESH_PRIORITY, NULL);
-	OLEDRelatedMutex = xSemaphoreCreateMutex();
 }
 
 void Draw_BMP(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1, unsigned char bmp[])

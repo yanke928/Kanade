@@ -58,7 +58,9 @@ void USBMeter(void *pvParameters)
 	{
 	Refresh:
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
 		DisplayBasicData(tempString, status,firstEnter);
+		xSemaphoreGive(USBMeterState_Mutex);
 		if (status == USBMETER_RECORD || status == LEGACY_TEST)
 		{
 			DisplayRecordData(tempString);
