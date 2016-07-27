@@ -1,5 +1,5 @@
-//File Name   £ºInternalTempSensor.c
-//Description £ºGet temperature from the NTC inside the chip
+//File Name    InternalTempSensor.c
+//Description  Get temperature from the NTC inside the chip
 
 #include "stm32f10x_adc.h"
 #include "stm32f10x_dma.h"

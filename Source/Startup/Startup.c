@@ -24,6 +24,7 @@
 #include "FastCharge_Trigger_Circuit.h"
 #include "W25Q64.h"
 #include "UI_Utilities.h"
+#include "Cooling_Fan.h"
 #include "Digital_Load.h"
 #include "SDCardff.h"
 
@@ -348,6 +349,7 @@ void SystemStartup(void *pvParameters)
 	Set_USBClock();
 	
 	FastCharge_Trigger_Service_Init();
+	Cooling_Fan_Service_Init();
 	
 	vTaskDelay(10/portTICK_RATE_MS);
 
