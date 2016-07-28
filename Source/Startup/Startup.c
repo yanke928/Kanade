@@ -28,6 +28,8 @@
 #include "Digital_Load.h"
 #include "SDCardff.h"
 
+#include "system_stm32f10x.h"
+
 #include "mass_mal.h"
 #include "usb_lib.h"
 #include "hw_config.h"
