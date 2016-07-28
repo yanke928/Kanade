@@ -6,9 +6,9 @@
 
 #define ADC1_DR_Address    ((uint32_t)0x4001244C)  
 
-//The quantity of the value that used to filter the INTTemperature
-#define ADC_FILTER_ITEM_NUM  3
-#define ADC_FILTER_TANK_SIZE 10
+//The quantity of the value that used to filter
+#define ADC_FILTER_ITEM_NUM  5
+#define ADC_FILTER_TANK_SIZE 20
 
 #define TEMPTAB_LENGTH 21
 
@@ -19,7 +19,7 @@
 enum { Internal = 1, External = 0 };
 
 //ADC Value converted from Temperature sensors
-extern volatile uint16_t  ADCConvertedValue[3];
+extern volatile uint16_t  ADCConvertedValue[ADC_FILTER_ITEM_NUM];
 
 //ADC Value converted from INTTemperature sensor
 extern volatile uint16_t FilteredADCValue[ADC_FILTER_ITEM_NUM];

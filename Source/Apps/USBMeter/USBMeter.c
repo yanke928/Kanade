@@ -48,7 +48,6 @@
 void USBMeter(void *pvParameters)
 {
 	char tempString[20];
-	long res;
 	u8 firstEnter=1;
 	Key_Message_Struct keyMessage;
 	u8 status = USBMETER_ONLY;

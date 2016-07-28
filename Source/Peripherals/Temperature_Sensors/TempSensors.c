@@ -1,21 +1,22 @@
-//File Name    InternalTempSensor.c
-//Description  Get temperature from the NTC inside the chip
+//File Name    ADC.c
+//Description  All about internal ADC
 
 #include "stm32f10x_adc.h"
 #include "stm32f10x_dma.h"
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_gpio.h"
 #include <stdio.h>
-#include "math.h"
+#include <math.h>
 
 #include "TempSensors.h"
 #include "startup.h"
+#include "MCP3421.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 
-#define TEMP_UPDATE_PRIORITY tskIDLE_PRIORITY
+#define ADC_FILTER_PRIORITY tskIDLE_PRIORITY
 
 //see .h for details
 float InternalTemperature;
@@ -25,7 +26,7 @@ float ExternalTemperature;
 volatile uint16_t FilteredADCValue[ADC_FILTER_ITEM_NUM];
 
 //see .h for details
-volatile uint16_t  ADCConvertedValue[3];
+volatile uint16_t  ADCConvertedValue[ADC_FILTER_ITEM_NUM];
 
 volatile u8 SecondLevelFilterCount = 0;
 
@@ -43,17 +44,22 @@ const float ResistTab[TEMPTAB_LENGTH] = { 325,200,125,80,52,35.7,24.6,17.29,12.3
   * @brief   Initialize temperatureADC and its corresponding DMA
   * @retval : None
   */
-void TempADC_AND_DMA_Init(void)
+void ADC_And_DMA_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	ADC_InitTypeDef ADC_InitStructure;
 	DMA_InitTypeDef DMA_InitStructure;
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1|GPIO_Pin_2;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
@@ -62,7 +68,7 @@ void TempADC_AND_DMA_Init(void)
 	DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
 	DMA_InitStructure.DMA_MemoryBaseAddr = (u32)&ADCConvertedValue;//Set DMA memory to ADCConvertedValue
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
-	DMA_InitStructure.DMA_BufferSize = 3;
+	DMA_InitStructure.DMA_BufferSize = 5;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -82,12 +88,14 @@ void TempADC_AND_DMA_Init(void)
 	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
 
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
-	ADC_InitStructure.ADC_NbrOfChannel = 3;
+	ADC_InitStructure.ADC_NbrOfChannel = 5;
 	ADC_Init(ADC1, &ADC_InitStructure);
 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 1, ADC_SampleTime_239Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_17, 2, ADC_SampleTime_239Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 3, ADC_SampleTime_239Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 1, ADC_SampleTime_239Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 2, ADC_SampleTime_239Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 3, ADC_SampleTime_239Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 4, ADC_SampleTime_239Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_17, 5, ADC_SampleTime_239Cycles5);
 
 	ADC_TempSensorVrefintCmd(ENABLE);
 
@@ -109,19 +117,17 @@ void TempADC_AND_DMA_Init(void)
   * @brief   Temperature task
   * @retval : None
   */
-void TemperatureHandler(void *pvParameters)
+void ADC_Filter(void *pvParameters)
 {
-	u8 m, n, updateTempCount;
+	u8 m, n;
 	u32 p;
 	bool firstStart=true;
 	volatile uint16_t FirstLevelADCFilterTank[ADC_FILTER_ITEM_NUM][ADC_FILTER_TANK_SIZE];
 	volatile uint16_t SecondLevelADCFilterTank[ADC_FILTER_ITEM_NUM][ADC_FILTER_TANK_SIZE];
-	updateTempCount = 0;
 	p = 0;
 	while (1)
 	{
 		SecondLevelFilterCount++;
-		updateTempCount++;
 		/*If the sub-filter tank is full(10 effective records got)*/
 		if (SecondLevelFilterCount == ADC_FILTER_TANK_SIZE)
 		{
@@ -169,7 +175,19 @@ void TemperatureHandler(void *pvParameters)
 					ADCConvertedValue[m];
 			}
 		}
-		if (SecondLevelADCFilterTank[2][0] >= 200)
+		vTaskDelay(2 / portTICK_RATE_MS);
+	}
+}
+
+void Temperature_Handler(void *pvParameters)
+{
+ for(;;)
+	{
+	 vTaskDelay( 100/ portTICK_RATE_MS);
+	 PowerSourceVoltage = (1.2 / (float)FilteredADCValue[4]) * 4096;
+	 InternalTemperature = (1.43 - (float)FilteredADCValue[3] *
+	 (PowerSourceVoltage / 4096)) * 1000 / 4.35 + 25;
+		if (FilteredADCValue[0] >= 200)
 		{
 			CurrentTemperatureSensor = External;
 		}
@@ -177,18 +195,20 @@ void TemperatureHandler(void *pvParameters)
 		{
 			CurrentTemperatureSensor = Internal;
 		}
-		if (updateTempCount >= 40)
-		{
-			updateTempCount = 0;
-			PowerSourceVoltage = (1.2 / (float)FilteredADCValue[1]) * 4096;
-			InternalTemperature = (1.43 - (float)FilteredADCValue[0] *
-				(PowerSourceVoltage / 4096)) * 1000 / 4.35 + 25;
-			if (CurrentTemperatureSensor == External)
+	  if (CurrentTemperatureSensor == External)
 			{
 				CalculateExtTemp();
 			}
-		}
-		vTaskDelay(10 / portTICK_RATE_MS);
+	}
+}
+
+void DataPins_Voltage_Handler(void *pvParameters)
+{
+ for(;;)
+	{
+	 vTaskDelay( 100/ portTICK_RATE_MS);
+	 CurrentMeterData.VoltageDP=(float)FilteredADCValue[2]/4096*PowerSourceVoltage;
+	 CurrentMeterData.VoltageDM=(float)FilteredADCValue[1]/4096*PowerSourceVoltage;
 	}
 }
 
@@ -198,10 +218,14 @@ void TemperatureHandler(void *pvParameters)
   */
 void TemperatureSensors_Init(void)
 {
-	TempADC_AND_DMA_Init();
+	ADC_And_DMA_Init();
 	CurrentTemperatureSensor = Internal;
-	xTaskCreate(TemperatureHandler, "Temperature Handler",
-		128, NULL, TEMP_UPDATE_PRIORITY, NULL);
+	xTaskCreate(ADC_Filter, "ADC_Filter",
+		160, NULL, ADC_FILTER_PRIORITY, NULL);
+	xTaskCreate(Temperature_Handler, "Temperature_Handler",
+		64, NULL, ADC_FILTER_PRIORITY, NULL);
+	xTaskCreate(DataPins_Voltage_Handler, "DataPins_Voltage_Handler",
+		64, NULL, ADC_FILTER_PRIORITY, NULL);
 }
 
 
@@ -217,64 +241,6 @@ void GenerateTempString(char string[], u8 sensorNo)
 		sprintf(string, "%5.1fC", ExternalTemperature);
 }
 
-///**
-//  * @brief    Detect the statur of external temperature sensor(if exist)
-
-//	@param  : init: If the function is called while system initialization
-
-//  * @retval : If external teperature sensor lost or replugged
-//  */
-//bool TemperatureSensorDetect(bool init)
-//{
-//	u8 logoTimerNo;
-//	if (init)
-//	{
-//		logoTimerNo = LogoInit();
-//	}
-//	if (ADCConvertedValue[2] <= 200)
-//	{
-//		if (CurrentTemperatureSensor == External)
-//		{
-//			CurrentTemperatureSensor = Internal;
-//			if (!init)
-//				SendLogString("External_Temperature_Sensor Lost\n");
-//			SendLogString("Internal_Temperature_Sensor is present\n\n");
-//			return(true);
-//		}
-//		if (init)
-//		{
-//			ShowInitString("IntTemp is present", logoTimerNo);
-//			SendLogString("Interrnal_Temperature_Sensor is present\n\n");
-//			Delayxms(500);
-//			SystemSubTimerDeInit(logoTimerNo);
-//		}
-//		return(false);
-//	}
-//	else
-//	{
-//		if (CurrentTemperatureSensor == Internal)
-//		{
-//			CurrentTemperatureSensor = External;
-//			CalculateExtTemp();
-//			if (init)
-//			{
-//				ShowInitString("ExtTemp is present", logoTimerNo);
-//				SendLogString("External_Temperature_Sensor is present\n\n");
-//				Delayxms(500);
-//				SystemSubTimerDeInit(logoTimerNo);
-//			}
-//			else
-//			{
-//				SendLogString("External_Temperature_Sensor Plugged\n");
-//				SendLogString("External_Temperature_Sensor is present\n\n");
-//			}
-//			return(true);
-//		}
-//		CalculateExtTemp();
-//		return(false);
-//	}
-//}
-
 /**
   * @brief    Calculate the external temperature according to
 ADC result
@@ -287,7 +253,7 @@ void CalculateExtTemp(void)
 	float k;
 	u8 i;
 	/*Calculate the voltage that temperature sensor divided*/
-	Vtemp = 3.3 - ((float)FilteredADCValue[2] / 4096)*3.3;
+	Vtemp = 3.3 - ((float)FilteredADCValue[0] / 4096)*3.3;
 	/*Calculate the resistance of temperature sensor*/
 	Rtemp = (Vtemp / (3.3 - Vtemp))*TEMP_DIVIDER;
 	if (Rtemp >= ResistTab[0])
