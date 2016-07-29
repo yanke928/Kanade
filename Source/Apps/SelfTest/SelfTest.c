@@ -36,9 +36,9 @@ typedef void(*TestItem)(char*);
 
 TestItem TestItems[] = {
 LEDBuzzerFanTest,
+DataPin_Control_Test,
 SD_Card_Test,
 SPI_Flash_Test,
-DataPin_Control_Test,
 NULL
 };
 
@@ -71,16 +71,16 @@ void LEDBuzzerFanTest(char * terminal)
 	WriteToTerminal("LED&Buzzer&Fan On\n");
 }
 
-enum{
-File_Create_Failure, 
-File_Write_Failure,
-File_Length_Mismatch,
-File_Close_Failure,
-File_Open_Failure,
-File_Read_Failure,
-File_Verify_Failure,
-File_Delete_Failure,
-RW_OK
+enum {
+	File_Create_Failure,
+	File_Write_Failure,
+	File_Length_Mismatch,
+	File_Close_Failure,
+	File_Open_Failure,
+	File_Read_Failure,
+	File_Verify_Failure,
+	File_Delete_Failure,
+	RW_OK
 };
 
 int MemTest(char volume)
@@ -90,17 +90,17 @@ int MemTest(char volume)
 	u8 buff[128];
 	u16 i, j;
 	u32 byteWritten;
-	
-	sprintf((char*)buff,"%c:/TestFile",volume);
-	
+
+	sprintf((char*)buff, "%c:/TestFile", volume);
+
 	res = f_open(&testFile, (char*)buff, FA_WRITE | FA_OPEN_ALWAYS);
 	if (res != FR_OK)
 	{
 		return(File_Create_Failure);
 	}
-	
+
 	memset(buff, '0', sizeof(buff));
-	
+
 	for (i = 0; i < 2000; i++)
 	{
 		res = f_write(&testFile, buff, sizeof(buff), &byteWritten);
@@ -111,7 +111,7 @@ int MemTest(char volume)
 		else if (byteWritten != sizeof(buff))
 		{
 			return(File_Length_Mismatch);
-		}			
+		}
 	}
 
 	res = f_close(&testFile);
@@ -120,9 +120,9 @@ int MemTest(char volume)
 		return(File_Close_Failure);
 	}
 
-	sprintf((char*)buff,"%c:/TestFile",volume);
-	
-	res = f_open(&testFile,(char*)buff, FA_READ);
+	sprintf((char*)buff, "%c:/TestFile", volume);
+
+	res = f_open(&testFile, (char*)buff, FA_READ);
 	if (res != FR_OK)
 	{
 		return(File_Open_Failure);
@@ -149,10 +149,10 @@ int MemTest(char volume)
 	{
 		return(File_Close_Failure);
 	}
-	
-	sprintf((char*)buff,"%c:/TestFile",volume);
-	
-	res = f_unlink ((char*)buff);
+
+	sprintf((char*)buff, "%c:/TestFile", volume);
+
+	res = f_unlink((char*)buff);
 	if (res != FR_OK)
 	{
 		return(File_Delete_Failure);
@@ -163,121 +163,121 @@ int MemTest(char volume)
 
 void SD_Card_Test(char *terminal)
 {
- int res;
- if(!SDCardMountStatus)
- {
-	 WriteToTerminal("SD:Mount failed\n");
- }
- else
- {
-  res=MemTest('0');
-	switch(res)
+	int res;
+	if (!SDCardMountStatus)
 	{
-		case RW_OK:WriteToTerminal("SD:R/W OK\n");break;
-		case File_Create_Failure:WriteToTerminal("SD:Create failed\n");break;
-		case File_Write_Failure:WriteToTerminal("SD:Write failed\n");break;
-	  case File_Length_Mismatch:WriteToTerminal("SD:Length mismatch\n");break;
-		case File_Close_Failure:WriteToTerminal("SD:Close failed\n");break;
-		case File_Open_Failure:WriteToTerminal("SD:Open failed\n");break;
-	  case File_Read_Failure:WriteToTerminal("SD:Read failed\n");break;
-	  case File_Verify_Failure:WriteToTerminal("SD:Verify failed\n");break;
-	  case File_Delete_Failure:WriteToTerminal("SD:Delete failed\n");
+		WriteToTerminal("SD:Mount failed\n");
 	}
- }
+	else
+	{
+		res = MemTest('0');
+		switch (res)
+		{
+		case RW_OK:WriteToTerminal("SD:R/W OK\n"); break;
+		case File_Create_Failure:WriteToTerminal("SD:Create failed\n"); break;
+		case File_Write_Failure:WriteToTerminal("SD:Write failed\n"); break;
+		case File_Length_Mismatch:WriteToTerminal("SD:Length mismatch\n"); break;
+		case File_Close_Failure:WriteToTerminal("SD:Close failed\n"); break;
+		case File_Open_Failure:WriteToTerminal("SD:Open failed\n"); break;
+		case File_Read_Failure:WriteToTerminal("SD:Read failed\n"); break;
+		case File_Verify_Failure:WriteToTerminal("SD:Verify failed\n"); break;
+		case File_Delete_Failure:WriteToTerminal("SD:Delete failed\n");
+		}
+	}
 }
 
 void SPI_Flash_Test(char *terminal)
 {
- int res;
- if(!SPIFlashMountStatus)
- {
-	 WriteToTerminal("Flash:Mount failed\n");
- }
- else
- {
-  res=MemTest('1');
-	switch(res)
+	int res;
+	if (!SPIFlashMountStatus)
 	{
-		case RW_OK:WriteToTerminal("Flash:R/W OK\n");break;
-		case File_Create_Failure:WriteToTerminal("Flash:Create failed\n");break;
-		case File_Write_Failure:WriteToTerminal("Flash:Write failed\n");break;
-	  case File_Length_Mismatch:WriteToTerminal("Flash:Length mismatch\n");break;
-		case File_Close_Failure:WriteToTerminal("Flash:Close failed\n");break;
-		case File_Open_Failure:WriteToTerminal("Flash:Open failed\n");break;
-	  case File_Read_Failure:WriteToTerminal("Flash:Read failed\n");break;
-	  case File_Verify_Failure:WriteToTerminal("Flash:Verify failed\n");break; 
-		case File_Delete_Failure:WriteToTerminal("Flash:Delete failed\n");
+		WriteToTerminal("Flash:Mount failed\n");
 	}
- }
+	else
+	{
+		res = MemTest('1');
+		switch (res)
+		{
+		case RW_OK:WriteToTerminal("Flash:R/W OK\n"); break;
+		case File_Create_Failure:WriteToTerminal("Flash:Create failed\n"); break;
+		case File_Write_Failure:WriteToTerminal("Flash:Write failed\n"); break;
+		case File_Length_Mismatch:WriteToTerminal("Flash:Length mismatch\n"); break;
+		case File_Close_Failure:WriteToTerminal("Flash:Close failed\n"); break;
+		case File_Open_Failure:WriteToTerminal("Flash:Open failed\n"); break;
+		case File_Read_Failure:WriteToTerminal("Flash:Read failed\n"); break;
+		case File_Verify_Failure:WriteToTerminal("Flash:Verify failed\n"); break;
+		case File_Delete_Failure:WriteToTerminal("Flash:Delete failed\n");
+		}
+	}
 }
 
 void DataPin_Control_Test(char *terminal)
 {
- FastCharge_Trigger_GPIO_Enable();
-	
- SetDM_GND();
- vTaskDelay(200/portTICK_RATE_MS);
- if(CurrentMeterData.VoltageDM>=0.2)
- {
-	 WriteToTerminal("DataPins:DM-GND Failed\n");
-	 return;
- }
- 
- SetDM_0V6();
- vTaskDelay(200/portTICK_RATE_MS);
- if(CurrentMeterData.VoltageDM>=0.8||CurrentMeterData.VoltageDM<=0.4)
- {
-	 WriteToTerminal("DataPins:DM-0V6 Failed\n");
-	 return;
- }
- 
- SetDM_2V7();
- vTaskDelay(200/portTICK_RATE_MS);
- if(CurrentMeterData.VoltageDM>=2.9||CurrentMeterData.VoltageDM<=2.5)
- {
-	 WriteToTerminal("DataPins:DM-2V7 Failed\n");
-	 return;
- }
- 
- SetDM_3V3();
- vTaskDelay(200/portTICK_RATE_MS);
- if(CurrentMeterData.VoltageDM>=3.4||CurrentMeterData.VoltageDM<=3.1)
- {
-	 WriteToTerminal("DataPins:DM-2V7 Failed\n");
-	 return;
- }
- 
- SetDP_GND();
- vTaskDelay(200/portTICK_RATE_MS);
- if(CurrentMeterData.VoltageDP>0.2)
- {
-	 WriteToTerminal("DataPins:DP-GND Failed\n");
-	 return;
- }
- 
- SetDP_0V6();
- vTaskDelay(200/portTICK_RATE_MS);
- if(CurrentMeterData.VoltageDP>=0.8||CurrentMeterData.VoltageDP<=0.4)
- {
-	 WriteToTerminal("DataPins:DP-0V6 Failed\n");
-	 return;
- }
+	FastCharge_Trigger_GPIO_Enable();
 
- SetDP_2V7();
- vTaskDelay(200/portTICK_RATE_MS);
- if(CurrentMeterData.VoltageDP>=2.9||CurrentMeterData.VoltageDP<=2.5)
- {
-	 WriteToTerminal("DataPins:DP-2V7 Failed\n");
-	 return;
- }
- 
- SetDP_3V3();
- vTaskDelay(200/portTICK_RATE_MS);
- if(CurrentMeterData.VoltageDP>=3.4||CurrentMeterData.VoltageDP<=3.1)
- {
-	 WriteToTerminal("DataPins:DP-3V3 Failed\n");
-	 return;
- }
- FastCharge_Trigger_Release();
- WriteToTerminal("DataPins:OK\n");
+	SetDM_GND();
+	vTaskDelay(200 / portTICK_RATE_MS);
+	if (CurrentMeterData.VoltageDM >= 0.2)
+	{
+		WriteToTerminal("DM_DP:DM-GND Failed\n");
+		return;
+	}
+
+	SetDM_0V6();
+	vTaskDelay(200 / portTICK_RATE_MS);
+	if (CurrentMeterData.VoltageDM >= 0.8 || CurrentMeterData.VoltageDM <= 0.4)
+	{
+		WriteToTerminal("DM_DP:DM-0V6 Failed\n");
+		return;
+	}
+
+	SetDM_2V7();
+	vTaskDelay(200 / portTICK_RATE_MS);
+	if (CurrentMeterData.VoltageDM >= 2.9 || CurrentMeterData.VoltageDM <= 2.5)
+	{
+		WriteToTerminal("DM_DP:DM-2V7 Failed\n");
+		return;
+	}
+
+	SetDM_3V3();
+	vTaskDelay(200 / portTICK_RATE_MS);
+	if (CurrentMeterData.VoltageDM >= 3.4 || CurrentMeterData.VoltageDM <= 3.1)
+	{
+		WriteToTerminal("DM_DP:DM-2V7 Failed\n");
+		return;
+	}
+
+	SetDP_GND();
+	vTaskDelay(200 / portTICK_RATE_MS);
+	if (CurrentMeterData.VoltageDP > 0.2)
+	{
+		WriteToTerminal("DM_DP:DP-GND Failed\n");
+		return;
+	}
+
+	SetDP_0V6();
+	vTaskDelay(200 / portTICK_RATE_MS);
+	if (CurrentMeterData.VoltageDP >= 0.8 || CurrentMeterData.VoltageDP <= 0.4)
+	{
+		WriteToTerminal("DM_DP:DP-0V6 Failed\n");
+		return;
+	}
+
+	SetDP_2V7();
+	vTaskDelay(200 / portTICK_RATE_MS);
+	if (CurrentMeterData.VoltageDP >= 2.9 || CurrentMeterData.VoltageDP <= 2.5)
+	{
+		WriteToTerminal("DM_DP:DP-2V7 Failed\n");
+		return;
+	}
+
+	SetDP_3V3();
+	vTaskDelay(200 / portTICK_RATE_MS);
+	if (CurrentMeterData.VoltageDP >= 3.4 || CurrentMeterData.VoltageDP <= 3.1)
+	{
+		WriteToTerminal("DM_DP:DP-3V3 Failed\n");
+		return;
+	}
+	FastCharge_Trigger_Release();
+	WriteToTerminal("DM_DP:OK\n");
 }
