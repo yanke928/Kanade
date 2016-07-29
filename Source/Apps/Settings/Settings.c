@@ -30,9 +30,11 @@
 #include "UI_Confirmation.h"
 #include "MultiLanguageStrings.h"
 
-#include "Settings.h"
 #include "EBProtocolConfig.h"
 #include "About.h"
+#include "SelfTest.h"
+
+#include "Settings.h"
 
 Settings_Struct* CurrentSettings = (Settings_Struct*)0x0803b800;
 
@@ -83,10 +85,11 @@ void Settings()
 	stringTab[5]=SettingsItemModel_Str[CurrentSettings->Language];
 	stringTab[6]=SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
 	stringTab[7]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
+	stringTab[8]=SettingsItemSystemScan_Str[CurrentSettings->Language];
 	
 	menuParams.ItemStrings=stringTab;
 	menuParams.DefaultPos = 0;
-	menuParams.ItemNum = 8;
+	menuParams.ItemNum = 9;
 	menuParams.FastSpeed = 10;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
@@ -109,7 +112,8 @@ void Settings()
 	case 4:FormatDisks();break;
 	case 5:ModelSettings(); break;
 	case 6:FirmwareUpdate();break;
-	case 7:About();
+	case 7:About();break;
+	case 8:SelfTest();break;
 	}
 }
 

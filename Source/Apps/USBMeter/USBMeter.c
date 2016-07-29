@@ -88,7 +88,7 @@ void USBMeter(void *pvParameters)
 			}
 		}
 		if(firstEnter) firstEnter--;
-		if (xQueueReceive(Key_Message, &keyMessage, 1000 / portTICK_RATE_MS) == pdPASS)
+		if (xQueueReceive(Key_Message, &keyMessage, 200 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (status == USBMETER_ONLY)
 			{
@@ -258,5 +258,5 @@ void DisplayRecordData(char tempString[])
 void USBMeter_Init(u8 status)
 {
 	CreateTaskWithExceptionControl(USBMeter, "USBMeter",
-		384, &status, USB_METER_PRIORITY, NULL);
+  384, &status, USB_METER_PRIORITY, NULL);
 }

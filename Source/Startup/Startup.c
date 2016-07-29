@@ -24,6 +24,7 @@
 #include "FastCharge_Trigger_Circuit.h"
 #include "W25Q64.h"
 #include "UI_Utilities.h"
+#include "UI_Print.h"
 #include "Cooling_Fan.h"
 #include "Digital_Load.h"
 #include "SDCardff.h"
@@ -313,6 +314,8 @@ void SystemStartup(void *pvParameters)
 	Key_Init();
 	
 	OLED_Init();
+	
+	//PointDrawing_Test();
 	
 	MCP3421_Init();
 	if (RIGHT_KEY == KEY_ON)

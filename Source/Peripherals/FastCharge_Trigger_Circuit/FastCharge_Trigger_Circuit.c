@@ -158,7 +158,7 @@ void QC2_20V_Trigger(u8 lastMode)
 void QC3_Increase_Voltage(u8 lastMode)
 {
 	FastCharge_Trigger_GPIO_Enable();
-	if (lastMode != QC3_Increase&&lastMode != QC3_Increase)
+	if (lastMode != QC3_Increase&&lastMode != QC3_Decrease)
 	{
 		FastCharge_Trigger_GPIO_Enable();
 		SetDP_0V6();

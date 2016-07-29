@@ -368,7 +368,6 @@ void ShowSummary(u8 reason)
 	float platVolt;
 	ShowDialogue(Summary_Str[CurrentSettings->Language], "", "");
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_InvertRect(1, 1, 126, 14);
 
 	/*If the stop of the record is caused by protection,play sound to notice the
 	user*/

@@ -61,6 +61,8 @@ extern const LEDAnimateSliceStruct LEDAnimation_Startup[];
 
 extern const LEDAnimateSliceStruct LEDAnimation_EBDException[];
 
+extern const LEDAnimateSliceStruct LED_Test[];
+
 //see .c for details
 void LED_GPIO_Init(void);
 

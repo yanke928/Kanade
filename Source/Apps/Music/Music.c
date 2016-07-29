@@ -1,4 +1,4 @@
-//File Name   £ºMusic.c
+//File Name     Music.c
 //Description : Play Music with buzzer 
 #include "Music.h"
 #include "stm32f10x.h"

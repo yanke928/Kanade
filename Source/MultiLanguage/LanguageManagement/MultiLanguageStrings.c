@@ -123,6 +123,12 @@ const char SettingsItemSystemInfo_CN[] = "系统信息" ;
 const char SettingsItemSystemInfo_JP[] ="システム情報";
 const char* const SettingsItemSystemInfo_Str[] = { SettingsItemSystemInfo_EN,SettingsItemSystemInfo_TW,SettingsItemSystemInfo_CN,SettingsItemSystemInfo_JP };
 
+const char SettingsItemSystemScan_EN[]="System Scan";
+const char SettingsItemSystemScan_TW[]="系統檢查";
+const char SettingsItemSystemScan_CN[] = "系统检查" ;
+const char SettingsItemSystemScan_JP[] ="システム試験";
+const char* const SettingsItemSystemScan_Str[] = { SettingsItemSystemScan_EN,SettingsItemSystemScan_TW,SettingsItemSystemScan_CN,SettingsItemSystemScan_JP };
+
 const char SettingsUnmounted_EN[]="Unmounted";
 const char SettingsUnmounted_TW[]="已彈出";
 const char SettingsUnmounted_CN[] = "已弹出" ;

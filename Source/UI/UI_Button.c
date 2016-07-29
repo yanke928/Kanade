@@ -50,19 +50,19 @@ void UI_Button_Handler(void *pvParameters)
 
 	/*Print the strings with respective positions to screen*/
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	SetUpdateOLEDJustNow();
+	//SetUpdateOLEDJustNow();
 	for (i = 0; i < buttonParams->ButtonNum; i++)
 	{
 		OLED_ShowAnyString(buttonParams->Positions[i].x, buttonParams->Positions[i].y,
 			buttonParams->ButtonStrings[i], NotOnSelect, 12);
 	}
 	ClearKeyEvent(keyMessage);
-	ResetUpdateOLEDJustNow();
+	//ResetUpdateOLEDJustNow();
 	xSemaphoreGive(OLEDRelatedMutex);
 	for (;;)
 	{
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-		SetUpdateOLEDJustNow();
+		//SetUpdateOLEDJustNow();
 		/*Print the selection box to strings*/
 		for (i = 0; i < buttonParams->ButtonNum; i++)
 		{
@@ -75,7 +75,7 @@ void UI_Button_Handler(void *pvParameters)
 				OLED_DrawRect(buttonParams->Positions[i].x - 2, buttonParams->Positions[i].y - 2,
 					buttonParams->Positions[i].x + p * 6 + 1, buttonParams->Positions[i].y + 13, UNDRAW);
 		}
-		ResetUpdateOLEDJustNow();
+		//ResetUpdateOLEDJustNow();
 		xSemaphoreGive(OLEDRelatedMutex);
 		if (firstIn)
 		{
@@ -94,18 +94,20 @@ void UI_Button_Handler(void *pvParameters)
 			if (MIDDLE_KEY == KEY_ON)
 			{
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-				SetUpdateOLEDJustNow();
+				//SetUpdateOLEDJustNow();
 				OLED_ShowAnyString(buttonParams->Positions[selection].x, buttonParams->Positions[selection].y,
 					buttonParams->ButtonStrings[selection], OnSelect, 12);
+				xSemaphoreGive(OLEDRelatedMutex);
 				while (MIDDLE_KEY == KEY_ON)
 				{
 					vTaskDelay(10 / portTICK_RATE_MS);
 				}
+				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowAnyString(buttonParams->Positions[selection].x, buttonParams->Positions[selection].y,
 					buttonParams->ButtonStrings[selection], NotOnSelect, 12);
-				vTaskDelay(50 / portTICK_RATE_MS);
-				ResetUpdateOLEDJustNow();
 				xSemaphoreGive(OLEDRelatedMutex);
+				vTaskDelay(50 / portTICK_RATE_MS);
+				//ResetUpdateOLEDJustNow();
 				xQueueSend(UI_ButtonMsg, &selection, 100 / portTICK_RATE_MS);
 				for (;;) vTaskDelay(portMAX_DELAY);
 			}

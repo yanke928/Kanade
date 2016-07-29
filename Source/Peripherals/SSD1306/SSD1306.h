@@ -88,6 +88,8 @@ void Draw_BMP(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y
 void SetUpdateOLEDJustNow(void);
 void ResetUpdateOLEDJustNow(void);
 
+void PointDrawing_Test(void);
+
 #endif  
 
 

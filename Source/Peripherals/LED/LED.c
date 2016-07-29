@@ -23,6 +23,14 @@ const LEDAnimateSliceStruct LEDAnimation_Startup[] =
  {0,0,0,END}//End of the animation
 };
 
+const LEDAnimateSliceStruct LED_Test[] =
+{
+ {Red,200,10,false},
+ {Green,200,10,false},
+ {Blue,200,10},
+ {0,0,0,END}//End of the animation
+};
+
 const LEDAnimateSliceStruct LEDAnimation_EBDException[] =
 {
  {Red,200,6,false},//Red with brightness of 2

@@ -16,6 +16,8 @@
 #define Cooling_fan_turn_on() GPIO_SetBits(GPIOA, GPIO_Pin_15)
 #define Cooling_fan_turn_off() GPIO_ResetBits(GPIOA, GPIO_Pin_15)
 
+xQueueHandle CoolingFan_Command;
+
 void Cooling_Fan_GPIO_Init()
 {
  GPIO_InitTypeDef GPIO_InitStructure;
@@ -29,17 +31,36 @@ void Cooling_Fan_GPIO_Init()
 
 void Cooling_Fan_Service(void *pvParameters)
 {
+ u8 command;
+ u8 mode=Auto;
  for(;;)
 	{
+	 if(mode==Auto)
+	 {
 	 if(InternalTemperature>50)Cooling_fan_turn_on();
 	 else Cooling_fan_turn_off();
-	 vTaskDelay(500/portTICK_RATE_MS);
+	 }
+	 if(xQueueReceive(CoolingFan_Command, &command, 500 / portTICK_RATE_MS) == pdPASS)
+	 {
+	  switch(command)
+		{
+			case Turn_On:mode=0;Cooling_fan_turn_on();break;
+			case Turn_Off:mode=0;Cooling_fan_turn_off();break;
+			case Auto:mode=Auto;
+		}			
+	 }
 	}
 }
 
 void Cooling_Fan_Service_Init(void)
 {
 	Cooling_Fan_GPIO_Init();
+	CoolingFan_Command = xQueueCreate(2, sizeof(u8));
 	CreateTaskWithExceptionControl(Cooling_Fan_Service, "Cooling_Fan_Service",
 		128, NULL, COOLING_FAN_SERVICE_PRIORITY, NULL);
+}
+
+void Fan_Send_Command(u8 command)
+{
+ xQueueSend(CoolingFan_Command, &command, 100 / portTICK_RATE_MS);
 }

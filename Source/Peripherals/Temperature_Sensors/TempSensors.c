@@ -23,7 +23,7 @@ float InternalTemperature;
 
 float ExternalTemperature;
 
-volatile uint16_t FilteredADCValue[ADC_FILTER_ITEM_NUM];
+volatile float FilteredADCValue[ADC_FILTER_ITEM_NUM];
 
 //see .h for details
 volatile uint16_t  ADCConvertedValue[ADC_FILTER_ITEM_NUM];
@@ -119,61 +119,27 @@ void ADC_And_DMA_Init(void)
   */
 void ADC_Filter(void *pvParameters)
 {
-	u8 m, n;
-	u32 p;
-	bool firstStart=true;
-	volatile uint16_t FirstLevelADCFilterTank[ADC_FILTER_ITEM_NUM][ADC_FILTER_TANK_SIZE];
-	volatile uint16_t SecondLevelADCFilterTank[ADC_FILTER_ITEM_NUM][ADC_FILTER_TANK_SIZE];
-	p = 0;
+	u8 m=0;
+  float delta;
+	bool currentTrend;
+  bool lstTrend[ADC_FILTER_ITEM_NUM];
+  float lstCoeficient[ADC_FILTER_ITEM_NUM];
 	while (1)
 	{
-		SecondLevelFilterCount++;
-		/*If the sub-filter tank is full(10 effective records got)*/
-		if (SecondLevelFilterCount == ADC_FILTER_TANK_SIZE)
+		for (m = 0; m < ADC_FILTER_ITEM_NUM; m++)
 		{
-			SecondLevelFilterCount = 0;
-			for (m = 0; m < ADC_FILTER_ITEM_NUM; m++)
-			{
-				p = 0;
-				for (n = 0; n < ADC_FILTER_TANK_SIZE; n++)
-				{
-					p = p + FirstLevelADCFilterTank[m][n];
-				}
-				for (n = 1; n < ADC_FILTER_TANK_SIZE; n++)
-				{
-					SecondLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n] =
-						SecondLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n - 1];
-				}
-				SecondLevelADCFilterTank[m][0] = p / ADC_FILTER_TANK_SIZE;
-				if(firstStart) 
-				{
-				 for(n = 1; n < ADC_FILTER_TANK_SIZE; n++)
-					{
-					 SecondLevelADCFilterTank[m][n] = p / ADC_FILTER_TANK_SIZE;
-					}
-				}
-				p = 0;
-				for (n = 0; n < ADC_FILTER_TANK_SIZE; n++)
-				{
-					p = p + SecondLevelADCFilterTank[m][n];
-				}
-				FilteredADCValue[m] = p / ADC_FILTER_TANK_SIZE;
-			}
-			firstStart=false;
-		}
-		/*Else add a new record to sub-filter tank*/
-		else
-		{
-			for (m = 0; m < ADC_FILTER_ITEM_NUM; m++)
-			{
-				for (n = 1; n < ADC_FILTER_TANK_SIZE; n++)
-				{
-					FirstLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n] =
-						FirstLevelADCFilterTank[m][ADC_FILTER_TANK_SIZE - n - 1];
-				}
-				FirstLevelADCFilterTank[m][0] =
-					ADCConvertedValue[m];
-			}
+		 delta=(float)ADCConvertedValue[m]-FilteredADCValue[m];
+		 if(delta<0) currentTrend=false;
+		 else currentTrend=true;
+
+		 if(currentTrend==lstTrend[m]) lstCoeficient[m]=lstCoeficient[m]*2;
+		 else lstCoeficient[m]=0.001;
+		 lstTrend[m]=currentTrend;
+			
+		 lstCoeficient[m]=lstCoeficient[m]<=0?0.01:lstCoeficient[m];
+		 lstCoeficient[m]=lstCoeficient[m]>0.99?0.99:lstCoeficient[m];
+			
+		 FilteredADCValue[m]=delta*lstCoeficient[m]+FilteredADCValue[m];
 		}
 		vTaskDelay(2 / portTICK_RATE_MS);
 	}

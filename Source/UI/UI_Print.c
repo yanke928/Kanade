@@ -35,6 +35,10 @@ u16 FindSplitAddr(u8 xLengthAvailable, const char *string, u16 startAddr, u8 fon
 			nbrOfGraphicalCharMax--;
 			offset += 3;
 		}
+		else if((*(string + offset))=='\n')
+		{
+		 return(offset+1);
+		}
 		else if (*(string + offset) == 0)
 		{
 			return(offset);

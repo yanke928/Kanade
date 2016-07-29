@@ -30,7 +30,7 @@ void ShowCurrentVoltCurt()
 {
 	char tempString[10];
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	SetUpdateOLEDJustNow();
+	//SetUpdateOLEDJustNow();
 	xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
 	if (CurrentMeterData.Voltage >= 10)
 	{
@@ -44,7 +44,7 @@ void ShowCurrentVoltCurt()
 	sprintf(tempString, "%5.3fA", CurrentMeterData.Current);
 	xSemaphoreGive(USBMeterState_Mutex);
 	OLED_ShowAnyString(68, 40, tempString, NotOnSelect, 16);
-	ResetUpdateOLEDJustNow();
+	//ResetUpdateOLEDJustNow();
 	xSemaphoreGive(OLEDRelatedMutex);
 }
 
@@ -80,9 +80,9 @@ void QC2Trigger_Init(void)
 		UI_Button_Init(&button_params);
 		for (;;)
 		{
+			ShowCurrentVoltCurt();
 			if (xQueueReceive(UI_ButtonMsg, &i, 0) == pdPASS) break;
 			vTaskDelay(50 / portTICK_RATE_MS);
-			ShowCurrentVoltCurt();
 		}
 		UI_Button_DeInit();
 		button_params.DefaultValue = i;
@@ -109,8 +109,7 @@ void QC2Trigger_Init(void)
 void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct commandSet, OLED_PositionStruct positions[2])
 {
 	Key_Message_Struct keyMsg;
-	SetUpdateOLEDJustNow();
-	OLED_Refresh_Gram();
+	//SetUpdateOLEDJustNow();
 	ShowDialogue(titleString, "", "");
 	/*Draw a button set with "LiveMode",get the timerNo allocated*/
 	OLED_DrawRect(positions[0].x - 2, positions[0].y - 2, positions[0].x + 17, positions[0].y + 17, DRAW);
@@ -123,12 +122,17 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 		xSemaphoreGive(OLEDRelatedMutex);
 		for (;;)
 		{
+			ShowCurrentVoltCurt();
 			if (LEFT_KEY == KEY_ON)
 			{
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowIcon(positions[1].x, positions[1].y, 0x01, UNDRAW);
 				xSemaphoreGive(OLEDRelatedMutex);
-				while (LEFT_KEY == KEY_ON);
+				while (LEFT_KEY == KEY_ON)
+				{
+				 vTaskDelay(20/portTICK_RATE_MS);
+				 ShowCurrentVoltCurt();
+				}
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowIcon(positions[1].x, positions[1].y, 0x01, DRAW);
 				xSemaphoreGive(OLEDRelatedMutex);
@@ -139,18 +143,22 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowIcon(positions[0].x, positions[0].y, 0x00, UNDRAW);
 				xSemaphoreGive(OLEDRelatedMutex);
-				while (RIGHT_KEY == KEY_ON);
+				while (RIGHT_KEY == KEY_ON)
+				{
+				 vTaskDelay(20/portTICK_RATE_MS);
+				 ShowCurrentVoltCurt();
+				}
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowIcon(positions[0].x, positions[0].y, 0x00, DRAW);
 				xSemaphoreGive(OLEDRelatedMutex);
 				xQueueSend(FastCharge_Msg, &commandSet.Minus, 100 / portTICK_RATE_MS);
 			}
-			ShowCurrentVoltCurt();
-			if (xQueueReceive(Key_Message, &keyMsg, 20) == pdPASS)
+			if (xQueueReceive(Key_Message, &keyMsg, 30/portTICK_RATE_MS) == pdPASS)
 			{
 				if (keyMsg.KeyEvent == MidDouble)
 				{
-					ResetUpdateOLEDJustNow(); return;
+					//ResetUpdateOLEDJustNow(); 
+					return;
 				}
 			}
 		}

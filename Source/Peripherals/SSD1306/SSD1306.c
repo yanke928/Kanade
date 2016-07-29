@@ -205,6 +205,7 @@ void OLED_DrawPoint(u8  x, u8  y, u8  t)
 	pos = 7 - y / 8;
 	bx = y % 8;
 	temp = 1 << (7 - bx);
+
 	if (t)OLED_GRAM[x][pos] |= temp;
 	else OLED_GRAM[x][pos] &= ~temp;
 #if OLED_REFRESH_OPTIMIZE_EN	
@@ -344,25 +345,48 @@ void OLED_ShowChar(unsigned char  x, unsigned char  y, unsigned char  chr, unsig
 {
 	unsigned char  temp, t, t1, m;
 	unsigned char  y0 = y;
+	if (chr == '\n' || chr == '\r') return;
 	chr = chr - ' ';
-	if (size == 8) m = 6;
-	else m = size;
-	for (t = 0; t < m; t++)
+	if (size == 8)
 	{
-		if (size == 12)temp = oled_asc2_1206[chr][t]; //1206
-		else if (size == 16)temp = oled_asc2_1608[chr][t];//1608
-		else  temp = oled_asc2_0806[chr][t];//0806
-		for (t1 = 0; t1 < 8; t1++)
+		m = 5;
+		for (t = 0; t < 5; t++)
 		{
-			if (temp & 0x80)OLED_DrawPoint(x, y, mode);
-			else OLED_DrawPoint(x, y, !mode);
-			temp <<= 1;
-			y++;
-			if ((y - y0) == size)
+			temp = oled_asc2_0705[chr][t];
+			for (t1 = 0; t1 < 8; t1++)
 			{
-				y = y0;
-				x++;
-				break;
+				if (temp & 0x01)OLED_DrawPoint(x, y, mode);
+				else OLED_DrawPoint(x, y, !mode);
+				temp >>= 1;
+				y++;
+				if ((y - y0) == size)
+				{
+					y = y0;
+					x++;
+					break;
+				}
+			}
+		}
+	}
+	else
+	{
+		m = size;
+		for (t = 0; t < m; t++)
+		{
+			if (size == 12)temp = oled_asc2_1206[chr][t]; //1206
+			else temp = oled_asc2_1608[chr][t];//1608
+			for (t1 = 0; t1 < 8; t1++)
+			{
+				if (temp & 0x80)OLED_DrawPoint(x, y, mode);
+				else OLED_DrawPoint(x, y, !mode);
+				temp <<= 1;
+				y++;
+				if ((y - y0) == size)
+				{
+					y = y0;
+					x++;
+					break;
+				}
 			}
 		}
 	}
@@ -644,7 +668,7 @@ void SPI2_Init(void)
 	//RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
 	/* Configure SPI2 pins: SCK, MISO and MOSI */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13| GPIO_Pin_15;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_15;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;//复用推挽输出
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
@@ -671,7 +695,7 @@ void SPI2_Init(void)
 
 	/* Enable SPI2  */
 	SPI_Cmd(SPI2, ENABLE);
-  SPI_I2S_ClearITPendingBit(SPI2, SPI_I2S_IT_RXNE);
+	SPI_I2S_ClearITPendingBit(SPI2, SPI_I2S_IT_RXNE);
 
 }
 
@@ -679,7 +703,7 @@ void SPI2_Init(void)
 /**
   * @brief  This function handles the update of OLED
 
-	@hint   When OLED_GRAM keeps not edited for 50ms
+	@hint   When OLED_GRAM keeps not edited for 10ms
 			This function will upload GRAM to OLED
 
 	  @retval None
@@ -688,24 +712,13 @@ void OLED_Refresh_Handler(void *pvParameters)
 {
 	while (1)
 	{
-		if (UpdateOLEDJustNow == false)
+		if (GRAM_Changed == true)
 		{
-			if (GRAM_Changed == true)
-			{
-				if (GRAM_Changing == false)
-				{
-					GRAM_Changed = false;
-					xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-					OLED_Refresh_Gram();
-					xSemaphoreGive(OLEDRelatedMutex);
-				}
-				else
-				{
-					GRAM_Changing = false;
-				}
-			}
+			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+			OLED_Refresh_Gram();
+			xSemaphoreGive(OLEDRelatedMutex);
 		}
-		vTaskDelay(30 / portTICK_RATE_MS);
+		vTaskDelay(10 / portTICK_RATE_MS);
 	}
 }
 #endif
@@ -738,7 +751,7 @@ void ResetUpdateOLEDJustNow()
   */
 void OLED_BackupScreen()
 {
-	memcpy(OLED_GRAM_Backup,OLED_GRAM,sizeof(OLED_GRAM));
+	memcpy(OLED_GRAM_Backup, OLED_GRAM, sizeof(OLED_GRAM));
 }
 
 /**
@@ -748,7 +761,7 @@ void OLED_BackupScreen()
   */
 void OLED_RestoreScreen()
 {
-	memcpy(OLED_GRAM,OLED_GRAM_Backup,sizeof(OLED_GRAM));
+	memcpy(OLED_GRAM, OLED_GRAM_Backup, sizeof(OLED_GRAM));
 }
 
 /**
@@ -802,11 +815,11 @@ void OLED_Init(void)
 	OLED_WR_Byte(0xA4, OLED_CMD); //全局显示开启;bit0:1,开启;0,关闭;(白屏/黑屏)
 	OLED_WR_Byte(0xA6, OLED_CMD); //设置显示方式;bit0:1,反相显示;0,正常显示	    						   
 	OLED_WR_Byte(0xAF, OLED_CMD); //开启显示	 
-	
+
 	UpdateOLEDJustNow = true;
 	OLED_Clear();
 	UpdateOLEDJustNow = false;
-	
+
 	OLEDRelatedMutex = xSemaphoreCreateMutex();
 
 	xTaskCreate(OLED_Refresh_Handler, "OLED Refresh Handler",
@@ -833,6 +846,48 @@ void Draw_BMP(unsigned char x0, unsigned char y0, unsigned char x1, unsigned cha
 			c = (c & 0x0F) << 4 | (c & 0xF0) >> 4;
 			OLED_WR_Byte(c, OLED_DATA);
 		}
+	}
+}
+
+void PointDrawing_Test()
+{
+	u16 fps = 0;
+	char tempString[20];
+	u8 x = 0, y = 0;
+	u8 t;
+	u8 getTickCountCnt = 0;
+	TickType_t lstTickCount = xTaskGetTickCount();
+	for (;;)
+	{
+		SetUpdateOLEDJustNow();
+		for (;;)
+		{
+			x++;
+			if (x > 127)
+			{
+				x = 0; y++;
+			}
+			if (y > 63)
+			{
+				y = 0; fps++;
+				t = !t;
+			}
+			OLED_DrawPoint(x, y, t);
+
+			getTickCountCnt++;
+			if (getTickCountCnt == 100)
+			{
+				getTickCountCnt = 0;
+				if (lstTickCount + 1000 <= xTaskGetTickCount()) break;
+			}
+		}
+		sprintf(tempString, "%dfps", fps);
+		SetUpdateOLEDJustNow();
+		OLED_ShowAnyString(0, 0, tempString, NotOnSelect, 16);
+		ResetUpdateOLEDJustNow();
+		fps = 0;
+		vTaskDelay(500);
+		lstTickCount = xTaskGetTickCount();
 	}
 }
 

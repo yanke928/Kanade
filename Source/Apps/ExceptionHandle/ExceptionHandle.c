@@ -60,13 +60,13 @@ void ApplicationNewFailed(const char * appName)
 {
 	char tempString[60];
 	xSemaphoreGive(OLEDRelatedMutex);
-	SetUpdateOLEDJustNow();
+	taskENTER_CRITICAL();
 	OLED_Clear();
 	ShowDialogue("App Create Failure", "", "");
 	sprintf(tempString, "RAM full while creating task \"%s\"", appName);
 	UI_PrintMultiLineString(4, 15, 125, 63, tempString, NotOnSelect, 12);
-	taskENTER_CRITICAL();
-	while (1);
+	OLED_Refresh_Gram();
+	for (;;);
 }
 
 /**
@@ -78,22 +78,13 @@ void ShowFault(char * string)
 {
 	xSemaphoreGive(OLEDRelatedMutex);
 	taskENTER_CRITICAL();
-	SetUpdateOLEDJustNow();
+	//SetUpdateOLEDJustNow();
 	OLED_Clear();
 	ShowDialogue("System Fault", "", "");
 	OLED_ShowAnyString(4, 16, string, NotOnSelect, 16);
 	OLED_ShowAnyString(4, 42, "Occurred!!", NotOnSelect, 16);
-	while (1)
-	{
-		if (MIDDLE_KEY == KEY_ON)
-		{
-			while (MIDDLE_KEY == KEY_ON)
-			{
-				OLED_Clear();
-			}
-			return;
-		}
-	}
+	OLED_Refresh_Gram();
+	for (;;);
 }
 
 /**

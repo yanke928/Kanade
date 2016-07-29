@@ -118,6 +118,7 @@ extern const char* const SettingsItemModel_Str[LanguageNum];
 extern const char* const SettingsItemSystemInfo_Str[LanguageNum];
 extern const char* const SettingsItemFormatInternal_Str[LanguageNum];
 extern const char* const SettingsItemFirmwareUpdate_Str[LanguageNum];
+extern const char* const SettingsItemSystemScan_Str[LanguageNum];
 
 /*Legacy test mode items*/
 extern const char* const SelectLeagcyTestModeButtonCC_Str[LanguageNum];
