@@ -1,18 +1,30 @@
-/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_istr.h
-* Author             : MCD Application Team
-* Version            : V2.2.0
-* Date               : 06/13/2008
-* Description        : This file includes the peripherals header files in the
-*                      user application.
-********************************************************************************
-* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
-* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
-* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
-* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
-* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-*******************************************************************************/
+/**
+  ******************************************************************************
+  * @file    usb_istr.h
+  * @author  MCD Application Team
+  * @version V4.0.0
+  * @date    21-January-2013
+  * @brief   This file includes the peripherals header files in the user application.
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __USB_ISTR_H
@@ -25,8 +37,26 @@
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-void USB_Istr(void);
+
+ void USB_Istr(void);
+
 /* function prototypes Automatically built defining related macros */
+
+void EP1_IN_Callback(void);
+void EP2_IN_Callback(void);
+void EP3_IN_Callback(void);
+void EP4_IN_Callback(void);
+void EP5_IN_Callback(void);
+void EP6_IN_Callback(void);
+void EP7_IN_Callback(void);
+
+void EP1_OUT_Callback(void);
+void EP2_OUT_Callback(void);
+void EP3_OUT_Callback(void);
+void EP4_OUT_Callback(void);
+void EP5_OUT_Callback(void);
+void EP6_OUT_Callback(void);
+void EP7_OUT_Callback(void);
 
 #ifdef CTR_CALLBACK
 void CTR_Callback(void);
@@ -60,22 +90,6 @@ void SOF_Callback(void);
 void ESOF_Callback(void);
 #endif
 
-void EP1_IN_Callback(void);
-void EP2_IN_Callback(void);
-void EP3_IN_Callback(void);
-void EP4_IN_Callback(void);
-void EP5_IN_Callback(void);
-void EP6_IN_Callback(void);
-void EP7_IN_Callback(void);
-
-void EP1_OUT_Callback(void);
-void EP2_OUT_Callback(void);
-void EP3_OUT_Callback(void);
-void EP4_OUT_Callback(void);
-void EP5_OUT_Callback(void);
-void EP6_OUT_Callback(void);
-void EP7_OUT_Callback(void);
-
 #endif /*__USB_ISTR_H*/
 
-/******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

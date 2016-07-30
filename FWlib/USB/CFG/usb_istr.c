@@ -1,32 +1,47 @@
-/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_istr.c
-* Author             : MCD Application Team
-* Version            : V2.2.0
-* Date               : 06/13/2008
-* Description        : ISTR events interrupt service routines
-********************************************************************************
-* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
-* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
-* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
-* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
-* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-*******************************************************************************/
+/**
+  ******************************************************************************
+  * @file    usb_istr.c
+  * @author  MCD Application Team
+  * @version V4.0.0
+  * @date    21-January-2013
+  * @brief   ISTR events interrupt service routines
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+
 
 /* Includes ------------------------------------------------------------------*/
+#include "hw_config.h"
 #include "usb_type.h"
 #include "usb_regs.h"
 #include "usb_pwr.h"
 #include "usb_istr.h"
 #include "usb_init.h"
 #include "usb_int.h"
+#include "usb_lib.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-volatile u16 wIstr;  /* ISTR register last read value */
-volatile u8 bIntPackSOF = 0;  /* SOFs received between 2 consecutive packets */
+__IO uint16_t wIstr;  /* ISTR register last read value */
+__IO uint8_t bIntPackSOF = 0;  /* SOFs received between 2 consecutive packets */
 
 /* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
@@ -54,7 +69,6 @@ void (*pEpInt_OUT[7])(void) =
     EP7_OUT_Callback,
   };
 
-
 /*******************************************************************************
 * Function Name  : USB_Istr
 * Description    : ISTR events interrupt service routine
@@ -64,13 +78,24 @@ void (*pEpInt_OUT[7])(void) =
 *******************************************************************************/
 void USB_Istr(void)
 {
-
   wIstr = _GetISTR();
 
+#if (IMR_MSK & ISTR_CTR)
+  if (wIstr & ISTR_CTR & wInterrupt_Mask)
+  {
+    /* servicing of the endpoint correct transfer interrupt */
+    /* clear of the CTR flag into the sub */
+    CTR_LP();
+#ifdef CTR_CALLBACK
+    CTR_Callback();
+#endif
+  }
+#endif  
+  /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 #if (IMR_MSK & ISTR_RESET)
   if (wIstr & ISTR_RESET & wInterrupt_Mask)
   {
-    _SetISTR((u16)CLR_RESET);
+    _SetISTR((uint16_t)CLR_RESET);
     Device_Property.Reset();
 #ifdef RESET_CALLBACK
     RESET_Callback();
@@ -81,7 +106,7 @@ void USB_Istr(void)
 #if (IMR_MSK & ISTR_DOVR)
   if (wIstr & ISTR_DOVR & wInterrupt_Mask)
   {
-    _SetISTR((u16)CLR_DOVR);
+    _SetISTR((uint16_t)CLR_DOVR);
 #ifdef DOVR_CALLBACK
     DOVR_Callback();
 #endif
@@ -91,7 +116,7 @@ void USB_Istr(void)
 #if (IMR_MSK & ISTR_ERR)
   if (wIstr & ISTR_ERR & wInterrupt_Mask)
   {
-    _SetISTR((u16)CLR_ERR);
+    _SetISTR((uint16_t)CLR_ERR);
 #ifdef ERR_CALLBACK
     ERR_Callback();
 #endif
@@ -101,7 +126,7 @@ void USB_Istr(void)
 #if (IMR_MSK & ISTR_WKUP)
   if (wIstr & ISTR_WKUP & wInterrupt_Mask)
   {
-    _SetISTR((u16)CLR_WKUP);
+    _SetISTR((uint16_t)CLR_WKUP);
     Resume(RESUME_EXTERNAL);
 #ifdef WKUP_CALLBACK
     WKUP_Callback();
@@ -116,15 +141,15 @@ void USB_Istr(void)
     /* check if SUSPEND is possible */
     if (fSuspendEnabled)
     {
-      Suspend();	  
+      Suspend();
     }
     else
-    {				   
-     /* if not possible then resume after xx ms */
+    {
+      /* if not possible then resume after xx ms */
       Resume(RESUME_LATER);
     }
     /* clear of the ISTR bit must be done after setting of CNTR_FSUSP */
-    _SetISTR((u16)CLR_SUSP);
+    _SetISTR((uint16_t)CLR_SUSP);
 #ifdef SUSP_CALLBACK
     SUSP_Callback();
 #endif
@@ -134,7 +159,7 @@ void USB_Istr(void)
 #if (IMR_MSK & ISTR_SOF)
   if (wIstr & ISTR_SOF & wInterrupt_Mask)
   {
-    _SetISTR((u16)CLR_SOF);
+    _SetISTR((uint16_t)CLR_SOF);
     bIntPackSOF++;
 
 #ifdef SOF_CALLBACK
@@ -146,7 +171,7 @@ void USB_Istr(void)
 #if (IMR_MSK & ISTR_ESOF)
   if (wIstr & ISTR_ESOF & wInterrupt_Mask)
   {
-    _SetISTR((u16)CLR_ESOF);
+    _SetISTR((uint16_t)CLR_ESOF);
     /* resume handling timing is made with ESOFs */
     Resume(RESUME_ESOF); /* request without change of the machine state */
 
@@ -155,19 +180,6 @@ void USB_Istr(void)
 #endif
   }
 #endif
-  /*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
-#if (IMR_MSK & ISTR_CTR)
-  if (wIstr & ISTR_CTR & wInterrupt_Mask)
-  {
-    /* servicing of the endpoint correct transfer interrupt */
-    /* clear of the CTR flag into the sub */
-    CTR_LP();
-#ifdef CTR_CALLBACK
-    CTR_Callback();
-#endif
-  }
-#endif
 } /* USB_Istr */
 
-/******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
-
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
