@@ -47,6 +47,9 @@ Bulk_Only_CBW CBW;
 Bulk_Only_CSW CSW;
 uint32_t SCSI_LBA , SCSI_BlkLen;
 extern uint32_t Max_Lun;
+
+extern u8 Usb_Status_Reg;
+
 /* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Extern function prototypes ------------------------------------------------*/
@@ -76,6 +79,7 @@ void Mass_Storage_In (void)
       switch (CBW.CB[0])
       {
         case SCSI_READ10:
+					Usb_Status_Reg|=0X02;
           SCSI_Read10_Cmd(CBW.bLUN , SCSI_LBA , SCSI_BlkLen);
           break;
       }
@@ -112,6 +116,7 @@ void Mass_Storage_Out (void)
     case BOT_DATA_OUT:
       if (CMD == SCSI_WRITE10)
       {
+				Usb_Status_Reg|=0X01;
         SCSI_Write10_Cmd(CBW.bLUN , SCSI_LBA , SCSI_BlkLen);
         break;
       }
