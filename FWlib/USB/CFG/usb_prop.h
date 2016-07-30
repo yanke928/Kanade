@@ -1,25 +1,38 @@
-/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_prop.h
-* Author             : MCD Application Team
-* Version            : V2.2.0
-* Date               : 06/13/2008
-* Description        : All processing related to Mass Storage Demo (Endpoint 0)
-********************************************************************************
-* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
-* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
-* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
-* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
-* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-*******************************************************************************/
+/**
+  ******************************************************************************
+  * @file    usb_prop.h
+  * @author  MCD Application Team
+  * @version V4.0.0
+  * @date    21-January-2013
+  * @brief   All processing related to Mass Storage Demo (Endpoint 0)
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __usb_prop_H
-#define __usb_prop_H
+#ifndef __USB_PROP_H
+#define __USB_PROP_H
+
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
-//#include "stm32f10x_type.h"
-#include "stm32f10x.h"
+
 /* Exported constants --------------------------------------------------------*/
 #define Mass_Storage_GetConfiguration          NOP_Process
 /* #define Mass_Storage_SetConfiguration          NOP_Process*/
@@ -45,15 +58,15 @@ void Mass_Storage_ClearFeature(void);
 void Mass_Storage_SetDeviceAddress (void);
 void MASS_Status_In (void);
 void MASS_Status_Out (void);
-RESULT MASS_Data_Setup(u8);
-RESULT MASS_NoData_Setup(u8);
-RESULT MASS_Get_Interface_Setting(u8 Interface, u8 AlternateSetting);
-u8 *MASS_GetDeviceDescriptor(u16 );
-u8 *MASS_GetConfigDescriptor(u16);
-u8 *MASS_GetStringDescriptor(u16);
-u8 *Get_Max_Lun(u16 Length);
+RESULT MASS_Data_Setup(uint8_t);
+RESULT MASS_NoData_Setup(uint8_t);
+RESULT MASS_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting);
+uint8_t *MASS_GetDeviceDescriptor(uint16_t );
+uint8_t *MASS_GetConfigDescriptor(uint16_t);
+uint8_t *MASS_GetStringDescriptor(uint16_t);
+uint8_t *Get_Max_Lun(uint16_t Length);
 
-#endif /* __usb_prop_H */
 
-/******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
+#endif /* __USB_PROP_H */
 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

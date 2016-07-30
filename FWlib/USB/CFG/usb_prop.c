@@ -1,34 +1,52 @@
-/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_prop.c
-* Author             : MCD Application Team
-* Version            : V2.2.0
-* Date               : 06/13/2008
-* Description        : All processing related to Mass Storage Demo
-********************************************************************************
-* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
-* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
-* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
-* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
-* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-*******************************************************************************/
+/**
+  ******************************************************************************
+  * @file    usb_prop.c
+  * @author  MCD Application Team
+  * @version V4.0.0
+  * @date    21-January-2013
+  * @brief   All processing related to Mass Storage Demo
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
 
 /* Includes ------------------------------------------------------------------*/
-
+#include "hw_config.h"
+#include "usb_lib.h"
+#include "usb_conf.h"
 #include "usb_desc.h"
 #include "usb_pwr.h"
 #include "usb_bot.h"
-#include "hw_config.h"
 #include "memory.h"
 #include "mass_mal.h"
 #include "usb_prop.h"
-#include "usb_lib.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
- 
-u32 Max_Lun = 1;
+//#if defined (USE_STM3210E_EVAL)
+//uint32_t Max_Lun = 1;
+//#else
+//uint32_t Max_Lun = 0;
+//#endif
+
+uint32_t Max_Lun = 1;
 
 DEVICE Device_Table =
   {
@@ -67,23 +85,23 @@ USER_STANDARD_REQUESTS User_Standard_Requests =
 
 ONE_DESCRIPTOR Device_Descriptor =
   {
-    (u8*)MASS_DeviceDescriptor,
+    (uint8_t*)MASS_DeviceDescriptor,
     MASS_SIZ_DEVICE_DESC
   };
 
 ONE_DESCRIPTOR Config_Descriptor =
   {
-    (u8*)MASS_ConfigDescriptor,
+    (uint8_t*)MASS_ConfigDescriptor,
     MASS_SIZ_CONFIG_DESC
   };
 
 ONE_DESCRIPTOR String_Descriptor[5] =
   {
-    {(u8*)MASS_StringLangID, MASS_SIZ_STRING_LANGID},
-    {(u8*)MASS_StringVendor, MASS_SIZ_STRING_VENDOR},
-    {(u8*)MASS_StringProduct, MASS_SIZ_STRING_PRODUCT},
-    {(u8*)MASS_StringSerial, MASS_SIZ_STRING_SERIAL},
-    {(u8*)MASS_StringInterface, MASS_SIZ_STRING_INTERFACE},
+    {(uint8_t*)MASS_StringLangID, MASS_SIZ_STRING_LANGID},
+    {(uint8_t*)MASS_StringVendor, MASS_SIZ_STRING_VENDOR},
+    {(uint8_t*)MASS_StringProduct, MASS_SIZ_STRING_PRODUCT},
+    {(uint8_t*)MASS_StringSerial, MASS_SIZ_STRING_SERIAL},
+    {(uint8_t*)MASS_StringInterface, MASS_SIZ_STRING_INTERFACE},
   };
 
 /* Extern variables ----------------------------------------------------------*/
@@ -111,12 +129,8 @@ void MASS_init()
   /* Connect the device */
   PowerOn();
 
-  /* USB interrupts initialization */
-  /* clear pending interrupts */
-  _SetISTR(0);
-  wInterrupt_Mask = IMR_MSK;
-  /* set interrupts mask */
-  _SetCNTR(wInterrupt_Mask);
+  /* Perform basic device initialization operations */
+  USB_SIL_Init();
 
   bDeviceState = UNCONNECTED;
 }
@@ -171,6 +185,7 @@ void MASS_Reset()
 
   CBW.dSignature = BOT_CBW_SIGNATURE;
   Bot_State = BOT_IDLE;
+
   USB_NotConfigured_LED();
 }
 
@@ -186,9 +201,11 @@ void Mass_Storage_SetConfiguration(void)
   if (pInformation->Current_Configuration != 0)
   {
     /* Device configured */
-    bDeviceState = CONFIGURED;	  
+    bDeviceState = CONFIGURED;
+   
     ClearDTOG_TX(ENDP1);
     ClearDTOG_RX(ENDP2);
+
     Bot_State = BOT_IDLE; /* set the Bot state machine to the IDLE state */
   }
 }
@@ -210,7 +227,7 @@ void Mass_Storage_ClearFeature(void)
 
 /*******************************************************************************
 * Function Name  : Mass_Storage_SetConfiguration.
-* Description    : Udpade the device state to addressed.
+* Description    : Update the device state to addressed.
 * Input          : None.
 * Output         : None.
 * Return         : None.
@@ -250,9 +267,9 @@ void MASS_Status_Out(void)
 * Output         : None.
 * Return         : RESULT.
 *******************************************************************************/
-RESULT MASS_Data_Setup(u8 RequestNo)
+RESULT MASS_Data_Setup(uint8_t RequestNo)
 {
-  u8    *(*CopyRoutine)(u16);
+  uint8_t    *(*CopyRoutine)(uint16_t);
 
   CopyRoutine = NULL;
   if ((Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
@@ -286,7 +303,7 @@ RESULT MASS_Data_Setup(u8 RequestNo)
 * Output         : None.
 * Return         : RESULT.
 *******************************************************************************/
-RESULT MASS_NoData_Setup(u8 RequestNo)
+RESULT MASS_NoData_Setup(uint8_t RequestNo)
 {
   if ((Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
       && (RequestNo == MASS_STORAGE_RESET) && (pInformation->USBwValue == 0)
@@ -298,7 +315,7 @@ RESULT MASS_NoData_Setup(u8 RequestNo)
     /* Initialize Endpoint 2 */
     ClearDTOG_RX(ENDP2);
 
-    /*intialise the CBW signature to enable the clear feature*/
+    /*initialize the CBW signature to enable the clear feature*/
     CBW.dSignature = BOT_CBW_SIGNATURE;
     Bot_State = BOT_IDLE;
 
@@ -311,11 +328,11 @@ RESULT MASS_NoData_Setup(u8 RequestNo)
 * Function Name  : MASS_Get_Interface_Setting
 * Description    : Test the interface and the alternate setting according to the
 *                  supported one.
-* Input          : u8 Interface, u8 AlternateSetting.
+* Input          : uint8_t Interface, uint8_t AlternateSetting.
 * Output         : None.
 * Return         : RESULT.
 *******************************************************************************/
-RESULT MASS_Get_Interface_Setting(u8 Interface, u8 AlternateSetting)
+RESULT MASS_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting)
 {
   if (AlternateSetting > 0)
   {
@@ -331,11 +348,11 @@ RESULT MASS_Get_Interface_Setting(u8 Interface, u8 AlternateSetting)
 /*******************************************************************************
 * Function Name  : MASS_GetDeviceDescriptor
 * Description    : Get the device descriptor.
-* Input          : u16 Length.
+* Input          : uint16_t Length.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-u8 *MASS_GetDeviceDescriptor(u16 Length)
+uint8_t *MASS_GetDeviceDescriptor(uint16_t Length)
 {
   return Standard_GetDescriptorData(Length, &Device_Descriptor );
 }
@@ -343,11 +360,11 @@ u8 *MASS_GetDeviceDescriptor(u16 Length)
 /*******************************************************************************
 * Function Name  : MASS_GetConfigDescriptor
 * Description    : Get the configuration descriptor.
-* Input          : u16 Length.
+* Input          : uint16_t Length.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-u8 *MASS_GetConfigDescriptor(u16 Length)
+uint8_t *MASS_GetConfigDescriptor(uint16_t Length)
 {
   return Standard_GetDescriptorData(Length, &Config_Descriptor );
 }
@@ -355,13 +372,13 @@ u8 *MASS_GetConfigDescriptor(u16 Length)
 /*******************************************************************************
 * Function Name  : MASS_GetStringDescriptor
 * Description    : Get the string descriptors according to the needed index.
-* Input          : u16 Length.
+* Input          : uint16_t Length.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-u8 *MASS_GetStringDescriptor(u16 Length)
+uint8_t *MASS_GetStringDescriptor(uint16_t Length)
 {
-  u8 wValue0 = pInformation->USBwValue0;
+  uint8_t wValue0 = pInformation->USBwValue0;
 
   if (wValue0 > 5)
   {
@@ -376,11 +393,11 @@ u8 *MASS_GetStringDescriptor(u16 Length)
 /*******************************************************************************
 * Function Name  : Get_Max_Lun
 * Description    : Handle the Get Max Lun request.
-* Input          : u16 Length.
+* Input          : uint16_t Length.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-u8 *Get_Max_Lun(u16 Length)
+uint8_t *Get_Max_Lun(uint16_t Length)
 {
   if (Length == 0)
   {
@@ -389,8 +406,8 @@ u8 *Get_Max_Lun(u16 Length)
   }
   else
   {
-    return((u8*)(&Max_Lun));
+    return((uint8_t*)(&Max_Lun));
   }
 }
 
-/******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

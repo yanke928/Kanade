@@ -834,6 +834,11 @@
               <FileType>1</FileType>
               <FilePath>..\FWlib\USB\CORE\usb_regs.c</FilePath>
             </File>
+            <File>
+              <FileName>usb_sil.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWlib\USB\CORE\usb_sil.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
