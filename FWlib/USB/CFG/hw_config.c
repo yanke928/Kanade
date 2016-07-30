@@ -1,49 +1,163 @@
-/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : hw_config.c
-* Author             : MCD Application Team
-* Version            : V2.2.0
-* Date               : 06/13/2008
-* Description        : Hardware Configuration & Setup
-********************************************************************************
-* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
-* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
-* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
-* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
-* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-*******************************************************************************/
+/**
+  ******************************************************************************
+  * @file    hw_config.c
+  * @author  MCD Application Team
+  * @version V4.0.0
+  * @date    21-January-2013
+  * @brief   Hardware Configuration & Setup
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+
 
 /* Includes ------------------------------------------------------------------*/
- 
+
 #include "hw_config.h"
-#include "platform_config.h"
+#include "stm32f10x_it.h"
 #include "mass_mal.h"
 #include "usb_desc.h"
 #include "usb_pwr.h"
-#include "misc.h"
-//#include "sys.h"
-#include "stm32f10x_exti.h" 
+#include "usb_lib.h"
+
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-//ErrorStatus HSEStartUpStatus;
+ErrorStatus HSEStartUpStatus;
+EXTI_InitTypeDef EXTI_InitStructure;
 
 /* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/					    			 
+static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len);
 
-//配置USB时钟,USBclk=48Mhz
+/* Private functions ---------------------------------------------------------*/
+
+///*******************************************************************************
+//* Function Name  : Set_System
+//* Description    : Configures Main system clocks & power
+//* Input          : None.
+//* Return         : None.
+//*******************************************************************************/
+//void Set_System(void)
+//{
+//#if defined (STM32F37X) || defined (STM32F30X)
+//  GPIO_InitTypeDef  GPIO_InitStructure;
+//#endif /*STM32L1XX_XD */
+//  
+//#if defined(USB_USE_EXTERNAL_PULLUP)
+//  GPIO_InitTypeDef  GPIO_InitStructure;
+//#endif /* USB_USE_EXTERNAL_PULLUP */
+//  
+//  /*!< At this stage the microcontroller clock setting is already configured, 
+//       this is done through SystemInit() function which is called from startup
+//       file (startup_stm32xxx.s) before to branch to application main.
+//       To reconfigure the default setting of SystemInit() function, refer to
+//       system_stm32xxx.c file
+//     */ 
+//#if defined(STM32L1XX_MD) || defined(STM32L1XX_HD)|| defined(STM32L1XX_MD_PLUS) || defined(STM32F37X) || defined(STM32F30X)
+//  /* Enable the SYSCFG module clock */
+//  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+//#endif /* STM32L1XX_XD */ 
+//  
+//#if !defined (USE_STM32L152_EVAL) 
+//  /* Enable and Disconnect Line GPIO clock */
+//  USB_Disconnect_Config();
+//#endif /* USE_STM32L152_EVAL */
+
+//#if defined (STM32F37X) || defined(STM32F30X)
+
+//	/* Enable the USB disconnect GPIO clock */
+//  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIO_DISCONNECT, ENABLE);
+
+// /*Set PA11,12 as IN - USB_DM,DP*/
+//  
+//  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+//  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+//  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+//  GPIO_Init(GPIOA, &GPIO_InitStructure);
+//    
+//  /*SET PA11,12 for USB: USB_DM,DP*/
+//  GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_14);
+//  GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_14);
+// 
+//  /* USB_DISCONNECT used as USB pull-up */
+//  GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+//  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+//  GPIO_Init(USB_DISCONNECT, &GPIO_InitStructure); 
+//#endif /* STM32F37X && STM32F30X */   
+
+//#if defined(USB_USE_EXTERNAL_PULLUP)
+//  /* Enable the USB disconnect GPIO clock */
+//  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIO_DISCONNECT, ENABLE);
+
+//  /* USB_DISCONNECT used as USB pull-up */
+//  GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+//  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+//  GPIO_Init(USB_DISCONNECT, &GPIO_InitStructure);  
+//#endif /* USB_USE_EXTERNAL_PULLUP */  
+//  
+//      /* Configure the EXTI line 18 connected internally to the USB IP */
+//  EXTI_ClearITPendingBit(EXTI_Line18);
+//  EXTI_InitStructure.EXTI_Line = EXTI_Line18;
+//  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+//  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+//  EXTI_Init(&EXTI_InitStructure);
+//  
+//  /* MAL configuration */
+//  MAL_Config();
+//}
+
+/*******************************************************************************
+* Function Name  : Set_USBClock
+* Description    : Configures USB Clock input (48MHz)
+* Input          : None.
+* Return         : None.
+*******************************************************************************/
 void Set_USBClock(void)
-	{
- 
+{
+//#if defined(STM32L1XX_MD) || defined(STM32L1XX_HD)|| defined(STM32L1XX_MD_PLUS)
+//  /* Enable USB clock */
+//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+//  
+//#else
+//  /* Select USBCLK source */
+//  RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+//  
+//  /* Enable the USB clock */
+//  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+//#endif /* STM32L1XX_XD */
 	/* Select USBCLK source */
 	RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
 	
 	/* Enable the USB clock */
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);					 
-	}
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);			
+}
 
 /*******************************************************************************
 * Function Name  : Enter_LowPowerMode
@@ -53,7 +167,8 @@ void Set_USBClock(void)
 *******************************************************************************/
 void Enter_LowPowerMode(void)
 {
-	bDeviceState = SUSPENDED;
+  /* Set the device state to suspend */
+  bDeviceState = SUSPENDED;
 }
 
 /*******************************************************************************
@@ -76,64 +191,51 @@ void Leave_LowPowerMode(void)
   {
     bDeviceState = ATTACHED;
   }
-
+  /*Enable SystemCoreClock*/
+  SystemInit(); 
 }
 
-   
-//USB中断配置
-//void USB_Interrupts_Config(void)
-//	{
-//	NVIC_InitTypeDef NVIC_InitStructure;
-//	EXTI_InitTypeDef EXTI_InitStructure;
-//	
-//	/* 2 bit for pre-emption priority, 2 bits for subpriority */
-//	//NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-//	
-//	//EXTI->IMR|=1<<18;//  开启线18上的中断
-//	//EXTI->RTSR|=1<<18;//line 18上事件上升降沿触发	 
-//	//MY_NVIC_Init(1,0,USB_LP_CAN1_RX0_IRQn,2);//组2，优先级次之 
-//	//MY_NVIC_Init(0,0,USBWakeUp_IRQn,2);     //组2，优先级最高	
-//	
-//	/* Configure the EXTI line 18 connected internally to the USB IP */
-//	EXTI_ClearITPendingBit(EXTI_Line18);
-//	EXTI_InitStructure.EXTI_Line = EXTI_Line18; // USB resume from suspend mode
-//	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
-//	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-//	EXTI_Init(&EXTI_InitStructure); 	 
-//	
-//	/* Enable the USB interrupt */
-//	NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
-//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-//	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-//	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-//	NVIC_Init(&NVIC_InitStructure);
-//
-////	/* Enable the USB interrupt */
-////	NVIC_InitStructure.NVIC_IRQChannel = USB_HP_CAN1_TX_IRQn;
-////	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-////	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-////	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-////	NVIC_Init(&NVIC_InitStructure);
-//	
-//	/* Enable the USB Wake-up interrupt */
-//	NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;
-//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-//	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-//	NVIC_Init(&NVIC_InitStructure);  	 
-//	}	
+/*******************************************************************************
+* Function Name  : USB_Interrupts_Config
+* Description    : Configures the USB interrupts
+* Input          : None.
+* Return         : None.
+*******************************************************************************/
 void USB_Interrupts_Config(void)
-	{
-	NVIC_InitTypeDef NVIC_InitStructure;
-	EXTI_InitTypeDef EXTI_InitStructure;
-
-	/* 2 bit for pre-emption priority, 2 bits for subpriority */
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-
-	//EXTI->IMR|=1<<18;//  开启线18上的中断
-	//EXTI->RTSR|=1<<18;//line 18上事件上升降沿触发	 
-	//MY_NVIC_Init(1,0,USB_LP_CAN_RX0_IRQChannel,2);//组2，优先级次之 
-	//MY_NVIC_Init(0,0,USBWakeUp_IRQChannel,2);     //组2，优先级最高	
-
+{
+  NVIC_InitTypeDef NVIC_InitStructure; 
+  
+  /* 2 bit for pre-emption priority, 2 bits for subpriority */
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  
+  
+//#if defined(STM32L1XX_MD) || defined(STM32L1XX_HD)|| defined(STM32L1XX_MD_PLUS)
+//  NVIC_InitStructure.NVIC_IRQChannel = USB_LP_IRQn;
+//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+//  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+//  NVIC_Init(&NVIC_InitStructure);
+//  
+//    /* Enable the USB Wake-up interrupt */
+//  NVIC_InitStructure.NVIC_IRQChannel = USB_FS_WKUP_IRQn;
+//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+//  NVIC_Init(&NVIC_InitStructure);
+//  
+//#elif defined(STM32F37X)
+//  /* Enable the USB interrupt */
+//  NVIC_InitStructure.NVIC_IRQChannel = USB_LP_IRQn;
+//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+//  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+//  NVIC_Init(&NVIC_InitStructure);
+//  
+//  /* Enable the USB Wake-up interrupt */
+//  NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;
+//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+//  NVIC_Init(&NVIC_InitStructure);
+//  
+//#else
 	/* Configure the EXTI line 18 connected internally to the USB IP */
 	EXTI_ClearITPendingBit(EXTI_Line18);
 	EXTI_InitStructure.EXTI_Line = EXTI_Line18; // USB resume from suspend mode
@@ -141,18 +243,46 @@ void USB_Interrupts_Config(void)
 	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 	EXTI_Init(&EXTI_InitStructure); 	 
 
-	/* Enable the USB interrupt */
-	NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-	
-	/* Enable the USB Wake-up interrupt */
-	NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-	NVIC_Init(&NVIC_InitStructure);   
-	}	 
+  NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+  
+    /* Enable the USB Wake-up interrupt */
+  NVIC_InitStructure.NVIC_IRQChannel = USBWakeUp_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_Init(&NVIC_InitStructure);
+//#endif /* STM32L1XX_XD */
+
+  
+//#if defined(STM32F10X_HD) || defined(STM32F10X_XL) || defined(STM32L1XX_HD)|| defined(STM32L1XX_MD_PLUS) 
+//  NVIC_InitStructure.NVIC_IRQChannel = SDIO_IRQn;
+//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+//  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+//  NVIC_Init(&NVIC_InitStructure);
+//  NVIC_InitStructure.NVIC_IRQChannel = SD_SDIO_DMA_IRQn;
+//  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+//  NVIC_Init(&NVIC_InitStructure);
+//#endif /* STM32L1XX_MD */
+ 
+}
+
+/*******************************************************************************
+* Function Name  : Led_Config
+* Description    : configure the Read/Write LEDs.
+* Input          : None.
+* Output         : None.
+* Return         : None.
+*******************************************************************************/
+void Led_Config(void)
+{
+//  /* Configure the LEDs */
+//  STM_EVAL_LEDInit(LED1);
+//  STM_EVAL_LEDInit(LED2);  
+//  STM_EVAL_LEDInit(LED3);
+//  STM_EVAL_LEDInit(LED4);  
+}
 
 /*******************************************************************************
 * Function Name  : Led_RW_ON
@@ -162,9 +292,9 @@ void USB_Interrupts_Config(void)
 * Return         : None.
 *******************************************************************************/
 void Led_RW_ON(void)
-	{
-//     LED1=0;
-	}
+{
+//  STM_EVAL_LEDOn(LED3);
+}
 
 /*******************************************************************************
 * Function Name  : Led_RW_OFF
@@ -175,7 +305,7 @@ void Led_RW_ON(void)
 *******************************************************************************/
 void Led_RW_OFF(void)
 {
-//LED1=1;
+//  STM_EVAL_LEDOff(LED3);
 }
 /*******************************************************************************
 * Function Name  : USB_Configured_LED
@@ -186,7 +316,7 @@ void Led_RW_OFF(void)
 *******************************************************************************/
 void USB_Configured_LED(void)
 {
-  //GPIO_SetBits(USB_LED_PORT, GPIO_Pin_6);
+//  STM_EVAL_LEDOn(LED1);
 }
 
 /*******************************************************************************
@@ -198,7 +328,7 @@ void USB_Configured_LED(void)
 *******************************************************************************/
 void USB_NotConfigured_LED(void)
 {
-  //GPIO_ResetBits(USB_LED_PORT, GPIO_Pin_6);
+//  STM_EVAL_LEDOff(LED1);
 }
 
 /*******************************************************************************
@@ -209,14 +339,29 @@ void USB_NotConfigured_LED(void)
 *******************************************************************************/
 void USB_Cable_Config (FunctionalState NewState)
 {
+
+//#if defined(STM32L1XX_MD)
 //  if (NewState != DISABLE)
 //  {
-//	LED1=1;
+//    STM32L15_USB_CONNECT;
 //  }
 //  else
 //  {
-//	LED1=0;
+//    STM32L15_USB_DISCONNECT;
+//  }  
+// 
+//#elif defined(STM32L1XX_HD) || defined(STM32L1XX_MD_PLUS)
+//  if (NewState != DISABLE)
+//  {
+//    GPIO_ResetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
+//    SYSCFG_USBPuCmd(ENABLE);
 //  }
+//  else
+//  {
+//    GPIO_SetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
+//    SYSCFG_USBPuCmd(DISABLE);
+//  }
+//#endif /* STM32L1XX_MD */
 }
 
 /*******************************************************************************
@@ -228,27 +373,49 @@ void USB_Cable_Config (FunctionalState NewState)
 *******************************************************************************/
 void Get_SerialNum(void)
 {
-  u32 Device_Serial0, Device_Serial1, Device_Serial2;		 
-  Device_Serial0 = *(vu32*)(0x1FFFF7E8);
-  Device_Serial1 = *(vu32*)(0x1FFFF7EC);
-  Device_Serial2 = *(vu32*)(0x1FFFF7F0);   
+  uint32_t Device_Serial0, Device_Serial1, Device_Serial2;
+
+  Device_Serial0 = *(uint32_t*)ID1;
+  Device_Serial1 = *(uint32_t*)ID2;
+  Device_Serial2 = *(uint32_t*)ID3;
+
+  Device_Serial0 += Device_Serial2;
+
   if (Device_Serial0 != 0)
   {
-    MASS_StringSerial[2] = (u8)(Device_Serial0 & 0x000000FF);
-    MASS_StringSerial[4] = (u8)((Device_Serial0 & 0x0000FF00) >> 8);
-    MASS_StringSerial[6] = (u8)((Device_Serial0 & 0x00FF0000) >> 16);
-    MASS_StringSerial[8] = (u8)((Device_Serial0 & 0xFF000000) >> 24);  
-    MASS_StringSerial[10] = (u8)(Device_Serial1 & 0x000000FF);
-    MASS_StringSerial[12] = (u8)((Device_Serial1 & 0x0000FF00) >> 8);
-    MASS_StringSerial[14] = (u8)((Device_Serial1 & 0x00FF0000) >> 16);
-    MASS_StringSerial[16] = (u8)((Device_Serial1 & 0xFF000000) >> 24);
-
-    MASS_StringSerial[18] = (u8)(Device_Serial2 & 0x000000FF);
-    MASS_StringSerial[20] = (u8)((Device_Serial2 & 0x0000FF00) >> 8);
-    MASS_StringSerial[22] = (u8)((Device_Serial2 & 0x00FF0000) >> 16);
-    MASS_StringSerial[24] = (u8)((Device_Serial2 & 0xFF000000) >> 24);
+    IntToUnicode (Device_Serial0, &MASS_StringSerial[2] , 8);
+    IntToUnicode (Device_Serial1, &MASS_StringSerial[18], 4);
   }
-}	  
+}
+
+/*******************************************************************************
+* Function Name  : HexToChar.
+* Description    : Convert Hex 32Bits value into char.
+* Input          : None.
+* Output         : None.
+* Return         : None.
+*******************************************************************************/
+static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len)
+{
+  uint8_t idx = 0;
+  
+  for( idx = 0 ; idx < len ; idx ++)
+  {
+    if( ((value >> 28)) < 0xA )
+    {
+      pbuf[ 2* idx] = (value >> 28) + '0';
+    }
+    else
+    {
+      pbuf[2* idx] = (value >> 28) + 'A' - 10; 
+    }
+    
+    value = value << 4;
+    
+    pbuf[ 2* idx + 1] = 0;
+  }
+}
+
 /*******************************************************************************
 * Function Name  : MAL_Config
 * Description    : MAL_layer configuration
@@ -257,9 +424,16 @@ void Get_SerialNum(void)
 *******************************************************************************/
 void MAL_Config(void)
 {
-	MAL_Init(0);	  
+  MAL_Init(0);
+
+//#if defined(STM32F10X_HD) || defined(STM32F10X_XL)
+//  /* Enable the FSMC Clock */
+//  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
+//  MAL_Init(1);
+//#endif /* STM32F10X_HD | STM32F10X_XL */
 }
 
+#if !defined (USE_STM32L152_EVAL) 
 /*******************************************************************************
 * Function Name  : USB_Disconnect_Config
 * Description    : Disconnect pin configuration
@@ -267,24 +441,32 @@ void MAL_Config(void)
 * Return         : None.
 *******************************************************************************/
 void USB_Disconnect_Config(void)
-{											 
+{
 //  GPIO_InitTypeDef GPIO_InitStructure;
-//
+//#if defined (USE_STM3210B_EVAL) || defined (USE_STM3210E_EVAL)
 //  /* Enable USB_DISCONNECT GPIO clock */
 //  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIO_DISCONNECT, ENABLE);
-//
+
 //  /* USB_DISCONNECT_PIN used as USB pull-up */
 //  GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
 //  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 //  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+//#else
+//	/* Enable the USB disconnect GPIO clock */
+//  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIO_DISCONNECT, ENABLE);
+//  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_ALLGPIO, ENABLE);
+//  
+//  /* USB_DISCONNECT used as USB pull-up */
+//  GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
+//  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+//  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+//  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+//  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+
+//#endif
 //  GPIO_Init(USB_DISCONNECT, &GPIO_InitStructure);
 }
+#endif /* USE_STM3210B_EVAL or USE_STM3210E_EVAL */
 
 
-
-
-
-
-
-
-
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
