@@ -331,7 +331,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x5000</Size>
+                <Size>0xa000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -361,7 +361,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\FWlib\inc;..\Source\STM32;..\Source\Bootloader\JumpToApp;..\Source\Bootloader\Peripherals\Key;..\Source\Bootloader\Peripherals\sdcard;..\Source\Bootloader\Peripherals\SSD1306;..\Source\Bootloader\Peripherals\W25Q64;..\Source\Bootloader\Main;..\Source\Bootloader\fatfs\include;..\Source\Bootloader\UI;..\Source\Bootloader\Hex2Bin;..\Source\Bootloader\stm32_flash</IncludePath>
+              <IncludePath>..\CMSIS;..\FWlib\inc;..\Source\STM32;..\Source\Bootloader\JumpToApp;..\Source\Bootloader\Peripherals\Key;..\Source\Bootloader\Peripherals\sdcard;..\Source\Bootloader\Peripherals\SSD1306;..\Source\Bootloader\Peripherals\W25Q64;..\Source\Bootloader\Main;..\Source\Bootloader\fatfs\include;..\Source\Bootloader\UI;..\Source\Bootloader\Moha2Bin;..\Source\Bootloader\stm32_flash</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -559,6 +559,11 @@
               <FileType>1</FileType>
               <FilePath>..\Source\Bootloader\fatfs\source\ff.c</FilePath>
             </File>
+            <File>
+              <FileName>ccsbcs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\fatfs\source\ccsbcs.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -572,22 +577,22 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Hex2Bin</GroupName>
-          <Files>
-            <File>
-              <FileName>Hex2Bin.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Source\Bootloader\Hex2Bin\Hex2Bin.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>stm32_flash</GroupName>
           <Files>
             <File>
               <FileName>stm32_flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Bootloader\stm32_flash\stm32_flash.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Moha2Bin</GroupName>
+          <Files>
+            <File>
+              <FileName>Moha2Bin.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Bootloader\Moha2Bin\Moha2Bin.c</FilePath>
             </File>
           </Files>
         </Group>

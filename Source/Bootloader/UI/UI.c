@@ -68,7 +68,7 @@ void ShowUpdating()
 
 void ShowCheckNotOK()
 {
-	ShowDialogue("Error", "Hex Firmware", "tempered!!");
+	ShowDialogue("Error", "Moha Firmware", "tempered!!");
 }
 
 void ShowSystemTempered()

@@ -16,7 +16,7 @@
 #include "W25Q64.h"
 #include "W25Q64ff.h"
 
-#include "Hex2Bin.h"
+#include "Moha2Bin.h"
 
 #include "ff.h"
 #include "UI.h"
@@ -118,13 +118,13 @@ void AppUpdate(void)
 	FIL firmware;
 	u8 errCode;
 	if ((!SDCardMountStatus) && (!SPIFlashMountStatus)) ShowNoStorage();
-	if (f_open(&firmware, "0:/Kanade.hex", FA_OPEN_EXISTING | FA_READ) == FR_OK) goto update;
-	if (f_open(&firmware, "1:/Kanade.hex", FA_OPEN_EXISTING | FA_READ) == FR_OK) goto update;
+	if (f_open(&firmware, "0:/Kanade.moha", FA_OPEN_EXISTING | FA_READ) == FR_OK) goto update;
+	if (f_open(&firmware, "1:/Kanade.moha", FA_OPEN_EXISTING | FA_READ) == FR_OK) goto update;
 	ShowNoFile();
 	while (1);
 update:
 	ShowCheckingFile();
-	errCode = CheckAHexFile(&firmware);
+	errCode = CheckAMohaFile(&firmware);
 	if (errCode)
 	{
 		if(errCode==255) 
@@ -133,9 +133,12 @@ update:
 		ShowFatfsErrorCode(errCode);
 		while (1);
 	}
+	
+	f_lseek(&firmware,0);
+	
 	ShowUpdating();
 	BKP_WriteBackupRegister(BKP_DR3, 0x0001);
-	errCode = WriteHexToROM(&firmware);
+	errCode = WriteFirmwareToROM(&firmware);
 	f_close(&firmware);
 	f_mount(NULL, "0:/", 1);
 	f_mount(NULL, "1:/", 1);
