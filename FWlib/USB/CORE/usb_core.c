@@ -1,27 +1,38 @@
-/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_core.c
-* Author             : MCD Application Team
-* Version            : V2.2.0
-* Date               : 06/13/2008
-* Description        : Standard protocol processing (USB v2.0)
-********************************************************************************
-* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
-* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
-* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
-* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
-* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-*******************************************************************************/
+/**
+  ******************************************************************************
+  * @file    usb_core.c
+  * @author  MCD Application Team
+  * @version V4.0.0
+  * @date    28-August-2012
+  * @brief   Standard protocol processing (USB v2.0)
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+
 
 /* Includes ------------------------------------------------------------------*/
 #include "usb_lib.h"
-#include "stdbool.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define ValBit(VAR,Place)    (VAR & (1 << Place))
 #define SetBit(VAR,Place)    (VAR |= (1 << Place))
 #define ClrBit(VAR,Place)    (VAR &= ((1 << Place) ^ 255))
-
 #define Send0LengthData() { _SetEPTxCount(ENDP0, 0); \
     vSetEPTxStatus(EP_TX_VALID); \
   }
@@ -37,7 +48,8 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-u16_u8 StatusInfo;
+uint16_t_uint8_t StatusInfo;
+
 bool Data_Mul_MaxPacketSize = false;
 /* Private function prototypes -----------------------------------------------*/
 static void DataStageOut(void);
@@ -54,7 +66,7 @@ static void Data_Setup0(void);
 * Return         : Return 1 , if the request is invalid when "Length" is 0.
 *                  Return "Buffer" if the "Length" is not 0.
 *******************************************************************************/
-u8 *Standard_GetConfiguration(u16 Length)
+uint8_t *Standard_GetConfiguration(uint16_t Length)
 {
   if (Length == 0)
   {
@@ -63,13 +75,13 @@ u8 *Standard_GetConfiguration(u16 Length)
     return 0;
   }
   pUser_Standard_Requests->User_GetConfiguration();
-  return (u8 *)&pInformation->Current_Configuration;
+  return (uint8_t *)&pInformation->Current_Configuration;
 }
 
 /*******************************************************************************
 * Function Name  : Standard_SetConfiguration.
 * Description    : This routine is called to set the configuration value
-*                  Then each class should configure device themself.
+*                  Then each class should configure device itself.
 * Input          : None.
 * Output         : None.
 * Return         : Return USB_SUCCESS, if the request is performed.
@@ -100,7 +112,7 @@ RESULT Standard_SetConfiguration(void)
 * Return         : Return 0, if the request is invalid when "Length" is 0.
 *                  Return "Buffer" if the "Length" is not 0.
 *******************************************************************************/
-u8 *Standard_GetInterface(u16 Length)
+uint8_t *Standard_GetInterface(uint16_t Length)
 {
   if (Length == 0)
   {
@@ -109,7 +121,7 @@ u8 *Standard_GetInterface(u16 Length)
     return 0;
   }
   pUser_Standard_Requests->User_GetInterface();
-  return (u8 *)&pInformation->Current_AlternateSetting;
+  return (uint8_t *)&pInformation->Current_AlternateSetting;
 }
 
 /*******************************************************************************
@@ -156,7 +168,7 @@ RESULT Standard_SetInterface(void)
 * Return         : Return 0, if the request is at end of data block,
 *                  or is invalid when "Length" is 0.
 *******************************************************************************/
-u8 *Standard_GetStatus(u16 Length)
+uint8_t *Standard_GetStatus(uint16_t Length)
 {
   if (Length == 0)
   {
@@ -164,40 +176,44 @@ u8 *Standard_GetStatus(u16 Length)
     return 0;
   }
 
-  StatusInfo.w = 0;
   /* Reset Status Information */
+  StatusInfo.w = 0;
 
   if (Type_Recipient == (STANDARD_REQUEST | DEVICE_RECIPIENT))
   {
     /*Get Device Status */
-    u8 Feature = pInformation->Current_Feature;
+    uint8_t Feature = pInformation->Current_Feature;
 
     /* Remote Wakeup enabled */
     if (ValBit(Feature, 5))
     {
       SetBit(StatusInfo0, 1);
     }
+    else
+    {
+      ClrBit(StatusInfo0, 1);
+    }      
 
     /* Bus-powered */
     if (ValBit(Feature, 6))
     {
-      ClrBit(StatusInfo0, 0);
+      SetBit(StatusInfo0, 0);
     }
     else /* Self-powered */
     {
-      SetBit(StatusInfo0, 0);
+      ClrBit(StatusInfo0, 0);
     }
   }
   /*Interface Status*/
   else if (Type_Recipient == (STANDARD_REQUEST | INTERFACE_RECIPIENT))
   {
-    return (u8 *)&StatusInfo;
+    return (uint8_t *)&StatusInfo;
   }
   /*Get EndPoint Status*/
   else if (Type_Recipient == (STANDARD_REQUEST | ENDPOINT_RECIPIENT))
   {
-    u8 Related_Endpoint;
-    u8 wIndex0 = pInformation->USBwIndex0;
+    uint8_t Related_Endpoint;
+    uint8_t wIndex0 = pInformation->USBwIndex0;
 
     Related_Endpoint = (wIndex0 & 0x0f);
     if (ValBit(wIndex0, 7))
@@ -223,7 +239,7 @@ u8 *Standard_GetStatus(u16 Length)
     return NULL;
   }
   pUser_Standard_Requests->User_GetStatus();
-  return (u8 *)&StatusInfo;
+  return (uint8_t *)&StatusInfo;
 }
 
 /*******************************************************************************
@@ -236,8 +252,8 @@ u8 *Standard_GetStatus(u16 Length)
 *******************************************************************************/
 RESULT Standard_ClearFeature(void)
 {
-  u32     Type_Rec = Type_Recipient;
-  u32     Status;
+  uint32_t     Type_Rec = Type_Recipient;
+  uint32_t     Status;
 
 
   if (Type_Rec == (STANDARD_REQUEST | DEVICE_RECIPIENT))
@@ -248,9 +264,9 @@ RESULT Standard_ClearFeature(void)
   else if (Type_Rec == (STANDARD_REQUEST | ENDPOINT_RECIPIENT))
   {/*EndPoint Clear Feature*/
     DEVICE* pDev;
-    u32 Related_Endpoint;
-    u32 wIndex0;
-    u32 rEP;
+    uint32_t Related_Endpoint;
+    uint32_t wIndex0;
+    uint32_t rEP;
 
     if ((pInformation->USBwValue != ENDPOINT_STALL)
         || (pInformation->USBwIndex1 != 0))
@@ -325,10 +341,10 @@ RESULT Standard_ClearFeature(void)
 *******************************************************************************/
 RESULT Standard_SetEndPointFeature(void)
 {
-  u32    wIndex0;
-  u32    Related_Endpoint;
-  u32    rEP;
-  u32   Status;
+  uint32_t    wIndex0;
+  uint32_t    Related_Endpoint;
+  uint32_t    rEP;
+  uint32_t    Status;
 
   wIndex0 = pInformation->USBwIndex0;
   rEP = wIndex0 & ~0x80;
@@ -403,9 +419,9 @@ RESULT Standard_SetDeviceFeature(void)
 *                  wOffset The buffer pointed by this address contains at least
 *                  Length bytes.
 *******************************************************************************/
-u8 *Standard_GetDescriptorData(u16 Length, ONE_DESCRIPTOR *pDesc)
+uint8_t *Standard_GetDescriptorData(uint16_t Length, ONE_DESCRIPTOR *pDesc)
 {
-  u32  wOffset;
+  uint32_t  wOffset;
 
   wOffset = pInformation->Ctrl_Info.Usb_wOffset;
   if (Length == 0)
@@ -427,14 +443,14 @@ u8 *Standard_GetDescriptorData(u16 Length, ONE_DESCRIPTOR *pDesc)
 void DataStageOut(void)
 {
   ENDPOINT_INFO *pEPinfo = &pInformation->Ctrl_Info;
-  u32 save_rLength;
+  uint32_t save_rLength;
 
   save_rLength = pEPinfo->Usb_rLength;
 
   if (pEPinfo->CopyData && save_rLength)
   {
-    u8 *Buffer;
-    u32 Length;
+    uint8_t *Buffer;
+    uint32_t Length;
 
     Length = pEPinfo->PacketSize;
     if (Length > save_rLength)
@@ -445,8 +461,8 @@ void DataStageOut(void)
     Buffer = (*pEPinfo->CopyData)(Length);
     pEPinfo->Usb_rLength -= Length;
     pEPinfo->Usb_rOffset += Length;
-
     PMAToUserBufferCopy(Buffer, GetEPRxAddr(ENDP0), Length);
+
   }
 
   if (pEPinfo->Usb_rLength != 0)
@@ -484,11 +500,11 @@ void DataStageOut(void)
 void DataStageIn(void)
 {
   ENDPOINT_INFO *pEPinfo = &pInformation->Ctrl_Info;
-  u32 save_wLength = pEPinfo->Usb_wLength;
-  u32 ControlState = pInformation->ControlState;
+  uint32_t save_wLength = pEPinfo->Usb_wLength;
+  uint32_t ControlState = pInformation->ControlState;
 
-  u8 *DataBuffer;
-  u32 Length;
+  uint8_t *DataBuffer;
+  uint32_t Length;
 
   if ((save_wLength == 0) && (ControlState == LAST_IN_DATA))
   {
@@ -504,6 +520,7 @@ void DataStageIn(void)
       /* No more data to send so STALL the TX Status*/
       ControlState = WAIT_STATUS_OUT;
       vSetEPTxStatus(EP_TX_STALL);
+ 
     }
     
     goto Expect_Status_Out;
@@ -518,7 +535,7 @@ void DataStageIn(void)
   }
 
   DataBuffer = (*pEPinfo->CopyData)(Length);
-
+  
   UserToPMABufferCopy(DataBuffer, GetEPTxAddr(ENDP0), Length);
 
   SetEPTxCount(ENDP0, Length);
@@ -543,8 +560,8 @@ Expect_Status_Out:
 void NoData_Setup0(void)
 {
   RESULT Result = USB_UNSUPPORT;
-  u32 RequestNo = pInformation->USBbRequest;
-  u32 ControlState;
+  uint32_t RequestNo = pInformation->USBbRequest;
+  uint32_t ControlState;
 
   if (Type_Recipient == (STANDARD_REQUEST | DEVICE_RECIPIENT))
   {
@@ -574,9 +591,8 @@ void NoData_Setup0(void)
     /*SET FEATURE for Device*/
     else if (RequestNo == SET_FEATURE)
     {
-      if ((pInformation->USBwValue0 == DEVICE_REMOTE_WAKEUP)
-          && (pInformation->USBwIndex == 0)
-          && (ValBit(pInformation->Current_Feature, 5)))
+      if ((pInformation->USBwValue0 == DEVICE_REMOTE_WAKEUP) \
+          && (pInformation->USBwIndex == 0))
       {
         Result = Standard_SetDeviceFeature();
       }
@@ -666,23 +682,24 @@ exit_NoData_Setup0:
 *******************************************************************************/
 void Data_Setup0(void)
 {
-  u8 *(*CopyRoutine)(u16);
+  uint8_t *(*CopyRoutine)(uint16_t);
   RESULT Result;
-  u32 Request_No = pInformation->USBbRequest;
+  uint32_t Request_No = pInformation->USBbRequest;
 
-  u32 Related_Endpoint, Reserved;
-  u32 wOffset, Status;
+  uint32_t Related_Endpoint, Reserved;
+  uint32_t wOffset, Status;
 
 
 
   CopyRoutine = NULL;
   wOffset = 0;
 
+  /*GET DESCRIPTOR*/
   if (Request_No == GET_DESCRIPTOR)
   {
     if (Type_Recipient == (STANDARD_REQUEST | DEVICE_RECIPIENT))
     {
-      u8 wValue1 = pInformation->USBwValue1;
+      uint8_t wValue1 = pInformation->USBwValue1;
       if (wValue1 == DEVICE_DESCRIPTOR)
       {
         CopyRoutine = pProperty->GetDeviceDescriptor;
@@ -803,9 +820,9 @@ void Data_Setup0(void)
   if (ValBit(pInformation->USBbmRequestType, 7))
   {
     /* Device ==> Host */
-    vu32 wLength = pInformation->USBwLength;
+    __IO uint32_t wLength = pInformation->USBwLength;
      
-    /* Restrict the data length to be the one host asks */
+    /* Restrict the data length to be the one host asks for */
     if (pInformation->Ctrl_Info.Usb_wLength > wLength)
     {
       pInformation->Ctrl_Info.Usb_wLength = wLength;
@@ -842,26 +859,27 @@ void Data_Setup0(void)
 * Output         : None.
 * Return         : Post0_Process.
 *******************************************************************************/
-u8 Setup0_Process(void)
+uint8_t Setup0_Process(void)
 {
 
   union
   {
-    u8* b;
-    u16* w;
+    uint8_t* b;
+    uint16_t* w;
   } pBuf;
-
-  pBuf.b = PMAAddr + (u8 *)(_GetEPRxAddr(ENDP0) * 2); /* *2 for 32 bits addr */
+  uint16_t offset = 1;
+  
+  pBuf.b = PMAAddr + (uint8_t *)(_GetEPRxAddr(ENDP0) * 2); /* *2 for 32 bits addr */
 
   if (pInformation->ControlState != PAUSE)
   {
     pInformation->USBbmRequestType = *pBuf.b++; /* bmRequestType */
     pInformation->USBbRequest = *pBuf.b++; /* bRequest */
-    pBuf.w++;  /* word not accessed because of 32 bits addressing */
+    pBuf.w += offset;  /* word not accessed because of 32 bits addressing */
     pInformation->USBwValue = ByteSwap(*pBuf.w++); /* wValue */
-    pBuf.w++;  /* word not accessed because of 32 bits addressing */
+    pBuf.w += offset;  /* word not accessed because of 32 bits addressing */
     pInformation->USBwIndex  = ByteSwap(*pBuf.w++); /* wIndex */
-    pBuf.w++;  /* word not accessed because of 32 bits addressing */
+    pBuf.w += offset;  /* word not accessed because of 32 bits addressing */
     pInformation->USBwLength = *pBuf.w; /* wLength */
   }
 
@@ -886,9 +904,9 @@ u8 Setup0_Process(void)
 * Output         : None.
 * Return         : Post0_Process.
 *******************************************************************************/
-u8 In0_Process(void)
+uint8_t In0_Process(void)
 {
-  u32 ControlState = pInformation->ControlState;
+  uint32_t ControlState = pInformation->ControlState;
 
   if ((ControlState == IN_DATA) || (ControlState == LAST_IN_DATA))
   {
@@ -926,11 +944,16 @@ u8 In0_Process(void)
 * Output         : None.
 * Return         : Post0_Process.
 *******************************************************************************/
-u8 Out0_Process(void)
+uint8_t Out0_Process(void)
 {
-  u32 ControlState = pInformation->ControlState;
+  uint32_t ControlState = pInformation->ControlState;
 
-  if ((ControlState == OUT_DATA) || (ControlState == LAST_OUT_DATA))
+  if ((ControlState == IN_DATA) || (ControlState == LAST_IN_DATA))
+  {
+    /* host aborts the transfer before finish */
+    ControlState = STALLED;
+  }
+  else if ((ControlState == OUT_DATA) || (ControlState == LAST_OUT_DATA))
   {
     DataStageOut();
     ControlState = pInformation->ControlState; /* may be changed outside the function */
@@ -942,11 +965,6 @@ u8 Out0_Process(void)
     ControlState = STALLED;
   }
 
-  else if ((ControlState == IN_DATA) || (ControlState == LAST_IN_DATA))
-  {
-    /* host aborts the transfer before finish */
-    ControlState = STALLED;
-  }
 
   /* Unexpect state, STALL the endpoint */
   else
@@ -967,8 +985,9 @@ u8 Out0_Process(void)
 * Return         : - 0 if the control State is in PAUSE
 *                  - 1 if not.
 *******************************************************************************/
-u8 Post0_Process(void)
+uint8_t Post0_Process(void)
 {
+   
   SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
 
   if (pInformation->ControlState == STALLED)
@@ -983,21 +1002,21 @@ u8 Post0_Process(void)
 /*******************************************************************************
 * Function Name  : SetDeviceAddress.
 * Description    : Set the device and all the used Endpoints addresses.
-* Input          : - Val: device adress.
+* Input          : - Val: device address.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void SetDeviceAddress(u8 Val)
+void SetDeviceAddress(uint8_t Val)
 {
-  u32 i;
-  u32 nEP = Device_Table.Total_Endpoint;
+  uint32_t i;
+  uint32_t nEP = Device_Table.Total_Endpoint;
 
   /* set address in every used endpoint */
   for (i = 0; i < nEP; i++)
   {
-    _SetEPAddress((u8)i, (u8)i);
+    _SetEPAddress((uint8_t)i, (uint8_t)i);
   } /* for */
-  _SetDADDR(Val | DADDR_EF); /* set device address and enable function */
+  _SetDADDR(Val | DADDR_EF); /* set device address and enable function */ 
 }
 
 /*******************************************************************************
@@ -1011,4 +1030,4 @@ void NOP_Process(void)
 {
 }
 
-/******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
