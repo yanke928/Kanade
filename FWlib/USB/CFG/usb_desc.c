@@ -1,22 +1,35 @@
-/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_desc.c
-* Author             : MCD Application Team
-* Version            : V2.2.0
-* Date               : 06/13/2008
-* Description        : Descriptors for Mass Storage Device
-********************************************************************************
-* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
-* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
-* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
-* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
-* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-*******************************************************************************/
+/**
+  ******************************************************************************
+  * @file    usb_desc.c
+  * @author  MCD Application Team
+  * @version V4.0.0
+  * @date    21-January-2013
+  * @brief   Descriptors for Mass Storage Device
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+
 
 /* Includes ------------------------------------------------------------------*/
 #include "usb_desc.h"
 
-const u8 MASS_DeviceDescriptor[MASS_SIZ_DEVICE_DESC] =
+const uint8_t MASS_DeviceDescriptor[MASS_SIZ_DEVICE_DESC] =
   {
     0x12,   /* bLength  */
     0x01,   /* bDescriptorType */
@@ -41,10 +54,10 @@ const u8 MASS_DeviceDescriptor[MASS_SIZ_DEVICE_DESC] =
     /* */
     0x01    /*bNumConfigurations */
   };
-const u8 MASS_ConfigDescriptor[MASS_SIZ_CONFIG_DESC] =
+const uint8_t MASS_ConfigDescriptor[MASS_SIZ_CONFIG_DESC] =
   {
 
-    0x09,   /* bLength: Configuation Descriptor size */
+    0x09,   /* bLength: Configuration Descriptor size */
     0x02,   /* bDescriptorType: Configuration */
     MASS_SIZ_CONFIG_DESC,
 
@@ -56,7 +69,7 @@ const u8 MASS_ConfigDescriptor[MASS_SIZ_CONFIG_DESC] =
     /*      Index of string descriptor */
     /*      describing the configuration */
     0xC0,   /* bmAttributes: */
-    /*      bus powered */
+    /*      Self powered */
     0x32,   /* MaxPower 100 mA */
 
     /******************** Descriptor of Mass Storage interface ********************/
@@ -89,7 +102,7 @@ const u8 MASS_ConfigDescriptor[MASS_SIZ_CONFIG_DESC] =
     0x00     /*Polling interval in milliseconds*/
     /*32*/
   };
-const u8 MASS_StringLangID[MASS_SIZ_STRING_LANGID] =
+const uint8_t MASS_StringLangID[MASS_SIZ_STRING_LANGID] =
   {
     MASS_SIZ_STRING_LANGID,
     0x03,
@@ -97,32 +110,33 @@ const u8 MASS_StringLangID[MASS_SIZ_STRING_LANGID] =
     0x04
   }
   ;      /* LangID = 0x0409: U.S. English */
-const u8 MASS_StringVendor[MASS_SIZ_STRING_VENDOR] =
+const uint8_t MASS_StringVendor[MASS_SIZ_STRING_VENDOR] =
   {
-    MASS_SIZ_STRING_VENDOR, /* Size of manufaturer string */
+    MASS_SIZ_STRING_VENDOR, /* Size of manufacturer string */
     0x03,           /* bDescriptorType = String descriptor */
     /* Manufacturer: "STMicroelectronics" */
     'S', 0, 'T', 0, 'M', 0, 'i', 0, 'c', 0, 'r', 0, 'o', 0, 'e', 0,
     'l', 0, 'e', 0, 'c', 0, 't', 0, 'r', 0, 'o', 0, 'n', 0, 'i', 0,
     'c', 0, 's', 0
   };
-const u8 MASS_StringProduct[MASS_SIZ_STRING_PRODUCT] =
+const uint8_t MASS_StringProduct[MASS_SIZ_STRING_PRODUCT] =
   {
     MASS_SIZ_STRING_PRODUCT,
     0x03,
-    /* Product name: "ALIENTEK SD¿¨¶Á¿¨Æ÷" */
-    'A', 0, 'L', 0, 'I', 0, 'E', 0, 'N', 0, 'T', 0, 'E', 0, 'K', 0, ' ', 0, 'S', 0,
-	'D', 0,0X61,0X53,0XFB,0X8B,0X61,0X53,0X68,0X56
+    /* Product name: "STM32F10x:USB Mass Storage" */
+    'S', 0, 'T', 0, 'M', 0, '3', 0, '2', 0, ' ', 0, 'M', 0, 'a', 0, 's', 0,
+    's', 0, ' ', 0, 'S', 0, 't', 0, 'o', 0, 'r', 0, 'a', 0, 'g', 0, 'e', 0
+
   };
 
-u8 MASS_StringSerial[MASS_SIZ_STRING_SERIAL] =
+uint8_t MASS_StringSerial[MASS_SIZ_STRING_SERIAL] =
   {
     MASS_SIZ_STRING_SERIAL,
     0x03,
     /* Serial number*/
-    'S', 0, 'T', 0, 'M', 0, '3', 0, '2', 0, '1', 0, '0', 0
+    'S', 0, 'T', 0, 'M', 0, '3', 0, '2', 0
   };
-const u8 MASS_StringInterface[MASS_SIZ_STRING_INTERFACE] =
+const uint8_t MASS_StringInterface[MASS_SIZ_STRING_INTERFACE] =
   {
     MASS_SIZ_STRING_INTERFACE,
     0x03,
@@ -130,4 +144,4 @@ const u8 MASS_StringInterface[MASS_SIZ_STRING_INTERFACE] =
     'S', 0, 'T', 0, ' ', 0, 'M', 0, 'a', 0, 's', 0, 's', 0
   };
 
-/******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
