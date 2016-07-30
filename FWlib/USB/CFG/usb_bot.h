@@ -1,17 +1,30 @@
-/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_bot.h
-* Author             : MCD Application Team
-* Version            : V2.2.0
-* Date               : 06/13/2008
-* Description        : BOT State Machine management
-********************************************************************************
-* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
-* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
-* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
-* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
-* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-*******************************************************************************/
+/**
+  ******************************************************************************
+  * @file    usb_bot.h
+  * @author  MCD Application Team
+  * @version V4.0.0
+  * @date    21-January-2013
+  * @brief   BOT State Machine management
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __USB_BOT_H
@@ -23,23 +36,23 @@
 
 typedef struct _Bulk_Only_CBW
 {
-  u32 dSignature;
-  u32 dTag;
-  u32 dDataLength;
-  u8  bmFlags;
-  u8  bLUN;
-  u8  bCBLength;
-  u8  CB[16];
+  uint32_t dSignature;
+  uint32_t dTag;
+  uint32_t dDataLength;
+  uint8_t  bmFlags;
+  uint8_t  bLUN;
+  uint8_t  bCBLength;
+  uint8_t  CB[16];
 }
 Bulk_Only_CBW;
 
 /* Bulk-only Command Status Wrapper */
 typedef struct _Bulk_Only_CSW
 {
-  u32 dSignature;
-  u32 dTag;
-  u32 dDataResidue;
-  u8  bStatus;
+  uint32_t dSignature;
+  uint32_t dTag;
+  uint32_t dDataResidue;
+  uint8_t  bStatus;
 }
 Bulk_Only_CSW;
 /* Exported constants --------------------------------------------------------*/
@@ -77,11 +90,11 @@ Bulk_Only_CSW;
 void Mass_Storage_In (void);
 void Mass_Storage_Out (void);
 void CBW_Decode(void);
-void Transfer_Data_Request(u8* Data_Pointer, u16 Data_Len);
-void Set_CSW (u8 CSW_Status, u8 Send_Permission);
-void Bot_Abort(u8 Direction);
+void Transfer_Data_Request(uint8_t* Data_Pointer, uint16_t Data_Len);
+void Set_CSW (uint8_t CSW_Status, uint8_t Send_Permission);
+void Bot_Abort(uint8_t Direction);
 
 #endif /* __USB_BOT_H */
 
-/******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 

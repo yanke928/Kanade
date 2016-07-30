@@ -1,17 +1,30 @@
-/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_bot.c
-* Author             : MCD Application Team
-* Version            : V2.2.0
-* Date               : 06/13/2008
-* Description        : BOT State Machine management
-********************************************************************************
-* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
-* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
-* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
-* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
-* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-*******************************************************************************/
+/**
+  ******************************************************************************
+  * @file    usb_bot.c
+  * @author  MCD Application Team
+  * @version V4.0.0
+  * @date    21-January-2013
+  * @brief   BOT State Machine management
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+
 
 /* Includes ------------------------------------------------------------------*/
 #include "usb_scsi.h"
@@ -21,26 +34,19 @@
 #include "usb_conf.h"
 #include "usb_bot.h"
 #include "memory.h"
+#include "usb_lib.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-u8 Bot_State;
-u8 Bulk_Data_Buff[BULK_MAX_PACKET_SIZE];  /* data buffer*/
-u16 Data_Len;
+uint8_t Bot_State;
+uint8_t Bulk_Data_Buff[BULK_MAX_PACKET_SIZE];  /* data buffer*/
+uint16_t Data_Len;
 Bulk_Only_CBW CBW;
 Bulk_Only_CSW CSW;
-u32 SCSI_LBA , SCSI_BlkLen;
-extern u32 Max_Lun;
-
-//Usb_Status_Reg
-//bit0:表示电脑正在向SD卡写入数据
-//bit1:表示电脑正从SD卡读出数据
-//bit2:SD卡写数据错误标志位
-//bit3:SD卡读数据错误标志位
-//bit4:1,表示电脑有轮询操作(表明连接还保持着)
-extern u8 Usb_Status_Reg;
-
+uint32_t SCSI_LBA , SCSI_BlkLen;
+extern uint32_t Max_Lun;
 /* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Extern function prototypes ------------------------------------------------*/
@@ -52,35 +58,36 @@ extern u8 Usb_Status_Reg;
 * Input          : None.
 * Output         : None.
 * Return         : None.
-//设备->USB
 *******************************************************************************/
 void Mass_Storage_In (void)
 {
-	Usb_Status_Reg|=0X10;//标记轮询
-	switch (Bot_State)
-	{
-		case BOT_CSW_Send:
-		case BOT_ERROR:
-			Bot_State = BOT_IDLE;
-			SetEPRxStatus(ENDP2, EP_RX_VALID);/* enable the Endpoint to recive the next cmd*/
-			break;
-		case BOT_DATA_IN:  //USB从设备读数据
-			switch (CBW.CB[0])
-			{
-				case SCSI_READ10:
-					Usb_Status_Reg|=0X02;//标记正在读数据
-					SCSI_Read10_Cmd(CBW.bLUN , SCSI_LBA , SCSI_BlkLen);
-					break;
-			}
-			break;
-		case BOT_DATA_IN_LAST:
-			Set_CSW (CSW_CMD_PASSED, SEND_CSW_ENABLE);
-			SetEPRxStatus(ENDP2, EP_RX_VALID);
-			break;
-		
-		default:
-			break;
-	}
+  switch (Bot_State)
+  {
+    case BOT_CSW_Send:
+    case BOT_ERROR:
+      Bot_State = BOT_IDLE;
+      SetEPRxStatus(ENDP2, EP_RX_VALID);/* enable the Endpoint to receive the next cmd*/
+      if (GetEPRxStatus(EP2_OUT) == EP_RX_STALL)
+      {
+        SetEPRxStatus(EP2_OUT, EP_RX_VALID);/* enable the Endpoint to receive the next cmd*/
+      }
+      break;
+    case BOT_DATA_IN:
+      switch (CBW.CB[0])
+      {
+        case SCSI_READ10:
+          SCSI_Read10_Cmd(CBW.bLUN , SCSI_LBA , SCSI_BlkLen);
+          break;
+      }
+      break;
+    case BOT_DATA_IN_LAST:
+      Set_CSW (CSW_CMD_PASSED, SEND_CSW_ENABLE);
+
+      SetEPRxStatus(ENDP2, EP_RX_VALID);
+      break;
+    default:
+      break;
+  }
 }
 
 /*******************************************************************************
@@ -89,38 +96,35 @@ void Mass_Storage_In (void)
 * Input          : None.
 * Output         : None.
 * Return         : None.
-//USB->设备
 *******************************************************************************/
 void Mass_Storage_Out (void)
 {
-	u8 CMD;
-	Usb_Status_Reg|=0X10;//标记轮询
-	
-	CMD = CBW.CB[0];
-	Data_Len = GetEPRxCount(ENDP2);
-	PMAToUserBufferCopy(Bulk_Data_Buff, ENDP2_RXADDR, Data_Len);
-	switch (Bot_State)
-	{
-		case BOT_IDLE:
-			CBW_Decode();
-			break;
-		case BOT_DATA_OUT://USB发送数据到设备
-			if (CMD == SCSI_WRITE10)
-			{
-				Usb_Status_Reg|=0X01;//标记正在写数据
-				SCSI_Write10_Cmd(CBW.bLUN , SCSI_LBA , SCSI_BlkLen);
-				break;
-			}
-			Bot_Abort(DIR_OUT);
-			Set_Scsi_Sense_Data(CBW.bLUN, ILLEGAL_REQUEST, INVALID_FIELED_IN_COMMAND);
-			Set_CSW (CSW_PHASE_ERROR, SEND_CSW_DISABLE);
-			break;
-		default:
-			Bot_Abort(BOTH_DIR);
-			Set_Scsi_Sense_Data(CBW.bLUN, ILLEGAL_REQUEST, INVALID_FIELED_IN_COMMAND);
-			Set_CSW (CSW_PHASE_ERROR, SEND_CSW_DISABLE);
-			break;
-	}
+  uint8_t CMD;
+  CMD = CBW.CB[0];
+
+  Data_Len = USB_SIL_Read(EP2_OUT, Bulk_Data_Buff);
+
+  switch (Bot_State)
+  {
+    case BOT_IDLE:
+      CBW_Decode();
+      break;
+    case BOT_DATA_OUT:
+      if (CMD == SCSI_WRITE10)
+      {
+        SCSI_Write10_Cmd(CBW.bLUN , SCSI_LBA , SCSI_BlkLen);
+        break;
+      }
+      Bot_Abort(DIR_OUT);
+      Set_Scsi_Sense_Data(CBW.bLUN, ILLEGAL_REQUEST, INVALID_FIELED_IN_COMMAND);
+      Set_CSW (CSW_PHASE_ERROR, SEND_CSW_DISABLE);
+      break;
+    default:
+      Bot_Abort(BOTH_DIR);
+      Set_Scsi_Sense_Data(CBW.bLUN, ILLEGAL_REQUEST, INVALID_FIELED_IN_COMMAND);
+      Set_CSW (CSW_PHASE_ERROR, SEND_CSW_DISABLE);
+      break;
+  }
 }
 
 /*******************************************************************************
@@ -133,18 +137,18 @@ void Mass_Storage_Out (void)
 *******************************************************************************/
 void CBW_Decode(void)
 {
-  u32 Counter;
+  uint32_t Counter;
 
   for (Counter = 0; Counter < Data_Len; Counter++)
   {
-    *((u8 *)&CBW + Counter) = Bulk_Data_Buff[Counter];
+    *((uint8_t *)&CBW + Counter) = Bulk_Data_Buff[Counter];
   }
   CSW.dTag = CBW.dTag;
   CSW.dDataResidue = CBW.dDataLength;
   if (Data_Len != BOT_CBW_PACKET_LENGTH)
   {
     Bot_Abort(BOTH_DIR);
-    /* reset the CBW.dSignature to desible the clear feature until receiving a Mass storage reset*/
+    /* reset the CBW.dSignature to disable the clear feature until receiving a Mass storage reset*/
     CBW.dSignature = 0;
     Set_Scsi_Sense_Data(CBW.bLUN, ILLEGAL_REQUEST, PARAMETER_LIST_LENGTH_ERROR);
     Set_CSW (CSW_CMD_FAILED, SEND_CSW_DISABLE);
@@ -212,7 +216,6 @@ void CBW_Decode(void)
           SCSI_Format_Cmd(CBW.bLUN);
           break;
           /*Unsupported command*/
-
         case SCSI_MODE_SELECT10:
           SCSI_Mode_Select10_Cmd(CBW.bLUN);
           break;
@@ -272,17 +275,17 @@ void CBW_Decode(void)
 /*******************************************************************************
 * Function Name  : Transfer_Data_Request
 * Description    : Send the request response to the PC HOST.
-* Input          : u8* Data_Address : point to the data to transfer.
-*                  u16 Data_Length : the nember of Bytes to transfer.
+* Input          : uint8_t* Data_Address : point to the data to transfer.
+*                  uint16_t Data_Length : the number of Bytes to transfer.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void Transfer_Data_Request(u8* Data_Pointer, u16 Data_Len)
+void Transfer_Data_Request(uint8_t* Data_Pointer, uint16_t Data_Len)
 {
-  UserToPMABufferCopy(Data_Pointer, ENDP1_TXADDR, Data_Len);
+  USB_SIL_Write(EP1_IN, Data_Pointer, Data_Len);
 
-  SetEPTxCount(ENDP1, Data_Len);
-  SetEPTxStatus(ENDP1, EP_TX_VALID);
+    SetEPTxStatus(ENDP1, EP_TX_VALID);
+    
   Bot_State = BOT_DATA_IN_LAST;
   CSW.dDataResidue -= Data_Len;
   CSW.bStatus = CSW_CMD_PASSED;
@@ -291,26 +294,24 @@ void Transfer_Data_Request(u8* Data_Pointer, u16 Data_Len)
 /*******************************************************************************
 * Function Name  : Set_CSW
 * Description    : Set the SCW with the needed fields.
-* Input          : u8 CSW_Status this filed can be CSW_CMD_PASSED,CSW_CMD_FAILED,
+* Input          : uint8_t CSW_Status this filed can be CSW_CMD_PASSED,CSW_CMD_FAILED,
 *                  or CSW_PHASE_ERROR.
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void Set_CSW (u8 CSW_Status, u8 Send_Permission)
+void Set_CSW (uint8_t CSW_Status, uint8_t Send_Permission)
 {
   CSW.dSignature = BOT_CSW_SIGNATURE;
   CSW.bStatus = CSW_Status;
 
-  UserToPMABufferCopy(((u8 *)& CSW), ENDP1_TXADDR, CSW_DATA_LENGTH);
+  USB_SIL_Write(EP1_IN, ((uint8_t *)& CSW), CSW_DATA_LENGTH);
 
-  SetEPTxCount(ENDP1, CSW_DATA_LENGTH);
   Bot_State = BOT_ERROR;
   if (Send_Permission)
   {
     Bot_State = BOT_CSW_Send;
     SetEPTxStatus(ENDP1, EP_TX_VALID);
   }
-
 }
 
 /*******************************************************************************
@@ -320,7 +321,7 @@ void Set_CSW (u8 CSW_Status, u8 Send_Permission)
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void Bot_Abort(u8 Direction)
+void Bot_Abort(uint8_t Direction)
 {
   switch (Direction)
   {
@@ -339,4 +340,4 @@ void Bot_Abort(u8 Direction)
   }
 }
 
-/******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
