@@ -1,25 +1,39 @@
-/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
-* File Name          : usb_scsi.h
-* Author             : MCD Application Team
-* Version            : V2.2.0
-* Date               : 06/13/2008
-* Description        : All processing related to the SCSI commands
-********************************************************************************
-* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
-* AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
-* INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
-* CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
-* INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-*******************************************************************************/
+/**
+  ******************************************************************************
+  * @file    usb_scsi.h
+  * @author  MCD Application Team
+  * @version V4.0.0
+  * @date    21-January-2013
+  * @brief   All processing related to the SCSI commands
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software 
+  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __USB_SCSI_H
 #define __USB_SCSI_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f10x.h"
-#include "stdbool.h"
+#include "hw_config.h"
+#include "usb_type.h"
+
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
@@ -86,35 +100,35 @@
 #define STANDARD_INQUIRY_DATA_LEN                   0x24
 #define BLKVFY                                      0x04
 
-extern  u8 Page00_Inquiry_Data[];
-extern  u8 Standard_Inquiry_Data[];
-extern  u8 Standard_Inquiry_Data2[];
-extern  u8 Mode_Sense6_data[];
-extern  u8 Mode_Sense10_data[];
-extern  u8 Scsi_Sense_Data[];
-extern  u8 ReadCapacity10_Data[];
-extern  u8 ReadFormatCapacity_Data [];
+extern  uint8_t Page00_Inquiry_Data[];
+extern  uint8_t Standard_Inquiry_Data[];
+extern  uint8_t Standard_Inquiry_Data2[];
+extern  uint8_t Mode_Sense6_data[];
+extern  uint8_t Mode_Sense10_data[];
+extern  uint8_t Scsi_Sense_Data[];
+extern  uint8_t ReadCapacity10_Data[];
+extern  uint8_t ReadFormatCapacity_Data [];
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-void SCSI_Inquiry_Cmd(u8 lun);
-void SCSI_ReadFormatCapacity_Cmd(u8 lun);
-void SCSI_ReadCapacity10_Cmd(u8 lun);
-void SCSI_RequestSense_Cmd (u8 lun);
-void SCSI_Start_Stop_Unit_Cmd(u8 lun);
-void SCSI_ModeSense6_Cmd (u8 lun);
-void SCSI_ModeSense10_Cmd (u8 lun);
-void SCSI_Write10_Cmd(u8 lun , u32 LBA , u32 BlockNbr);
-void SCSI_Read10_Cmd(u8 lun , u32 LBA , u32 BlockNbr);
-void SCSI_Verify10_Cmd(u8 lun);
+void SCSI_Inquiry_Cmd(uint8_t lun);
+void SCSI_ReadFormatCapacity_Cmd(uint8_t lun);
+void SCSI_ReadCapacity10_Cmd(uint8_t lun);
+void SCSI_RequestSense_Cmd (uint8_t lun);
+void SCSI_Start_Stop_Unit_Cmd(uint8_t lun);
+void SCSI_ModeSense6_Cmd (uint8_t lun);
+void SCSI_ModeSense10_Cmd (uint8_t lun);
+void SCSI_Write10_Cmd(uint8_t lun , uint32_t LBA , uint32_t BlockNbr);
+void SCSI_Read10_Cmd(uint8_t lun , uint32_t LBA , uint32_t BlockNbr);
+void SCSI_Verify10_Cmd(uint8_t lun);
 
-void SCSI_Invalid_Cmd(u8 lun);
-void SCSI_Valid_Cmd(u8 lun);
-bool SCSI_Address_Management(u8 lun , u8 Cmd , u32 LBA , u32 BlockNbr);
+void SCSI_Invalid_Cmd(uint8_t lun);
+void SCSI_Valid_Cmd(uint8_t lun);
+bool SCSI_Address_Management(uint8_t lun , uint8_t Cmd , uint32_t LBA , uint32_t BlockNbr);
 
-void Set_Scsi_Sense_Data(u8 lun , u8 Sens_Key, u8 Asc);
-void SCSI_TestUnitReady_Cmd (u8 lun);
-void SCSI_Format_Cmd (u8 lun);
+void Set_Scsi_Sense_Data(uint8_t lun , uint8_t Sens_Key, uint8_t Asc);
+void SCSI_TestUnitReady_Cmd (uint8_t lun);
+void SCSI_Format_Cmd (uint8_t lun);
 
 //#define SCSI_TestUnitReady_Cmd           SCSI_Valid_Cmd
 #define SCSI_Prevent_Removal_Cmd         SCSI_Valid_Cmd
@@ -136,5 +150,5 @@ void SCSI_Format_Cmd (u8 lun);
 
 #endif /* __USB_SCSI_H */
 
-/******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 
