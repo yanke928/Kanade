@@ -2,8 +2,8 @@
 /Listing/*
 /Utilities/DFU_images/*
 /USER/*
-!Kanade.uvproj
-!Bootloader.uvproj
+!Kanade.uvprojx
+!Bootloader.uvprojx
 !Kanade.uvmpw
 !Kanade.bat
 *.uvopt

@@ -1,4 +1,4 @@
-#include "MultiLanguageStrings.h"
+﻿#include "MultiLanguageStrings.h"
 #include "SSD1306.h"
 
 #pragma diag_suppress 870

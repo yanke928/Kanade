@@ -1,4 +1,4 @@
-//File Name   Settings.c
+﻿//File Name   Settings.c
 //Description Settings UI
 
 #pragma diag_suppress 870
@@ -166,6 +166,7 @@ void MountOrUnMountDisk()
   * @param  None
 
   */
+
 void SaveSettings()
 {
 	int i = sizeof(Settings_Struct);
@@ -242,7 +243,7 @@ bool CheckSettings()
 	
 	if (CurrentSettings->InternalTemperature_Max > 130||
 		  CurrentSettings->InternalTemperature_Max < 55) return false;
-	
+
 	if (CurrentSettings->ExternalTemperature_Max > 200||
 		  CurrentSettings->ExternalTemperature_Max < 40) return false;
 	

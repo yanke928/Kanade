@@ -19,6 +19,12 @@ static char Init = 0;
 
 unsigned int  GetCRC32(unsigned char *buf, int len);
 
+/**
+  * @brief   Get "moha" file info
+	
+  * @retval : 0(it is not a "moha" file or illegal)
+	length(effective data length in bytes)
+  */
 u32 GetMohaFileInfo(FIL* firmware)
 {
 	FRESULT res;
@@ -27,20 +33,30 @@ u32 GetMohaFileInfo(FIL* firmware)
 	u32 tag;
 	u8 buff[5];
 	f_lseek(firmware, 0);
-
+	
+	/*Read "moha" tag*/
 	res = f_read(firmware, buff, sizeof("moha") - 1, &byteRead);
 	if (res != FR_OK) return 0;
 
+	/*Check "moha" tag*/
 	buff[4] = 0;
 	tag = strcmp((char*)buff, "moha");
 	if (tag != 0) return 0;
 
+	/*Get effective data length*/
 	res = f_read(firmware, &size, sizeof(u32), &byteRead);
 	if (res != FR_OK) return 0;
 
 	return size;
 }
 
+/**
+  * @brief   Run "moha" file CRC check
+	
+  * @retval : 255(Bad "moha" file)
+  0(CRC check passed)
+  and fatfs errCode
+  */
 u8 CheckAMohaFile(FIL* firmware)
 {
 	FRESULT res;
@@ -58,29 +74,41 @@ u8 CheckAMohaFile(FIL* firmware)
 
 	ProgressBar_Init();
 
+	/*Get effective binary length and calc block count*/
 	binarySize = GetMohaFileInfo(firmware);
 	if (binarySize == 0) return 255;
 	blockCount = binarySize / STM32_SECTOR_SIZE + 1;
 
 	fileSize = firmware->fsize;
 
-
+  /*Point to effective data*/
 	f_lseek(firmware, 8);
 
 	for (i = 0; i < blockCount; i++)
 	{
+		/*Read a block*/
 		res = f_read(firmware, buff, sizeof buff, &byteRead);
 		sizeRead += byteRead;
 		if (res != FR_OK) return res;
 		if (byteRead == 0) return 255;
+		
 		actualCRC = GetCRC32(buff, STM32_SECTOR_SIZE);
 		expectedCRC = *(u32*)(buff + STM32_SECTOR_SIZE);
+		
 		if (actualCRC != expectedCRC) return 255;
 		UpdateProgressBar(0, fileSize, sizeRead);
 	}
 	return 0;
 }
 
+
+/**
+  * @brief   Write "moha" file to ROM
+	
+  * @retval  255:An error occurred while writing
+
+             0: Operation succeeds
+  */
 u8 WriteFirmwareToROM(FIL* firmware)
 {
 	FRESULT res;
@@ -114,6 +142,9 @@ u8 WriteFirmwareToROM(FIL* firmware)
 	return 0;
 }
 
+/**
+  * @brief   Init CRC value table
+  */
 static void Init_table()
 {
 	int   i, j;
@@ -136,6 +167,14 @@ static void Init_table()
 	}
 }
 
+
+/**
+  * @brief   Get CRC result 
+
+    @param buf: Pointer to the data being checked
+
+           len:Length of data being checked
+  */
 unsigned int  GetCRC32(unsigned char *buf, int len)
 {
 	unsigned int  ret = 0xFFFFFFFF;
