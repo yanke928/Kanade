@@ -1,16 +1,16 @@
 //File Name     Keys.c
 //Description : Configure the LMR Keys   
 
+#include <stdio.h>
+#include <stdbool.h>
+
 #include "stm32f10x.h"
 #include "stm32f10x_gpio.h"
-#include "stdbool.h"
+
+#include "FreeRTOS_Standard_Include.h"
+
 #include "SSD1306.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-
-#include <stdio.h>
 #include "Keys.h"
 
 #define KEY_EVENT_HANDLER_PRIORITY tskIDLE_PRIORITY+3

@@ -4,20 +4,16 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "BadApplePlayer.h"
-
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "FreeRTOS_Standard_Include.h"
 
 #include "sdcardff.h" 
 #include "sdcard.h" 
 #include "ff.h" 
 
-#include "FreeRTOS_CLI.h"
-
 #include "SSD1306.h"
 #include "CPU_Usage.h" 
+
+#include "BadApplePlayer.h"
 
 #define BAD_APPLE_PLAYER_PRIORITY tskIDLE_PRIORITY+5
 

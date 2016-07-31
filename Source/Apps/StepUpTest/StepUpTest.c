@@ -1,16 +1,14 @@
 //File Name   StepUpTest.c
 //Description StepupTest
 
-#include "stm32f10x.h"
-#include "stm32f10x_flash.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "stm32f10x.h"
+#include "stm32f10x_flash.h"
+
+#include "FreeRTOS_Standard_Include.h"
 
 #include "SSD1306.h"
 #include "EBProtocol.h"

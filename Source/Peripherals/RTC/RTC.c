@@ -1,16 +1,20 @@
+//File Name     RTC.c
+//Description : RTC hardware configuration 
+
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "stm32f10x_rtc.h"
 #include "stm32f10x_pwr.h"
 #include "stm32f10x_bkp.h"
 #include "misc.h"
-#include "stdio.h"
-#include "stdbool.h"
-#include "SSD1306.h"
-#include "string.h"
-#include "rtc.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "FreeRTOS_Standard_Include.h"
+
+#include "SSD1306.h"
+
+#include "rtc.h"
 
 #define RTC_UPDATE_PRIORITY tskIDLE_PRIORITY+2
 

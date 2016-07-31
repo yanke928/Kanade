@@ -4,11 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-
-#include "FreeRTOS_CLI.h"
+#include "FreeRTOS_Standard_Include.h"
 
 #include "SSD1306.h"
 #include "Keys.h" 

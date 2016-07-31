@@ -1,15 +1,17 @@
 //File Name     Music.c
 //Description : Play Music with buzzer 
-#include "Music.h"
+
+#include <stdbool.h>
+
 #include "stm32f10x.h"
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_tim.h"
-#include "Buzzer.h"
-#include "stdbool.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "FreeRTOS_Standard_Include.h"
+
+#include "Buzzer.h"
+
+#include "Music.h"
 
 #define SOUND_PLAYER_PRIORITY tskIDLE_PRIORITY+4
 

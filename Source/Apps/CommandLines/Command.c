@@ -1,16 +1,11 @@
-//File Name   £ºCommand.c
+//File Name     Command.c
 //Description : CommandLines 
 
-#include "Command.h"
-
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-
-#include "FreeRTOS_CLI.h"
+#include "FreeRTOS_Standard_Include.h"
 
 #include "SSD1306.h"
 
+#include "Command.h"
 
 BaseType_t TaskStatsCommand(char  *pcWriteBuffer,
 	size_t xWriteBufferLen,

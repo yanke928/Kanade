@@ -1,7 +1,6 @@
 #include "stm32f10x.h"
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+
+#include "FreeRTOS_Standard_Include.h"
 
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_dma.h"

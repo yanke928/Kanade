@@ -1,24 +1,21 @@
 //File Name   SSD1306.c
 //Description SSD1306 driver and basic GUI functions
 
-#include "SSD1306.h"
-#include "stdlib.h"
-#include "SSD1306Font.h"  
-#include "stm32f10x_tim.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
 #include "stm32f10x.h"
 #include "stm32f10x_spi.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-#include "semphr.h"  
+#include "FreeRTOS_Standard_Include.h"
 
 #include "Public_FontTab.h"
+#include "SSD1306Font.h"  
 
 #include "Settings.h"
 
-#include <string.h>
-#include <stdio.h>
+#include "SSD1306.h"
 
 #define OLED_REFRESH_PRIORITY tskIDLE_PRIORITY+2
 

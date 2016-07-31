@@ -3,17 +3,15 @@
 
 #pragma diag_suppress 870
 
-#include "stm32f10x.h"
 #include <stdio.h>
 #include <string.h>
 
+#include "stm32f10x.h"
 #include "stm32f10x_rtc.h"
 #include "stm32f10x_bkp.h"
 #include "stm32f10x_flash.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "FreeRTOS_Standard_Include.h"
 
 #include "SSD1306.h"
 #include "RTC.h"
@@ -164,7 +162,6 @@ void MountOrUnMountDisk()
   * @brief  Save settings
 
   * @param  None
-
   */
 
 void SaveSettings()

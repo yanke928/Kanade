@@ -1,20 +1,19 @@
 //File Name    ADC.c
 //Description  ADC hardware driver
 
+#include <stdio.h>
+#include <math.h>
+
 #include "stm32f10x_adc.h"
 #include "stm32f10x_dma.h"
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_gpio.h"
-#include <stdio.h>
-#include <math.h>
+
+#include "FreeRTOS_Standard_Include.h"
+
+#include "startup.h"
 
 #include "ADC.h"
-#include "startup.h"
-#include "MCP3421.h"
-
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
 
 #define ADC_FILTER_PRIORITY tskIDLE_PRIORITY
 

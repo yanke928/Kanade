@@ -22,7 +22,8 @@
 #include "stm32f10x_dma.h"
 #include "misc.h"
 
-#include "SSD1306.h"
+#include "FreeRTOS_Standard_Include.h"
+
 
 #include "sdcard.h"
 #include "SSD1306.h"
@@ -30,13 +31,10 @@
 #include "sdcardff.h"
 #include "W25Q64ff.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-
-#include "Startup.h"
 #include "UI_Dialogue.h"
 #include "UI_Utilities.h"
+
+#include "Startup.h"
 
 #include "MultiLanguageStrings.h"
 #include "Settings.h"

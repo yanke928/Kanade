@@ -1,13 +1,13 @@
 //File Name     CPU_Usage.c
 //Description : This app measures the cpu usage
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "CPU_Usage.h"
+#include <stdio.h>
+
+#include "FreeRTOS_Standard_Include.h"
 
 #include "SSD1306.h"
 
-#include <stdio.h>
+#include "CPU_Usage.h"
 
 volatile  unsigned int  OSIdleCtr;                                 /* Idle counter                   */
 unsigned int      OSIdleCtrMax;             /* Max. value that idle ctr can take in 1 sec.     */

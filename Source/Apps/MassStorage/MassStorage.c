@@ -8,9 +8,7 @@
 
 #include "LED.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "FreeRTOS_Standard_Include.h"
 
 #include "mass_mal.h"
 #include "usb_pwr.h"
@@ -18,14 +16,14 @@
 #include "LED_Animate.h"
 #include "SSD1306.h"
 
-#include "MassStorage.h"
-
 #include "MultiLanguageStrings.h"
 
 #include "Settings.h"
 
 #include "UI_Dialogue.h"
 #include "UI_Button.h"
+
+#include "MassStorage.h"
 
 const LEDAnimateSliceStruct MAL_Read_Animate[] =
 {

@@ -1,13 +1,12 @@
 //File Name   FastCharge_trigger.c
 //Description FastCharge trigger
 
-#include "stm32f10x.h"
 #include <stdio.h>
 #include <string.h>
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "stm32f10x.h"
+
+#include "FreeRTOS_Standard_Include.h"
 
 #include "SSD1306.h"
 #include "Keys.h"

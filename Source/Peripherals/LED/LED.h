@@ -1,12 +1,13 @@
 #ifndef __LED_H
 #define	__LED_H
 
+#include <stdbool.h>
+
 #include "stm32f10x.h"
-#include "stdbool.h"
 
-#define  LEDIOLow   GPIO_ResetBits(GPIOC, GPIO_Pin_3) 
+#define  LEDIOLow()   GPIO_ResetBits(GPIOC, GPIO_Pin_3) 
 
-#define  LEDIOHigh  GPIO_SetBits(GPIOC, GPIO_Pin_3)
+#define  LEDIOHigh()  GPIO_SetBits(GPIOC, GPIO_Pin_3)
 
 #define END true
 

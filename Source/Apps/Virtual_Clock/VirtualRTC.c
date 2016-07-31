@@ -1,16 +1,15 @@
 //File Name   Virtual	RTC.c
-//Description Simulate a RTC Clock with SystemBeats      
+//Description Simulate a RTC Clock with SystemBeats    
 
-#include "misc.h"
-#include "VirtualRTC.h"
+#include <stdio.h>  
+
 #include "stm32f10x.h"
-#include <stdio.h>
-
 #include "stm32f10x_rtc.h"
+#include "misc.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "FreeRTOS_Standard_Include.h"
+
+#include "VirtualRTC.h"
 
 #define VIRTUAL_CLOCK_UPDATE_PRIORITY tskIDLE_PRIORITY+2
 

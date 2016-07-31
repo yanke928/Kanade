@@ -1,15 +1,16 @@
-//File Name   £ºUsarts.c
-//Description £ºConfigure Usart1        
+//File Name   Usarts.c
+//Description Configure Usart1     
+
+#include <stdarg.h>
+
+#include "stm32f10x_dma.h"
+
+#include "FreeRTOS_Standard_Include.h"
 
 #include "Usarts.h"
 #include "Startup.h"
 #include "EBProtocol.h"
-#include "stm32f10x_dma.h"
-#include <stdarg.h>
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
 
 /**
   * @brief  Init Usart1

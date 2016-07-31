@@ -1,9 +1,7 @@
 //File Name   Startup.c
 //Description System startup  
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "FreeRTOS_Standard_Include.h"
 #include "FreeRTOS_Cli.h"
 
 #include "rtc.h"

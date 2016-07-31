@@ -1,11 +1,9 @@
 //File Name   ExceptionHandle.c
 //Description : Exception handlers 
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-
 #include <stdio.h>
+
+#include "FreeRTOS_Standard_Include.h"
 
 #include "UI_Dialogue.h"
 #include "UI_Utilities.h"

@@ -7,9 +7,7 @@
 #include "SSD1306.h"
 #include "Keys.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "FreeRTOS_Standard_Include.h"
 
 #include "UI_Adjust.h"
 #include "UI_Utilities.h"

@@ -3,9 +3,7 @@
 
 #include "stm32f10x_gpio.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "FreeRTOS_Standard_Include.h"
 
 #include "Temperature_Sensors.h"
 

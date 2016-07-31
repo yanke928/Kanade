@@ -1,10 +1,6 @@
 //File Name   LED.c
 //Description LED Driver     
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-
 #include "LED.h"
 
 #define SYS_CLOCK 72
@@ -50,12 +46,12 @@ void LEDSendABit(bool bit)
 	if (bit)
 	{
 		i = SYS_CLOCK / 16;
-		LEDIOHigh;
+		LEDIOHigh();
 		while (i)
 		{
 			i--;
 		}
-		LEDIOLow;
+		LEDIOLow();
 		i = SYS_CLOCK / 24;
 		while (i)
 		{
@@ -66,13 +62,13 @@ void LEDSendABit(bool bit)
 	else
 	{
 		i = 1;
-		LEDIOHigh;
+		LEDIOHigh();
 		while (i)
 		{
 			i--;
 		}
 		i = SYS_CLOCK / 12;
-		LEDIOLow;
+		LEDIOLow();
 		while (i)
 		{
 			i--;

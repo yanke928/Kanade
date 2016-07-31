@@ -1,15 +1,12 @@
 //File Name   USBMeterUI.c
 //Description Main UI
 
-#include "stm32f10x.h"
-#include "stm32f10x_it.h"
-
 #include <stdio.h>
 #include <string.h>
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "stm32f10x.h"
+
+#include "FreeRTOS_Standard_Include.h"
 
 #include "EBProtocol.h"
 #include "Temperature_Sensors.h"

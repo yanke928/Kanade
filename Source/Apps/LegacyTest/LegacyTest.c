@@ -1,19 +1,16 @@
 //File Name   LegacyTest.c
 //Description LegacyTest
 
-#include "stm32f10x.h"
-#include "stm32f10x_flash.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "stm32f10x.h"
+#include "stm32f10x_flash.h"
+
+#include "FreeRTOS_Standard_Include.h"
+
 #include "LED.h"
-
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-
 #include "SSD1306.h"
 #include "EBProtocol.h"
 #include "sdcard.h"
