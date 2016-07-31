@@ -8,8 +8,6 @@
 
 #define ADC_FILTER_ITEM_NUM  5
 
-#define _ABS(x)  ((x) > 0 ? (x) : -(x))
-
 //ADC Value converted from Temperature sensors
 extern volatile uint16_t  ADCConvertedValue[ADC_FILTER_ITEM_NUM];
 
@@ -19,6 +17,6 @@ extern volatile float FilteredADCValue[ADC_FILTER_ITEM_NUM];
 //A public variable for the converted powerSource voltage
 extern float PowerSourceVoltage;
 
-void ADC_Init_All(void);
+void ADC_Hardware_Init(void);
 
-#endif /* __ADC_HS */
+#endif /* __ADC_H */

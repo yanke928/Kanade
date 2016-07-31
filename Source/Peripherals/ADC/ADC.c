@@ -1,5 +1,5 @@
 //File Name    ADC.c
-//Description  All about internal ADC
+//Description  ADC hardware driver
 
 #include "stm32f10x_adc.h"
 #include "stm32f10x_dma.h"
@@ -20,7 +20,6 @@
 
 volatile float FilteredADCValue[ADC_FILTER_ITEM_NUM];
 
-//see .h for details
 volatile uint16_t  ADCConvertedValue[ADC_FILTER_ITEM_NUM];
 
 float PowerSourceVoltage;
@@ -130,17 +129,7 @@ void ADC_Filter(void *pvParameters)
 	}
 }
 
-void DataPins_Voltage_Handler(void *pvParameters)
-{
- for(;;)
-	{
-	 vTaskDelay( 100/ portTICK_RATE_MS);
-	 CurrentMeterData.VoltageDP=(float)FilteredADCValue[2]/4096*PowerSourceVoltage;
-	 CurrentMeterData.VoltageDM=(float)FilteredADCValue[1]/4096*PowerSourceVoltage;
-	}
-}
-
-void ADC_Init_All()
+void ADC_Hardware_Init()
 {
  ADC_And_DMA_Init(); 
  xTaskCreate(ADC_Filter,"ADC_Filter",128,NULL,ADC_FILTER_PRIORITY,NULL);

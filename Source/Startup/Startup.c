@@ -13,6 +13,7 @@
 #include "ADC.h"
 
 #include "Temperature_Sensors.h"
+#include "DataPins_Voltage_Sensors.h"
 #include "SSD1306.h"
 #include "Music.h"
 #include "sdcard.h"
@@ -339,8 +340,9 @@ void SystemStartup(void *pvParameters)
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);
 
 	vTaskDelay(100 / portTICK_RATE_MS);
-  ADC_Init_All();
+  ADC_Hardware_Init();
 	TemperatureSensors_Init();
+  DataPins_Voltage_Sensor_Init();
 
 	//EBD_Init();
 	vTaskDelay(50 / portTICK_RATE_MS);
