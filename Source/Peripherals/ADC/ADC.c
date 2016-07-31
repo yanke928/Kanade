@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "TempSensors.h"
+#include "ADC.h"
 #include "startup.h"
 #include "MCP3421.h"
 
@@ -114,7 +114,7 @@ void ADC_And_DMA_Init(void)
 }
 
 /**
-  * @brief   Temperature task
+  * @brief   ADC filter
   * @retval : None
   */
 void ADC_Filter(void *pvParameters)
@@ -187,7 +187,7 @@ void TemperatureSensors_Init(void)
 	ADC_And_DMA_Init();
 	CurrentTemperatureSensor = Internal;
 	xTaskCreate(ADC_Filter, "ADC_Filter",
-		160, NULL, ADC_FILTER_PRIORITY, NULL);
+		128, NULL, ADC_FILTER_PRIORITY, NULL);
 	xTaskCreate(Temperature_Handler, "Temperature_Handler",
 		64, NULL, ADC_FILTER_PRIORITY, NULL);
 	xTaskCreate(DataPins_Voltage_Handler, "DataPins_Voltage_Handler",

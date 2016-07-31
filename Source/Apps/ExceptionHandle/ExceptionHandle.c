@@ -12,7 +12,7 @@
 #include "UI_Print.h"
 
 #include "SSD1306.h"
-#include "TempSensors.h"
+#include "ADC.h"
 #include "Keys.h"
 #include "LED.h"
 #include "Music.h"

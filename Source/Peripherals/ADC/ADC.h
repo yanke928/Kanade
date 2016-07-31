@@ -1,5 +1,5 @@
-#ifndef __TEMPSENSORS_H
-#define	__TEMPSENSORS_H
+#ifndef __ADC_H
+#define	__ADC_H
 
 #include "stm32f10x.h"
 #include "stdbool.h"
@@ -54,4 +54,4 @@ void TemperatureSensors_Init(void);
 //see .c for details
 void ShowCurrentTempSensor(void);
 
-#endif /* __TEMPSENSORS_H */
+#endif /* __ADC_HS */

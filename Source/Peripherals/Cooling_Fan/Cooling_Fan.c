@@ -7,7 +7,7 @@
 #include "task.h"
 #include "queue.h"
 
-#include "TempSensors.h"
+#include "ADC.h"
 
 #include "Cooling_Fan.h"
 

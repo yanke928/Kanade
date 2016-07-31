@@ -11,7 +11,7 @@
 #include "Keys.h"
 #include "PWM_Ref.h"
 
-#include "TempSensors.h"
+#include "ADC.h"
 #include "SSD1306.h"
 #include "Music.h"
 #include "sdcard.h"
