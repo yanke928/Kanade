@@ -18,27 +18,12 @@
 
 #define ADC_FILTER_PRIORITY tskIDLE_PRIORITY
 
-//see .h for details
-float InternalTemperature;
-
-float ExternalTemperature;
-
 volatile float FilteredADCValue[ADC_FILTER_ITEM_NUM];
 
 //see .h for details
 volatile uint16_t  ADCConvertedValue[ADC_FILTER_ITEM_NUM];
 
-volatile u8 SecondLevelFilterCount = 0;
-
 float PowerSourceVoltage;
-
-volatile u8 CurrentTemperatureSensor = Internal;
-
-const u8 TempTab[TEMPTAB_LENGTH] = { 0,10,20,30,40,50,60,70,80,90,100,110,120
-,130,140,150,160,170,180,190,200 };
-
-const float ResistTab[TEMPTAB_LENGTH] = { 325,200,125,80,52,35.7,24.6,17.29,12.35,8.927,6.55,
-4.888,3.702,2.812,2.146,1.665,1.314,1.051,0.842,0.676,0.552 };
 
 /**
   * @brief   Initialize temperatureADC and its corresponding DMA
@@ -145,29 +130,6 @@ void ADC_Filter(void *pvParameters)
 	}
 }
 
-void Temperature_Handler(void *pvParameters)
-{
- for(;;)
-	{
-	 vTaskDelay( 100/ portTICK_RATE_MS);
-	 PowerSourceVoltage = (1.2 / (float)FilteredADCValue[4]) * 4096;
-	 InternalTemperature = (1.43 - (float)FilteredADCValue[3] *
-	 (PowerSourceVoltage / 4096)) * 1000 / 4.35 + 25;
-		if (FilteredADCValue[0] >= 200)
-		{
-			CurrentTemperatureSensor = External;
-		}
-		else
-		{
-			CurrentTemperatureSensor = Internal;
-		}
-	  if (CurrentTemperatureSensor == External)
-			{
-				CalculateExtTemp();
-			}
-	}
-}
-
 void DataPins_Voltage_Handler(void *pvParameters)
 {
  for(;;)
@@ -178,85 +140,8 @@ void DataPins_Voltage_Handler(void *pvParameters)
 	}
 }
 
-/**
-  * @brief   Config the INTTempSensor
-  * @retval : None
-  */
-void TemperatureSensors_Init(void)
+void ADC_Init_All()
 {
-	ADC_And_DMA_Init();
-	CurrentTemperatureSensor = Internal;
-	xTaskCreate(ADC_Filter, "ADC_Filter",
-		128, NULL, ADC_FILTER_PRIORITY, NULL);
-	xTaskCreate(Temperature_Handler, "Temperature_Handler",
-		64, NULL, ADC_FILTER_PRIORITY, NULL);
-	xTaskCreate(DataPins_Voltage_Handler, "DataPins_Voltage_Handler",
-		64, NULL, ADC_FILTER_PRIORITY, NULL);
-}
-
-
-/**
-  * @brief   Generate a string for INTTemperature in format xx.xC
-  * @retval : None
-  */
-void GenerateTempString(char string[], u8 sensorNo)
-{
-	if (sensorNo == Internal)
-		sprintf(string, "%5.1fC", InternalTemperature);
-	else
-		sprintf(string, "%5.1fC", ExternalTemperature);
-}
-
-/**
-  * @brief    Calculate the external temperature according to
-ADC result
-
-  * @retval : None
-  */
-void CalculateExtTemp(void)
-{
-	float Vtemp, Rtemp;
-	float k;
-	u8 i;
-	/*Calculate the voltage that temperature sensor divided*/
-	Vtemp = 3.3 - ((float)FilteredADCValue[0] / 4096)*3.3;
-	/*Calculate the resistance of temperature sensor*/
-	Rtemp = (Vtemp / (3.3 - Vtemp))*TEMP_DIVIDER;
-	if (Rtemp >= ResistTab[0])
-	{
-		ExternalTemperature = TempTab[0];
-		return;
-	}
-	else if (Rtemp <= ResistTab[TEMPTAB_LENGTH - 1])
-	{
-		ExternalTemperature = TempTab[TEMPTAB_LENGTH - 1];
-		return;
-	}
-	for (i = 0; i < TEMPTAB_LENGTH - 1; i++)
-	{
-		if (Rtemp > ResistTab[i + 1])
-		{
-			k = (float)(TempTab[i + 1] - TempTab[i]) / (ResistTab[i + 1] - ResistTab[i]);
-			ExternalTemperature = TempTab[i] - (k*(ResistTab[i] - Rtemp));
-			return;
-		}
-	}
-}
-
-
-/**
-  * @brief    Show current selected temperature sensor
-
-  * @retval : None
-  */
-void ShowCurrentTempSensor(void)
-{
-	if (CurrentTemperatureSensor == Internal)
-	{
-		xQueueSend(InitStatusMsg, "No Ext.Sensor", 0);
-	}
-	else
-	{
-		xQueueSend(InitStatusMsg, "Ext.Sensor Plugged", 0);
-	}
+ ADC_And_DMA_Init(); 
+ xTaskCreate(ADC_Filter,"ADC_Filter",128,NULL,ADC_FILTER_PRIORITY,NULL);
 }

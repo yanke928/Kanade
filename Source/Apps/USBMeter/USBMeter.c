@@ -12,7 +12,7 @@
 #include "queue.h"
 
 #include "EBProtocol.h"
-#include "ADC.h"
+#include "Temperature_Sensors.h"
 #include "SSD1306.h"
 #include "RTC.h"
 #include "MCP3421.h"

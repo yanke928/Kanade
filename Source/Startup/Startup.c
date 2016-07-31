@@ -10,8 +10,9 @@
 #include "LED.h"
 #include "Keys.h"
 #include "PWM_Ref.h"
-
 #include "ADC.h"
+
+#include "Temperature_Sensors.h"
 #include "SSD1306.h"
 #include "Music.h"
 #include "sdcard.h"
@@ -338,6 +339,7 @@ void SystemStartup(void *pvParameters)
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);
 
 	vTaskDelay(100 / portTICK_RATE_MS);
+  ADC_Init_All();
 	TemperatureSensors_Init();
 
 	//EBD_Init();

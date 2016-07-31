@@ -18,7 +18,7 @@
 #include "sdcardff.h"
 #include "LED.h"
 #include "Keys.h"
-#include "ADC.h"
+#include "Temperature_Sensors.h"
 
 #include "UI_Adjust.h"
 #include "UI_Dialogue.h"
