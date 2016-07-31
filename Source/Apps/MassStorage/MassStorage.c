@@ -6,6 +6,8 @@
 
 #include "stm32f10x_rtc.h"
 
+#include "LED.h"
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -13,7 +15,7 @@
 #include "mass_mal.h"
 #include "usb_pwr.h"
 #include "usb_lib.h"
-#include "LED.h"
+#include "LED_Animate.h"
 #include "SSD1306.h"
 
 #include "MassStorage.h"

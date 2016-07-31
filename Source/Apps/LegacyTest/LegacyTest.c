@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "LED.h"
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -16,7 +18,7 @@
 #include "EBProtocol.h"
 #include "sdcard.h"
 #include "sdcardff.h"
-#include "LED.h"
+#include "LED_Animate.h"
 #include "Keys.h"
 #include "Temperature_Sensors.h"
 

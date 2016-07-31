@@ -7,7 +7,7 @@
 #include "FreeRTOS_Cli.h"
 
 #include "rtc.h"
-#include "LED.h"
+#include "LED_Animate.h"
 #include "Keys.h"
 #include "PWM_Ref.h"
 #include "ADC.h"
