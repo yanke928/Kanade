@@ -134,10 +134,8 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 		if (status == LEGACY_TEST)
 		{
       Send_Digital_Load_Command(0,Load_Stop);
-//			Stop_Any_EBD_Load();
 			vTaskDelay(200/portTICK_RATE_MS);
 		}
-		EBD_Fan_TurnOn_Only();
 	}
 	else
 	{
@@ -174,17 +172,6 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 		VirtualRTC_Resume();
 	}
 }
-
-///**
-//  * @brief  Init EBD exception handler
-
-//  * @retval None
-//  */
-//void EBD_Exception_Handler_Init(void)
-//{
-//	xTaskCreate(EBD_Exception_Handler, "EBD Exception Handler",
-//		128, NULL, EBD_EXCEPTION_HANDLER_PRIORITY, NULL);
-//}
 
 /**
   * @brief  This function handles NMI exception.

@@ -31,8 +31,6 @@
 
 #include "UI_Dialogue.h"
 
-#include "EBProtocolConfig.h"
-
 #include "USBMeter.h"
 
 #define USB_METER_PRIORITY tskIDLE_PRIORITY+3
@@ -83,9 +81,9 @@ void USBMeter(void *pvParameters)
        if(reSendLoadCommandCnt==5)
         {
 				if (CurrentMeterData.Current < 0.1)
-					Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, StartTest);
+					Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, Load_Start);
 				else
-					Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, KeepTest);
+					Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, Load_Keep);
          reSendLoadCommandCnt=0;
         }
 			}
@@ -202,8 +200,6 @@ void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
 		else
 		OLED_ShowAnyString(92, 24, tempString, NotOnSelect, 8);
 	}
-	if (EBD_Protocol_Config[CurrentSettings->EBD_Model]->DataPinSupport)
-	{
 		if (currentStatus == USBMETER_ONLY)
 		{
 			GenerateRTCDateString(tempString);
@@ -219,19 +215,6 @@ void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
 			OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
 			OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
 		}
-	}
-	else
-	{
-		if (currentStatus == USBMETER_ONLY)
-		{
-			GenerateRTCDateString(tempString);
-			OLED_ShowString(0, 32, tempString);
-			GenerateRTCTimeString(tempString);
-			OLED_ShowString(24, 48, tempString);
-			GenerateRTCWeekString(tempString);
-			OLED_ShowString(96, 32, tempString);
-		}
-	}
 }
 
 /**

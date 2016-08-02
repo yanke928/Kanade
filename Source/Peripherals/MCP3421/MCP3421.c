@@ -27,9 +27,11 @@
 #define VOLTAGE_GAIN 11
 #define CURRENT_SENSOR_RESISTANCE 15
 
-volatile USBMeterStruct CurrentMeterData;
+USBMeterStruct CurrentMeterData;
 
-volatile USBMeterStruct FilteredMeterData;
+USBMeterStruct FilteredMeterData;
+
+volatile SumupStruct CurrentSumUpData;
 
 xSemaphoreHandle USBMeterState_Mutex = NULL;
 

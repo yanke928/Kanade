@@ -29,7 +29,7 @@
 #define SetDP_3V3() FastCharge_Enable_Small_Divider_DP();FastCharge_Enable_Big_Divider_DP()
 #define SetDP_2V7() FastCharge_Enable_Small_Divider_DP();FastCharge_Disable_Big_Divider_DP()
 
-enum {Release=0,QC2_Normal,QC2_9V,QC2_12V,QC2_20V,QC3_Increase,QC3_Decrease};
+enum {Release=0,QC2_Normal,QC2_9V,QC2_12V,QC2_20V,QC3_Increase,QC3_Decrease,MTK_Increase,MTK_Decrease};
 
 extern xQueueHandle FastCharge_Msg;
 

@@ -28,7 +28,6 @@
 #include "UI_Confirmation.h"
 #include "MultiLanguageStrings.h"
 
-#include "EBProtocolConfig.h"
 #include "About.h"
 #include "SelfTest.h"
 
@@ -48,8 +47,6 @@ pFunction Jump_To_Application;
 void SetLanguage(void);
 
 void TimeSettings(void);
-
-void ModelSettings(void);
 
 void OverHeatSettings(void);
 
@@ -80,14 +77,13 @@ void Settings()
 	stringTab[2]=SettingsItemOverHeatControl_Str[CurrentSettings->Language];
 	stringTab[3]=SettingsItemLanguage_Str[CurrentSettings->Language];
 	stringTab[4]=SettingsItemFormatDisks_Str[CurrentSettings->Language];
-	stringTab[5]=SettingsItemModel_Str[CurrentSettings->Language];
-	stringTab[6]=SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
-	stringTab[7]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
-	stringTab[8]=SettingsItemSystemScan_Str[CurrentSettings->Language];
+	stringTab[5]=SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
+	stringTab[6]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
+	stringTab[7]=SettingsItemSystemScan_Str[CurrentSettings->Language];
 	
 	menuParams.ItemStrings=stringTab;
 	menuParams.DefaultPos = 0;
-	menuParams.ItemNum = 9;
+	menuParams.ItemNum = 8;
 	menuParams.FastSpeed = 10;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
@@ -108,10 +104,9 @@ void Settings()
 	case 2:OverHeatSettings(); break;
 	case 3:SetLanguage(); break;
 	case 4:FormatDisks();break;
-	case 5:ModelSettings(); break;
-	case 6:FirmwareUpdate();break;
-	case 7:About();break;
-	case 8:SelfTest();break;
+	case 5:FirmwareUpdate();break;
+	case 6:About();break;
+	case 7:SelfTest();break;
 	}
 }
 
@@ -227,7 +222,7 @@ void SetLanguage()
 	ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language], 1000, true);
 }
 
-/**
+/** 
   * @brief  Check settings
 
   * @param  None
@@ -235,9 +230,6 @@ void SetLanguage()
   */
 bool CheckSettings()
 {
-	if (CurrentSettings->Language > LanguageNum - 1) return false;
-	if (CurrentSettings->EBD_Model > EBD_MODEL_NUM - 1) return false;
-	
 	if (CurrentSettings->InternalTemperature_Max > 130||
 		  CurrentSettings->InternalTemperature_Max < 55) return false;
 
@@ -334,28 +326,6 @@ void TimeSettings()
 	Time_Update(newTime.w_year, newTime.w_month, newTime.w_date,
 		newTime.hour, newTime.min, newTime.sec);
 	ShowSmallDialogue(TimeSetting_Str[CurrentSettings->Language], 1000, true);
-}
-
-void ModelSettings()
-{
-	UI_Menu_Param_Struct menuParams;
-	u8 selection;
-	const char* modelStrings[EBD_MODEL_NUM];
-	memcpy(modelStrings,EBD_Protocol_Descriptors,sizeof(EBD_Protocol_Descriptors));
-	
-	menuParams.ItemStrings = modelStrings;
-	menuParams.DefaultPos = 0;
-	menuParams.ItemNum = EBD_MODEL_NUM;
-	menuParams.FastSpeed = 5;
-	memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
-
-	UI_Menu_Init(&menuParams);
-
-	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
-	UI_Menu_DeInit();
-	SettingsBkp.EBD_Model = selection;
-	SaveSettings();
-	ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language], 1000, true);
 }
 
 /**
@@ -511,8 +481,6 @@ void GetNecessarySettings()
 	SetLanguage();
 	ShowSmallDialogue(SetTimeHint_Str[CurrentSettings->Language], 1000, true);
 	TimeSettings();
-	ShowSmallDialogue(SetModelHint_Str[CurrentSettings->Language], 1000, true);
-	ModelSettings();
 	ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language], 1000, true);
 }
 

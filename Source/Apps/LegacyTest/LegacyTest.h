@@ -6,7 +6,6 @@
 
 #include "sdcard.h"
 #include "sdcardff.h"
-#include "EBProtocol.h"
 
 #define LEGACY_TEST 2
 

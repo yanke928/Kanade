@@ -15,7 +15,6 @@
 #include "SSD1306.h"
 #include "Music.h"
 #include "sdcard.h"
-#include "EBProtocol.h"
 #include "USBMeter.h"
 #include "MCP3421.h"
 #include "BadApplePlayer.h"
@@ -304,6 +303,8 @@ void LogoWithInitStatus_DeInit()
 	Logo_DeInit();
 }
 
+
+
 /**
   * @brief  System startup task
 
@@ -311,70 +312,35 @@ void LogoWithInitStatus_DeInit()
   */
 void SystemStartup(void *pvParameters)
 {
-	Key_Init();
-	
-	OLED_Init();
-	
-	//PointDrawing_Test();
-	
+	Key_Init();	
+	OLED_Init();	
 	MCP3421_Init();
-	if (RIGHT_KEY == KEY_ON)
-	{
-		OSStatInit();
-	}
-	//CommandLine_Init();
 	RTC_Init();
-	//SoundStart(Alarm);
 	LED_Animate_Init(LEDAnimation_Startup);
 	Settings_Init();
-
 	W25Q64_Init();
-	
 	PWMRef_Init();
-
 	Digital_Load_Init();
-
 	LogoWithInitStatus_Init();
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);
-
-	vTaskDelay(100 / portTICK_RATE_MS);
   ADC_Hardware_Init();
 	TemperatureSensors_Init();
   DataPins_Voltage_Sensor_Init();
-
-	//EBD_Init();
-	vTaskDelay(50 / portTICK_RATE_MS);
-
 	SDCard_Init(true);
 	SDCardPlugAndPlay_Service_Init();
 	vTaskDelay(500 / portTICK_RATE_MS);
-
-	//ShowCurrentTempSensor();
 	CheckEBDDirectories(true);
-
 	USB_Interrupts_Config();
 	Set_USBClock();
-	
 	FastCharge_Trigger_Service_Init();
 	Cooling_Fan_Service_Init();
-	
-	vTaskDelay(10/portTICK_RATE_MS);
-
 	LED_Animate_DeInit();
 	LogoWithInitStatus_DeInit();
-
 	UpdateOLEDJustNow = false;
-	
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
-
-	if (LEFT_KEY == KEY_ON)
-	{
-		BadApplePlayer_Init();
-	}
-	else
-		USBMeter_Init(USBMETER_ONLY);
+	USBMeter_Init(USBMETER_ONLY);
 	vTaskDelete(NULL);
 }
 

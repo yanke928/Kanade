@@ -129,6 +129,6 @@ void ShowCurrentTempSensor(void)
 void TemperatureSensors_Init(void)
 {
 	xTaskCreate(Temperature_Handler, "Temperature_Handler",
-		64, NULL, TEMPERATURE_UPDATE_HANDLER_PRIORITY, NULL);
+		160, NULL, TEMPERATURE_UPDATE_HANDLER_PRIORITY, NULL);
 }
 

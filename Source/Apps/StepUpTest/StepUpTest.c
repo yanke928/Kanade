@@ -14,8 +14,6 @@
 
 #include "MCP3421.h"
 
-//#include "EBProtocol.h"
-
 #include "UI_Dialogue.h"
 #include "UI_Adjust.h"
 #include "UI_ListView.h"
@@ -59,27 +57,22 @@ void StepUpTest_Handler(void *pvParameters)
 	u16 currentAddr = 0;
 	u16 currentCurrent;
 	u16 lastCurrent = test_Params->StartCurrent;
-//u8 i;
-//EBD_Sync();
+
 	vPortEnterCritical();
 	EraseCacheBlocks();
 	vPortExitCritical();
 	Send_Digital_Load_Command(test_Params->StartCurrent, Load_Start);
 	vTaskDelay(2000 / portTICK_RATE_MS);
-//	EBD_Sync();
 	currentState.TestOverFlag = 0;
 	currentState.CurrentTime = 0;
 	for (;;)
 	{
     vTaskDelay(1000*UPDATE_RATE_TIME_PER_RECORD/portTICK_RATE_MS);
     xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
-//		xQueueReceive(EBDRxDataMsg, &i, portMAX_DELAY);
 		xQueueSend(StepUpTest_UI_UpdateMsg, &currentState, 0);
 		Flash_ProgramFloat(FLASH_VOLTAGE_ADDR + currentAddr * sizeof(float), CurrentMeterData.Voltage);
 		Flash_ProgramFloat(FLASH_CURRENT_ADDR + currentAddr * sizeof(float), CurrentMeterData.Current);
     xSemaphoreGive(USBMeterState_Mutex);
-//		currentState.CurrentTime = currentState.CurrentTime + 
-//		EBD_Protocol_Config[CurrentSettings->EBD_Model]->TimePerUpdate;
     currentState.CurrentTime=currentState.CurrentTime+UPDATE_RATE_TIME_PER_RECORD;
 		currentAddr++;
 		currentCurrent = (currentState.CurrentTime / test_Params->TimeInterval)*test_Params->Step + test_Params->StartCurrent;
@@ -131,7 +124,6 @@ void StepUpTest_UI_Handler(void *pvParameters)
 		if (currentState.CurrentTime != 0)
 		{
 			xQueueSend(UI_ProgressBarMsg, &progressTime, portMAX_DELAY);
-			//vTaskDelay(1000 / portTICK_RATE_MS);
 			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 			StepUpTestOnTimeUI(currentState.CurrentTime + 1);
 			xSemaphoreGive(OLEDRelatedMutex);
@@ -281,8 +273,6 @@ bool ShowStepUpTestResultInListView(u16 time)
 	listView_Params.FastSpeed = 25;
 	listView_Params.Item1AutoNum = true;
 	listView_Params.Item1AutoNumStart = 0;
-//	listView_Params.Item1AutoNumStep = EBD_Protocol_Config[CurrentSettings->EBD_Model]->TimePerUpdate;
-//	listView_Params.ListLength = time / EBD_Protocol_Config[CurrentSettings->EBD_Model]->TimePerUpdate;
 	listView_Params.Item1AutoNumStep = UPDATE_RATE_TIME_PER_RECORD;
 	listView_Params.ListLength = time / UPDATE_RATE_TIME_PER_RECORD;
 	UI_ListView_Init(&listView_Params);
@@ -350,18 +340,6 @@ bool ShowStepUpTestResultInDialgram(u16 time)
 	dialgram_Params.DataNumSprintfCommandString = "t=%03ds";
 	dialgram_Params.DataSprintfCommandStrings[0] = "%0.3fV";
 	dialgram_Params.DataSprintfCommandStrings[1] = "%0.3fA";
-//	dialgram_Params.RecordLength = time / EBD_Protocol_Config[CurrentSettings->EBD_Model]->TimePerUpdate;
-//	dialgram_Params.MaxValues[0] = FindMax((float*)(FLASH_VOLTAGE_ADDR), 
-//		time / EBD_Protocol_Config[CurrentSettings->EBD_Model]->TimePerUpdate);
-//	dialgram_Params.MinValues[0] = FindMin((float*)(FLASH_VOLTAGE_ADDR), 
-//		time / EBD_Protocol_Config[CurrentSettings->EBD_Model]->TimePerUpdate );
-//	dialgram_Params.MaxValues[1] = FindMax((float*)(FLASH_CURRENT_ADDR),
-//		time / EBD_Protocol_Config[CurrentSettings->EBD_Model]->TimePerUpdate);
-//	dialgram_Params.MinValues[1] = FindMin((float*)(FLASH_CURRENT_ADDR), 
-//		time / EBD_Protocol_Config[CurrentSettings->EBD_Model]->TimePerUpdate);
-//	dialgram_Params.Item1AutoNumStart = 0;
-//	dialgram_Params.Item1AutoNumStep = EBD_Protocol_Config[CurrentSettings->EBD_Model]->TimePerUpdate;
-
 	dialgram_Params.RecordLength = time / 1;
 	dialgram_Params.MaxValues[0] = FindMax((float*)(FLASH_VOLTAGE_ADDR), 
 		time / 1);

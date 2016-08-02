@@ -1,6 +1,9 @@
 #ifndef __MCP3421_H
 #define	__MCP3421_H
 
+#include <stdio.h>
+#include <stdbool.h>
+
 #include "stm32f10x.h"
 #include "misc.h"
 
@@ -8,8 +11,6 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"  
-
-#include <stdio.h>
 
 typedef struct {
 	float Voltage;
@@ -19,9 +20,17 @@ typedef struct {
 	float VoltageDM;
 }USBMeterStruct;
 
-extern volatile USBMeterStruct CurrentMeterData;
+typedef struct {
+	float Capacity;
+	float Work;
+	float PlatformVolt;
+}SumupStruct;
 
-extern volatile USBMeterStruct FilteredMeterData;
+extern USBMeterStruct CurrentMeterData;
+
+extern USBMeterStruct FilteredMeterData;
+
+extern volatile SumupStruct CurrentSumUpData;
 
 extern xSemaphoreHandle USBMeterState_Mutex;
 

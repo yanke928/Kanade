@@ -105,8 +105,8 @@ void ADC_Filter(void *pvParameters)
 	u8 m=0;
   float delta;
 	bool currentTrend;
-  bool lstTrend[ADC_FILTER_ITEM_NUM];
-  float lstCoeficient[ADC_FILTER_ITEM_NUM];
+  volatile bool lstTrend[ADC_FILTER_ITEM_NUM];
+  volatile float lstCoeficient[ADC_FILTER_ITEM_NUM];
 	while (1)
 	{
 		for (m = 0; m < ADC_FILTER_ITEM_NUM; m++)

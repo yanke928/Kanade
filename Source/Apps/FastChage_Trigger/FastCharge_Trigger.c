@@ -10,7 +10,7 @@
 
 #include "SSD1306.h"
 #include "Keys.h"
-#include "EBProtocol.h"
+#include "MCP3421.h"
 
 #include "UI_Dialogue.h"
 #include "UI_Button.h"
@@ -19,6 +19,11 @@
 #include "FastCharge_Trigger_Circuit.h"
 
 #include "FastCharge_Trigger.h"
+
+typedef struct {
+	u8 Plus;
+	u8 Minus;
+}FastChargeAdjustCommandSetStruct;
 
 /**
   * @brief  Show current voltage and current
@@ -173,8 +178,8 @@ void MTKTrigger_Init(void)
 {
 	OLED_PositionStruct positions[2] = { {40,28},{10,28} };
 	FastChargeAdjustCommandSetStruct commandSet;
-	commandSet.Minus = EBD_MTK_MINUS_COMMAND;
-	commandSet.Plus = EBD_MTK_PLUS_COMMAND;
+	commandSet.Minus = MTK_Decrease;
+	commandSet.Plus = MTK_Increase;
 	USBTriggerAdjustUI("MTK-PE Mode", commandSet, positions);
 }
 
