@@ -27,7 +27,9 @@
 #define VOLTAGE_GAIN 11
 #define CURRENT_SENSOR_RESISTANCE 15
 
-USBMeterStruct CurrentMeterData;
+volatile USBMeterStruct CurrentMeterData;
+
+volatile USBMeterStruct FilteredMeterData;
 
 xSemaphoreHandle USBMeterState_Mutex = NULL;
 
@@ -285,12 +287,56 @@ void WriteMCP3421(u8 dat,u8 add,u8 num)
  I2C_WaitAck(num);
  I2C_Stop(num);
 }
+
+void Volatile_Coeficient_Filter(float *lstCoeficient[],bool* lstTrend[],float* lstData[],float * newData[],u16 num,float baseCoeficient)
+{
+ u16 m;
+ float delta;
+ bool newTrend;
+ for(m=0;m<num;m++)
+ {
+  if((*newData[m])==*(lstData[m])) continue;
+  if((*(newData[m]))-(*(lstData[m]))>0) newTrend=true;
+  else newTrend=false;
+  if(newTrend==(*lstTrend[m]))
+   {
+    (*lstCoeficient[m])=(*lstCoeficient[m])*2;
+   }
+  else (*lstCoeficient[m])=baseCoeficient;
+  (*lstTrend[m])=newTrend;
+  (*lstCoeficient[m])=(*lstCoeficient[m])<0.01?0.01:(*lstCoeficient[m]);
+  (*lstCoeficient[m])=(*lstCoeficient[m])>1?1:(*lstCoeficient[m]);
+  delta=(*newData[m])-(*lstData[m]);
+  (*lstData[m])=(*lstData[m])+delta*(*lstCoeficient[m]);
+ }
+}
 	
 void MCP3421_MeterData_Update_Service(void *pvParameters)
 {
  u32 voltRAW,curtRAW; 
  u32 lstCurrent;
  u8 m;
+ float lstCoeficient[2]={0.2,0.2};
+ float lstVoltageAndCurrent[2]={0,0};
+ bool lstTrend[2]={true,true};
+
+ float* lstCoeficient_p[2];
+ float* lstVoltageAndCurrent_p[2];
+ float *newVoltageAndCurrent_p[2];
+ bool* lstTrend_p[2];
+
+ lstCoeficient_p[0]=&lstCoeficient[0];
+ lstCoeficient_p[1]=&lstCoeficient[1];
+
+ lstTrend_p[0]=&lstTrend[0];
+ lstTrend_p[1]=&lstTrend[1];
+
+ lstVoltageAndCurrent_p[0]=&lstVoltageAndCurrent[0];
+ lstVoltageAndCurrent_p[1]=&lstVoltageAndCurrent[1]; 
+
+ newVoltageAndCurrent_p[0]=&CurrentMeterData.Voltage;
+ newVoltageAndCurrent_p[1]=&CurrentMeterData.Current;
+
  for(;;)
 	{
 	 voltRAW=GetResultFromMCP3421(0xd1,I2C_2);
@@ -313,6 +359,14 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
 	 CurrentMeterData.Current=(double)(*(int32_t*)(&curtRAW))/(0x20000/2048*8)/CURRENT_SENSOR_RESISTANCE;
 	 CurrentMeterData.Voltage=(double)(*(int32_t*)(&voltRAW))/0x20000*2.048*VOLTAGE_GAIN;
    CurrentMeterData.Power=CurrentMeterData.Current* CurrentMeterData.Voltage;
+	 xSemaphoreGive(USBMeterState_Mutex);
+   
+   Volatile_Coeficient_Filter(lstCoeficient_p,lstTrend_p,lstVoltageAndCurrent_p,newVoltageAndCurrent_p,2,0.02);
+
+	 xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
+	 FilteredMeterData.Current=lstVoltageAndCurrent[1];
+	 FilteredMeterData.Voltage=lstVoltageAndCurrent[0];
+   FilteredMeterData.Power=FilteredMeterData.Current* FilteredMeterData.Voltage;
 	 xSemaphoreGive(USBMeterState_Mutex);
 
    if(curtRAW!=lstCurrent)

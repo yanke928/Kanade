@@ -14,7 +14,7 @@
 #include "Keys.h"
 #include "LED_Animate.h"
 #include "Music.h"
-#include "EBProtocol.h"
+#include "Digital_Load.h"
 #include "VirtualRTC.h"
 
 #include "USBMeter.h"
@@ -85,53 +85,6 @@ void ShowFault(char * string)
 	for (;;);
 }
 
-/**
-  * @brief Try to reconnect EBD automatically when EBD keeps not
-responding for 3s
-
-  * @retval None
-  */
-void EBD_Exception_Handler(void *pvParameters)
-{
-	portTickType xLastWakeTime;
-	u8 i;
-	xLastWakeTime = xTaskGetTickCount();
-	for (;;)
-	{
-		vTaskDelayUntil(&xLastWakeTime, 3000 / portTICK_RATE_MS);
-		if (EBDAliveFlag == false)
-		{
-			LED_Animate_Init(LEDAnimation_EBDException);
-			EBDUSB_LinkStart(true);
-			xQueueReceive(EBDRxDataMsg, &i, 0);
-			while (xQueueReceive(EBDRxDataMsg, &i, 3000 / portTICK_RATE_MS) != pdPASS)
-			{
-				EBDUSB_LinkStart(true);
-			}
-			while (xQueueReceive(EBDRxDataMsg, &i, 3000 / portTICK_RATE_MS) != pdPASS);
-			xLastWakeTime = xTaskGetTickCount();
-			LED_Animate_DeInit();
-		}
-		EBDAliveFlag = false;
-	}
-}
-
-/**
-  * @brief  Stop EBD unconditionally
-
-  * @retval None
-  */
-void Stop_Any_EBD_Load()
-{
-	for (;;)
-	{
-		EBDSendLoadCommand(0, StopTest);
-		EBD_Sync();
-		if (CurrentMeterData.Current < 0.05) break;
-		vTaskDelay(200 / portTICK_RATE_MS);
-	}
-}
-
 void Show_OverHeat_Temperature(u8 sensor)
 {
 	char tempString[20];
@@ -180,7 +133,8 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 		VirtualRTC_Pause();
 		if (status == LEGACY_TEST)
 		{
-			Stop_Any_EBD_Load();
+      Send_Digital_Load_Command(0,Load_Stop);
+//			Stop_Any_EBD_Load();
 			vTaskDelay(200/portTICK_RATE_MS);
 		}
 		EBD_Fan_TurnOn_Only();
@@ -221,16 +175,16 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 	}
 }
 
-/**
-  * @brief  Init EBD exception handler
+///**
+//  * @brief  Init EBD exception handler
 
-  * @retval None
-  */
-void EBD_Exception_Handler_Init(void)
-{
-	xTaskCreate(EBD_Exception_Handler, "EBD Exception Handler",
-		128, NULL, EBD_EXCEPTION_HANDLER_PRIORITY, NULL);
-}
+//  * @retval None
+//  */
+//void EBD_Exception_Handler_Init(void)
+//{
+//	xTaskCreate(EBD_Exception_Handler, "EBD Exception Handler",
+//		128, NULL, EBD_EXCEPTION_HANDLER_PRIORITY, NULL);
+//}
 
 /**
   * @brief  This function handles NMI exception.

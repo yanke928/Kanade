@@ -13,7 +13,6 @@
 #include "Digital_Load.h"
 #include "LED.h"
 #include "SSD1306.h"
-#include "EBProtocol.h"
 #include "sdcard.h"
 #include "sdcardff.h"
 #include "LED_Animate.h"
@@ -184,18 +183,17 @@ void StartOrRecoverLoad(Legacy_Test_Param_Struct* test_Params, bool *protectedFl
 	for (;;)
 	{
 		/*If protection triggered,undo the legacy test*/
-		if (CurrentMeterData.Voltage < (float)(test_Params->ProtectVolt) / 1000 ||
-			CurrentMeterData.Voltage < 0.5)
+		if (FilteredMeterData.Voltage < (float)(test_Params->ProtectVolt) / 1000 ||
+			FilteredMeterData.Voltage < 0.5)
 		{
 			*protectedFlag = true;
-			vTaskDelay(200 / portTICK_RATE_MS);
 			Send_Digital_Load_Command(0, Load_Stop);
 			break;
 		}
 
 		/*Break if the load command effects*/
-		if (CurrentMeterData.Current > (float)(test_Params->Current) / 1010 &&
-			CurrentMeterData.Current < (float)(test_Params->Current) / 990 &&
+		if (FilteredMeterData.Current > (float)(test_Params->Current) / 1050 &&
+			FilteredMeterData.Current < (float)(test_Params->Current) / 950 &&
 			test_Params->TestMode == ConstantCurrent)
 		{
 			*protectedFlag = false;
@@ -210,7 +208,7 @@ void StartOrRecoverLoad(Legacy_Test_Param_Struct* test_Params, bool *protectedFl
 			break;
 		}
 
-		vTaskDelay(200 / portTICK_RATE_MS);
+		vTaskDelay(1000 / portTICK_RATE_MS);
 		if (test_Params->TestMode == ConstantCurrent)
 			Send_Digital_Load_Command(test_Params->Current, Load_Start);
 		else
@@ -452,7 +450,7 @@ void StopRecord(u8* status, u8 reason)
 	}
 
 	/*If it is a record with load,stop EBD*/
-	if (*status == LEGACY_TEST) EBDSendLoadCommand(0, StopTest);
+	if (*status == LEGACY_TEST) Send_Digital_Load_Command(0, Load_Stop);
 
 	/*DeInit virtual RTC*/
 	VirtualRTC_DeInit();

@@ -419,39 +419,39 @@ void EBD_Sync()
 	xQueueReceive(EBDRxDataMsg, &i, portMAX_DELAY);
 }
 
-/**
-  * @brief Init EBD and create necessary tasks
+///**
+//  * @brief Init EBD and create necessary tasks
 
-  * @retval : None
-  */
-void EBD_Init(void)
-{
-	u8 i;
-	/*Init EBD messages*/
-	EBDTxDataMsg = xQueueCreate(1, sizeof(u8));
-	EBDRxDataMsg = xQueueCreate(1, sizeof(u8));
-	/*Create tasks for transmitter and receiver*/
-	xTaskCreate(EBDPacketTransmitter, "EBD Packet Transmitter",
-		128, NULL, EBD_PACKET_TRANSMITTER_PRIORITY, NULL);
-	xTaskCreate(EBDPacketReceiver, "EBD Packet Receiver",
-		128, NULL, EBD_PACKET_RECEIVER_PRIORITY, NULL);
-	/*Init usart*/
-	taskENTER_CRITICAL();
-	USART1_TX_DMA_Init();
-	USART1_Init();
-	taskEXIT_CRITICAL();
-	/*Send connection start string to EBD*/
-	vTaskDelay(100 / portTICK_RATE_MS);
-	EBDUSB_LinkStart(true);
-	EBDAliveFlag = true;
-	/*Keep waiting until EBD responses*/
-	xQueueSend(InitStatusMsg, WaitingForEBD_Str[CurrentSettings->Language], 0);
-	while (xQueueReceive(EBDRxDataMsg, &i, 3000 / portTICK_RATE_MS) != pdPASS)
-	{
-		EBDUSB_LinkStart(true);
-	}
-	EBD_Exception_Handler_Init();
-	/*Update initStatus*/
-	xQueueSend(InitStatusMsg, EBDConnected_Str[CurrentSettings->Language], 0);
-	return;
-}
+//  * @retval : None
+//  */
+//void EBD_Init(void)
+//{
+//	u8 i;
+//	/*Init EBD messages*/
+//	EBDTxDataMsg = xQueueCreate(1, sizeof(u8));
+//	EBDRxDataMsg = xQueueCreate(1, sizeof(u8));
+//	/*Create tasks for transmitter and receiver*/
+//	xTaskCreate(EBDPacketTransmitter, "EBD Packet Transmitter",
+//		128, NULL, EBD_PACKET_TRANSMITTER_PRIORITY, NULL);
+//	xTaskCreate(EBDPacketReceiver, "EBD Packet Receiver",
+//		128, NULL, EBD_PACKET_RECEIVER_PRIORITY, NULL);
+//	/*Init usart*/
+//	taskENTER_CRITICAL();
+//	USART1_TX_DMA_Init();
+//	USART1_Init();
+//	taskEXIT_CRITICAL();
+//	/*Send connection start string to EBD*/
+//	vTaskDelay(100 / portTICK_RATE_MS);
+//	EBDUSB_LinkStart(true);
+//	EBDAliveFlag = true;
+//	/*Keep waiting until EBD responses*/
+//	xQueueSend(InitStatusMsg, WaitingForEBD_Str[CurrentSettings->Language], 0);
+//	while (xQueueReceive(EBDRxDataMsg, &i, 3000 / portTICK_RATE_MS) != pdPASS)
+//	{
+//		EBDUSB_LinkStart(true);
+//	}
+//	EBD_Exception_Handler_Init();
+//	/*Update initStatus*/
+//	xQueueSend(InitStatusMsg, EBDConnected_Str[CurrentSettings->Language], 0);
+//	return;
+//}

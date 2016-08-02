@@ -29,6 +29,7 @@ void Set_Constant_Current(float curt)
   */
 void Digital_Load_Handler(void *pvParameters)
 {
+  float lstCommandCurrent;
 	float current = 0;
 	double lstRefVoltage;
 	double curtRefVoltage;
@@ -43,9 +44,13 @@ void Digital_Load_Handler(void *pvParameters)
 		{
 			lstRefVoltage = (double)SENSOR_RESISTANCE*(double)SENSOR_REFERENCE_GAIN*current / 1000;
 			Set_RefVoltageTo(lstRefVoltage);
+      if(current<0.3) 
+      vTaskDelay(750 / portTICK_RATE_MS);
+      else
 			vTaskDelay(500 / portTICK_RATE_MS);
 			lstTrend = true;
-			coeficient = 0.02;
+			coeficient = 0.01;
+      lstCommandCurrent=current;
 		}
 		for (;;)
 		{
@@ -55,17 +60,18 @@ void Digital_Load_Handler(void *pvParameters)
 			}
 			else
 			{
+        xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
 				curtRefVoltage = current / CurrentMeterData.Current*lstRefVoltage;
+        xSemaphoreGive(USBMeterState_Mutex);
 				if (current > CurrentMeterData.Current) curtTrend = true;
 				else curtTrend = false;
 				if (curtRefVoltage != lstRefVoltage)
 				{
 					if (lstTrend == curtTrend) coeficient = coeficient * 2;
-					else coeficient = 0.02;
-
+          else coeficient=0.02;
 					coeficient = coeficient > 0.5 ? 0.5 : coeficient;
-					coeficient = coeficient < 0.02 ? 0.05 : coeficient;
-					curtRefVoltage = (curtRefVoltage - lstRefVoltage)*coeficient + lstRefVoltage;
+					coeficient = coeficient < 0.01 ? 0.01 : coeficient;
+					curtRefVoltage = (curtRefVoltage - lstRefVoltage)*coeficient + lstRefVoltage; 
 					if (_ABS(curtRefVoltage - lstRefVoltage) > 0.0002)
 					{
 						Set_RefVoltageTo(curtRefVoltage);
@@ -73,7 +79,15 @@ void Digital_Load_Handler(void *pvParameters)
 					}
 				}
 				lstTrend = curtTrend;
-				xQueueReceive(Digital_Load_Command, &current, 270);
+				if(xQueueReceive(Digital_Load_Command, &current, 270)==pdPASS)
+        {
+         curtRefVoltage=curtRefVoltage*current/lstCommandCurrent; 
+         coeficient=0.01;
+         lstRefVoltage=curtRefVoltage;
+         lstCommandCurrent=current;
+         Set_RefVoltageTo(curtRefVoltage);
+         vTaskDelay(400/portTICK_RATE_MS);
+        }
 			}
 		}
 	}
@@ -90,7 +104,7 @@ void Digital_Load_Init()
 {
 	Digital_Load_Command = xQueueCreate(2, sizeof(float));
 	CreateTaskWithExceptionControl(Digital_Load_Handler, "Digital_Load Handler",
-		128, NULL, DIGITAL_LOAD_HANDLER_PRORITY, NULL);
+		160, NULL, DIGITAL_LOAD_HANDLER_PRORITY, NULL);
 }
 
 /**

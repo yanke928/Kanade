@@ -8,7 +8,7 @@
 
 #include "FreeRTOS_Standard_Include.h"
 
-#include "EBProtocol.h"
+#include "Digital_Load.h"
 #include "Temperature_Sensors.h"
 #include "SSD1306.h"
 #include "RTC.h"
@@ -48,6 +48,7 @@ void USBMeter(void *pvParameters)
 	u8 firstEnter=1;
 	Key_Message_Struct keyMessage;
 	u8 status = USBMETER_ONLY;
+  u8 reSendLoadCommandCnt=0;
 	Legacy_Test_Param_Struct legacy_Test_Params;
 	ClearKeyEvent(keyMessage);
 	while (1)
@@ -77,15 +78,20 @@ void USBMeter(void *pvParameters)
 				goto Refresh;
 			}
 			if (legacy_Test_Params.TestMode == ConstantPower)
-			{
+			{ 
+       reSendLoadCommandCnt++;
+       if(reSendLoadCommandCnt==5)
+        {
 				if (CurrentMeterData.Current < 0.1)
-					EBDSendLoadCommand((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, StartTest);
+					Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, StartTest);
 				else
-					EBDSendLoadCommand((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, KeepTest);
+					Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, KeepTest);
+         reSendLoadCommandCnt=0;
+        }
 			}
 		}
 		if(firstEnter) firstEnter--;
-		if (xQueueReceive(Key_Message, &keyMessage, 200 / portTICK_RATE_MS) == pdPASS)
+		if (xQueueReceive(Key_Message, &keyMessage, 500 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (status == USBMETER_ONLY)
 			{
@@ -147,27 +153,27 @@ void USBMeter(void *pvParameters)
   */
 void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
 {
-	if (CurrentMeterData.Voltage >= 10)
+	if (CurrentMeterData.Voltage >10)
 	{
-		sprintf(tempString, "%5.2fV", CurrentMeterData.Voltage);
+		sprintf(tempString, "%5.2fV", FilteredMeterData.Voltage);
 	}
 	else
 	{
-		sprintf(tempString, "%5.3fV", CurrentMeterData.Voltage);
+		sprintf(tempString, "%5.3fV", FilteredMeterData.Voltage);
 	}
 	OLED_ShowString(0, 0, tempString);
-	if (CurrentMeterData.Current >= 0.1)
-		sprintf(tempString, "%5.3fA", CurrentMeterData.Current);
+	if (CurrentMeterData.Current > 0.1)
+		sprintf(tempString, "%5.3fA", FilteredMeterData.Current);
 	else
-		sprintf(tempString, "%04.1fmA", CurrentMeterData.Current * 1000);
+		sprintf(tempString, "%04.1fmA", FilteredMeterData.Current * 1000);
 	OLED_ShowString(80, 0, tempString);
-	if (CurrentMeterData.Power >= 10)
+	if (CurrentMeterData.Power > 10)
 	{
-		sprintf(tempString, "%5.2fW", CurrentMeterData.Power);
+		sprintf(tempString, "%5.2fW", FilteredMeterData.Power);
 	}
 	else
 	{
-		sprintf(tempString, "%5.3fW", CurrentMeterData.Power);
+		sprintf(tempString, "%5.3fW", FilteredMeterData.Power);
 	}
 	OLED_ShowString(0, 16, tempString);
 	if (CurrentTemperatureSensor == Internal)

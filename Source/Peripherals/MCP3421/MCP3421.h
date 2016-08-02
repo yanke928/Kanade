@@ -19,7 +19,9 @@ typedef struct {
 	float VoltageDM;
 }USBMeterStruct;
 
-extern USBMeterStruct CurrentMeterData;
+extern volatile USBMeterStruct CurrentMeterData;
+
+extern volatile USBMeterStruct FilteredMeterData;
 
 extern xSemaphoreHandle USBMeterState_Mutex;
 

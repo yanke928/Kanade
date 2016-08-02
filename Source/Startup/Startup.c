@@ -323,7 +323,7 @@ void SystemStartup(void *pvParameters)
 		OSStatInit();
 	}
 	//CommandLine_Init();
-	//RTC_Init();
+	RTC_Init();
 	//SoundStart(Alarm);
 	LED_Animate_Init(LEDAnimation_Startup);
 	Settings_Init();

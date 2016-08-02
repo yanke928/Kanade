@@ -121,7 +121,7 @@ typedef struct {
 	u8 CurrentL;
 }EBDLoadCommandStruct;
 
-extern USBMeterStruct CurrentMeterData;
+extern volatile USBMeterStruct CurrentMeterData;
 
 extern SumupStruct    CurrentSumUpData;
 
