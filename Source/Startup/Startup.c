@@ -323,7 +323,7 @@ void SystemStartup(void *pvParameters)
 		OSStatInit();
 	}
 	//CommandLine_Init();
-	RTC_Init();
+	//RTC_Init();
 	//SoundStart(Alarm);
 	LED_Animate_Init(LEDAnimation_Startup);
 	Settings_Init();
@@ -331,8 +331,8 @@ void SystemStartup(void *pvParameters)
 	W25Q64_Init();
 	
 	PWMRef_Init();
-		
-	Set_Constant_Current(2);
+
+	Digital_Load_Init();
 
 	LogoWithInitStatus_Init();
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);

@@ -10,6 +10,7 @@
 
 #include "FreeRTOS_Standard_Include.h"
 
+#include "Digital_Load.h"
 #include "LED.h"
 #include "SSD1306.h"
 #include "EBProtocol.h"
@@ -177,20 +178,18 @@ u8 SelectLegacyTestMode()
 void StartOrRecoverLoad(Legacy_Test_Param_Struct* test_Params, bool *protectedFlag)
 {
 	if (test_Params->TestMode == ConstantCurrent)
-		EBDSendLoadCommand(test_Params->Current, StartTest);
+		Send_Digital_Load_Command(test_Params->Current, Load_Start);
 	else
-		EBDSendLoadCommand((float)test_Params->Power / CurrentMeterData.Voltage, StartTest);
+		Send_Digital_Load_Command((float)test_Params->Power / CurrentMeterData.Voltage, Load_Start);
 	for (;;)
 	{
-		EBD_Sync();
-
 		/*If protection triggered,undo the legacy test*/
 		if (CurrentMeterData.Voltage < (float)(test_Params->ProtectVolt) / 1000 ||
 			CurrentMeterData.Voltage < 0.5)
 		{
 			*protectedFlag = true;
 			vTaskDelay(200 / portTICK_RATE_MS);
-			EBDSendLoadCommand(0, StopTest);
+			Send_Digital_Load_Command(0, Load_Stop);
 			break;
 		}
 
@@ -213,9 +212,9 @@ void StartOrRecoverLoad(Legacy_Test_Param_Struct* test_Params, bool *protectedFl
 
 		vTaskDelay(200 / portTICK_RATE_MS);
 		if (test_Params->TestMode == ConstantCurrent)
-			EBDSendLoadCommand(test_Params->Current, StartTest);
+			Send_Digital_Load_Command(test_Params->Current, Load_Start);
 		else
-			EBDSendLoadCommand((float)test_Params->Power / CurrentMeterData.Voltage, KeepTest);
+			Send_Digital_Load_Command((float)test_Params->Power / CurrentMeterData.Voltage, Load_Keep);
 	}
 
 }
@@ -280,10 +279,6 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 
 	/*Show waiting string*/
 	xQueueSend(InitStatusMsg, PleaseWait_Str[CurrentSettings->Language], 0);
-
-	/*Sync EBD to meet the chance to send load command*/
-	EBD_Sync();
-	vTaskDelay(200);
 
 	StartOrRecoverLoad(test_Params, &protectedFlag);
 
