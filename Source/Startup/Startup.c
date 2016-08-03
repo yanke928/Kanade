@@ -38,6 +38,7 @@
 #include "UI_Print.h"
 
 #include "Settings.h"
+#include "Flash_Test.h"
 
 #include "Startup.h"
 
@@ -340,6 +341,7 @@ void SystemStartup(void *pvParameters)
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
+  Flash_Test_Run();
 	USBMeter_Init(USBMETER_ONLY);
 	vTaskDelete(NULL);
 }
