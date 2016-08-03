@@ -283,8 +283,8 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	/*Delete logo and initStatus tasks*/
 	LogoWithInitStatus_DeInit();
 
-	UpdateOLEDJustNow = false;
-	xSemaphoreGive(OLEDRelatedMutex);
+	//UpdateOLEDJustNow = false;
+	//xSemaphoreGive(OLEDRelatedMutex);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	OLED_Refresh_Gram();

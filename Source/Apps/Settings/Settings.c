@@ -81,7 +81,7 @@ void Settings()
 	stringTab[5]=SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
 	stringTab[6]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
 	stringTab[7]=SettingsItemSystemScan_Str[CurrentSettings->Language];
-	stringTab[8]="Calibrate";
+	stringTab[8]=SettingsItemAmpfilierSelfCalibration_Str[CurrentSettings->Language];
 	
 	menuParams.ItemStrings=stringTab;
 	menuParams.DefaultPos = 0;

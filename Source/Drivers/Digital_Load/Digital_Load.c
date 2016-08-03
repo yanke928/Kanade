@@ -13,6 +13,8 @@
 #include "Digital_Load.h"
 
 #include "UI_Dialogue.h"
+#include "MultiLanguageStrings.h"
+#include "Settings.h"
 
 #define DIGITAL_LOAD_HANDLER_PRORITY tskIDLE_PRIORITY+7
 
@@ -201,7 +203,7 @@ void Digital_Load_Calibrate()
 	float vRef2A0 = 0;
 	u8 t;
 	char tempString[20];
-	ShowSmallDialogue("Calibrating...", 1000, false);
+	ShowSmallDialogue(AmpfilierSelfCalibrationRunning_Str[CurrentSettings->Language], 1000, false);
 	Send_Digital_Load_Command(500, Load_Start);
 	vTaskDelay(6000 / portTICK_RATE_MS);
 	for (t = 0; t < 20; t++)
@@ -209,7 +211,7 @@ void Digital_Load_Calibrate()
 		if (CurrentMeterData.Current<0.498 || CurrentMeterData.Current>0.502)
 		{
 			Send_Digital_Load_Command(0, Load_Stop);
-			ShowSmallDialogue("Failed", 1000, true);
+			ShowSmallDialogue(AmpfilierSelfCalibrationFailed_Str[CurrentSettings->Language], 1000, true);
 			return;
 		}
 		vTaskDelay(250 / portTICK_RATE_MS);
@@ -222,7 +224,7 @@ void Digital_Load_Calibrate()
 		if (CurrentMeterData.Current<1.998 || CurrentMeterData.Current>2.002)
 		{
 			Send_Digital_Load_Command(0, Load_Stop);
-			ShowSmallDialogue("Failed", 1000, true);
+			ShowSmallDialogue(AmpfilierSelfCalibrationFailed_Str[CurrentSettings->Language], 1000, true);
 			return;
 		}
 		vTaskDelay(250 / portTICK_RATE_MS);
@@ -239,5 +241,5 @@ void Digital_Load_Calibrate()
 	ShowSmallDialogue(tempString, 1000, true);
 	sprintf(tempString, "b=%6.4f", b);
 	ShowSmallDialogue(tempString, 1000, true);
-	ShowSmallDialogue("Success", 1000, true);
+	ShowSmallDialogue(AmpfilierSelfCalibrationSuccess_Str[CurrentSettings->Language], 1000, true);
 }

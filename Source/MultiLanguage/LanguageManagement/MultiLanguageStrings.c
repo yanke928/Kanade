@@ -633,6 +633,30 @@ const char SDCardRemovedAccidentally_CN[] ="TF卡意外丢失";
 const char SDCardRemovedAccidentally_JP[] ="TFCard Lost";
 const char* const SDCardRemovedAccidentally_Str[] = { SDCardRemovedAccidentally_EN,SDCardRemovedAccidentally_TW,SDCardRemovedAccidentally_CN,SDCardRemovedAccidentally_JP };
 
+const char SettingsItemAmpfilierSelfCalibration_EN[] ="Self Calibration";
+const char SettingsItemAmpfilierSelfCalibration_TW[] ="運放自校準";
+const char SettingsItemAmpfilierSelfCalibration_CN[] ="运放自校准";
+const char SettingsItemAmpfilierSelfCalibration_JP[] ="オペアンプ自較正";
+const char* const SettingsItemAmpfilierSelfCalibration_Str[] = { SettingsItemAmpfilierSelfCalibration_EN,SettingsItemAmpfilierSelfCalibration_TW,SettingsItemAmpfilierSelfCalibration_CN,SettingsItemAmpfilierSelfCalibration_JP };
+
+const char AmpfilierSelfCalibrationSuccess_EN[] ="Success";
+const char AmpfilierSelfCalibrationSuccess_TW[] ="校準成功";
+const char AmpfilierSelfCalibrationSuccess_CN[] ="校准成功";
+const char AmpfilierSelfCalibrationSuccess_JP[] ="自較正終了";
+const char* const AmpfilierSelfCalibrationSuccess_Str[] = { AmpfilierSelfCalibrationSuccess_EN,AmpfilierSelfCalibrationSuccess_TW,AmpfilierSelfCalibrationSuccess_CN,AmpfilierSelfCalibrationSuccess_JP };
+
+const char AmpfilierSelfCalibrationFailed_EN[] ="Failed";
+const char AmpfilierSelfCalibrationFailed_TW[] ="校準失敗";
+const char AmpfilierSelfCalibrationFailed_CN[] ="校准失败";
+const char AmpfilierSelfCalibrationFailed_JP[] ="自較正失敗";
+const char* const AmpfilierSelfCalibrationFailed_Str[] = { AmpfilierSelfCalibrationFailed_EN,AmpfilierSelfCalibrationFailed_TW,AmpfilierSelfCalibrationFailed_CN,AmpfilierSelfCalibrationFailed_JP };
+
+const char AmpfilierSelfCalibrationRunning_EN[] ="Calibrating...";
+const char AmpfilierSelfCalibrationRunning_TW[] ="正在自校準...";
+const char AmpfilierSelfCalibrationRunning_CN[] ="正在自校准...";
+const char AmpfilierSelfCalibrationRunning_JP[] ="自較正...";
+const char* const AmpfilierSelfCalibrationRunning_Str[] = { AmpfilierSelfCalibrationRunning_EN,AmpfilierSelfCalibrationRunning_TW,AmpfilierSelfCalibrationRunning_CN,AmpfilierSelfCalibrationRunning_JP };
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},

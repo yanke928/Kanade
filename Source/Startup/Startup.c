@@ -234,7 +234,7 @@ void InitStatusUpdateHandler(void *pvParameters)
 void Logo_Init()
 {
 	if (LogoAnimateHandle == NULL)
-		xTaskCreate(LogoHandler, "Logo handler",
+		CreateTaskWithExceptionControl(LogoHandler, "Logo handler",
 			128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &LogoAnimateHandle);
 	InitAnimatePosHandle = xQueueCreate(1, sizeof(u8));
 }
@@ -248,7 +248,7 @@ void Logo_Init()
 void InitStatusHandler_Init(void)
 {
 	if (InitStatusHandle == NULL)
-		xTaskCreate(InitStatusUpdateHandler, "Init Status Handler",
+		CreateTaskWithExceptionControl(InitStatusUpdateHandler, "Init Status Handler",
 			128, NULL, SYSTEM_STARTUP_STATUS_UPDATE_PRIORITY, &InitStatusHandle);
 	InitStatusMsg = xQueueCreate(1, 30);
 }
@@ -289,8 +289,8 @@ void InitStatus_DeInit()
   */
 void LogoWithInitStatus_Init()
 {
-	Logo_Init();
 	InitStatusHandler_Init();
+	Logo_Init();
 }
 
 /**
