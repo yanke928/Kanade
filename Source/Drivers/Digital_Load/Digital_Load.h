@@ -15,4 +15,6 @@ void Digital_Load_Init(void);
 
 void Send_Digital_Load_Command(u32 current,u8 command);
 
+void Digital_Load_Calibrate(void);
+
 #endif /* __DIGITAL_LOAD_H__ */

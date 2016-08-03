@@ -30,6 +30,7 @@
 
 #include "About.h"
 #include "SelfTest.h"
+#include "Digital_Load.h"
 
 #include "Settings.h"
 
@@ -80,10 +81,11 @@ void Settings()
 	stringTab[5]=SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
 	stringTab[6]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
 	stringTab[7]=SettingsItemSystemScan_Str[CurrentSettings->Language];
+	stringTab[8]="Calibrate";
 	
 	menuParams.ItemStrings=stringTab;
 	menuParams.DefaultPos = 0;
-	menuParams.ItemNum = 8;
+	menuParams.ItemNum = 9;
 	menuParams.FastSpeed = 10;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
@@ -107,6 +109,7 @@ void Settings()
 	case 5:FirmwareUpdate();break;
 	case 6:About();break;
 	case 7:SelfTest();break;
+  case 8:Digital_Load_Calibrate();break;
 	}
 }
 
