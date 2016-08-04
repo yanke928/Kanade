@@ -17,7 +17,7 @@
 
 #define BAD_APPLE_PLAYER_PRIORITY tskIDLE_PRIORITY+5
 
-void BadApplePlayer(void *pvParameters)
+static void BadApplePlayer(void *pvParameters)
 {
 	FRESULT res;
 	FIL video;

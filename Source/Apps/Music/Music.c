@@ -179,7 +179,7 @@ const SingleToneStruct Alarm[] =
   * @retval : None
   */
 
-void SoundPlayer(void *pvParameters)
+static void SoundPlayer(void *pvParameters)
 {
 	//TIM_TimeBaseInitTypeDef  TIM4_TimeBaseStructure;
 	//TIM_OCInitTypeDef TimOCInitStructure;

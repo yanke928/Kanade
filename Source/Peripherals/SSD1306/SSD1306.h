@@ -70,7 +70,6 @@ void OLED_ShowIcon(unsigned char  x, unsigned char  y, unsigned char  no, unsign
 void OLED_ShowChar(unsigned char  x, unsigned char  y, unsigned char  chr, unsigned char  size, unsigned char  mode);
 void OLED_ShowNum(unsigned char  x, unsigned char  y, unsigned int num, unsigned char  len, unsigned char  size);
 void OLED_ShowString(unsigned char  x, unsigned char  y, const char  *p);
-void LCD_Set_Pos(unsigned char  x, unsigned char  y);
 
 void OLED_ShowAnyString(unsigned char  x, unsigned char  y, const char  *p, bool OnSelection, unsigned char size);
 void OLED_DrawVerticalLine(unsigned char  x, unsigned char  y1, unsigned char y2, unsigned char  t);

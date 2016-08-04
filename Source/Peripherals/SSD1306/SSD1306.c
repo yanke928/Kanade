@@ -55,7 +55,7 @@ volatile bool UpdateOLEDJustNow_Backup = false;
 
 	  @retval Received data
   */
-unsigned char SPI2_ReadWriteByte(unsigned char TxData)
+static unsigned char SPI2_ReadWriteByte(unsigned char TxData)
 {
 	unsigned int retry = 0;
 	while ((SPI2->SR & 1 << 1) == 0)
@@ -104,7 +104,7 @@ void OLED_Refresh_Gram(void)
 
 	  @retval None
   */
-void OLED_WR_Byte(unsigned char  dat, unsigned char  cmd)
+static void OLED_WR_Byte(unsigned char  dat, unsigned char  cmd)
 {
 	if (cmd)
 		OLED_RS_Set();
@@ -168,7 +168,7 @@ void OLED_Clear(void)
 
 	  @retval None
   */
-void LCD_Set_Pos(unsigned char  x, unsigned char  y)
+static void LCD_Set_Pos(unsigned char  x, unsigned char  y)
 {
 #if OLED_MODEL
 	x = x + 2;

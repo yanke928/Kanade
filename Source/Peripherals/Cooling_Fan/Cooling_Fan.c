@@ -16,7 +16,7 @@
 
 xQueueHandle CoolingFan_Command;
 
-void Cooling_Fan_GPIO_Init()
+static void Cooling_Fan_GPIO_Init()
 {
  GPIO_InitTypeDef GPIO_InitStructure;
  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
@@ -27,7 +27,7 @@ void Cooling_Fan_GPIO_Init()
  GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
-void Cooling_Fan_Service(void *pvParameters)
+static void Cooling_Fan_Service(void *pvParameters)
 {
  u8 command;
  u8 mode=Auto;

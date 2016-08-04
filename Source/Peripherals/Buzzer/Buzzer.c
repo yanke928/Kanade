@@ -3,7 +3,7 @@
 
 #include "Buzzer.h"
 
-void BuzzerGPIOInit(void)
+static void BuzzerGPIOInit(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
@@ -14,7 +14,7 @@ void BuzzerGPIOInit(void)
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 }
 
-void TIM4_Configuration()
+static void TIM4_Configuration()
 {
 	TIM_TimeBaseInitTypeDef  TIM4_TimeBaseStructure;
 	TIM_DeInit(TIM4);
@@ -26,7 +26,7 @@ void TIM4_Configuration()
 	TIM_TimeBaseInit(TIM4, &TIM4_TimeBaseStructure);
 }
 
-void BuzzerPWM_Configuration(void)
+static void BuzzerPWM_Configuration(void)
 {
 	TIM_OCInitTypeDef TimOCInitStructure;
 	TIM_OCStructInit(&TimOCInitStructure);

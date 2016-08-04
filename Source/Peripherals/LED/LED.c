@@ -39,7 +39,7 @@ void LED_GPIO_Init()
 
   * @retval None
   */
-void LEDSendABit(bool bit)
+static void LEDSendABit(bool bit)
 {
 	u8 i;
 	/*Send 1*/
@@ -83,7 +83,7 @@ void LEDSendABit(bool bit)
 
   * @retval None
   */
-void LEDSendByte(u8 byte)
+static void LEDSendByte(u8 byte)
 {
 	u8 i;
 	for (i = 0; i < 8; i++)

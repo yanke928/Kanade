@@ -8,7 +8,7 @@
 
 #define POWER_VOLT 3.3
 
-void PWMRef_GPIO_Init(void)
+static void PWMRef_GPIO_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
@@ -28,7 +28,7 @@ void PWMRef_SetToGND(void)
 	GPIO_Init(GPIOA, &GPIO_InitStructure); 
 }
 
-void TIM1_Configuration(void)
+static void TIM1_Configuration(void)
 {
 	TIM_TimeBaseInitTypeDef  TIM1_TimeBaseStructure;
 	TIM_DeInit(TIM1);
@@ -40,7 +40,7 @@ void TIM1_Configuration(void)
 	TIM_TimeBaseInit(TIM1, &TIM1_TimeBaseStructure);
 }
 
-void TIM1_PWM_Configuration(void)
+static void TIM1_PWM_Configuration(void)
 {
 	TIM_OCInitTypeDef TimOCInitStructure;
 	TIM_OCStructInit(&TimOCInitStructure);

@@ -63,7 +63,7 @@ void I2C_GPIO_Configuration()
  	GPIO_Init(GPIOB, &GPIO_InitStructure); 
 }
 
-void I2C_SDA_HIGH(u8 num)
+static void I2C_SDA_HIGH(u8 num)
 {
  switch(num)
  {
@@ -72,7 +72,7 @@ void I2C_SDA_HIGH(u8 num)
  }
 }
 
-void I2C_SDA_LOW(u8 num)
+static void I2C_SDA_LOW(u8 num)
 {
  switch(num)
  {
@@ -81,7 +81,7 @@ void I2C_SDA_LOW(u8 num)
  }
 }
 
-u8 I2C_SDA_READ(u8 num)
+static u8 I2C_SDA_READ(u8 num)
 { 
  u8 status;
  switch(num)
@@ -92,7 +92,7 @@ u8 I2C_SDA_READ(u8 num)
  return status;
 }
 
-void Delayxus(u16 time)
+static void Delayxus(u16 time)
 {    
    u16 i=0;  
    while(time--)
@@ -103,7 +103,7 @@ void Delayxus(u16 time)
 }
 #define I2C_delay() Delayxus(1)
 
-bool I2C_Start(u8 num)
+static bool I2C_Start(u8 num)
 {
  I2C_SDA_HIGH(num);
  I2C_SCL_HIGH();
@@ -117,7 +117,7 @@ bool I2C_Start(u8 num)
  return true;
 }
 
-void I2C_Ack(u8 num)
+static void I2C_Ack(u8 num)
 { 
  I2C_SCL_LOW();
  I2C_delay();
@@ -129,7 +129,7 @@ void I2C_Ack(u8 num)
  I2C_delay();
 }
 
-void I2C_Stop(u8 num)
+static void I2C_Stop(u8 num)
 {
  I2C_SCL_LOW();
  I2C_delay();
@@ -141,7 +141,7 @@ void I2C_Stop(u8 num)
  I2C_delay();
 }
 
-void I2C_NoAck(u8 num)
+static void I2C_NoAck(u8 num)
 { 
  I2C_SCL_LOW();
  I2C_delay();
@@ -153,7 +153,7 @@ void I2C_NoAck(u8 num)
  I2C_delay();
 }
 
-bool I2C_WaitAck(u8 num)  
+static bool I2C_WaitAck(u8 num)  
 {
  I2C_SCL_LOW();
  I2C_delay();
@@ -170,7 +170,7 @@ bool I2C_WaitAck(u8 num)
  return true;
 }
 
-void I2C_SendByte(u8 SendByte,u8 num)
+static void I2C_SendByte(u8 SendByte,u8 num)
 {
     u8 i=8;
     while(i--)
@@ -189,7 +189,7 @@ void I2C_SendByte(u8 SendByte,u8 num)
     I2C_SCL_LOW();
 }
 
-u8 I2C_ReceiveByte(u8 num) 
+static u8 I2C_ReceiveByte(u8 num) 
 { 
     u8 i=8;
     u8 ReceiveByte=0;
@@ -210,55 +210,55 @@ u8 I2C_ReceiveByte(u8 num)
     return ReceiveByte;
 }
 
-bool I2C_WriteByte(u8 SendByte, u16 WriteAddress, u8 DeviceAddress,u8 num)
-{  
-    if(!I2C_Start(num))return false;
-	
-    I2C_SendByte( DeviceAddress & 0xFE,num);
-    if(!I2C_WaitAck(num))
-    {
-		  I2C_Stop(num); 
-		  return false;
-		}
-    I2C_SendByte((u8)((WriteAddress>>8) & 0xFF),num);      
-    I2C_WaitAck(num); 
-    I2C_SendByte((u8)((WriteAddress) & 0xFF),num);   
-    I2C_WaitAck(num); 
-    I2C_SendByte(SendByte,num);         
-    I2C_WaitAck(num);   
-    I2C_Stop(num); 
-    I2C_delay();
-    return true;
-}
+//static bool I2C_WriteByte(u8 SendByte, u16 WriteAddress, u8 DeviceAddress,u8 num)
+//{  
+//    if(!I2C_Start(num))return false;
+//	
+//    I2C_SendByte( DeviceAddress & 0xFE,num);
+//    if(!I2C_WaitAck(num))
+//    {
+//		  I2C_Stop(num); 
+//		  return false;
+//		}
+//    I2C_SendByte((u8)((WriteAddress>>8) & 0xFF),num);      
+//    I2C_WaitAck(num); 
+//    I2C_SendByte((u8)((WriteAddress) & 0xFF),num);   
+//    I2C_WaitAck(num); 
+//    I2C_SendByte(SendByte,num);         
+//    I2C_WaitAck(num);   
+//    I2C_Stop(num); 
+//    I2C_delay();
+//    return true;
+//}
 
-u8 I2C_ReadByte( u16 ReadAddress,  u8 DeviceAddress,u8 num)
-{  
-    u8 temp;
-    if(!I2C_Start(num))return false;
-	
-    I2C_SendByte((DeviceAddress & 0xFE),num);
-    if(!I2C_WaitAck(num))
-    {
-		  I2C_Stop(num); 
-		  return false;
-		}
-    I2C_SendByte((u8)((ReadAddress>>8) & 0xFF),num);  
-    I2C_WaitAck(num);
-    I2C_SendByte((u8)((ReadAddress) & 0xFF),num);        
-    I2C_WaitAck(num);
-    I2C_Start(num);
-    I2C_SendByte((DeviceAddress & 0xFE)|0x01,num);  
-    I2C_WaitAck(num);
-   
-    temp = I2C_ReceiveByte(num);
-    
-    I2C_NoAck(num);
-     
-    I2C_Stop(num);
-    return temp;
-}
+//static u8 I2C_ReadByte( u16 ReadAddress,  u8 DeviceAddress,u8 num)
+//{  
+//    u8 temp;
+//    if(!I2C_Start(num))return false;
+//	
+//    I2C_SendByte((DeviceAddress & 0xFE),num);
+//    if(!I2C_WaitAck(num))
+//    {
+//		  I2C_Stop(num); 
+//		  return false;
+//		}
+//    I2C_SendByte((u8)((ReadAddress>>8) & 0xFF),num);  
+//    I2C_WaitAck(num);
+//    I2C_SendByte((u8)((ReadAddress) & 0xFF),num);        
+//    I2C_WaitAck(num);
+//    I2C_Start(num);
+//    I2C_SendByte((DeviceAddress & 0xFE)|0x01,num);  
+//    I2C_WaitAck(num);
+//   
+//    temp = I2C_ReceiveByte(num);
+//    
+//    I2C_NoAck(num);
+//     
+//    I2C_Stop(num);
+//    return temp;
+//}
 
-u32 GetResultFromMCP3421(unsigned char address,u8 num)
+static u32 GetResultFromMCP3421(unsigned char address,u8 num)
 {
 	unsigned char byte1, byte2, byte3;
 	u32 mcp3421result;
@@ -280,7 +280,7 @@ u32 GetResultFromMCP3421(unsigned char address,u8 num)
 	return mcp3421result;
 }
 
-void WriteMCP3421(u8 dat,u8 add,u8 num)
+static void WriteMCP3421(u8 dat,u8 add,u8 num)
 {
  I2C_Start(num);
  I2C_SendByte(add,num);

@@ -22,7 +22,7 @@
 * Output         : None
 * Return         : u8 RxData 收到的数
 *******************************************************************************/
-u8 SPI_ReadWriteByte(u8 TxData)
+static u8 SPI_ReadWriteByte(u8 TxData)
 {
 	while ((SPI1->SR & 1 << 1) == 0);//等待发送区空				  
 	SPI1->DR = TxData;	 	  //发送一个byte   
@@ -33,7 +33,7 @@ u8 SPI_ReadWriteByte(u8 TxData)
 /**
   * @brief Init GPIO for SPI FLASH CS pin
   */
-void W25X_CS_Init()
+static void W25X_CS_Init()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -93,7 +93,7 @@ void W25Q64_Init()
 /**
   * @brief Receive a byte with dummy command
   */
-u8 SPI_Read_Byte(void)
+static u8 SPI_Read_Byte(void)
 {
 	return (SPI_ReadWriteByte(DUMMY_BYTE));
 }

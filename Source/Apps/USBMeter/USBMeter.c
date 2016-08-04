@@ -35,12 +35,16 @@
 
 #define USB_METER_PRIORITY tskIDLE_PRIORITY+3
 
+static void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter);
+
+static void DisplayRecordData(char tempString[]);
+
 /**
   * @brief  USBMeter
 
   * @retval None
   */
-void USBMeter(void *pvParameters)
+static void USBMeter(void *pvParameters)
 {
 	char tempString[20];
 	u8 firstEnter=1;
@@ -149,7 +153,7 @@ void USBMeter(void *pvParameters)
 	By sharing the tempString,more sources can be saved
 	@retval None
   */
-void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
+static void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
 {
 	if (CurrentMeterData.Voltage >10)
 	{
@@ -223,7 +227,7 @@ void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
 	By sharing the tempString,more sources can be saved
 	@retval None
   */
-void DisplayRecordData(char tempString[])
+static void DisplayRecordData(char tempString[])
 {
 	if (CurrentSumUpData.Capacity >= 10000)
 		sprintf(tempString, "%05.2fAh", CurrentSumUpData.Capacity);

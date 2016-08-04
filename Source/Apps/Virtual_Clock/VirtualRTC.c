@@ -31,7 +31,7 @@ xTaskHandle VirtualRTCHandle = NULL;
   * @brief   Update RTCCurrent struct according to SecondNum
   * @retval : None
   */
-void UpdateRTCStruct(void)
+static void UpdateRTCStruct(void)
 {
 	RTCCurrent.Sec = SecondNum % 60;
 	RTCCurrent.Day = SecondNum / 86400;
@@ -54,7 +54,7 @@ void GenerateVirtualRTCString(char string[])
 
   * @retval : None
   */
-void VirtualRTC_Handler(void *pvParameters)
+static void VirtualRTC_Handler(void *pvParameters)
 {
 	while (1)
 	{

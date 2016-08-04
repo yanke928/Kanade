@@ -27,7 +27,7 @@ float PowerSourceVoltage;
   * @brief   Initialize temperatureADC and its corresponding DMA
   * @retval : None
   */
-void ADC_And_DMA_Init(void)
+static void ADC_And_DMA_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	ADC_InitTypeDef ADC_InitStructure;
@@ -100,7 +100,7 @@ void ADC_And_DMA_Init(void)
   * @brief   ADC filter
   * @retval : None
   */
-void ADC_Filter(void *pvParameters)
+static void ADC_Filter(void *pvParameters)
 {
 	u8 m=0;
   float delta;
