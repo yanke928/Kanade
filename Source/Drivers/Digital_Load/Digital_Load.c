@@ -100,7 +100,7 @@ void Digital_Load_Handler(void *pvParameters)
 					coeficient = coeficient < 0.01 ? 0.01 : coeficient;
 					curtRefVoltage = (curtRefVoltage - lstRefVoltage)*coeficient + lstRefVoltage;
 					//          curtRefVoltage = curtRefVoltage>1.5*preferredRefVoltage+0.1?1.5*preferredRefVoltage+0.1:curtRefVoltage;
-					if (_ABS(curtRefVoltage - lstRefVoltage) > 0.0002)
+					if (_ABS(curtRefVoltage - lstRefVoltage) > 0.00005)
 					{
 						Set_RefVoltageTo(curtRefVoltage);
 						lstRefVoltage = curtRefVoltage;
@@ -110,6 +110,7 @@ void Digital_Load_Handler(void *pvParameters)
 				if (xQueueReceive(Digital_Load_Command, &current, 270) == pdPASS)
 				{
 					preferredRefVoltage = current*Calibration_Data->Refk + Calibration_Data->Refb;
+          if(_ABS(curtRefVoltage - preferredRefVoltage) > 0.02)
 					curtRefVoltage = preferredRefVoltage;
 					coeficient = 0.01;
 					lstRefVoltage = curtRefVoltage;

@@ -155,27 +155,27 @@ static void USBMeter(void *pvParameters)
   */
 static void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
 {
-	if (CurrentMeterData.Voltage >10)
+	if (FilteredMeterData.Voltage >=10.0f)
 	{
-		sprintf(tempString, "%5.2fV", FilteredMeterData.Voltage);
+		sprintf(tempString, "%.2fV", FilteredMeterData.Voltage);
 	}
 	else
 	{
-		sprintf(tempString, "%5.3fV", FilteredMeterData.Voltage);
+		sprintf(tempString, "%.3fV", FilteredMeterData.Voltage);
 	}
 	OLED_ShowString(0, 0, tempString);
-	if (CurrentMeterData.Current > 0.1)
-		sprintf(tempString, "%5.3fA", FilteredMeterData.Current);
+	if (FilteredMeterData.Current > 0.1)
+		sprintf(tempString, "%.3fA", FilteredMeterData.Current);
 	else
 		sprintf(tempString, "%04.1fmA", FilteredMeterData.Current * 1000);
 	OLED_ShowString(80, 0, tempString);
-	if (CurrentMeterData.Power > 10)
+	if (FilteredMeterData.Power >=10.0f)
 	{
-		sprintf(tempString, "%5.2fW", FilteredMeterData.Power);
+		sprintf(tempString, "%.2fW ", FilteredMeterData.Power);
 	}
 	else
 	{
-		sprintf(tempString, "%5.3fW", FilteredMeterData.Power);
+		sprintf(tempString, "%.3fW", FilteredMeterData.Power);
 	}
 	OLED_ShowString(0, 16, tempString);
 	if (CurrentTemperatureSensor == Internal)

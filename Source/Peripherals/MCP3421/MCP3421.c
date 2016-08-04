@@ -306,7 +306,7 @@ void Volatile_Coeficient_Filter(float *lstCoeficient[],bool* lstTrend[],float* l
    }
   else (*lstCoeficient[m])=baseCoeficient;
   (*lstTrend[m])=newTrend;
-  (*lstCoeficient[m])=(*lstCoeficient[m])<0.01?0.01:(*lstCoeficient[m]);
+  (*lstCoeficient[m])=(*lstCoeficient[m])<0.005?0.005:(*lstCoeficient[m]);
   (*lstCoeficient[m])=(*lstCoeficient[m])>1?1:(*lstCoeficient[m]);
   delta=(*newData[m])-(*lstData[m]);
   (*lstData[m])=(*lstData[m])+delta*(*lstCoeficient[m]);
@@ -363,7 +363,7 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
    CurrentMeterData.Power=CurrentMeterData.Current* CurrentMeterData.Voltage;
 	 xSemaphoreGive(USBMeterState_Mutex);
    
-   Volatile_Coeficient_Filter(lstCoeficient_p,lstTrend_p,lstVoltageAndCurrent_p,newVoltageAndCurrent_p,2,0.02);
+   Volatile_Coeficient_Filter(lstCoeficient_p,lstTrend_p,lstVoltageAndCurrent_p,newVoltageAndCurrent_p,2,0.005);
 
 	 xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
 	 FilteredMeterData.Current=lstVoltageAndCurrent[1];
