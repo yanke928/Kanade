@@ -1,7 +1,7 @@
 ﻿//File Name   Settings.c
 //Description Settings UI
 
-#pragma diag_suppress 870
+//#pragma diag_suppress 870
 
 #include <stdio.h>
 #include <string.h>
@@ -30,7 +30,7 @@
 
 #include "About.h"
 #include "SelfTest.h"
-#include "Digital_Load.h"
+#include "Calibrate.h"
 
 #include "Settings.h"
 
@@ -81,7 +81,7 @@ void Settings()
 	stringTab[5]=SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
 	stringTab[6]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
 	stringTab[7]=SettingsItemSystemScan_Str[CurrentSettings->Language];
-	stringTab[8]=SettingsItemAmpfilierSelfCalibration_Str[CurrentSettings->Language];
+	stringTab[8]=SettingsItemCalibration_Str[CurrentSettings->Language];
 	
 	menuParams.ItemStrings=stringTab;
 	menuParams.DefaultPos = 0;
@@ -109,7 +109,7 @@ void Settings()
 	case 5:FirmwareUpdate();break;
 	case 6:About();break;
 	case 7:SelfTest();break;
-  case 8:Digital_Load_Calibrate();break;
+  case 8:CalibrateSelect();break;
 	}
 }
 

@@ -315,13 +315,13 @@ void SystemStartup(void *pvParameters)
 {
 	Key_Init();	
 	OLED_Init();	
+	PWMRef_Init();
+	Digital_Load_Init();
 	MCP3421_Init();
 	RTC_Init();
 	LED_Animate_Init(LEDAnimation_Startup);
 	Settings_Init();
 	W25Q64_Init();
-	PWMRef_Init();
-	Digital_Load_Init();
 	LogoWithInitStatus_Init();
 	xQueueSend(InitStatusMsg, SystemInit_Str[CurrentSettings->Language], 0);
   ADC_Hardware_Init();

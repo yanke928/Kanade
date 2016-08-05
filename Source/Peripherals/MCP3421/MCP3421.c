@@ -7,6 +7,8 @@
 
 #include "FreeRTOS_Standard_Include.h"
 
+#include "Calibrate.h"
+
 #include "MCP3421.h"
 
 #define I2C1_SDA_HIGH()  GPIO_SetBits(GPIOB, GPIO_Pin_11)
@@ -358,8 +360,8 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
 	 }
 	 
 	 xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
-	 CurrentMeterData.Current=(double)(*(int32_t*)(&curtRAW))/(0x20000/2048*8)/CURRENT_SENSOR_RESISTANCE;
-	 CurrentMeterData.Voltage=(double)(*(int32_t*)(&voltRAW))/0x20000*2.048*VOLTAGE_GAIN;
+	 CurrentMeterData.Current=(double)(*(int32_t*)(&curtRAW))/(0x20000/2048*8)/CURRENT_SENSOR_RESISTANCE*Calibration_Data->CurrentCoeficient;
+	 CurrentMeterData.Voltage=(double)(*(int32_t*)(&voltRAW))/0x20000*2.048*VOLTAGE_GAIN*Calibration_Data->VoltageCoeficient;
    CurrentMeterData.Power=CurrentMeterData.Current* CurrentMeterData.Voltage;
 	 xSemaphoreGive(USBMeterState_Mutex);
    

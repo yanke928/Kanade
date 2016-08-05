@@ -1,11 +1,14 @@
 #ifndef __DIGITAL_LOAD_H__
 #define __DIGITAL_LOAD_H__
 
-#include "Digital_Load_Conf.h"
-#include "Digital_Load.h"
 #include <stdbool.h>
 
+#include "Digital_Load_Conf.h"
+#include "Digital_Load.h"
+
 #define Emergency_Stop() PWMRef_SetToGND()
+
+extern float CurrentRefVoltage;
 
 enum{Load_Start,Load_Keep,Load_Stop};
 

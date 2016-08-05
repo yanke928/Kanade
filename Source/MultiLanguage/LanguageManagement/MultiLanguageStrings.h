@@ -119,7 +119,7 @@ extern const char* const SettingsItemSystemInfo_Str[LanguageNum];
 extern const char* const SettingsItemFormatInternal_Str[LanguageNum];
 extern const char* const SettingsItemFirmwareUpdate_Str[LanguageNum];
 extern const char* const SettingsItemSystemScan_Str[LanguageNum];
-extern const char* const SettingsItemAmpfilierSelfCalibration_Str[LanguageNum];
+extern const char* const SettingsItemCalibration_Str[LanguageNum];
 
 /*Legacy test mode items*/
 extern const char* const SelectLeagcyTestModeButtonCC_Str[LanguageNum];
@@ -143,10 +143,14 @@ extern const char* const Confirmation_Str[LanguageNum];
 extern const char* const Hint_Str[LanguageNum];
 extern const char* const Saved_Str[LanguageNum] ;
 
-/*Self Calibration*/
+/*Calibration*/
+extern const char* const CalibrationItemAmpfilierSelfCalibration_Str[LanguageNum];
 extern const char* const AmpfilierSelfCalibrationSuccess_Str[LanguageNum];
 extern const char* const AmpfilierSelfCalibrationFailed_Str[LanguageNum] ;
 extern const char* const AmpfilierSelfCalibrationRunning_Str[LanguageNum] ;
+extern const char* const CalibrationItemVoltageCalibration_Str[LanguageNum];
+extern const char* const VoltageCalibrationSuccess_Str[LanguageNum];
+extern const char* const CalibrationItemCurrentCalibration_Str[LanguageNum];
 
 /*Firmware update related*/
 extern const char* const FirmwareUpdateConfirm_Str[LanguageNum];

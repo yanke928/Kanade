@@ -633,11 +633,35 @@ const char SDCardRemovedAccidentally_CN[] ="TF卡意外丢失";
 const char SDCardRemovedAccidentally_JP[] ="TFCard Lost";
 const char* const SDCardRemovedAccidentally_Str[] = { SDCardRemovedAccidentally_EN,SDCardRemovedAccidentally_TW,SDCardRemovedAccidentally_CN,SDCardRemovedAccidentally_JP };
 
-const char SettingsItemAmpfilierSelfCalibration_EN[] ="Self Calibration";
-const char SettingsItemAmpfilierSelfCalibration_TW[] ="運放自校準";
-const char SettingsItemAmpfilierSelfCalibration_CN[] ="运放自校准";
-const char SettingsItemAmpfilierSelfCalibration_JP[] ="オペアンプ自較正";
-const char* const SettingsItemAmpfilierSelfCalibration_Str[] = { SettingsItemAmpfilierSelfCalibration_EN,SettingsItemAmpfilierSelfCalibration_TW,SettingsItemAmpfilierSelfCalibration_CN,SettingsItemAmpfilierSelfCalibration_JP };
+const char SettingsItemCalibration_EN[] ="Calibration";
+const char SettingsItemCalibration_TW[] ="校準";
+const char SettingsItemCalibration_CN[] ="校准";
+const char SettingsItemCalibration_JP[] ="較正";
+const char* const SettingsItemCalibration_Str[] = { SettingsItemCalibration_EN,SettingsItemCalibration_TW,SettingsItemCalibration_CN,SettingsItemCalibration_JP };
+
+const char CalibrationItemAmpfilierSelfCalibration_EN[] ="Self Calibration";
+const char CalibrationItemAmpfilierSelfCalibration_TW[] ="運放自校準";
+const char CalibrationItemAmpfilierSelfCalibration_CN[] ="运放自校准";
+const char CalibrationItemAmpfilierSelfCalibration_JP[] ="オペアンプ自較正";
+const char* const CalibrationItemAmpfilierSelfCalibration_Str[] = { CalibrationItemAmpfilierSelfCalibration_EN,CalibrationItemAmpfilierSelfCalibration_TW,CalibrationItemAmpfilierSelfCalibration_CN,CalibrationItemAmpfilierSelfCalibration_JP };
+
+const char CalibrationItemVoltageCalibration_EN[] ="Voltage Calibration";
+const char CalibrationItemVoltageCalibration_TW[] ="電壓校準";
+const char CalibrationItemVoltageCalibration_CN[] ="电压校准";
+const char CalibrationItemVoltageCalibration_JP[] ="電圧較正";
+const char* const CalibrationItemVoltageCalibration_Str[] = { CalibrationItemVoltageCalibration_EN,CalibrationItemVoltageCalibration_TW,CalibrationItemVoltageCalibration_CN,CalibrationItemVoltageCalibration_JP };
+
+const char CalibrationItemCurrentCalibration_EN[] ="Current Calibration";
+const char CalibrationItemCurrentCalibration_TW[] ="電流校準";
+const char CalibrationItemCurrentCalibration_CN[] ="电流校准";
+const char CalibrationItemCurrentCalibration_JP[] ="電流較正";
+const char* const CalibrationItemCurrentCalibration_Str[] = { CalibrationItemCurrentCalibration_EN,CalibrationItemCurrentCalibration_TW,CalibrationItemCurrentCalibration_CN,CalibrationItemCurrentCalibration_JP };
+
+const char VoltageCalibrationSuccess_EN[] ="Success";
+const char VoltageCalibrationSuccess_TW[] ="校準成功";
+const char VoltageCalibrationSuccess_CN[] ="校准成功";
+const char VoltageCalibrationSuccess_JP[] ="較正終了";
+const char* const VoltageCalibrationSuccess_Str[] = { VoltageCalibrationSuccess_EN,VoltageCalibrationSuccess_TW,VoltageCalibrationSuccess_CN,VoltageCalibrationSuccess_JP };
 
 const char AmpfilierSelfCalibrationSuccess_EN[] ="Success";
 const char AmpfilierSelfCalibrationSuccess_TW[] ="校準成功";
