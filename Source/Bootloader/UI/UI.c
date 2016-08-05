@@ -86,6 +86,12 @@ void ShowUpdateSuccess()
 	ShowDialogue("Omededo", "Update success!", "Press to reset!");
 }
 
+void ShowHSENotReady()
+{
+	ShowDialogue("Hardware Error", "HSE crystal", "not ready!");
+}
+
+
 void ShowFatfsErrorCode(u8 err)
 {
 	char string[20] = "ErrCode:";

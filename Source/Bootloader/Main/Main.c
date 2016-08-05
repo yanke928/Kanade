@@ -39,6 +39,7 @@ deadloop
     B deadloop        //; 死循环使程序运行不到下面的代码
 }
  
+extern bool HSE_READY;
 
 int main(void)
 {
@@ -49,6 +50,13 @@ int main(void)
   DMA_DeInit(DMA1_Channel1);
 	NVIC_SetVectorTable(NVIC_VectTab_FLASH ,0);
 	STM32_Init();
+  if(!HSE_READY)
+  {
+ 		OLED_Init();
+		OLED_Clear();  
+    ShowHSENotReady();
+    while(1);
+  }
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
   PWR_BackupAccessCmd(ENABLE);		
 	Keys_GPIO_Init();

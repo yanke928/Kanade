@@ -64,6 +64,10 @@
 
 #include "stm32f10x.h"
 
+#include <stdbool.h>
+
+bool HSE_READY=true;
+
 /**
   * @}
   */
@@ -1123,7 +1127,9 @@ static void SetSysClockTo72(void)
     }
   }
   else
-  { /* If HSE fails to start-up, the application will have wrong clock 
+  { 
+   HSE_READY=false;
+   /* If HSE fails to start-up, the application will have wrong clock 
          configuration. User can add here some code to deal with this error */
   }
 }

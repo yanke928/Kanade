@@ -13,6 +13,7 @@
 #include "FreeRTOS_Standard_Include.h"
 
 #include "SSD1306.h"
+#include "UI_Dialogue.h"
 
 #include "rtc.h"
 
@@ -34,8 +35,9 @@ bool RTCUpdateExecute[3] = { false,false };
 u8 RTC_Hardware_Init(void)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
+	u16 countDown=1000; 
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
-	
+ 
 	PWR_BackupAccessCmd(ENABLE);						
 
 	//BKP_DeInit();
@@ -46,6 +48,14 @@ u8 RTC_Hardware_Init(void)
 		RCC_LSEConfig(RCC_LSE_ON);									//使能外部低速时钟 32.768KHz
 		while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET)			//检查指定的RCC标志位设置与否,等待低速晶振就绪
 		{
+     vTaskDelay(2/portTICK_RATE_MS);
+     countDown--;
+     if(countDown==0)
+      {
+       ShowDialogue("Hardware Error","LSE crystal","not ready!");
+       OLED_Refresh_Gram();
+       while(1);
+      }
 		}
 		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);						//设置RTC时钟(RTCCLK),选择LSE作为RTC时钟    
 		RCC_RTCCLKCmd(ENABLE);										//使能RTC时钟  

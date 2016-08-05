@@ -27,6 +27,8 @@ void ProgressBar_Init(void);
 
 void ShowUpdateFailed(void);
 
+void ShowHSENotReady(void);
+
 void ShowFatfsErrorCode(u8 err);
 
 #endif
