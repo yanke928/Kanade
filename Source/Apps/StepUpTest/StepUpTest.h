@@ -5,11 +5,11 @@
 #include "stdbool.h"
 
 typedef struct {
-	u16 StartCurrent;
-	u16 StopCurrent;
-	u16 Step;
-	u16 TimeInterval;
-	u16 ProtectVolt;
+	int StartCurrent;
+	int StopCurrent;
+	int Step;
+	int TimeInterval;
+	int ProtectVolt;
 }StepUpTestParamsStruct;
 
 typedef struct {
@@ -27,6 +27,6 @@ void StepUpTest_UI_Init(u16* testTime);
 void RunAStepUpTest(void);
 
 //see .c for details
-u32 GetTestParam(const char askString[], u32 min, u32 max, u32 defaultValue, u32 step, char unitString[], u8 fastSpeed);
+int GetTestParam(const char askString[], int min, int max, int defaultValue, int step, char unitString[], u8 fastSpeed);
 
 #endif /* __STEPUPTEST_H */

@@ -14,10 +14,10 @@ extern xTaskHandle RecordHandle;
 enum LegacyTestMode{ConstantCurrent=0,ConstantPower=1};
 
 typedef struct {
-	u16 Current;
-	u16 ProtectVolt;
-	u32 Power;
-	u8 TestMode;
+	int Current;
+	int ProtectVolt;
+	int Power;
+	int TestMode;
 }Legacy_Test_Param_Struct;
 
 void RunLegacyTest(u8* status,Legacy_Test_Param_Struct* test_Params);

@@ -3,21 +3,14 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
-
 #include "ff.h"
-
 #include "SSD1306.h"
-
 #include "UI_Dialogue.h"
-
 #include "SDCardff.h"
-
 #include "Settings.h"
-
 #include "MultiLanguageStrings.h"
 
 #define SDCARD_PAP_SERVICE_PRIORITY tskIDLE_PRIORITY+3
@@ -57,9 +50,9 @@ void SDCardPlugAndPlay_Service(void *pvParameter)
 					ShowSmallDialogue(SDCardRemovedAccidentally_Str[CurrentSettings->Language], 1000, true);
 					SDCardMountStatus = false;
 					f_mount(NULL, "0:/", 1);
-			    xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-			    OLED_RestoreScreen();
-			    xSemaphoreGive(OLEDRelatedMutex);
+					xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+					OLED_RestoreScreen();
+					xSemaphoreGive(OLEDRelatedMutex);
 				}
 			}
 			else
@@ -81,9 +74,9 @@ void SDCardPlugAndPlay_Service(void *pvParameter)
 					ShowSmallDialogue(SettingsMountFailed_Str[CurrentSettings->Language], 1000, true);
 					SDCardMountStatus = false;
 				}
-			  xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-			  OLED_RestoreScreen();
-			  xSemaphoreGive(OLEDRelatedMutex);
+				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+				OLED_RestoreScreen();
+				xSemaphoreGive(OLEDRelatedMutex);
 			}
 			LstSDExist = !LstSDExist;
 		}

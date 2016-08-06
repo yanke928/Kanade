@@ -224,10 +224,11 @@ void Flash_ProgramFloat(u32 addr, float data)
 }
 
 
-u32 GetTestParam(const char askString[], u32 min, u32 max, u32 defaultValue, u32 step, char unitString[], u8 fastSpeed)
+int GetTestParam(const char askString[], int min, int max, int defaultValue, int step, char unitString[], u8 fastSpeed)
 {
-	u32 t;
+	int t;
 	UI_Adjust_Param_Struct adjust_params;
+  retry:
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
@@ -242,6 +243,14 @@ u32 GetTestParam(const char askString[], u32 min, u32 max, u32 defaultValue, u32
 	UI_Adjust_Init(&adjust_params);
 	xQueueReceive(UI_AdjustMsg, &t, portMAX_DELAY);
 	UI_Adjust_DeInit();
+  if(t<min)
+  {
+   if(GetConfirmation(AbortConfirmation_Str[CurrentSettings->Language],""))
+    {
+     return -1;
+    }
+   goto retry;
+  }
 	return t;
 }
 
@@ -403,21 +412,25 @@ void RunAStepUpTest()
 		GetTestParam(StartCurrentGet_Str[CurrentSettings->Language], 100, 
 	  CURRENT_MAX,
 			1000, 100, "mA", 20);
+  if(test_Params.StartCurrent<0) goto clear;
 	test_Params.StopCurrent =
 		GetTestParam(EndCurrentGet_Str[CurrentSettings->Language], test_Params.StartCurrent + 100, 
 	  CURRENT_MAX,
 			test_Params.StartCurrent < 2000 ? 2000 : test_Params.StartCurrent + 100, 100, "mA", 20);
+  if(test_Params.StopCurrent<0) goto clear;
 	test_Params.Step = GetTestParam(StepCurrentGet_Str[CurrentSettings->Language], 100,
 		test_Params.StopCurrent - test_Params.StartCurrent > 500 ? 500 : test_Params.StopCurrent - test_Params.StartCurrent,
 		100, 100, "mA", 10);
+  if(test_Params.Step<0) goto clear;
 	test_Params.TimeInterval =
 		GetTestParam(TimeIntervalGet_Str[CurrentSettings->Language], 2, 30,
 			4, 2, "s", 10);
+  if(test_Params.TimeInterval<0) goto clear;
 	test_Params.ProtectVolt =
 		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0,
 		(int)(1000 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (1000 * CurrentMeterData.Voltage) / 10 * 10 : 100,
 			(int)(900 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (900 * CurrentMeterData.Voltage) / 10 * 10 : 100, 10, "mV", 25);
-
+  if(test_Params.ProtectVolt<0) goto clear;
 	testTime = ((test_Params.StopCurrent - test_Params.StartCurrent) / test_Params.Step + 1)*test_Params.TimeInterval;
 
 	/*Clear the screen*/
@@ -450,6 +463,7 @@ void RunAStepUpTest()
 	/*Show test result*/
 	ShowStepUpTestResult(testInfo.CurrentTime);
 
+  clear:
 	/*Clear the screen*/
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();

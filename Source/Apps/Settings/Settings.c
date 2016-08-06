@@ -38,7 +38,7 @@ Settings_Struct* CurrentSettings = (Settings_Struct*)0x0803b800;
 
 Settings_Struct SettingsBkp;
 
-const Settings_Struct DefaultSettings = { 0 , 2 ,75 ,120 ,5};
+const Settings_Struct DefaultSettings = { 0 , 2 ,75 ,120 ,5 };
 
 typedef  void(*pFunction)(void);
 
@@ -68,22 +68,22 @@ void Settings()
 	UI_Menu_Param_Struct menuParams;
 	u8 selection;
 	const char* stringTab[10];
-	
+
 	if (SDCardMountStatus)
-  stringTab[0]=SettingsItemUnmountDisk_Str[CurrentSettings->Language];
+		stringTab[0] = SettingsItemUnmountDisk_Str[CurrentSettings->Language];
 	else
-	stringTab[0]=SettingsItemMountDisk_Str[CurrentSettings->Language];
-	
-	stringTab[1]=SettingsItemClockSettings_Str[CurrentSettings->Language];
-	stringTab[2]=SettingsItemOverHeatControl_Str[CurrentSettings->Language];
-	stringTab[3]=SettingsItemLanguage_Str[CurrentSettings->Language];
-	stringTab[4]=SettingsItemFormatDisks_Str[CurrentSettings->Language];
-	stringTab[5]=SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
-	stringTab[6]=SettingsItemSystemInfo_Str[CurrentSettings->Language];
-	stringTab[7]=SettingsItemSystemScan_Str[CurrentSettings->Language];
-	stringTab[8]=SettingsItemCalibration_Str[CurrentSettings->Language];
-	
-	menuParams.ItemStrings=stringTab;
+		stringTab[0] = SettingsItemMountDisk_Str[CurrentSettings->Language];
+
+	stringTab[1] = SettingsItemClockSettings_Str[CurrentSettings->Language];
+	stringTab[2] = SettingsItemOverHeatControl_Str[CurrentSettings->Language];
+	stringTab[3] = SettingsItemLanguage_Str[CurrentSettings->Language];
+	stringTab[4] = SettingsItemFormatDisks_Str[CurrentSettings->Language];
+	stringTab[5] = SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
+	stringTab[6] = SettingsItemSystemInfo_Str[CurrentSettings->Language];
+	stringTab[7] = SettingsItemSystemScan_Str[CurrentSettings->Language];
+	stringTab[8] = SettingsItemCalibration_Str[CurrentSettings->Language];
+
+	menuParams.ItemStrings = stringTab;
 	menuParams.DefaultPos = 0;
 	menuParams.ItemNum = 9;
 	menuParams.FastSpeed = 10;
@@ -105,11 +105,11 @@ void Settings()
 	case 1:TimeSettings(); break;
 	case 2:OverHeatSettings(); break;
 	case 3:SetLanguage(); break;
-	case 4:FormatDisks();break;
-	case 5:FirmwareUpdate();break;
-	case 6:About();break;
-	case 7:SelfTest();break;
-  case 8:CalibrateSelect();break;
+	case 4:FormatDisks(); break;
+	case 5:FirmwareUpdate(); break;
+	case 6:About(); break;
+	case 7:SelfTest(); break;
+	case 8:CalibrateSelect(); break;
 	}
 }
 
@@ -126,7 +126,7 @@ void MountOrUnMountDisk()
 	char tempString[20];
 	if (SDCardMountStatus)
 	{
-	  res = f_mount(NULL, "0:/", 1);
+		res = f_mount(NULL, "0:/", 1);
 		if (res == FR_OK)
 		{
 			ShowSmallDialogue(SettingsUnmounted_Str[CurrentSettings->Language], 1000, true);
@@ -193,13 +193,13 @@ void SetLanguage()
 	UI_Menu_Param_Struct menuParams;
 	u8 selection;
 	const char *languageTab[4];
-	
-	languageTab[0]="English";
-	languageTab[1]="日本語";
-	languageTab[2]="日本语(华式)";
-	languageTab[3]="台灣語";	
-	
-	menuParams.ItemStrings =languageTab;
+
+	languageTab[0] = "English";
+	languageTab[1] = "日本語";
+	languageTab[2] = "日本语(华式)";
+	languageTab[3] = "台灣語";
+
+	menuParams.ItemStrings = languageTab;
 	menuParams.DefaultPos = 0;
 	menuParams.ItemNum = 4;
 	menuParams.FastSpeed = 5;
@@ -225,7 +225,7 @@ void SetLanguage()
 	ShowSmallDialogue((char *)Saved_Str[CurrentSettings->Language], 1000, true);
 }
 
-/** 
+/**
   * @brief  Check settings
 
   * @param  None
@@ -233,14 +233,14 @@ void SetLanguage()
   */
 bool CheckSettings()
 {
-	if (CurrentSettings->InternalTemperature_Max > 130||
-		  CurrentSettings->InternalTemperature_Max < 55) return false;
+	if (CurrentSettings->InternalTemperature_Max > 130 ||
+		CurrentSettings->InternalTemperature_Max < 55) return false;
 
-	if (CurrentSettings->ExternalTemperature_Max > 200||
-		  CurrentSettings->ExternalTemperature_Max < 40) return false;
-	
-	if (CurrentSettings->Protection_Resume_Gap > 20||
-		  CurrentSettings->Protection_Resume_Gap < 5) return false;
+	if (CurrentSettings->ExternalTemperature_Max > 200 ||
+		CurrentSettings->ExternalTemperature_Max < 40) return false;
+
+	if (CurrentSettings->Protection_Resume_Gap > 20 ||
+		CurrentSettings->Protection_Resume_Gap < 5) return false;
 	return true;
 }
 
@@ -271,10 +271,14 @@ void Settings_Init()
   * @param  None
 
   */
-u16 GetTimeParam(const char *askString, const char *unitString, u16 min, u16 max, u16 defaultValue)
+int GetTimeParam(const char *askString, const char *unitString, int min, int max, int defaultValue)
 {
-	u16 tmp;
+	int tmp;
 	UI_Adjust_Param_Struct timeAdjustParams;
+retry:
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
 	timeAdjustParams.AskString = askString;
 	timeAdjustParams.Min = min;
 	timeAdjustParams.Max = max;
@@ -287,7 +291,14 @@ u16 GetTimeParam(const char *askString, const char *unitString, u16 min, u16 max
 	xQueueReceive(UI_AdjustMsg, &tmp, portMAX_DELAY);
 	UI_Adjust_DeInit();
 	vTaskDelay(20 / portTICK_RATE_MS);
-	OLED_Clear();
+	if (tmp < min)
+	{
+		if (GetConfirmation(AbortConfirmation_Str[CurrentSettings->Language], ""))
+		{
+			return 255;
+		}
+		goto retry;
+	}
 	return tmp;
 }
 
@@ -302,10 +313,12 @@ void TimeSettings()
 	struct Data_Time newTime;
 	newTime.w_year = GetTimeParam(SetYear_Str[CurrentSettings->Language],
 		SetYearUnit_Str[CurrentSettings->Language],
-		2016, 2099, RTCTime.w_year);
+		2016, 2099, RTCTime.w_year < 2016 || RTCTime.w_year>2099 ? 2016 : RTCTime.w_year);
+	if (newTime.w_year == 255) goto clear;
 	newTime.w_month = GetTimeParam(SetMonth_Str[CurrentSettings->Language],
 		SetMonthUnit_Str[CurrentSettings->Language],
 		1, 12, RTCTime.w_month);
+	if (newTime.w_month == 255) goto clear;
 	if (newTime.w_year % 4 == 0 && newTime.w_month == 2)
 	{
 		newTime.w_date = GetTimeParam(SetDay_Str[CurrentSettings->Language],
@@ -317,18 +330,26 @@ void TimeSettings()
 			SetDayUnit_Str[CurrentSettings->Language],
 			1, mon_table[newTime.w_month - 1], RTCTime.w_date > mon_table[newTime.w_month - 1] ?
 			mon_table[newTime.w_month - 1] : RTCTime.w_date);
+	if (newTime.w_date == 255) goto clear;
 	newTime.hour = GetTimeParam(SetHour_Str[CurrentSettings->Language],
 		SetHourUnit_Str[CurrentSettings->Language],
 		0, 23, RTCTime.hour);
+	if (newTime.hour == 255) goto clear;
 	newTime.min = GetTimeParam(SetMin_Str[CurrentSettings->Language],
 		SetMinUnit_Str[CurrentSettings->Language],
 		0, 59, RTCTime.min);
+	if (newTime.min == 255) goto clear;
 	newTime.sec = GetTimeParam(SetSec_Str[CurrentSettings->Language],
 		SetSecUnit_Str[CurrentSettings->Language],
 		0, 59, RTCTime.sec);
+	if (newTime.sec == 255) goto clear;
 	Time_Update(newTime.w_year, newTime.w_month, newTime.w_date,
 		newTime.hour, newTime.min, newTime.sec);
 	ShowSmallDialogue(TimeSetting_Str[CurrentSettings->Language], 1000, true);
+clear:
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
 }
 
 /**
@@ -339,18 +360,25 @@ void TimeSettings()
   */
 void OverHeatSettings(void)
 {
- memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
- SettingsBkp.InternalTemperature_Max = GetTimeParam(SetInternalTemp_Max_Str[CurrentSettings->Language],
+	memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
+	SettingsBkp.InternalTemperature_Max = GetTimeParam(SetInternalTemp_Max_Str[CurrentSettings->Language],
 		Temperature_Unit_Str[CurrentSettings->Language],
 		55, 130, CurrentSettings->InternalTemperature_Max);
- SettingsBkp.ExternalTemperature_Max = GetTimeParam(SetExternalTemp_Max_Str[CurrentSettings->Language],
+	if (SettingsBkp.InternalTemperature_Max == 255) goto clear;
+	SettingsBkp.ExternalTemperature_Max = GetTimeParam(SetExternalTemp_Max_Str[CurrentSettings->Language],
 		Temperature_Unit_Str[CurrentSettings->Language],
 		40, 200, CurrentSettings->ExternalTemperature_Max);
- SettingsBkp.Protection_Resume_Gap = GetTimeParam(SetTempProtectResumeGap_Str[CurrentSettings->Language],
+	if (SettingsBkp.ExternalTemperature_Max == 255) goto clear;
+	SettingsBkp.Protection_Resume_Gap = GetTimeParam(SetTempProtectResumeGap_Str[CurrentSettings->Language],
 		Temperature_Unit_Str[CurrentSettings->Language],
 		5, 20, CurrentSettings->Protection_Resume_Gap);
+	if (SettingsBkp.Protection_Resume_Gap == 255) goto clear;
 	SaveSettings();
 	ShowSmallDialogue(Saved_Str[CurrentSettings->Language], 1000, true);
+clear:
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
 }
 
 /**
@@ -361,59 +389,59 @@ void OverHeatSettings(void)
   */
 void FormatDisks(void)
 {
- UI_Menu_Param_Struct menuParams;
- const char* diskTab[2];
- FRESULT res;
-	
- u8 selection;
- u8 cnt=0;
- if(1)
- {
-  diskTab[cnt]=SettingsItemFormatInternal_Str[CurrentSettings->Language];
-	cnt++;
- }
- if(1)
- {
-  diskTab[cnt]=SettingsItemFormatSD_Str[CurrentSettings->Language];
-	cnt++;		
- }
- if(cnt==0)
- {
-  ShowSmallDialogue(SettingsItemNoDisk_Str[CurrentSettings->Language], 1000, true);
-	return;
- }
+	UI_Menu_Param_Struct menuParams;
+	const char* diskTab[2];
+	FRESULT res;
+
+	u8 selection;
+	u8 cnt = 0;
+	if (1)
+	{
+		diskTab[cnt] = SettingsItemFormatInternal_Str[CurrentSettings->Language];
+		cnt++;
+	}
+	if (1)
+	{
+		diskTab[cnt] = SettingsItemFormatSD_Str[CurrentSettings->Language];
+		cnt++;
+	}
+	if (cnt == 0)
+	{
+		ShowSmallDialogue(SettingsItemNoDisk_Str[CurrentSettings->Language], 1000, true);
+		return;
+	}
 	menuParams.ItemStrings = diskTab;
 	menuParams.DefaultPos = 0;
 	menuParams.ItemNum = cnt;
 	menuParams.FastSpeed = 5;
- 
+
 	UI_Menu_Init(&menuParams);
- 	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
+	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
 	UI_Menu_DeInit();
-  if(selection==255) goto Done;
-  if(diskTab[selection]==SettingsItemFormatInternal_Str[CurrentSettings->Language])
+	if (selection == 255) goto Done;
+	if (diskTab[selection] == SettingsItemFormatInternal_Str[CurrentSettings->Language])
 	{
-	 if (GetConfirmation(FormatInternalConfirm_Str[CurrentSettings->Language], ""))
-	 {
-	  ShowSmallDialogue(Formatting_Str[CurrentSettings->Language], 1000, false);
-		//res=f_mkfs("1:/",1,4096,SPI_FLASH_fatfs.win,_MAX_SS);
-		 res=f_mkfs("1:/",1,4096);
-	 }
-	 else goto Done;
+		if (GetConfirmation(FormatInternalConfirm_Str[CurrentSettings->Language], ""))
+		{
+			ShowSmallDialogue(Formatting_Str[CurrentSettings->Language], 1000, false);
+			//res=f_mkfs("1:/",1,4096,SPI_FLASH_fatfs.win,_MAX_SS);
+			res = f_mkfs("1:/", 1, 4096);
+		}
+		else goto Done;
 	}
-	else if(diskTab[selection]==SettingsItemFormatSD_Str[CurrentSettings->Language])
+	else if (diskTab[selection] == SettingsItemFormatSD_Str[CurrentSettings->Language])
 	{
-	 if (GetConfirmation(FormatSDConfirm_Str[CurrentSettings->Language], ""))
-	 {
-	  ShowSmallDialogue(Formatting_Str[CurrentSettings->Language], 1000, false);
-	  //res=f_mkfs("0:/",1,512,SD_fatfs.win,_MAX_SS);
-		 res=f_mkfs("0:/",0,0);
-	 }
-	 else goto Done;	 
+		if (GetConfirmation(FormatSDConfirm_Str[CurrentSettings->Language], ""))
+		{
+			ShowSmallDialogue(Formatting_Str[CurrentSettings->Language], 1000, false);
+			//res=f_mkfs("0:/",1,512,SD_fatfs.win,_MAX_SS);
+			res = f_mkfs("0:/", 0, 0);
+		}
+		else goto Done;
 	}
- if(res==FR_OK)  ShowSmallDialogue(FormatSuccess_Str[CurrentSettings->Language], 1000, true);
- else ShowDiskIOStatus(res);
-	Done:
+	if (res == FR_OK)  ShowSmallDialogue(FormatSuccess_Str[CurrentSettings->Language], 1000, true);
+	else ShowDiskIOStatus(res);
+Done:
 	OLED_Clear();
 }
 
@@ -425,19 +453,19 @@ void FormatDisks(void)
   */
 void SetFirmwareUpdateFlag()
 {
- BKP_WriteBackupRegister(BKP_DR2, 0x0001);	
+	BKP_WriteBackupRegister(BKP_DR2, 0x0001);
 }
 
 __asm void SystemReset(void)
 {
- MOV R0, #1           //; 
- MSR FAULTMASK, R0    //; 清除FAULTMASK 禁止一切中断产生
- LDR R0, =0xE000ED0C  //;
- LDR R1, =0x05FA0004  //; 
- STR R1, [R0]         //; 系统软件复位   
- 
+  MOV R0, #1           //; 
+  MSR FAULTMASK, R0    //; 清除FAULTMASK 禁止一切中断产生
+  LDR R0, =0xE000ED0C  //;
+  LDR R1, =0x05FA0004  //; 
+  STR R1, [R0]         //; 系统软件复位   
+
 deadloop
-    B deadloop        //; 死循环使程序运行不到下面的代码
+  B deadloop        //; 死循环使程序运行不到下面的代码
 }
 
 void Jump2Addr(u32 addr)
@@ -463,13 +491,13 @@ void Jump2Addr(u32 addr)
   */
 void FirmwareUpdate()
 {
- if (GetConfirmation(FirmwareUpdateConfirm_Str[CurrentSettings->Language], ""))
- {
-	portENTER_CRITICAL();
-  SetFirmwareUpdateFlag();
-  SystemReset();
- }
- OLED_Clear();
+	if (GetConfirmation(FirmwareUpdateConfirm_Str[CurrentSettings->Language], ""))
+	{
+		portENTER_CRITICAL();
+		SetFirmwareUpdateFlag();
+		SystemReset();
+	}
+	OLED_Clear();
 }
 
 /**

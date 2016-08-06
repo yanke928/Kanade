@@ -151,6 +151,8 @@ extern const char* const AmpfilierSelfCalibrationRunning_Str[LanguageNum] ;
 extern const char* const CalibrationItemVoltageCalibration_Str[LanguageNum];
 extern const char* const VoltageCalibrationSuccess_Str[LanguageNum];
 extern const char* const CalibrationItemCurrentCalibration_Str[LanguageNum];
+extern const char* const CalibrationAbort_Str[LanguageNum];
+extern const char* const AbortConfirmation_Str[LanguageNum];
 
 /*Firmware update related*/
 extern const char* const FirmwareUpdateConfirm_Str[LanguageNum];

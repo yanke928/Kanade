@@ -71,18 +71,18 @@ void Record_Handler(void *pvParameters)
 		if (IsRecording)
 		{
 			if (CurrentTemperatureSensor == Internal)
-				sprintf(tempString, "%ld,%6.3f,%6.3f\r\n", SecondNum, CurrentMeterData.Current,
-					CurrentMeterData.Voltage);
+				sprintf(tempString, "%ld,%6.3f,%6.3f\r\n", SecondNum, FilteredMeterData.Current,
+					FilteredMeterData.Voltage);
 			else
-				sprintf(tempString, "%ld,%6.3f,%6.3f,%5.1f\r\n", SecondNum, CurrentMeterData.Current,
-					CurrentMeterData.Voltage, ExternalTemperature);
+				sprintf(tempString, "%ld,%6.3f,%6.3f,%5.1f\r\n", SecondNum, FilteredMeterData.Current,
+					FilteredMeterData.Voltage, ExternalTemperature);
 			stringLength = GetStringGraphicalLength(tempString);
 			f_write(&RecordFile, tempString, stringLength, &RecordFileWriteCount);
 		}
 		/*Update summary data*/
-		CurrentSumUpData.Capacity += (CurrentMeterData.Current / 3600);
-		CurrentSumUpData.Work += (CurrentMeterData.Power / 3600);
-		CurrentSumUpData.PlatformVolt = CurrentMeterData.Power / CurrentMeterData.Current;
+		CurrentSumUpData.Capacity += (FilteredMeterData.Current / 3600);
+		CurrentSumUpData.Work += (FilteredMeterData.Power / 3600);
+		CurrentSumUpData.PlatformVolt = FilteredMeterData.Power / FilteredMeterData.Current;
 		/*Keep blocked until a new second reached*/
 		for (;;)
 		{
@@ -142,10 +142,10 @@ u8 SelectLegacyTestMode()
 	u8 mode;
 	UI_Button_Param_Struct selectModeButtonParams;
 	const char *modeStrings[2];
-	
-	modeStrings[0]= SelectLeagcyTestModeButtonCC_Str[CurrentSettings->Language];
-	modeStrings[1]= SelectLeagcyTestModeButtonCP_Str[CurrentSettings->Language];
-	
+
+	modeStrings[0] = SelectLeagcyTestModeButtonCC_Str[CurrentSettings->Language];
+	modeStrings[1] = SelectLeagcyTestModeButtonCP_Str[CurrentSettings->Language];
+
 	selectModeButtonParams.ButtonStrings = modeStrings;
 	selectModeButtonParams.ButtonNum = 2;
 	selectModeButtonParams.DefaultValue = 0;
@@ -156,7 +156,7 @@ u8 SelectLegacyTestMode()
 	xSemaphoreGive(OLEDRelatedMutex);
 
 	ShowDialogue(SelectLeagcyTestMode_Str[CurrentSettings->Language],
-		SelectLeagcyTestModeSubString_Str[CurrentSettings->Language], "",false,false);
+		SelectLeagcyTestModeSubString_Str[CurrentSettings->Language], "", false, false);
 
 	UI_Button_Init(&selectModeButtonParams);
 
@@ -228,19 +228,47 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	test_Params->TestMode = SelectLegacyTestMode();
 
 	/*Get parameters of the legacy test*/
-	if (test_Params->TestMode == ConstantCurrent)test_Params->Current =
-		GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language],100,
+	if (test_Params->TestMode == ConstantCurrent)
+	{
+		test_Params->Current = GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language], 100,
 			LEGACY_TEST_CURRENT_MAX,
 			1000, 100, "mA", 20);
-	else test_Params->Power =
-		GetTestParam(LegacyTestSetPower_Str[CurrentSettings->Language], 500,
-			40000,
-			10000, 500, "mW", 20);
+		if (test_Params->Current < 0)
+		{
+      *status=USBMETER_ONLY;
+			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+			OLED_Clear();
+			xSemaphoreGive(OLEDRelatedMutex);
+			return;
+		}
+	}
+	else
+	{
+		test_Params->Power =
+			GetTestParam(LegacyTestSetPower_Str[CurrentSettings->Language], 500,
+				40000,
+				10000, 500, "mW", 20);
+		if (test_Params->Power < 0)
+		{
+      *status=USBMETER_ONLY;
+			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+			OLED_Clear();
+			xSemaphoreGive(OLEDRelatedMutex);
+			return;
+		}
+	}
 	test_Params->ProtectVolt =
 		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0,
 		(int)(1000 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (1000 * CurrentMeterData.Voltage) / 10 * 10 : 100,
 			(int)(900 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (900 * CurrentMeterData.Voltage) / 10 * 10 : 100, 10, "mV", 25);
-
+	if (test_Params->ProtectVolt < 0)
+	{
+    *status=USBMETER_ONLY;
+		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+		OLED_Clear();
+		xSemaphoreGive(OLEDRelatedMutex);
+		return;
+	}
 	/*Warn user of the unmounted sdcard*/
 	if (!SDCardMountStatus)
 	{
@@ -358,7 +386,7 @@ void ShowSummary(u8 reason)
 	Key_Message_Struct key_Message;
 	char tempString[10];
 	float platVolt;
-	ShowDialogue(Summary_Str[CurrentSettings->Language], "", "",false,false);
+	ShowDialogue(Summary_Str[CurrentSettings->Language], "", "", false, false);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 
 	/*If the stop of the record is caused by protection,play sound to notice the

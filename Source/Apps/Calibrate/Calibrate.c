@@ -12,6 +12,7 @@
 #include "MultiLanguageStrings.h"
 #include "UI_Dialogue.h"
 #include "UI_Menu.h"
+#include "UI_Confirmation.h"
 #include "Settings.h"
 #include "PWM_Ref.h"
 
@@ -138,11 +139,17 @@ void Voltage_Calibrate()
 	Key_Message_Struct message;
 	char tempString[20];
 	double coeficient = 1;
+  reDraw:
 	ShowDialogue(CalibrationItemVoltageCalibration_Str[CurrentSettings->Language], "", "<--         -->", false, false);
 	OLED_ShowAnyString(4, 16, "Volt:", NotOnSelect, 16);
 	SetKeyBeatRate(20);
 	for (;;)
 	{
+		sprintf(tempString, "%7.4fV", FilteredMeterData.Voltage*coeficient);
+		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
+		OLED_ShowAnyString(60, 16, tempString, NotOnSelect, 16);
+		OLED_Refresh_Gram();
+		xSemaphoreGive(USBMeterState_Mutex);
 		if (xQueueReceive(Key_Message, &message, 270 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (message.AdvancedKeyEvent == LeftContinous ||
@@ -161,12 +168,15 @@ void Voltage_Calibrate()
 			{
 				goto Done;
 			}
+      if(message.KeyEvent==MidDouble)
+      {
+        if(GetConfirmation(CalibrationAbort_Str[CurrentSettings->Language],""))
+         {
+          return;
+         }
+        goto reDraw;
+      }
 		}
-		sprintf(tempString, "%7.4fV", FilteredMeterData.Voltage*coeficient);
-		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
-		OLED_ShowAnyString(60, 16, tempString, NotOnSelect, 16);
-		OLED_Refresh_Gram();
-		xSemaphoreGive(USBMeterState_Mutex);
 	}
 Done:
 	coeficient = coeficient*Calibration_Data->VoltageCoeficient;
@@ -188,12 +198,18 @@ void Current_Calibrate()
 	Key_Message_Struct message;
 	char tempString[20];
 	double coeficient = 1;
+  reDraw:
 	ShowDialogue(CalibrationItemCurrentCalibration_Str[CurrentSettings->Language], "", "<--         -->", false, false);
 	OLED_ShowAnyString(4, 16, "Curt:", NotOnSelect, 16);
 	SetKeyBeatRate(20);
 	Set_RefVoltageTo(2.16);
 	for (;;)
 	{
+		sprintf(tempString, "%7.4fA", FilteredMeterData.Current*coeficient);
+		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
+		OLED_ShowAnyString(60, 16, tempString, NotOnSelect, 16);
+		OLED_Refresh_Gram();
+		xSemaphoreGive(USBMeterState_Mutex);
 		if (xQueueReceive(Key_Message, &message, 270 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (message.AdvancedKeyEvent == LeftContinous ||
@@ -212,12 +228,15 @@ void Current_Calibrate()
 			{
 				goto Done;
 			}
+      if(message.KeyEvent==MidDouble)
+      {
+        if(GetConfirmation(CalibrationAbort_Str[CurrentSettings->Language],""))
+         {
+          return;
+         }
+        goto reDraw;
+      }
 		}
-		sprintf(tempString, "%7.4fA", FilteredMeterData.Current*coeficient);
-		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
-		OLED_ShowAnyString(60, 16, tempString, NotOnSelect, 16);
-		OLED_Refresh_Gram();
-		xSemaphoreGive(USBMeterState_Mutex);
 	}
 Done:
 	Set_RefVoltageTo(0);

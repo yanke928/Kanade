@@ -681,6 +681,18 @@ const char AmpfilierSelfCalibrationRunning_CN[] ="正在自校准...";
 const char AmpfilierSelfCalibrationRunning_JP[] ="自較正...";
 const char* const AmpfilierSelfCalibrationRunning_Str[] = { AmpfilierSelfCalibrationRunning_EN,AmpfilierSelfCalibrationRunning_TW,AmpfilierSelfCalibrationRunning_CN,AmpfilierSelfCalibrationRunning_JP };
 
+const char CalibrationAbort_EN[] ="Without save?";
+const char CalibrationAbort_TW[] ="放棄校準?";
+const char CalibrationAbort_CN[] ="放弃校准?";
+const char CalibrationAbort_JP[] ="較正放棄?";
+const char* const CalibrationAbort_Str[] = { CalibrationAbort_EN,CalibrationAbort_TW,CalibrationAbort_CN,CalibrationAbort_JP };
+
+const char AbortConfirmation_EN[] ="Exit?";
+const char AbortConfirmation_TW[] ="放棄?";
+const char AbortConfirmation_CN[] ="放弃?";
+const char AbortConfirmation_JP[] ="放棄?";
+const char* const AbortConfirmation_Str[] = { AbortConfirmation_EN,AbortConfirmation_TW,AbortConfirmation_CN,AbortConfirmation_JP };
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},

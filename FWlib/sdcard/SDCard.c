@@ -2150,7 +2150,7 @@ SD_Error SD_WriteDisk(uint8_t *writebuff, uint64_t sector, uint16_t cnt)
 }
 
 /**
-  * @brief  Init SDCard insert GPIO 
+  * @brief  Init SDCard insert GPIO
 
 	  @retval None
   */
@@ -2228,7 +2228,7 @@ bool CheckAndMakeDir(const char* dir)
 	if (res != FR_EXIST)
 	{
 		if (res != FR_OK);
-			//ShowDiskIOStatus(res);
+		//ShowDiskIOStatus(res);
 		return(false);
 	}
 	return true;

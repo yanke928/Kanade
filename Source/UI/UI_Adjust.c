@@ -159,6 +159,13 @@ void UI_Adjust_Handler(void *pvParameters)
 					xQueueSend(UI_AdjustMsg, &currentValue, portMAX_DELAY);
 					for(;;) vTaskDelay(portMAX_DELAY);
 				}
+        else if (keyMsg.KeyEvent == MidDouble)
+        {
+          ResetUpdateOLEDJustNow();
+          currentValue=adjustParams->Min-1;
+					xQueueSend(UI_AdjustMsg, &currentValue, portMAX_DELAY);
+					for(;;) vTaskDelay(portMAX_DELAY);           
+        }
 				break;
 			}
 		}
