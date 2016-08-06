@@ -73,7 +73,7 @@ void QC2Trigger_Init(void)
 	voltStrings[3]="20V";
 	
 	/*Set the positions for the voltage options*/	
-	ShowDialogue("QC2.0 Mode", "", "");
+	ShowDialogue("QC2.0 Mode", "", "",false,false);
 	button_params.ButtonStrings = voltStrings;
 	button_params.ButtonNum = 4;
 	button_params.DefaultValue = 0;
@@ -114,7 +114,7 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 {
 	Key_Message_Struct keyMsg;
 	//SetUpdateOLEDJustNow();
-	ShowDialogue(titleString, "", "");
+	ShowDialogue(titleString, "", "",false,false);
 	/*Draw a button set with "LiveMode",get the timerNo allocated*/
 	OLED_DrawRect(positions[0].x - 2, positions[0].y - 2, positions[0].x + 17, positions[0].y + 17, DRAW);
 	OLED_DrawRect(positions[1].x - 2, positions[1].y - 2, positions[1].x + 17, positions[1].y + 17, DRAW);

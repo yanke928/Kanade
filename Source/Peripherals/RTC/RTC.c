@@ -52,7 +52,7 @@ u8 RTC_Hardware_Init(void)
      countDown--;
      if(countDown==0)
       {
-       ShowDialogue("Hardware Error","LSE crystal","not ready!");
+       ShowDialogue("Hardware Error","LSE crystal","not ready!",false,true);
        OLED_Refresh_Gram();
        while(1);
       }

@@ -138,7 +138,7 @@ void Voltage_Calibrate()
 	Key_Message_Struct message;
 	char tempString[20];
 	double coeficient = 1;
-	ShowDialogue(CalibrationItemVoltageCalibration_Str[CurrentSettings->Language], "", "<--         -->");
+	ShowDialogue(CalibrationItemVoltageCalibration_Str[CurrentSettings->Language], "", "<--         -->", false, false);
 	OLED_ShowAnyString(4, 16, "Volt:", NotOnSelect, 16);
 	SetKeyBeatRate(20);
 	for (;;)
@@ -172,9 +172,9 @@ Done:
 	coeficient = coeficient*Calibration_Data->VoltageCoeficient;
 	memcpy(&Calibration_Backup, Calibration_Data, sizeof(Calibration_t));
 	Calibration_Backup.VoltageCoeficient = coeficient;
-  SaveCalibration();
-  sprintf(tempString,"k=%.7f",Calibration_Data->VoltageCoeficient);
-  ShowSmallDialogue(tempString, 1000, true);
+	SaveCalibration();
+	sprintf(tempString, "k=%.7f", Calibration_Data->VoltageCoeficient);
+	ShowSmallDialogue(tempString, 1000, true);
 	ShowSmallDialogue(VoltageCalibrationSuccess_Str[CurrentSettings->Language], 1000, true);
 }
 
@@ -188,10 +188,10 @@ void Current_Calibrate()
 	Key_Message_Struct message;
 	char tempString[20];
 	double coeficient = 1;
-	ShowDialogue(CalibrationItemCurrentCalibration_Str[CurrentSettings->Language], "", "<--         -->");
+	ShowDialogue(CalibrationItemCurrentCalibration_Str[CurrentSettings->Language], "", "<--         -->", false, false);
 	OLED_ShowAnyString(4, 16, "Curt:", NotOnSelect, 16);
 	SetKeyBeatRate(20);
-  Set_RefVoltageTo(2.16);
+	Set_RefVoltageTo(2.16);
 	for (;;)
 	{
 		if (xQueueReceive(Key_Message, &message, 270 / portTICK_RATE_MS) == pdPASS)
@@ -220,13 +220,13 @@ void Current_Calibrate()
 		xSemaphoreGive(USBMeterState_Mutex);
 	}
 Done:
-  Set_RefVoltageTo(0);
+	Set_RefVoltageTo(0);
 	coeficient = coeficient*Calibration_Data->CurrentCoeficient;
 	memcpy(&Calibration_Backup, Calibration_Data, sizeof(Calibration_t));
 	Calibration_Backup.CurrentCoeficient = coeficient;
-  SaveCalibration();
-  sprintf(tempString,"k=%.7f",Calibration_Data->CurrentCoeficient);
-  ShowSmallDialogue(tempString, 1000, true);
+	SaveCalibration();
+	sprintf(tempString, "k=%.7f", Calibration_Data->CurrentCoeficient);
+	ShowSmallDialogue(tempString, 1000, true);
 	ShowSmallDialogue(VoltageCalibrationSuccess_Str[CurrentSettings->Language], 1000, true);
 }
 
@@ -261,7 +261,7 @@ void CalibrateSelect()
 	switch (selection)
 	{
 	case 0:Digital_Load_Calibrate(); break;
-	case 1:Voltage_Calibrate();break;
-  case 2:Current_Calibrate();
+	case 1:Voltage_Calibrate(); break;
+	case 2:Current_Calibrate();
 	}
 }

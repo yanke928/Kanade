@@ -111,7 +111,7 @@ void StepUpTest_UI_Handler(void *pvParameters)
 	progressBar_Params.MinValue = 0;
 	progressBar_Params.MaxValue = testTime;
 	currentState.CurrentTime = 0;
-	ShowDialogue(StepUpTestRunning_Str[CurrentSettings->Language], "", "");
+	ShowDialogue(StepUpTestRunning_Str[CurrentSettings->Language], "", "",false,false);
 	UI_ProgressBar_Init(&progressBar_Params);
 	StepUpTestOnTimeUI(0);
 	for (;;)

@@ -33,8 +33,8 @@ u8 GetCentralPosition(u8 startPos, u8 endPos, u8 stringLength)
 
 /**
   * @brief  Get Graphical length of given string
-
   * @param  string[]:Given string
+
 
 	  @retval Length of given string
   */

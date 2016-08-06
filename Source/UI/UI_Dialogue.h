@@ -9,7 +9,7 @@
 #include "queue.h"
 
 //see .c for details
-void ShowDialogue(const char titleString[],const char subString0[],const char subString1[]);
+void ShowDialogue(const char titleString[], const char subString0[], const char subString1[],bool titleCentered,bool stringCentered);
 
 //see .c for details
 void ShowSmallDialogue(const char string[],u16 time,bool occupyThread);

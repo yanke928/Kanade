@@ -134,7 +134,7 @@ static void USBMeter(void *pvParameters)
 				{
 					ShowDialogue(Hint_Str[CurrentSettings->Language],
 						RecordIsRunningHint1_Str[CurrentSettings->Language],
-						RecordIsRunningHint2_Str[CurrentSettings->Language]);
+						RecordIsRunningHint2_Str[CurrentSettings->Language],false,false);
 					vTaskDelay(1000 / portTICK_RATE_MS);
 					xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 					OLED_Clear();

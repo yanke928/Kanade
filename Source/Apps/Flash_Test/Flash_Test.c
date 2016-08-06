@@ -27,7 +27,7 @@ void Flash_Test_Run()
  FLASH_Unlock();
  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
  OLED_Clear();
- ShowDialogue("Flash Test","","");
+ ShowDialogue("Flash Test","","",false,false);
  for(;;)
  {
   FLASH_ErasePage(FLASH_TEST_START_ADDR);

@@ -36,7 +36,7 @@ bool GetConfirmation(const char subString0[], const char subString1[])
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
-	ShowDialogue(Confirmation_Str[CurrentSettings->Language], subString0, subString1);
+	ShowDialogue(Confirmation_Str[CurrentSettings->Language], subString0, subString1,false,false);
 	
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Refresh_Gram();

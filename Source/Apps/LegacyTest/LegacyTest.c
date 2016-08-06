@@ -156,7 +156,7 @@ u8 SelectLegacyTestMode()
 	xSemaphoreGive(OLEDRelatedMutex);
 
 	ShowDialogue(SelectLeagcyTestMode_Str[CurrentSettings->Language],
-		SelectLeagcyTestModeSubString_Str[CurrentSettings->Language], "");
+		SelectLeagcyTestModeSubString_Str[CurrentSettings->Language], "",false,false);
 
 	UI_Button_Init(&selectModeButtonParams);
 
@@ -358,7 +358,7 @@ void ShowSummary(u8 reason)
 	Key_Message_Struct key_Message;
 	char tempString[10];
 	float platVolt;
-	ShowDialogue(Summary_Str[CurrentSettings->Language], "", "");
+	ShowDialogue(Summary_Str[CurrentSettings->Language], "", "",false,false);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 
 	/*If the stop of the record is caused by protection,play sound to notice the

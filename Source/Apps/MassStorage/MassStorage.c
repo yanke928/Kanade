@@ -58,7 +58,7 @@ void MassStorage_App()
 		return;
 	}
 	ShowDialogue(USBMassStorage_Str[CurrentSettings->Language],
-		USBMassStorageStatus_Str[CurrentSettings->Language], "");
+		USBMassStorageStatus_Str[CurrentSettings->Language], "",false,false);
 	
 	/*Set the positions for the voltage options*/
 	button_params.ButtonStrings = unMountString;

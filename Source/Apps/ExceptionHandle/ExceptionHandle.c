@@ -39,7 +39,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask,
 	xSemaphoreGive(OLEDRelatedMutex);
 	SetUpdateOLEDJustNow();
 	OLED_Clear();
-	ShowDialogue("StackOverFlow", "", "");
+	ShowDialogue("StackOverFlow", "", "",false,false);
 	OLED_ShowAnyString(4, 16, "StackOverFlow in", NotOnSelect, 12);
 	OLED_ShowAnyString(4, 28, "\"", NotOnSelect, 12);
 	OLED_ShowAnyString(10, 28, (char *)pcTaskName, NotOnSelect, 12);
@@ -60,7 +60,7 @@ void ApplicationNewFailed(const char * appName)
 	xSemaphoreGive(OLEDRelatedMutex);
 	taskENTER_CRITICAL();
 	OLED_Clear();
-	ShowDialogue("App Create Failure", "", "");
+	ShowDialogue("App Create Failure", "", "",false,false);
 	sprintf(tempString, "RAM full while creating task \"%s\"", appName);
 	UI_PrintMultiLineString(4, 15, 125, 63, tempString, NotOnSelect, 12);
 	OLED_Refresh_Gram();
@@ -78,7 +78,7 @@ void ShowFault(char * string)
 	taskENTER_CRITICAL();
 	//SetUpdateOLEDJustNow();
 	OLED_Clear();
-	ShowDialogue("System Fault", "", "");
+	ShowDialogue("System Fault", "", "",false,false);
 	OLED_ShowAnyString(4, 16, string, NotOnSelect, 16);
 	OLED_ShowAnyString(4, 42, "Occurred!!", NotOnSelect, 16);
 	OLED_Refresh_Gram();
@@ -125,10 +125,10 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 	{
 	  if(sensor==0)
 		ShowDialogue(SystemOverHeat_Str[CurrentSettings->Language],
-			TestPaused_Str[CurrentSettings->Language], "");
+			TestPaused_Str[CurrentSettings->Language], "",false,false);
 		else
 		ShowDialogue(ExternalOverHeat_Str[CurrentSettings->Language],
-			TestPaused_Str[CurrentSettings->Language], "");			
+			TestPaused_Str[CurrentSettings->Language], "",false,false);			
 		vTaskSuspend(RecordHandle);
 		VirtualRTC_Pause();
 		if (status == LEGACY_TEST)
@@ -141,10 +141,10 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 	{
 		if(sensor==0)
 		ShowDialogue(SystemOverHeat_Str[CurrentSettings->Language],
-			SystemOverHeat_Str[CurrentSettings->Language], "");
+			SystemOverHeat_Str[CurrentSettings->Language], "",false,false);
 		else
 		ShowDialogue(ExternalOverHeat_Str[CurrentSettings->Language],
-			ExternalOverHeat_Str[CurrentSettings->Language], "");			
+			ExternalOverHeat_Str[CurrentSettings->Language], "",false,false);			
 	}
 	for (;;)
 	{

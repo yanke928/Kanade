@@ -20,14 +20,30 @@
 					 subString1:  Second Line of the passage
 
   */
-void ShowDialogue(const char titleString[], const char subString0[], const char subString1[])
+void ShowDialogue(const char titleString[], const char subString0[], const char subString1[], bool titleCentered, bool stringCentered)
 {
+	u8 titleAddr, subString0Addr, subString1Addr;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_DrawRect(0, 0, 127, 63, DRAW);
 	OLED_DrawHorizonalLine(13, 0, 127, 1);
-	OLED_ShowAnyString(3, 1, titleString, NotOnSelect, 12);
-	OLED_ShowAnyString(4, 16, subString0, NotOnSelect, 16);
-	OLED_ShowAnyString(4, 42, subString1, NotOnSelect, 16);
+	if (titleCentered == true)
+	{
+		titleAddr = 63 - GetStringGraphicalLength(titleString) * 3;
+		OLED_ShowAnyString(titleAddr, 1, titleString, NotOnSelect, 12);
+	}
+	else OLED_ShowAnyString(3, 1, titleString, NotOnSelect, 12);
+	if (stringCentered == true)
+	{
+		subString0Addr = 63 - GetStringGraphicalLength(subString0) * 4;
+		subString1Addr = 63 - GetStringGraphicalLength(subString1) * 4;
+		OLED_ShowAnyString(subString0Addr, 16, subString0, NotOnSelect, 16);
+		OLED_ShowAnyString(subString1Addr, 42, subString1, NotOnSelect, 16);
+	}
+	else
+	{
+		OLED_ShowAnyString(4, 16, subString0, NotOnSelect, 16);
+		OLED_ShowAnyString(4, 42, subString1, NotOnSelect, 16);
+	}
 	OLED_InvertRect(1, 1, 126, 13);
 	xSemaphoreGive(OLEDRelatedMutex);
 }

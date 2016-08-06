@@ -42,7 +42,7 @@ void About()
  prodectInfoAddr=63-(productNameLength+productVersionLength+1)*3;
 	
  /*Draw dialogue*/
- ShowDialogue("","","");
+ ShowDialogue("","","",false,false);
 
  /*Display product info string and version string*/
  xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
