@@ -471,6 +471,7 @@ void Dialgram_Broswer(void *pvParameters)
 					{
 						posChanged = false;
 						currentPos = dialgram_Params->RecordLength - 1;
+            if(dialgram_Params->RecordLength==0) currentPos=0;
 					}
 				}
 				else if (keyMessage.KeyEvent == MidLong)

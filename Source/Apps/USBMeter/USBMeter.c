@@ -30,14 +30,26 @@
 #include "ExceptionHandle.h"
 
 #include "UI_Dialogue.h"
+#include "UI_Utilities.h"
 
 #include "USBMeter.h"
 
 #define USB_METER_PRIORITY tskIDLE_PRIORITY+3
 
+#define EFFECT_DATA_NUM_PER_SCREEN 63
+
+float CurrentCurveBuff[EFFECT_DATA_NUM_PER_SCREEN];
+float VoltageCurveBuff[EFFECT_DATA_NUM_PER_SCREEN];
+
+u16 Data_p = 0;
+
+bool firstCycle = true;
+
 static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter);
 
 static void DisplayRecordData(char tempString[]);
+
+void ScrollDialgram_Routine(void);
 
 /**
   * @brief  USBMeter
@@ -100,6 +112,7 @@ static void USBMeter(void *pvParameters)
 			{
 				switch (keyMessage.KeyEvent)
 				{
+				case MidClick: ScrollDialgram_Routine();break;
 				case MidDouble:if (GetConfirmation(RecordConfirm_Str[CurrentSettings->Language], ""))
 					StartRecord(&status); break;
 				case MidLong:Settings(); break;
@@ -155,6 +168,137 @@ static void USBMeter(void *pvParameters)
 		}
 	}
 }
+
+void WriteCurrentMeterData2CurveBuff()
+{
+	VoltageCurveBuff[Data_p] = FilteredMeterData.Voltage;
+	CurrentCurveBuff[Data_p] = FilteredMeterData.Current;
+	Data_p++;
+	if (Data_p == EFFECT_DATA_NUM_PER_SCREEN)
+	{
+		firstCycle = false;
+		Data_p = 0;
+	}
+}
+
+void DrawSingleCurveInCurveBuff(float* data, float min, float max)
+{
+	u8 pixelsPerData = 128 / EFFECT_DATA_NUM_PER_SCREEN;
+	u8 currentAddr = 0;
+	float currentPosData, nextPosData;
+	u8 y1, y2;
+	u16 i;
+	if (firstCycle == false)
+		for (i = 0; i < EFFECT_DATA_NUM_PER_SCREEN; i++)
+		{
+			if (Data_p + i + 1 >= EFFECT_DATA_NUM_PER_SCREEN) break;
+			currentPosData = data[Data_p + i];
+			nextPosData = data[Data_p + i + 1];
+			y1 = 8 + (u8)
+				((float)46 * ((max - currentPosData) /
+				(float)(max - min)));
+			y2 = 8 + (u8)
+				((float)46 * ((max - nextPosData) /
+				(float)(max - min)));
+			OLED_DrawAnyLine(currentAddr, y1, currentAddr + pixelsPerData, y2, DRAW);
+			currentAddr = currentAddr + pixelsPerData;
+		}
+	for (i = 0; i < EFFECT_DATA_NUM_PER_SCREEN; i++)
+	{
+		if (i + 1 >= Data_p) break;
+		currentPosData = data[i];
+		nextPosData = data[i + 1];
+		y1 = 8 + (u8)
+			((float)46 * ((max - currentPosData) /
+			(float)(max - min)));
+		y2 = 8 + (u8)
+			((float)46 * ((max - nextPosData) /
+			(float)(max - min)));
+		OLED_DrawAnyLine(currentAddr, y1, currentAddr + pixelsPerData, y2, DRAW);
+		currentAddr = currentAddr + pixelsPerData;
+	}
+}
+
+void DrawDialgramMinAndMaxAndGrids(float voltMin, float voltMax, float curtMin, float curtMax)
+{
+	char tempString[10];
+	u8 length;
+	u8 i;
+
+	//	for (i = 0; i < 6; i++)
+	//	{
+	//		DrawHorizonalDashedGrid(3 + i * 11, DRAW, HighDensity);
+	//	}
+	//	for (i = 0; i < 11; i++)
+	//	{
+	//			DrawVerticalDashedGrid(3 + i * 12, DRAW, HighDensity);
+	//	}
+
+	sprintf(tempString, "%.1fV", voltMax);
+	OLED_ShowAnyString(0, 0, tempString, NotOnSelect, 8);
+	sprintf(tempString, "%.1fV", voltMin);
+	OLED_ShowAnyString(0, 56, tempString, NotOnSelect, 8);
+
+	sprintf(tempString, "%.1fA", curtMax);
+	length = GetStringGraphicalLength(tempString);
+	OLED_ShowAnyString(127 - 6 * length, 0, tempString, NotOnSelect, 8);
+
+	sprintf(tempString, "%.1fA", curtMin);
+	length = GetStringGraphicalLength(tempString);
+	OLED_ShowAnyString(127 - 6 * length, 56, tempString, NotOnSelect, 8);
+}
+
+void RefreshDialgram()
+{
+	u16 temp;
+	float currentMin, currentMax, voltageMin, voltageMax;
+	u16 effectiveDataNum;
+	if (firstCycle == true) effectiveDataNum = Data_p;
+	else effectiveDataNum = EFFECT_DATA_NUM_PER_SCREEN;
+	currentMin = FindMin(CurrentCurveBuff, effectiveDataNum);
+	voltageMin = FindMin(VoltageCurveBuff, effectiveDataNum);
+	currentMax = FindMax(CurrentCurveBuff, effectiveDataNum);
+	voltageMax = FindMax(VoltageCurveBuff, effectiveDataNum);
+	temp = (currentMax - currentMin) * 10;
+	temp = temp + 2;
+	currentMin = (float)((u16)(currentMin * 10)) / 10;
+	currentMax = currentMin + (float)temp*0.1;
+	temp = (voltageMax - voltageMin) * 10;
+	temp = temp + 2;
+	voltageMin = (float)((u16)(voltageMin * 10)) / 10;
+	voltageMax = voltageMin + (float)temp*0.1;
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	DrawSingleCurveInCurveBuff(VoltageCurveBuff, voltageMin, voltageMax);
+	DrawSingleCurveInCurveBuff(CurrentCurveBuff, currentMin, currentMax);
+	DrawDialgramMinAndMaxAndGrids(voltageMin, voltageMax, currentMin, currentMax);
+	OLED_Refresh_Gram();
+	xSemaphoreGive(OLEDRelatedMutex);
+}
+
+void ScrollDialgram_Routine()
+{
+	Key_Message_Struct keyMessage;
+	Data_p = 0;
+	firstCycle = true;
+	for (;;)
+	{
+		WriteCurrentMeterData2CurveBuff();
+		RefreshDialgram();
+		if (xQueueReceive(Key_Message, &keyMessage, 500 / portTICK_RATE_MS) == pdPASS)
+		{
+			if (keyMessage.KeyEvent == MidClick) 
+        {
+           xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	         OLED_Clear();
+           xSemaphoreGive(OLEDRelatedMutex);
+           return;
+        }
+		}
+	}
+
+}
+
 
 /**
   * @brief  Display Volt,Cureent,Power and Temperature

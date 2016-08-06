@@ -17,6 +17,10 @@ typedef struct {
   u8  TestOverFlag;
 }StepUpTestStateStruct;
 
+float FindMax(float *dataSet, u16 dataLength);
+
+float FindMin(float *dataSet, u16 dataLength);
+
 //see .c for details
 void StepUpTest_Init(StepUpTestParamsStruct* test_Params);
 

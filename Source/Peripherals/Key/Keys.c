@@ -93,7 +93,7 @@ void KeyEvents(void)
 			if (IgnoreNextEvent == false)
 				KeyEvent = MidDouble;
 			else KeyEvent = 0;
-			IgnoreNextEvent = false;
+			IgnoreNextEvent = true;
 			MidTime = 0;
 			MidKeyPressed = false;
 			return;
