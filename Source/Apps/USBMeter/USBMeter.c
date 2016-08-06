@@ -35,7 +35,7 @@
 
 #define USB_METER_PRIORITY tskIDLE_PRIORITY+3
 
-static void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter);
+static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter);
 
 static void DisplayRecordData(char tempString[]);
 
@@ -47,10 +47,11 @@ static void DisplayRecordData(char tempString[]);
 static void USBMeter(void *pvParameters)
 {
 	char tempString[20];
-	u8 firstEnter=1;
+	bool fastChargeStatus = false;
+	u8 firstEnter = 1;
 	Key_Message_Struct keyMessage;
 	u8 status = USBMETER_ONLY;
-  u8 reSendLoadCommandCnt=0;
+	u8 reSendLoadCommandCnt = 0;
 	Legacy_Test_Param_Struct legacy_Test_Params;
 	ClearKeyEvent(keyMessage);
 	while (1)
@@ -58,16 +59,16 @@ static void USBMeter(void *pvParameters)
 	Refresh:
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
-		DisplayBasicData(tempString, status,firstEnter);
+		DisplayBasicData(tempString, status, firstEnter);
 		xSemaphoreGive(USBMeterState_Mutex);
 		if (status == USBMETER_RECORD || status == LEGACY_TEST)
 		{
 			DisplayRecordData(tempString);
 		}
 		xSemaphoreGive(OLEDRelatedMutex);
-		if ((InternalTemperature > CurrentSettings->InternalTemperature_Max||
-			  ExternalTemperature > CurrentSettings->ExternalTemperature_Max)&&
-		    firstEnter==0)
+		if ((InternalTemperature > CurrentSettings->InternalTemperature_Max ||
+			ExternalTemperature > CurrentSettings->ExternalTemperature_Max) &&
+			firstEnter == 0)
 		{
 			System_OverHeat_Exception_Handler(status, &legacy_Test_Params);
 		}
@@ -80,19 +81,19 @@ static void USBMeter(void *pvParameters)
 				goto Refresh;
 			}
 			if (legacy_Test_Params.TestMode == ConstantPower)
-			{ 
-       reSendLoadCommandCnt++;
-       if(reSendLoadCommandCnt==5)
-        {
-				if (CurrentMeterData.Current < 0.1)
-					Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, Load_Start);
-				else
-					Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, Load_Keep);
-         reSendLoadCommandCnt=0;
-        }
+			{
+				reSendLoadCommandCnt++;
+				if (reSendLoadCommandCnt == 5)
+				{
+					if (CurrentMeterData.Current < 0.1)
+						Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, Load_Start);
+					else
+						Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, Load_Keep);
+					reSendLoadCommandCnt = 0;
+				}
 			}
 		}
-		if(firstEnter) firstEnter--;
+		if (firstEnter) firstEnter--;
 		if (xQueueReceive(Key_Message, &keyMessage, 500 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (status == USBMETER_ONLY)
@@ -109,8 +110,17 @@ static void USBMeter(void *pvParameters)
 				}
 				switch (keyMessage.AdvancedKeyEvent)
 				{
-				case LeftContinous:if (GetConfirmation(QCMTKConfirm_Str[CurrentSettings->Language], ""))
-					FastChargeTriggerUI(); break;
+				case LeftContinous:
+					if (!fastChargeStatus)
+					{
+						if (GetConfirmation(QCMTKConfirm_Str[CurrentSettings->Language], ""))
+							FastChargeTriggerUI(&fastChargeStatus);
+					}
+					else
+					{
+						if (GetConfirmation(ReleaseFastCharge_Str[CurrentSettings->Language], ""))
+							ReleaseFastCharge(&fastChargeStatus);
+					} break;
 				case RightContinous:if
 					(GetConfirmation(MountUSBMassStorageConfirm_Str[CurrentSettings->Language], ""))
 					MassStorage_App(); break;
@@ -134,7 +144,7 @@ static void USBMeter(void *pvParameters)
 				{
 					ShowDialogue(Hint_Str[CurrentSettings->Language],
 						RecordIsRunningHint1_Str[CurrentSettings->Language],
-						RecordIsRunningHint2_Str[CurrentSettings->Language],false,false);
+						RecordIsRunningHint2_Str[CurrentSettings->Language], false, false);
 					vTaskDelay(1000 / portTICK_RATE_MS);
 					xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 					OLED_Clear();
@@ -153,9 +163,9 @@ static void USBMeter(void *pvParameters)
 	By sharing the tempString,more sources can be saved
 	@retval None
   */
-static void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
+static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 {
-	if (FilteredMeterData.Voltage >=10.0f)
+	if (FilteredMeterData.Voltage >= 10.0f)
 	{
 		sprintf(tempString, "%.2fV", FilteredMeterData.Voltage);
 	}
@@ -169,7 +179,7 @@ static void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
 	else
 		sprintf(tempString, "%04.1fmA", FilteredMeterData.Current * 1000);
 	OLED_ShowString(80, 0, tempString);
-	if (FilteredMeterData.Power >=10.0f)
+	if (FilteredMeterData.Power >= 10.0f)
 	{
 		sprintf(tempString, "%.2fW ", FilteredMeterData.Power);
 	}
@@ -181,44 +191,44 @@ static void DisplayBasicData(char tempString[], u8 currentStatus,u8 firstEnter)
 	if (CurrentTemperatureSensor == Internal)
 	{
 		GenerateTempString(tempString, Internal);
-		if(firstEnter)
-		OLED_ShowString(80, 16, "-----C");	
+		if (firstEnter)
+			OLED_ShowString(80, 16, "-----C");
 		else
 		{
-		if (tempString[0] != '1')tempString[0] = '0';
-		OLED_ShowString(80, 16, tempString);
+			if (tempString[0] != '1')tempString[0] = '0';
+			OLED_ShowString(80, 16, tempString);
 		}
 	}
 	else
 	{
 		GenerateTempString(tempString, External);
 		OLED_ShowAnyString(80, 16, "Ex", NotOnSelect, 8);
-		if(firstEnter) 
-		OLED_ShowAnyString(92, 16, "-----C", NotOnSelect, 8);
+		if (firstEnter)
+			OLED_ShowAnyString(92, 16, "-----C", NotOnSelect, 8);
 		else
-		OLED_ShowAnyString(92, 16, tempString, NotOnSelect, 8);
+			OLED_ShowAnyString(92, 16, tempString, NotOnSelect, 8);
 		GenerateTempString(tempString, Internal);
 		OLED_ShowAnyString(80, 24, "In", NotOnSelect, 8);
-		if(firstEnter) 
-		OLED_ShowAnyString(92, 24, "-----C", NotOnSelect, 8);
+		if (firstEnter)
+			OLED_ShowAnyString(92, 24, "-----C", NotOnSelect, 8);
 		else
-		OLED_ShowAnyString(92, 24, tempString, NotOnSelect, 8);
+			OLED_ShowAnyString(92, 24, tempString, NotOnSelect, 8);
 	}
-		if (currentStatus == USBMETER_ONLY)
-		{
-			GenerateRTCDateString(tempString);
-			OLED_ShowString(0, 32, tempString);
-			GenerateRTCTimeString(tempString);
-			OLED_ShowString(0, 48, tempString);
-			GenerateRTCWeekString(tempString);
-			OLED_ShowString(104, 32, tempString);
-			sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDP);
-			OLED_ShowAnyString(92, 48, tempString, NotOnSelect, 8);
-			sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDM);
-			OLED_ShowAnyString(92, 56, tempString, NotOnSelect, 8);
-			OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
-			OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
-		}
+	if (currentStatus == USBMETER_ONLY)
+	{
+		GenerateRTCDateString(tempString);
+		OLED_ShowString(0, 32, tempString);
+		GenerateRTCTimeString(tempString);
+		OLED_ShowString(0, 48, tempString);
+		GenerateRTCWeekString(tempString);
+		OLED_ShowString(104, 32, tempString);
+		sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDP);
+		OLED_ShowAnyString(92, 48, tempString, NotOnSelect, 8);
+		sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDM);
+		OLED_ShowAnyString(92, 56, tempString, NotOnSelect, 8);
+		OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
+		OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
+	}
 }
 
 /**
@@ -248,5 +258,5 @@ static void DisplayRecordData(char tempString[])
 void USBMeter_Init(u8 status)
 {
 	CreateTaskWithExceptionControl(USBMeter, "USBMeter",
-  384, &status, USB_METER_PRIORITY, NULL);
+		384, &status, USB_METER_PRIORITY, NULL);
 }

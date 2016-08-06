@@ -85,6 +85,7 @@ extern const char* const RecordConfirm_Str[LanguageNum];
 
 /*Trigger related*/
 extern const char* const QCMTKConfirm_Str[LanguageNum] ;
+extern const char* const ReleaseFastCharge_Str[LanguageNum];
 
 /*MassStorage related*/
 extern const char* const USBMassStorage_Str[LanguageNum];

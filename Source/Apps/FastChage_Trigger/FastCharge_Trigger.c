@@ -203,7 +203,7 @@ void QC3Trigger_Init(void)
 
   * @retval None
   */
-void FastChargeTriggerUI(void)
+void FastChargeTriggerUI(bool* fastchargeTriggeredFlag)
 {
 	u8 selection;
 	const char* protocolTab[3];
@@ -229,11 +229,14 @@ void FastChargeTriggerUI(void)
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
+
+  *fastchargeTriggeredFlag=true;
 	switch (selection)
 	{
 	case 0:QC2Trigger_Init(); break;
 	case 1:QC3Trigger_Init(); break;
-	case 2:MTKTrigger_Init();
+	case 2:MTKTrigger_Init();break;
+  default:*fastchargeTriggeredFlag=false;
 	}
 	UpdateOLEDJustNow = false;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
@@ -241,3 +244,8 @@ void FastChargeTriggerUI(void)
 	xSemaphoreGive(OLEDRelatedMutex);
 }
 
+void ReleaseFastCharge(bool* fastchargeTriggeredFlag)
+{
+ FastCharge_Trigger_Release();
+ *fastchargeTriggeredFlag=false;
+}

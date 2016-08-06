@@ -693,6 +693,12 @@ const char AbortConfirmation_CN[] ="放弃?";
 const char AbortConfirmation_JP[] ="放棄?";
 const char* const AbortConfirmation_Str[] = { AbortConfirmation_EN,AbortConfirmation_TW,AbortConfirmation_CN,AbortConfirmation_JP };
 
+const char ReleaseFastCharge_EN[] ="QC/MTK release?";
+const char ReleaseFastCharge_TW[] ="釋放快充?";
+const char ReleaseFastCharge_CN[] ="释放快充?";
+const char ReleaseFastCharge_JP[] ="QC/MTKやめる?";
+const char* const ReleaseFastCharge_Str[] = { ReleaseFastCharge_EN,ReleaseFastCharge_TW,ReleaseFastCharge_CN,ReleaseFastCharge_JP };
+
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {
 {20,45,76,45},
