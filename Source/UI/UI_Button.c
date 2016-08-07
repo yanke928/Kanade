@@ -52,7 +52,7 @@ void UI_Button_Handler(void *pvParameters)
 		OLED_ShowAnyString(buttonParams->Positions[i].x, buttonParams->Positions[i].y,
 			buttonParams->ButtonStrings[i], NotOnSelect, 12);
 	}
-	ClearKeyEvent(keyMessage);
+	ClearKeyEvent();
 	//ResetUpdateOLEDJustNow();
 	xSemaphoreGive(OLEDRelatedMutex);
 	for (;;)

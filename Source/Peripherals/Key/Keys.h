@@ -87,7 +87,7 @@ void Key_Init(void);
 
 void Key_Debug_Init(void);
 
-void ClearKeyEvent(Key_Message_Struct message);
+void ClearKeyEvent(void);
 
 #define IgnoreNextKeyEvent() IgnoreNextEvent=true
 

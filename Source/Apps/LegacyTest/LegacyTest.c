@@ -15,8 +15,8 @@
 #include "Digital_Load.h"
 #include "LED.h"
 #include "SSD1306.h"
-#include "sdcard.h"
 #include "sdcardff.h"
+#include "W25Q64ff.h"
 #include "LED_Animate.h"
 #include "Keys.h"
 #include "Temperature_Sensors.h"
@@ -25,6 +25,7 @@
 #include "UI_Dialogue.h"
 #include "UI_Confirmation.h"
 #include "UI_Button.h"
+#include "UI_Menu.h"
 #include "UI_Utilities.h"
 
 #include "MultiLanguageStrings.h"
@@ -111,12 +112,13 @@ void ClearRecordData()
 
 	@rtval: true(success) false(failed)
   */
-bool CreateRecordFile()
+bool CreateRecordFile(char storageNo)
 {
 	FRESULT res;
 	char tempString[60];
-	sprintf(tempString, "0:/Kanade/Records/%04d_%02d_%02d %02d-%02d-%02d.csv", RTCTime.w_year,
+	sprintf(tempString, "x:/Kanade/Records/%04d_%02d_%02d %02d-%02d-%02d.csv", RTCTime.w_year,
 		RTCTime.w_month, RTCTime.w_date, RTCTime.hour, RTCTime.min, RTCTime.sec);
+	tempString[0] = storageNo;
 	res = f_open(&RecordFile, tempString, FA_CREATE_ALWAYS | FA_WRITE);
 	if (res == FR_OK) return true;
 	return false;
@@ -183,8 +185,8 @@ void StartOrRecoverLoad(Legacy_Test_Param_Struct* test_Params, bool *protectedFl
 	for (;;)
 	{
 		/*If protection triggered,undo the legacy test*/
-		if (FilteredMeterData.Voltage < (float)(test_Params->ProtectVolt) / 1000 ||
-			FilteredMeterData.Voltage < 0.5)
+		if (FilteredMeterData.Voltage < (float)(test_Params->ProtectVolt) / 1000
+			|| FilteredMeterData.Voltage < 0.5)
 		{
 			*protectedFlag = true;
 			Send_Digital_Load_Command(0, Load_Stop);
@@ -192,17 +194,17 @@ void StartOrRecoverLoad(Legacy_Test_Param_Struct* test_Params, bool *protectedFl
 		}
 
 		/*Break if the load command effects*/
-		if (FilteredMeterData.Current > (float)(test_Params->Current) / 1050 &&
-			FilteredMeterData.Current < (float)(test_Params->Current) / 950 &&
-			test_Params->TestMode == ConstantCurrent)
+		if (FilteredMeterData.Current > (float)(test_Params->Current) / 1050
+			&& FilteredMeterData.Current < (float)(test_Params->Current) / 950
+			&& test_Params->TestMode == ConstantCurrent)
 		{
 			*protectedFlag = false;
 			break;
 		}
 
-		if (CurrentMeterData.Power > (float)(test_Params->Power) / 1050 &&
-			CurrentMeterData.Power < (float)(test_Params->Power) / 950 &&
-			test_Params->TestMode == ConstantPower)
+		if (CurrentMeterData.Power > (float)(test_Params->Power) / 1050
+			&& CurrentMeterData.Power < (float)(test_Params->Power) / 950
+			&& test_Params->TestMode == ConstantPower)
 		{
 			*protectedFlag = false;
 			break;
@@ -217,12 +219,55 @@ void StartOrRecoverLoad(Legacy_Test_Param_Struct* test_Params, bool *protectedFl
 
 }
 
+char SelectStorage()
+{
+	u8 cnt = 0;
+	u8 selection;
+	UI_Menu_Param_Struct menuParams;
+	const char* storageTab[3];
+	if (SDCardMountStatus)
+	{
+		storageTab[cnt] = SettingsItemFormatSD_Str[CurrentSettings->Language];
+		cnt++;
+	}
+	if (SPIFlashMountStatus)
+	{
+		storageTab[cnt] = SettingsItemFormatInternal_Str[CurrentSettings->Language];
+		cnt++;
+	}
+	storageTab[cnt] = DontSave_Str[CurrentSettings->Language];
+	menuParams.ItemStrings = storageTab;
+	menuParams.DefaultPos = 0;
+	menuParams.ItemNum = ++cnt;
+	menuParams.FastSpeed = 10;
+
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Clear();
+	xSemaphoreGive(OLEDRelatedMutex);
+
+	UI_Menu_Init(&menuParams);
+
+	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
+	UI_Menu_DeInit();
+
+	if (storageTab[selection] == SettingsItemFormatSD_Str[CurrentSettings->Language])
+	{
+		return '0';
+	}
+	else if (storageTab[selection] == SettingsItemFormatInternal_Str[CurrentSettings->Language])
+	{
+		return '1';
+	}
+	else return 'N';
+}
+
 /**
   * @brief  Run a legacy test with params from user
   */
 void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 {
 	bool protectedFlag;
+	char storage;
 	*status = LEGACY_TEST;
 
 	test_Params->TestMode = SelectLegacyTestMode();
@@ -235,7 +280,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 			1000, 100, "mA", 20);
 		if (test_Params->Current < 0)
 		{
-      *status=USBMETER_ONLY;
+			*status = USBMETER_ONLY;
 			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 			OLED_Clear();
 			xSemaphoreGive(OLEDRelatedMutex);
@@ -250,7 +295,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 				10000, 500, "mW", 20);
 		if (test_Params->Power < 0)
 		{
-      *status=USBMETER_ONLY;
+			*status = USBMETER_ONLY;
 			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 			OLED_Clear();
 			xSemaphoreGive(OLEDRelatedMutex);
@@ -263,14 +308,14 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 			(int)(900 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (900 * CurrentMeterData.Voltage) / 10 * 10 : 100, 10, "mV", 25);
 	if (test_Params->ProtectVolt < 0)
 	{
-    *status=USBMETER_ONLY;
+		*status = USBMETER_ONLY;
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		OLED_Clear();
 		xSemaphoreGive(OLEDRelatedMutex);
 		return;
 	}
 	/*Warn user of the unmounted sdcard*/
-	if (!SDCardMountStatus)
+	if (!SDCardMountStatus && !SPIFlashMountStatus)
 	{
 		IsRecording = false;
 		if (!GetConfirmation(NoDiskConfirm_Str[CurrentSettings->Language], ""))
@@ -281,18 +326,23 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	}
 	else
 	{
-		/*Try to create a record file,show hint if failed*/
-		if (!CreateRecordFile())
+		storage = SelectStorage();
+		if (storage != 'N')
 		{
-			ShowSmallDialogue(FileCreateFailed_Str[CurrentSettings->Language], 1000, true);
+			/*Try to create a record file,show hint if failed*/
+			if (!CreateRecordFile(storage))
+			{
+				ShowSmallDialogue(FileCreateFailed_Str[CurrentSettings->Language], 1000, true);
+			}
+			else
+			{
+				RecordFileWriteCount = 0;
+				CreateRecordFileHeader();
+				ShowSmallDialogue(FileCreated_Str[CurrentSettings->Language], 1000, true);
+				IsRecording = true;
+			}
 		}
-		else
-		{
-			RecordFileWriteCount = 0;
-			CreateRecordFileHeader();
-			ShowSmallDialogue(FileCreated_Str[CurrentSettings->Language], 1000, true);
-			IsRecording = true;
-		}
+		else IsRecording = false;
 	}
 	/*Clear the screen*/
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
@@ -338,7 +388,8 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
   */
 void StartRecord(u8* status)
 {
-	if (!SDCardMountStatus)
+	char storage;
+	if (!SDCardMountStatus && !SPIFlashMountStatus)
 	{
 		IsRecording = false;
 		if (!GetConfirmation(NoDiskConfirm_Str[CurrentSettings->Language], ""))
@@ -349,17 +400,22 @@ void StartRecord(u8* status)
 	}
 	else
 	{
-		if (!CreateRecordFile())
+		storage = SelectStorage();
+		if (storage != 'N')
 		{
-			ShowSmallDialogue(FileCreateFailed_Str[CurrentSettings->Language], 1000, true);
+			if (!CreateRecordFile(storage))
+			{
+				ShowSmallDialogue(FileCreateFailed_Str[CurrentSettings->Language], 1000, true);
+			}
+			else
+			{
+				RecordFileWriteCount = 0;
+				CreateRecordFileHeader();
+				ShowSmallDialogue(FileCreated_Str[CurrentSettings->Language], 1000, true);
+				IsRecording = true;
+			}
 		}
-		else
-		{
-			RecordFileWriteCount = 0;
-			CreateRecordFileHeader();
-			ShowSmallDialogue(FileCreated_Str[CurrentSettings->Language], 1000, true);
-			IsRecording = true;
-		}
+		else IsRecording = false;
 	}
 	ClearRecordData();
 	VirtualRTC_Init();

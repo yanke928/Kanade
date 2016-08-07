@@ -339,10 +339,10 @@ const char LegacyTestSetCurrent_CN[] ="电流";
 const char LegacyTestSetCurrent_JP[] ="電流";
 const char* const LegacyTestSetCurrent_Str[] = { LegacyTestSetCurrent_EN,LegacyTestSetCurrent_TW,LegacyTestSetCurrent_CN,LegacyTestSetCurrent_JP };
 
-const char NoDiskConfirm_EN[] ="No SD,Continue?";
-const char NoDiskConfirm_TW[] ="沒有SD卡,繼續?";
-const char NoDiskConfirm_CN[] ="没有SD卡,继续?";
-const char NoDiskConfirm_JP[] ="いいえSD,繼續?";
+const char NoDiskConfirm_EN[] ="NoMem,Continue?";
+const char NoDiskConfirm_TW[] ="無存儲器,繼續?";
+const char NoDiskConfirm_CN[] ="无存储器,继续?";
+const char NoDiskConfirm_JP[] ="No memory,繼續?";
 const char* const NoDiskConfirm_Str[] = { NoDiskConfirm_EN,NoDiskConfirm_TW,NoDiskConfirm_CN,NoDiskConfirm_JP };
 
 const char FileCreated_EN[] ="File Created";
@@ -698,6 +698,12 @@ const char ReleaseFastCharge_TW[] ="釋放快充?";
 const char ReleaseFastCharge_CN[] ="释放快充?";
 const char ReleaseFastCharge_JP[] ="QC/MTKやめる?";
 const char* const ReleaseFastCharge_Str[] = { ReleaseFastCharge_EN,ReleaseFastCharge_TW,ReleaseFastCharge_CN,ReleaseFastCharge_JP };
+
+const char DontSave_EN[] ="Do not save";
+const char DontSave_TW[] ="不保存";
+const char DontSave_CN[] ="不保存";
+const char DontSave_JP[] ="保存しないでください";
+const char* const DontSave_Str[] = { DontSave_EN,DontSave_TW,DontSave_CN,DontSave_JP };
 
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {

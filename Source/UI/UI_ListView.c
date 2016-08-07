@@ -97,7 +97,7 @@ void UI_ListView_Handler(void *pvParameters)
 	}
 	currentPos = listView_Params->DefaultPos;
 	currentRelativePos = 0;
-	ClearKeyEvent(key_Message);
+	ClearKeyEvent();
 	for (;;)
 	{
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);

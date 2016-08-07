@@ -158,6 +158,8 @@ extern const char* const AbortConfirmation_Str[LanguageNum];
 /*Firmware update related*/
 extern const char* const FirmwareUpdateConfirm_Str[LanguageNum];
 
+extern const char* const DontSave_Str[LanguageNum];
+
 /*Confirmation positions*/
 extern const OLED_PositionStruct  ComfirmationPositions[LanguageNum][2];
 extern const OLED_PositionStruct  SelectLegacyTestModePositions[LanguageNum][2];

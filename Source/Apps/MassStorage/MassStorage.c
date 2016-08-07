@@ -11,6 +11,7 @@
 #include "FreeRTOS_Standard_Include.h"
 
 #include "mass_mal.h"
+#include "Keys.h"
 #include "usb_pwr.h"
 #include "usb_lib.h"
 #include "LED_Animate.h"
@@ -96,6 +97,8 @@ void MassStorage_App()
 		Usb_Status_Reg = 0;
 		vTaskDelay(100 / portTICK_RATE_MS);
 	}
+  vTaskDelay(50 / portTICK_RATE_MS);
+  ClearKeyEvent();
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);

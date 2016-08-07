@@ -110,7 +110,7 @@ void UI_Adjust_Handler(void *pvParameters)
 	SetUpdateOLEDJustNow();
 	OLED_Refresh_Gram();
 	xSemaphoreGive(OLEDRelatedMutex);
-	ClearKeyEvent(keyMsg);
+	ClearKeyEvent();
 	for (;;)
 	{
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);

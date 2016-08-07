@@ -36,7 +36,7 @@
 
 #define USB_METER_PRIORITY tskIDLE_PRIORITY+3
 
-#define EFFECT_DATA_NUM_PER_SCREEN 63
+#define EFFECT_DATA_NUM_PER_SCREEN 127
 
 float CurrentCurveBuff[EFFECT_DATA_NUM_PER_SCREEN];
 float VoltageCurveBuff[EFFECT_DATA_NUM_PER_SCREEN];
@@ -49,7 +49,7 @@ static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 
 static void DisplayRecordData(char tempString[]);
 
-void ScrollDialgram_Routine(void);
+static void ScrollDialgram_Routine(void);
 
 /**
   * @brief  USBMeter
@@ -65,7 +65,7 @@ static void USBMeter(void *pvParameters)
 	u8 status = USBMETER_ONLY;
 	u8 reSendLoadCommandCnt = 0;
 	Legacy_Test_Param_Struct legacy_Test_Params;
-	ClearKeyEvent(keyMessage);
+	ClearKeyEvent();
 	while (1)
 	{
 	Refresh:
@@ -112,7 +112,7 @@ static void USBMeter(void *pvParameters)
 			{
 				switch (keyMessage.KeyEvent)
 				{
-				case MidClick: ScrollDialgram_Routine();break;
+				case MidClick: ScrollDialgram_Routine(); break;
 				case MidDouble:if (GetConfirmation(RecordConfirm_Str[CurrentSettings->Language], ""))
 					StartRecord(&status); break;
 				case MidLong:Settings(); break;
@@ -153,6 +153,11 @@ static void USBMeter(void *pvParameters)
 						goto Refresh;
 					}
 				}
+        else if (keyMessage.KeyEvent == MidClick) 
+        {
+         ScrollDialgram_Routine();
+         goto Refresh;
+        }
 				else
 				{
 					ShowDialogue(Hint_Str[CurrentSettings->Language],
@@ -169,95 +174,137 @@ static void USBMeter(void *pvParameters)
 	}
 }
 
+
+/**
+  * @brief  Write a new dataset to curve buffer
+
+  * @retval None
+  */
 void WriteCurrentMeterData2CurveBuff()
 {
-	VoltageCurveBuff[Data_p] = FilteredMeterData.Voltage;
-	CurrentCurveBuff[Data_p] = FilteredMeterData.Current;
+	/*Increase data pos*/
 	Data_p++;
+
+	/*Reset data pos to 0 and clear first cycle flag*/
 	if (Data_p == EFFECT_DATA_NUM_PER_SCREEN)
 	{
 		firstCycle = false;
 		Data_p = 0;
 	}
+
+	/*Especially,the first data of the forst cycle should also apply to pos 0*/
+	if (Data_p == 1 && firstCycle)
+	{
+		VoltageCurveBuff[0] = FilteredMeterData.Voltage;
+		CurrentCurveBuff[0] = FilteredMeterData.Current;
+	}
+
+	VoltageCurveBuff[Data_p] = FilteredMeterData.Voltage;
+	CurrentCurveBuff[Data_p] = FilteredMeterData.Current;
 }
 
-void DrawSingleCurveInCurveBuff(float* data, float min, float max)
+/**
+  * @brief  Find the num th data in dataset according to the pos of Data_p
+
+  * @retval None
+  */
+static float FindxthData(float* data, u16 num)
+{
+	u16 p;
+	p = num + Data_p + 1;
+	if (p >= EFFECT_DATA_NUM_PER_SCREEN)
+		p = p - EFFECT_DATA_NUM_PER_SCREEN;
+	if (firstCycle) p = num;
+	return data[p];
+}
+
+/**
+  * @brief  Draw a single curve in curve buffer
+
+  * @retval None
+  */
+static void DrawSingleCurveInCurveBuff(float* data, float min, float max)
 {
 	u8 pixelsPerData = 128 / EFFECT_DATA_NUM_PER_SCREEN;
 	u8 currentAddr = 0;
 	float currentPosData, nextPosData;
 	u8 y1, y2;
 	u16 i;
-	if (firstCycle == false)
-		for (i = 0; i < EFFECT_DATA_NUM_PER_SCREEN; i++)
-		{
-			if (Data_p + i + 1 >= EFFECT_DATA_NUM_PER_SCREEN) break;
-			currentPosData = data[Data_p + i];
-			nextPosData = data[Data_p + i + 1];
-			y1 = 3 + (u8)
-				((float)55 * ((max - currentPosData) /
-				(float)(max - min)));
-			y2 = 3 + (u8)
-				((float)55 * ((max - nextPosData) /
-				(float)(max - min)));
-			OLED_DrawAnyLine(currentAddr, y1, currentAddr + pixelsPerData, y2, DRAW);
-			currentAddr = currentAddr + pixelsPerData;
-		}
-	for (i = 0; i < EFFECT_DATA_NUM_PER_SCREEN; i++)
+
+	/*Especially for the first cycle,the effective data length in curve buffers
+  should be assigned to Data_p*/
+	int numMax = (firstCycle == true) ? (Data_p) : EFFECT_DATA_NUM_PER_SCREEN - 1;
+
+	for (i = 0; i < numMax; i++)
 	{
-		if (i + 1 >= Data_p) break;
-		currentPosData = data[i];
-		nextPosData = data[i + 1];
-			y1 = 3 + (u8)
-				((float)55 * ((max - currentPosData) /
-				(float)(max - min)));
-			y2 = 3 + (u8)
-				((float)55 * ((max - nextPosData) /
-				(float)(max - min)));
+		currentPosData = FindxthData(data, i);
+		nextPosData = FindxthData(data, i + 1);
+		y1 = 3 + (u8)
+			((float)55 * ((max - currentPosData) /
+			(float)(max - min)));
+		y2 = 3 + (u8)
+			((float)55 * ((max - nextPosData) /
+			(float)(max - min)));
 		OLED_DrawAnyLine(currentAddr, y1, currentAddr + pixelsPerData, y2, DRAW);
 		currentAddr = currentAddr + pixelsPerData;
 	}
+
 }
 
-void DrawDialgramMinAndMaxAndGrids(float voltMin, float voltMax, float curtMin, float curtMax,bool drawMinAndMax)
+/**
+  * @brief  Draw max and min indicator and grids
+
+  * @retval None
+  */
+static void DrawDialgramMinAndMaxAndGrids(float voltMin, float voltMax, float curtMin, float curtMax, bool drawMinAndMax)
 {
 	char tempString[10];
 	u8 length;
 	u8 i;
 
+	/*Draw horizonal grids*/
 	for (i = 0; i < 6; i++)
 	{
 		DrawHorizonalDashedGrid(3 + i * 11, DRAW, LowDensity);
 	}
-  if(drawMinAndMax)
-  {
-	sprintf(tempString, "%.1fV", voltMax);
-	OLED_ShowAnyString(0, 0, tempString, NotOnSelect, 8);
-	sprintf(tempString, "%.1fV", voltMin);
-	OLED_ShowAnyString(0, 56, tempString, NotOnSelect, 8);
 
-	sprintf(tempString, "%.1fA", curtMax);
-	length = GetStringGraphicalLength(tempString);
-	OLED_ShowAnyString(127 - 6 * length, 0, tempString, NotOnSelect, 8);
+	if (drawMinAndMax)
+	{
+		sprintf(tempString, "%.1fV", voltMax);
+		OLED_ShowAnyString(0, 0, tempString, NotOnSelect, 8);
+		sprintf(tempString, "%.1fV", voltMin);
+		OLED_ShowAnyString(0, 56, tempString, NotOnSelect, 8);
 
-	sprintf(tempString, "%.1fA", curtMin);
-	length = GetStringGraphicalLength(tempString);
-	OLED_ShowAnyString(127 - 6 * length, 56, tempString, NotOnSelect, 8);
- }
+		sprintf(tempString, "%.1fA", curtMax);
+		length = GetStringGraphicalLength(tempString);
+		OLED_ShowAnyString(127 - 6 * length, 0, tempString, NotOnSelect, 8);
+
+		sprintf(tempString, "%.1fA", curtMin);
+		length = GetStringGraphicalLength(tempString);
+		OLED_ShowAnyString(127 - 6 * length, 56, tempString, NotOnSelect, 8);
+	}
 }
 
-void RefreshDialgram()
+/**
+  * @brief  Refresh dynamic diagram
+
+  * @retval None
+  */
+static void RefreshDialgram()
 {
 	u16 temp;
-  static bool drawMinAndMax;
 	float currentMin, currentMax, voltageMin, voltageMax;
 	u16 effectiveDataNum;
 	if (firstCycle == true) effectiveDataNum = Data_p;
 	else effectiveDataNum = EFFECT_DATA_NUM_PER_SCREEN;
+
+	/*Find max and min in current and voltage buffer*/
 	currentMin = FindMin(CurrentCurveBuff, effectiveDataNum);
 	voltageMin = FindMin(VoltageCurveBuff, effectiveDataNum);
 	currentMax = FindMax(CurrentCurveBuff, effectiveDataNum);
 	voltageMax = FindMax(VoltageCurveBuff, effectiveDataNum);
+
+	/*Make max and min into n*0.1 for a better display*/
 	temp = (currentMax - currentMin) * 10;
 	temp = temp + 2;
 	currentMin = (float)((u16)(currentMin * 10)) / 10;
@@ -266,34 +313,48 @@ void RefreshDialgram()
 	temp = temp + 2;
 	voltageMin = (float)((u16)(voltageMin * 10)) / 10;
 	voltageMax = voltageMin + (float)temp*0.1;
+
+	/*Fixed max and min code,remove for better dynamic display*/
+	voltageMin = 0;
+	currentMin = 0;
+	voltageMax = voltageMax > 12 ? voltageMin : 12;
+	currentMax = currentMax > 2 ? currentMax : 2;
+
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	DrawSingleCurveInCurveBuff(VoltageCurveBuff, voltageMin, voltageMax);
 	DrawSingleCurveInCurveBuff(CurrentCurveBuff, currentMin, currentMax);
-	DrawDialgramMinAndMaxAndGrids(voltageMin, voltageMax, currentMin, currentMax,drawMinAndMax);
+	DrawDialgramMinAndMaxAndGrids(voltageMin, voltageMax, currentMin, currentMax, true);
 	OLED_Refresh_Gram();
 	xSemaphoreGive(OLEDRelatedMutex);
-  drawMinAndMax=!drawMinAndMax;
 }
 
-void ScrollDialgram_Routine()
+/**
+  * @brief  Scroll dialgram mode
+
+  * @retval None
+  */
+static void ScrollDialgram_Routine()
 {
 	Key_Message_Struct keyMessage;
+
+	/*Initialize Data_p and make firstcycle flag*/
 	Data_p = 0;
 	firstCycle = true;
+
 	for (;;)
 	{
 		WriteCurrentMeterData2CurveBuff();
 		RefreshDialgram();
-		if (xQueueReceive(Key_Message, &keyMessage, 500 / portTICK_RATE_MS) == pdPASS)
+		if (xQueueReceive(Key_Message, &keyMessage, 200 / portTICK_RATE_MS) == pdPASS)
 		{
-			if (keyMessage.KeyEvent == MidClick) 
-        {
-           xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	         OLED_Clear();
-           xSemaphoreGive(OLEDRelatedMutex);
-           return;
-        }
+			if (keyMessage.KeyEvent == MidClick)
+			{
+				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+				OLED_Clear();
+				xSemaphoreGive(OLEDRelatedMutex);
+				return;
+			}
 		}
 	}
 

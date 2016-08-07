@@ -226,9 +226,10 @@ void KeyEvents(void)
 	}
 }
 
-void ClearKeyEvent(Key_Message_Struct message)
+void ClearKeyEvent(void)
 {
-	xQueueReceive(Key_Message, &message, 0);
+  Key_Message_Struct key_msg;
+	xQueueReceive(Key_Message, &key_msg, 0);
 }
 
 /**

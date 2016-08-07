@@ -347,7 +347,7 @@ void Dialgram_Broswer(void *pvParameters)
 	xSemaphoreGive(OLEDRelatedMutex);
 	/*Set the rate of longPress-FastMoving to 20 sets per second*/
 	SetKeyBeatRate(20);
-	ClearKeyEvent(keyMessage);
+	ClearKeyEvent();
 	for (;;)
 	{
 		/*If it is not in browse mode(default),draw the full dialgram and
