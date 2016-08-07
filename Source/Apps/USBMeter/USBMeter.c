@@ -194,11 +194,11 @@ void DrawSingleCurveInCurveBuff(float* data, float min, float max)
 			if (Data_p + i + 1 >= EFFECT_DATA_NUM_PER_SCREEN) break;
 			currentPosData = data[Data_p + i];
 			nextPosData = data[Data_p + i + 1];
-			y1 = 8 + (u8)
-				((float)46 * ((max - currentPosData) /
+			y1 = 3 + (u8)
+				((float)55 * ((max - currentPosData) /
 				(float)(max - min)));
-			y2 = 8 + (u8)
-				((float)46 * ((max - nextPosData) /
+			y2 = 3 + (u8)
+				((float)55 * ((max - nextPosData) /
 				(float)(max - min)));
 			OLED_DrawAnyLine(currentAddr, y1, currentAddr + pixelsPerData, y2, DRAW);
 			currentAddr = currentAddr + pixelsPerData;
@@ -208,32 +208,29 @@ void DrawSingleCurveInCurveBuff(float* data, float min, float max)
 		if (i + 1 >= Data_p) break;
 		currentPosData = data[i];
 		nextPosData = data[i + 1];
-		y1 = 8 + (u8)
-			((float)46 * ((max - currentPosData) /
-			(float)(max - min)));
-		y2 = 8 + (u8)
-			((float)46 * ((max - nextPosData) /
-			(float)(max - min)));
+			y1 = 3 + (u8)
+				((float)55 * ((max - currentPosData) /
+				(float)(max - min)));
+			y2 = 3 + (u8)
+				((float)55 * ((max - nextPosData) /
+				(float)(max - min)));
 		OLED_DrawAnyLine(currentAddr, y1, currentAddr + pixelsPerData, y2, DRAW);
 		currentAddr = currentAddr + pixelsPerData;
 	}
 }
 
-void DrawDialgramMinAndMaxAndGrids(float voltMin, float voltMax, float curtMin, float curtMax)
+void DrawDialgramMinAndMaxAndGrids(float voltMin, float voltMax, float curtMin, float curtMax,bool drawMinAndMax)
 {
 	char tempString[10];
 	u8 length;
 	u8 i;
 
-	//	for (i = 0; i < 6; i++)
-	//	{
-	//		DrawHorizonalDashedGrid(3 + i * 11, DRAW, HighDensity);
-	//	}
-	//	for (i = 0; i < 11; i++)
-	//	{
-	//			DrawVerticalDashedGrid(3 + i * 12, DRAW, HighDensity);
-	//	}
-
+	for (i = 0; i < 6; i++)
+	{
+		DrawHorizonalDashedGrid(3 + i * 11, DRAW, LowDensity);
+	}
+  if(drawMinAndMax)
+  {
 	sprintf(tempString, "%.1fV", voltMax);
 	OLED_ShowAnyString(0, 0, tempString, NotOnSelect, 8);
 	sprintf(tempString, "%.1fV", voltMin);
@@ -246,11 +243,13 @@ void DrawDialgramMinAndMaxAndGrids(float voltMin, float voltMax, float curtMin, 
 	sprintf(tempString, "%.1fA", curtMin);
 	length = GetStringGraphicalLength(tempString);
 	OLED_ShowAnyString(127 - 6 * length, 56, tempString, NotOnSelect, 8);
+ }
 }
 
 void RefreshDialgram()
 {
 	u16 temp;
+  static bool drawMinAndMax;
 	float currentMin, currentMax, voltageMin, voltageMax;
 	u16 effectiveDataNum;
 	if (firstCycle == true) effectiveDataNum = Data_p;
@@ -271,9 +270,10 @@ void RefreshDialgram()
 	OLED_Clear();
 	DrawSingleCurveInCurveBuff(VoltageCurveBuff, voltageMin, voltageMax);
 	DrawSingleCurveInCurveBuff(CurrentCurveBuff, currentMin, currentMax);
-	DrawDialgramMinAndMaxAndGrids(voltageMin, voltageMax, currentMin, currentMax);
+	DrawDialgramMinAndMaxAndGrids(voltageMin, voltageMax, currentMin, currentMax,drawMinAndMax);
 	OLED_Refresh_Gram();
 	xSemaphoreGive(OLEDRelatedMutex);
+  drawMinAndMax=!drawMinAndMax;
 }
 
 void ScrollDialgram_Routine()
