@@ -314,6 +314,7 @@ void LogoWithInitStatus_DeInit()
 void SystemStartup(void *pvParameters)
 {
 	Key_Init();	
+	Cooling_Fan_Service_Init();
 	OLED_Init();	
 	PWMRef_Init();
 	Digital_Load_Init();
@@ -334,7 +335,6 @@ void SystemStartup(void *pvParameters)
 	USB_Interrupts_Config();
 	Set_USBClock();
 	FastCharge_Trigger_Service_Init();
-	Cooling_Fan_Service_Init();
 	LED_Animate_DeInit();
 	LogoWithInitStatus_DeInit();
 	UpdateOLEDJustNow = false;

@@ -317,7 +317,7 @@ static void RefreshDialgram()
 	/*Fixed max and min code,remove for better dynamic display*/
 	voltageMin = 0;
 	currentMin = 0;
-	voltageMax = voltageMax > 12 ? voltageMin : 12;
+	voltageMax = voltageMax > 12 ? voltageMax : 12;
 	currentMax = currentMax > 2 ? currentMax : 2;
 
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);

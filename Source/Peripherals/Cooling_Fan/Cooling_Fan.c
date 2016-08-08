@@ -31,6 +31,7 @@ static void Cooling_Fan_Service(void *pvParameters)
 {
  u8 command;
  u8 mode=Auto;
+ vTaskDelay(5000/portTICK_RATE_MS);
  for(;;)
 	{
 	 if(mode==Auto)
@@ -52,6 +53,7 @@ static void Cooling_Fan_Service(void *pvParameters)
 
 void Cooling_Fan_Service_Init(void)
 {
+  Cooling_fan_turn_off();
 	Cooling_Fan_GPIO_Init();
 	CoolingFan_Command = xQueueCreate(2, sizeof(u8));
 	CreateTaskWithExceptionControl(Cooling_Fan_Service, "Cooling_Fan_Service",
