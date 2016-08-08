@@ -5,9 +5,16 @@
 
 #include "FreeRTOS_Standard_Include.h"
 
+#include "PWM_Ref.h"
+
 #include "FastCharge_Trigger_Circuit.h"
 
 #define FAST_CHARGE_TRIGGER_SERVICE_PRIORITY tskIDLE_PRIORITY+5
+
+#define MTK_PE_HIGH_REF 1
+#define MTK_PE_LOW_REF 0.01
+#define MTK_PE_HIGH(ms) Set_RefVoltageTo(MTK_PE_HIGH_REF); vTaskDelay(ms/portTICK_RATE_MS)
+#define MTK_PE_LOW(ms) Set_RefVoltageTo(MTK_PE_LOW_REF); vTaskDelay(ms/portTICK_RATE_MS)
 
 xQueueHandle FastCharge_Msg;
 
@@ -82,6 +89,7 @@ void FastCharge_Trigger_Release(void)
 {
 	FastCharge_Trigger_DP_Release();
 	FastCharge_Trigger_DM_Release();
+Set_RefVoltageTo(0); 
 }
 
 /**
@@ -189,6 +197,45 @@ void QC3_Decrease_Voltage(u8 lastMode)
 	SetDP_0V6();
 }
 
+void MTK_PE_Increase_Voltage(u8 lastMode)
+{
+ if(lastMode!=MTK_Decrease&&lastMode!=MTK_Increase)
+ MTK_PE_LOW(500);
+
+ MTK_PE_HIGH(100);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(100);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(300);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(300);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(300);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(500);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(1);
+}
+
+void MTK_PE_Decrease_Voltage(u8 lastMode)
+{
+ if(lastMode!=MTK_Decrease&&lastMode!=MTK_Increase)
+ MTK_PE_LOW(500);
+
+ MTK_PE_HIGH(300);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(300);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(300);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(100);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(100);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(500);
+ MTK_PE_LOW(100);
+ MTK_PE_HIGH(1);
+}
 
 /**
   * @brief  FastCharge_Trigger_Service
@@ -204,7 +251,7 @@ void FastCharge_Trigger_Service(void *pvParameters)
 		while (xQueueReceive(FastCharge_Msg, &mode, portMAX_DELAY) != pdPASS);
 		switch (mode)
 		{
-		case Release:FastCharge_Trigger_Release(); break;
+		case Release:FastCharge_Trigger_Release();break;
 
 		case QC2_Normal:QC2_Normal_Trigger(); break;
 		case QC2_9V:QC2_9V_Trigger(lastMode); break;
@@ -213,6 +260,9 @@ void FastCharge_Trigger_Service(void *pvParameters)
 
 		case QC3_Increase:QC3_Increase_Voltage(lastMode); break;
 		case QC3_Decrease:QC3_Decrease_Voltage(lastMode); break;
+    
+    case MTK_Increase:MTK_PE_Increase_Voltage(lastMode);break;
+    case MTK_Decrease:MTK_PE_Decrease_Voltage(lastMode);break;
 		}
 		lastMode = mode;
 	}

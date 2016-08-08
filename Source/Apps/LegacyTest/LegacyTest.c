@@ -556,3 +556,4 @@ void StopRecord(u8* status, u8 reason)
 	/*Reset status flag*/
 	*status = USBMETER_ONLY;
 }
+
