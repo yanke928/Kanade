@@ -91,7 +91,8 @@ u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length)
 			W25X_Erase_Sector(Memory_Offset / 4096);
 			W25X_Write_Sector(Memory_Offset / 4096, (u8*)Writebuff);
 		}
-		else return MAL_FAIL;
+		else STA = MAL_FAIL;
+    break;
 	case 1:
 		if(!SDCard_Exist()) return MAL_FAIL;
 		NbrOfBlock = Transfer_Length / 512;
@@ -100,7 +101,7 @@ u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length)
 	  else STA=MAL_FAIL;
 		break;
 	default:
-		return MAL_FAIL;
+		STA = MAL_FAIL;
 	}
 	if (STA != 0)return MAL_FAIL;
 	return MAL_OK;
@@ -122,20 +123,24 @@ u16 MAL_Read(u8 lun, u32 Memory_Offset, u32 *Readbuff, u16 Transfer_Length)
 	switch (lun)
 	{
 	case 0:
-		STA = 0;
+		STA = MAL_OK;
 	  NbrOfBlock = Transfer_Length / 4096;
 		if (NbrOfBlock == 1)
 			W25X_Read_Sector(Memory_Offset / 4096, (u8*)Readbuff);
-		else return MAL_FAIL;
+		else STA = MAL_FAIL;
+    break;
 	case 1:
 		if(!SDCard_Exist()) return MAL_FAIL;
 		NbrOfBlock = Transfer_Length / 512;
 		STA=SD_ReadDisk((u8*)Readbuff,Memory_Offset/512, Transfer_Length/512);
-	  if(STA==SD_OK) STA=MAL_OK;
-	  else STA=MAL_FAIL;
+	  if(STA==SD_OK) STA = MAL_OK;
+	  else STA = MAL_FAIL;
+    break;
 	default:
-		return MAL_FAIL;
+		return STA = MAL_FAIL;
 	}
+	if (STA != 0)return MAL_FAIL;
+	return MAL_OK;
 }
 
 /*******************************************************************************
