@@ -540,9 +540,9 @@ static void DisplayRecordData(char tempString[])
 		sprintf(tempString, "%05.0fmWh", CurrentSumUpData.Work * 1000);
 	OLED_ShowString(0, 48, tempString);
 	GenerateVirtualRTCString(tempString);
-	OLED_ShowAnyString(83, 51, tempString, NotOnSelect, 12);
+	OLED_ShowAnyString(81, 51, tempString, NotOnSelect, 12);
 	sprintf(tempString, "%d Day(s)", RTCCurrent.Day);
-	OLED_ShowAnyString(83, 35, tempString, NotOnSelect, 12);
+	OLED_ShowAnyString(81, 35, tempString, NotOnSelect, 12);
 }
 
 void USBMeter_Init(u8 status)
