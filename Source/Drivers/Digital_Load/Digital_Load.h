@@ -20,4 +20,8 @@ void Send_Digital_Load_Command(u32 current,u8 command);
 
 void Digital_Load_Calibrate(void);
 
+void Digital_Load_Lock(void);
+
+void Digital_Load_Unlock(void);
+
 #endif /* __DIGITAL_LOAD_H__ */

@@ -19,6 +19,7 @@
 #include "Keys.h"
 #include "sdcard.h"
 #include "sdcardff.h"
+#include "DataPin2Protocol.h"
 
 #include "mass_mal.h"
 
@@ -38,8 +39,10 @@
 
 #define EFFECT_DATA_NUM_PER_SCREEN 127
 
-float CurrentCurveBuff[EFFECT_DATA_NUM_PER_SCREEN];
-float VoltageCurveBuff[EFFECT_DATA_NUM_PER_SCREEN];
+float CurveBuff0[EFFECT_DATA_NUM_PER_SCREEN];
+float CurveBuff1[EFFECT_DATA_NUM_PER_SCREEN];
+
+enum { VoltDMDP, VoltCurt };
 
 u16 Data_p = 0;
 
@@ -153,11 +156,11 @@ static void USBMeter(void *pvParameters)
 						goto Refresh;
 					}
 				}
-        else if (keyMessage.KeyEvent == MidClick) 
-        {
-         ScrollDialgram_Routine();
-         goto Refresh;
-        }
+				else if (keyMessage.KeyEvent == MidClick)
+				{
+					ScrollDialgram_Routine();
+					goto Refresh;
+				}
 				else
 				{
 					ShowDialogue(Hint_Str[CurrentSettings->Language],
@@ -180,7 +183,7 @@ static void USBMeter(void *pvParameters)
 
   * @retval None
   */
-void WriteCurrentMeterData2CurveBuff()
+void WriteCurrentMeterData2CurveBuff(u8 mode)
 {
 	/*Increase data pos*/
 	Data_p++;
@@ -195,12 +198,26 @@ void WriteCurrentMeterData2CurveBuff()
 	/*Especially,the first data of the forst cycle should also apply to pos 0*/
 	if (Data_p == 1 && firstCycle)
 	{
-		VoltageCurveBuff[0] = FilteredMeterData.Voltage;
-		CurrentCurveBuff[0] = FilteredMeterData.Current;
-	}
+		switch (mode)
+		{
+		case VoltCurt:		
+      CurveBuff0[0] = FilteredMeterData.Voltage;
+			CurveBuff1[0] = FilteredMeterData.Current;break;
+		case VoltDMDP:
+			CurveBuff0[0] = CurrentMeterData.VoltageDP;
+			CurveBuff1[0] = CurrentMeterData.VoltageDM;
+		}
 
-	VoltageCurveBuff[Data_p] = FilteredMeterData.Voltage;
-	CurrentCurveBuff[Data_p] = FilteredMeterData.Current;
+	}
+	switch (mode)
+	{
+	case VoltCurt:		
+    CurveBuff0[Data_p] = FilteredMeterData.Voltage;
+		CurveBuff1[Data_p] = FilteredMeterData.Current;break;
+	case VoltDMDP:
+		CurveBuff0[Data_p] = CurrentMeterData.VoltageDP;
+		CurveBuff1[Data_p] = CurrentMeterData.VoltageDM;
+	}
 }
 
 /**
@@ -256,7 +273,7 @@ static void DrawSingleCurveInCurveBuff(float* data, float min, float max)
 
   * @retval None
   */
-static void DrawDialgramMinAndMaxAndGrids(float voltMin, float voltMax, float curtMin, float curtMax, bool drawMinAndMax)
+static void DrawDialgramMinAndMaxAndGrids(float voltMin, float voltMax, float curtMin, float curtMax, bool drawMinAndMax, u8 mode)
 {
 	char tempString[10];
 	u8 length;
@@ -270,18 +287,28 @@ static void DrawDialgramMinAndMaxAndGrids(float voltMin, float voltMax, float cu
 
 	if (drawMinAndMax)
 	{
-		sprintf(tempString, "%.1fV", voltMax);
-		OLED_ShowAnyString(0, 0, tempString, NotOnSelect, 8);
-		sprintf(tempString, "%.1fV", voltMin);
-		OLED_ShowAnyString(0, 56, tempString, NotOnSelect, 8);
+		switch (mode)
+		{
+		case VoltCurt:
+			sprintf(tempString, "%.1fV", voltMax);
+			OLED_ShowAnyString(0, 0, tempString, NotOnSelect, 8);
+			sprintf(tempString, "%.1fV", voltMin);
+			OLED_ShowAnyString(0, 56, tempString, NotOnSelect, 8);
 
-		sprintf(tempString, "%.1fA", curtMax);
-		length = GetStringGraphicalLength(tempString);
-		OLED_ShowAnyString(127 - 6 * length, 0, tempString, NotOnSelect, 8);
+			sprintf(tempString, "%.1fA", curtMax);
+			length = GetStringGraphicalLength(tempString);
+			OLED_ShowAnyString(127 - 6 * length, 0, tempString, NotOnSelect, 8);
 
-		sprintf(tempString, "%.1fA", curtMin);
-		length = GetStringGraphicalLength(tempString);
-		OLED_ShowAnyString(127 - 6 * length, 56, tempString, NotOnSelect, 8);
+			sprintf(tempString, "%.1fA", curtMin);
+			length = GetStringGraphicalLength(tempString);
+			OLED_ShowAnyString(127 - 6 * length, 56, tempString, NotOnSelect, 8);
+			break;
+		case VoltDMDP:
+			sprintf(tempString, "%.1fV", voltMax);
+			OLED_ShowAnyString(0, 0, tempString, NotOnSelect, 8);
+			sprintf(tempString, "%.1fV", voltMin);
+			OLED_ShowAnyString(0, 56, tempString, NotOnSelect, 8);
+		}
 	}
 }
 
@@ -290,7 +317,7 @@ static void DrawDialgramMinAndMaxAndGrids(float voltMin, float voltMax, float cu
 
   * @retval None
   */
-static void RefreshDialgram()
+static void RefreshDialgram(u8 mode)
 {
 	u16 temp;
 	float currentMin, currentMax, voltageMin, voltageMax;
@@ -299,10 +326,10 @@ static void RefreshDialgram()
 	else effectiveDataNum = EFFECT_DATA_NUM_PER_SCREEN;
 
 	/*Find max and min in current and voltage buffer*/
-	currentMin = FindMin(CurrentCurveBuff, effectiveDataNum);
-	voltageMin = FindMin(VoltageCurveBuff, effectiveDataNum);
-	currentMax = FindMax(CurrentCurveBuff, effectiveDataNum);
-	voltageMax = FindMax(VoltageCurveBuff, effectiveDataNum);
+	currentMin = FindMin(CurveBuff1, effectiveDataNum);
+	voltageMin = FindMin(CurveBuff0, effectiveDataNum);
+	currentMax = FindMax(CurveBuff1, effectiveDataNum);
+	voltageMax = FindMax(CurveBuff0, effectiveDataNum);
 
 	/*Make max and min into n*0.1 for a better display*/
 	temp = (currentMax - currentMin) * 10;
@@ -314,17 +341,27 @@ static void RefreshDialgram()
 	voltageMin = (float)((u16)(voltageMin * 10)) / 10;
 	voltageMax = voltageMin + (float)temp*0.1;
 
-	/*Fixed max and min code,remove for better dynamic display*/
-	voltageMin = 0;
-	currentMin = 0;
-	voltageMax = voltageMax > 12 ? voltageMax : 12;
-	currentMax = currentMax > 2 ? currentMax : 2;
+	switch (mode)
+	{
+	case VoltDMDP:
+		voltageMin = 0;
+		currentMin = 0;
+		voltageMax = 3.3;
+		currentMax = 3.3;
+		break;
+	case VoltCurt:
+		/*Fixed max and min code,remove for better dynamic display*/
+		voltageMin = 0;
+		currentMin = 0;
+		voltageMax = voltageMax > 12 ? voltageMax : 12;
+		currentMax = currentMax > 2 ? currentMax : 2;
+	}
 
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
-	DrawSingleCurveInCurveBuff(VoltageCurveBuff, voltageMin, voltageMax);
-	DrawSingleCurveInCurveBuff(CurrentCurveBuff, currentMin, currentMax);
-	DrawDialgramMinAndMaxAndGrids(voltageMin, voltageMax, currentMin, currentMax, true);
+	DrawSingleCurveInCurveBuff(CurveBuff0, voltageMin, voltageMax);
+	DrawSingleCurveInCurveBuff(CurveBuff1, currentMin, currentMax);
+	DrawDialgramMinAndMaxAndGrids(voltageMin, voltageMax, currentMin, currentMax, true, mode);
 	OLED_Refresh_Gram();
 	xSemaphoreGive(OLEDRelatedMutex);
 }
@@ -337,6 +374,7 @@ static void RefreshDialgram()
 static void ScrollDialgram_Routine()
 {
 	Key_Message_Struct keyMessage;
+	u8 mode = VoltCurt;
 
 	/*Initialize Data_p and make firstcycle flag*/
 	Data_p = 0;
@@ -344,9 +382,9 @@ static void ScrollDialgram_Routine()
 
 	for (;;)
 	{
-		WriteCurrentMeterData2CurveBuff();
-		RefreshDialgram();
-		if (xQueueReceive(Key_Message, &keyMessage, 200 / portTICK_RATE_MS) == pdPASS)
+		WriteCurrentMeterData2CurveBuff(mode);
+		RefreshDialgram(mode);
+		if (xQueueReceive(Key_Message, &keyMessage, 100 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (keyMessage.KeyEvent == MidClick)
 			{
@@ -355,10 +393,28 @@ static void ScrollDialgram_Routine()
 				xSemaphoreGive(OLEDRelatedMutex);
 				return;
 			}
+			else if (keyMessage.KeyEvent == MidLong)
+			{
+				if (mode == VoltCurt)
+				{
+					Data_p = 0;
+					firstCycle = true;
+					mode = VoltDMDP;
+				}
+				else
+				{
+					Data_p = 0;
+					firstCycle = true;
+					mode = VoltCurt;
+				}
+			}
 		}
 	}
 
 }
+
+#define PROTOCOL_DISPLAY_TIME 3
+#define PROTOCOL_DISPLAY_COUNT_MAX 6
 
 
 /**
@@ -370,6 +426,11 @@ static void ScrollDialgram_Routine()
   */
 static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 {
+  static u8 displayProtocolCnt=PROTOCOL_DISPLAY_COUNT_MAX;
+  u8 displayedProtocolNum;
+  u8 length;
+  u8 pos;
+
 	if (FilteredMeterData.Voltage >= 10.0f)
 	{
 		sprintf(tempString, "%.2fV", FilteredMeterData.Voltage);
@@ -421,18 +482,42 @@ static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 	}
 	if (currentStatus == USBMETER_ONLY)
 	{
+    displayProtocolCnt--;
+    if(displayProtocolCnt==0) displayProtocolCnt=PROTOCOL_DISPLAY_COUNT_MAX;
 		GenerateRTCDateString(tempString);
 		OLED_ShowString(0, 32, tempString);
 		GenerateRTCTimeString(tempString);
 		OLED_ShowString(0, 48, tempString);
 		GenerateRTCWeekString(tempString);
 		OLED_ShowString(104, 32, tempString);
+    displayedProtocolNum=PossibleProtocolNum>2?2:PossibleProtocolNum;
+    if(displayProtocolCnt<PROTOCOL_DISPLAY_TIME&&PossibleProtocolNum>0)
+    {
+     OLED_FillRect(72,48,127,63,0);
+     length=GetStringGraphicalLength(ProtocolTab[PossibleProtocolTab[0]].DeviceName);
+     pos=104-length*3;
+     if(displayedProtocolNum==1) 
+     {
+      OLED_ShowAnyString(pos,50,ProtocolTab[PossibleProtocolTab[0]].DeviceName,NotOnSelect,12);
+     }
+     else
+     {
+      OLED_ShowAnyString(pos,48,ProtocolTab[PossibleProtocolTab[0]].DeviceName,NotOnSelect,8);
+     length=GetStringGraphicalLength(ProtocolTab[PossibleProtocolTab[1]].DeviceName);
+     pos=104-length*3;  
+OLED_ShowAnyString(pos,56,ProtocolTab[PossibleProtocolTab[1]].DeviceName,NotOnSelect,8);     
+     }
+    }
+else
+{
+OLED_FillRect(72,48,127,63,0);
 		sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDP);
 		OLED_ShowAnyString(92, 48, tempString, NotOnSelect, 8);
 		sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDM);
 		OLED_ShowAnyString(92, 56, tempString, NotOnSelect, 8);
 		OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
 		OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
+}
 	}
 }
 
@@ -455,9 +540,9 @@ static void DisplayRecordData(char tempString[])
 		sprintf(tempString, "%05.0fmWh", CurrentSumUpData.Work * 1000);
 	OLED_ShowString(0, 48, tempString);
 	GenerateVirtualRTCString(tempString);
-	OLED_ShowAnyString(82, 51, tempString, NotOnSelect, 12);
+	OLED_ShowAnyString(83, 51, tempString, NotOnSelect, 12);
 	sprintf(tempString, "%d Day(s)", RTCCurrent.Day);
-	OLED_ShowAnyString(82, 35, tempString, NotOnSelect, 12);
+	OLED_ShowAnyString(83, 35, tempString, NotOnSelect, 12);
 }
 
 void USBMeter_Init(u8 status)

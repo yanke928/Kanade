@@ -41,6 +41,8 @@ u32 Mass_Memory_Size[2];
 u32 Mass_Block_Size[2];
 u32 Mass_Block_Count[2];
 
+extern uint32_t Max_Lun;
+
 u8 Usb_Status_Reg = 0;
 
 /*******************************************************************************
@@ -56,10 +58,10 @@ u16 MAL_Init(u8 lun)
 	switch (lun)
 	{
 	case 0:
+  break;
+	case 1:
 		if(!SDCard_Init(false)) Status=MAL_FAIL;
 	break;
-	case 1:
-		break;
 	default:
 		return MAL_FAIL;
 	}
@@ -82,13 +84,6 @@ u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length)
 	switch (lun)
 	{
 	case 0:
-		if(!SDCard_Exist()) return MAL_FAIL;
-		NbrOfBlock = Transfer_Length / 512;
-		STA=SD_WriteDisk((u8*)Writebuff,Memory_Offset/512, Transfer_Length/512);
-	  if(STA==SD_OK) STA=MAL_OK;
-	  else STA=MAL_FAIL;
-		break;
-	case 1:
 		STA = 0;
 	  NbrOfBlock = Transfer_Length / 4096;
 		if (NbrOfBlock == 1)
@@ -97,6 +92,13 @@ u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length)
 			W25X_Write_Sector(Memory_Offset / 4096, (u8*)Writebuff);
 		}
 		else return MAL_FAIL;
+	case 1:
+		if(!SDCard_Exist()) return MAL_FAIL;
+		NbrOfBlock = Transfer_Length / 512;
+		STA=SD_WriteDisk((u8*)Writebuff,Memory_Offset/512, Transfer_Length/512);
+	  if(STA==SD_OK) STA=MAL_OK;
+	  else STA=MAL_FAIL;
+		break;
 	default:
 		return MAL_FAIL;
 	}
@@ -120,17 +122,17 @@ u16 MAL_Read(u8 lun, u32 Memory_Offset, u32 *Readbuff, u16 Transfer_Length)
 	switch (lun)
 	{
 	case 0:
-		if(!SDCard_Exist()) return MAL_FAIL;
-		NbrOfBlock = Transfer_Length / 512;
-		STA=SD_ReadDisk((u8*)Readbuff,Memory_Offset/512, Transfer_Length/512);
-	  if(STA==SD_OK) STA=MAL_OK;
-	  else STA=MAL_FAIL;
-	case 1:
 		STA = 0;
 	  NbrOfBlock = Transfer_Length / 4096;
 		if (NbrOfBlock == 1)
 			W25X_Read_Sector(Memory_Offset / 4096, (u8*)Readbuff);
 		else return MAL_FAIL;
+	case 1:
+		if(!SDCard_Exist()) return MAL_FAIL;
+		NbrOfBlock = Transfer_Length / 512;
+		STA=SD_ReadDisk((u8*)Readbuff,Memory_Offset/512, Transfer_Length/512);
+	  if(STA==SD_OK) STA=MAL_OK;
+	  else STA=MAL_FAIL;
 	default:
 		return MAL_FAIL;
 	}
@@ -149,7 +151,27 @@ u16 MAL_GetStatus(u8 lun)
 	SD_Error Status;
 	if (lun == 0)
 	{
-		if(!SDCard_Exist()) return MAL_FAIL;
+		if(1)
+		{
+		 Mass_Block_Size[0] = 4096;
+		 Mass_Block_Count[0] = 2048;
+		}
+		else
+		{
+		 Mass_Block_Size[0] = 0;
+		 Mass_Block_Count[0] = 0;		 
+		 return MAL_FAIL;
+		}
+		return MAL_OK;
+	}
+	else if (lun == 1)
+	{
+		if(!SDCard_Exist()) 
+      {
+ 		    Mass_Block_Size[1] = 0;
+		    Mass_Block_Count[1] = 0;	
+        return MAL_FAIL;
+     }
 		if (SD_Init() == SD_OK)
 		{
 			SD_GetCardInfo(&SDCardInfo);
@@ -158,14 +180,14 @@ u16 MAL_GetStatus(u8 lun)
 
 			if (SDCardInfo.CardType == SDIO_HIGH_CAPACITY_SD_CARD)
 			{
-				Mass_Block_Count[0] = (SDCardInfo.SD_csd.DeviceSize + 1) * 1024;
+				Mass_Block_Count[1] = (SDCardInfo.SD_csd.DeviceSize + 1) * 1024;
 			}
 			else
 			{
 				NumberOfBlocks = ((1 << (SDCardInfo.SD_csd.RdBlockLen)) / 512);
-				Mass_Block_Count[0] = ((SDCardInfo.SD_csd.DeviceSize + 1) * (1 << DeviceSizeMul) << (NumberOfBlocks / 2));
+				Mass_Block_Count[1] = ((SDCardInfo.SD_csd.DeviceSize + 1) * (1 << DeviceSizeMul) << (NumberOfBlocks / 2));
 			}
-			Mass_Block_Size[0] = 512;
+			Mass_Block_Size[1] = 512;
 
 			Status = SD_SelectDeselect((uint32_t)(SDCardInfo.RCA << 16));
 			Status = SD_EnableWideBusOperation(SDIO_BusWide_4b);
@@ -182,31 +204,18 @@ u16 MAL_GetStatus(u8 lun)
 		}
 		else
 		{
-		 Mass_Block_Size[0] = 0;
-		 Mass_Block_Count[0] = 0;	
+		 Mass_Block_Size[1] = 0;
+		 Mass_Block_Count[1] = 0;	
 		}			
 		return MAL_FAIL;
-	}
-	else if (lun == 1)
-	{
-		if(1)
-		{
-		 Mass_Block_Size[1] = 4096;
-		 Mass_Block_Count[1] = 2048;
-		}
-		else
-		{
-		 Mass_Block_Size[1] = 0;
-		 Mass_Block_Count[1] = 0;		 
-		 return MAL_FAIL;
-		}
-		return MAL_OK;
 	}
 	return MAL_FAIL;
 }
 
 bool MAL_Mount()
 {
+  if(!SDCard_Exist()) Max_Lun=0;
+  else Max_Lun=1;
 	USB_Init();
 	return true;
 }

@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "stm32f10x_flash.h"
+#include "stm32f10x_gpio.h"
 
 #include "FreeRTOS_Standard_Include.h"
 
@@ -27,6 +28,10 @@ xQueueHandle Digital_Load_Command;
 float CurrentRefVoltage;
 
 void SaveCalibration(void);
+
+void Digital_Load_Lock(void);
+
+void Digital_Load_Unlock(void);
 
 void Set_Constant_Current(float curt)
 {
@@ -57,6 +62,7 @@ void Digital_Load_Handler(void *pvParameters)
 		while (xQueueReceive(Digital_Load_Command, &current, portMAX_DELAY) != pdPASS);
 		if (current > 0 && current < 4.1)
 		{
+      Digital_Load_Unlock();
 			preferredRefVoltage = current*Calibration_Data->Refk + Calibration_Data->Refb;
 			lstRefVoltage = preferredRefVoltage;
 			Set_RefVoltageTo(lstRefVoltage);
@@ -71,7 +77,8 @@ void Digital_Load_Handler(void *pvParameters)
 		{
 			if (current < 0 || current> 4.1)
 			{
-				Set_RefVoltageTo(0); break;
+				Set_RefVoltageTo(0); 
+        Digital_Load_Lock();break;
 			}
 			else
 			{
@@ -111,6 +118,27 @@ void Digital_Load_Handler(void *pvParameters)
 	}
 }
 
+void Digital_Load_Lock()
+{
+ GPIO_InitTypeDef GPIO_InitStructure;
+ RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+ GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+ GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ GPIO_Init(GPIOA, &GPIO_InitStructure);
+ GPIO_ResetBits(GPIOA, GPIO_Pin_9);
+}
+
+void Digital_Load_Unlock()
+{
+ GPIO_InitTypeDef GPIO_InitStructure;
+ RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
+ GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+ GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+ GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ GPIO_Init(GPIOA, &GPIO_InitStructure);
+}
+
 /**
   * @brief  Digital load Init
 
@@ -121,6 +149,7 @@ void Digital_Load_Handler(void *pvParameters)
 void Digital_Load_Init()
 {
 	CheckCalibrationData();
+  Digital_Load_Lock();
 	Digital_Load_Command = xQueueCreate(2, sizeof(float));
 	CreateTaskWithExceptionControl(Digital_Load_Handler, "Digital_Load Handler",
 		160, NULL, DIGITAL_LOAD_HANDLER_PRORITY, NULL);

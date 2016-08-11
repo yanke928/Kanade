@@ -27,6 +27,7 @@
 #include "Cooling_Fan.h"
 #include "Digital_Load.h"
 #include "SDCardff.h"
+#include "DataPin2Protocol.h"
 
 #include "system_stm32f10x.h"
 
@@ -313,7 +314,7 @@ void LogoWithInitStatus_DeInit()
   */
 void SystemStartup(void *pvParameters)
 {
-	Key_Init();	
+	Key_Init();
 	Cooling_Fan_Service_Init();
 	OLED_Init();	
 	PWMRef_Init();
@@ -328,8 +329,9 @@ void SystemStartup(void *pvParameters)
   ADC_Hardware_Init();
 	TemperatureSensors_Init();
   DataPins_Voltage_Sensor_Init();
+  DataPin2Protocol_Service_Init();
 	SDCard_Init(true);
-	SDCardPlugAndPlay_Service_Init();
+	SDCardPlugAndPlay_Service_Init(); 
 	vTaskDelay(500 / portTICK_RATE_MS);
 	CheckEBDDirectories(true);
 	USB_Interrupts_Config();

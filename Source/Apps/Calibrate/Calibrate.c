@@ -202,6 +202,7 @@ void Current_Calibrate()
 	ShowDialogue(CalibrationItemCurrentCalibration_Str[CurrentSettings->Language], "", "<--         -->", false, false);
 	OLED_ShowAnyString(4, 16, "Curt:", NotOnSelect, 16);
 	SetKeyBeatRate(20);
+  Digital_Load_Unlock();
 	Set_RefVoltageTo(2.16);
 	for (;;)
 	{
@@ -232,6 +233,8 @@ void Current_Calibrate()
       {
         if(GetConfirmation(CalibrationAbort_Str[CurrentSettings->Language],""))
          {
+         	Set_RefVoltageTo(0);
+          Digital_Load_Lock();
           return;
          }
         goto reDraw;
@@ -240,6 +243,7 @@ void Current_Calibrate()
 	}
 Done:
 	Set_RefVoltageTo(0);
+  Digital_Load_Lock();
 	coeficient = coeficient*Calibration_Data->CurrentCoeficient;
 	memcpy(&Calibration_Backup, Calibration_Data, sizeof(Calibration_t));
 	Calibration_Backup.CurrentCoeficient = coeficient;

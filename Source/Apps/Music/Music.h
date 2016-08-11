@@ -7,8 +7,8 @@
 //eg.ToneFREQ=L7,BeatTimeDivide=8 means it's a low 'DO' with 1/8 pitch
 typedef struct
 {
-	u8  ToneFREQIndex;
-	s8  BeatTimeDivide;
+	u16  NoteFreq;
+	u16  LastingTime;
 }SingleToneStruct;
 
 extern const SingleToneStruct Tori_No_Uta[];
