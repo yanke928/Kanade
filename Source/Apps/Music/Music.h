@@ -15,6 +15,8 @@ extern const SingleToneStruct Tori_No_Uta[];
 
 extern const SingleToneStruct Ichiban_no_takaramono[];
 
+extern const SingleToneStruct Only_My_Railgun[];
+
 extern const SingleToneStruct Alarm[];
 
 //see .c for details

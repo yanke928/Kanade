@@ -34,7 +34,7 @@ void About()
  Key_Message_Struct keyMessage;
 	
  /*Start music*/
- SoundStart((SingleToneStruct*)Ichiban_no_takaramono);
+ SoundStart(Only_My_Railgun);
 	
  /*Prepare foe the display of product version and product name*/
  productNameLength=GetStringGraphicalLength(ProductName_Str[CurrentSettings->Language]);
