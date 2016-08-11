@@ -44,3 +44,12 @@ void BuzzerConfig(void)
 	TIM4_Configuration();
 	BuzzerPWM_Configuration();
 }
+
+void Buzzer_DeInit()
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+}

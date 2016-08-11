@@ -11,4 +11,6 @@
 
 void BuzzerConfig(void);
 
+void Buzzer_DeInit(void);
+
 #endif /* __BUZZER_H */
