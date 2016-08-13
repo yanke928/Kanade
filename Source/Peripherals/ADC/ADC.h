@@ -6,7 +6,7 @@
 
 #define ADC1_DR_Address    ((uint32_t)0x4001244C)  
 
-#define ADC_FILTER_ITEM_NUM  5
+#define ADC_FILTER_ITEM_NUM  6
 
 //ADC Value converted from Temperature sensors
 extern volatile uint16_t  ADCConvertedValue[ADC_FILTER_ITEM_NUM];

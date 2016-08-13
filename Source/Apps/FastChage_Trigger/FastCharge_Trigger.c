@@ -246,6 +246,7 @@ void FastChargeTriggerUI(bool* fastchargeTriggeredFlag)
 
 void ReleaseFastCharge(bool* fastchargeTriggeredFlag)
 {
- FastCharge_Trigger_Release();
+ u8 mode=Release;
+ xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS);
  *fastchargeTriggeredFlag=false;
 }

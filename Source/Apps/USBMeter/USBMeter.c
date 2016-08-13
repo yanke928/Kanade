@@ -200,9 +200,9 @@ void WriteCurrentMeterData2CurveBuff(u8 mode)
 	{
 		switch (mode)
 		{
-		case VoltCurt:		
-      CurveBuff0[0] = FilteredMeterData.Voltage;
-			CurveBuff1[0] = FilteredMeterData.Current;break;
+		case VoltCurt:
+			CurveBuff0[0] = FilteredMeterData.Voltage;
+			CurveBuff1[0] = FilteredMeterData.Current; break;
 		case VoltDMDP:
 			CurveBuff0[0] = CurrentMeterData.VoltageDP;
 			CurveBuff1[0] = CurrentMeterData.VoltageDM;
@@ -211,9 +211,9 @@ void WriteCurrentMeterData2CurveBuff(u8 mode)
 	}
 	switch (mode)
 	{
-	case VoltCurt:		
-    CurveBuff0[Data_p] = FilteredMeterData.Voltage;
-		CurveBuff1[Data_p] = FilteredMeterData.Current;break;
+	case VoltCurt:
+		CurveBuff0[Data_p] = FilteredMeterData.Voltage;
+		CurveBuff1[Data_p] = FilteredMeterData.Current; break;
 	case VoltDMDP:
 		CurveBuff0[Data_p] = CurrentMeterData.VoltageDP;
 		CurveBuff1[Data_p] = CurrentMeterData.VoltageDM;
@@ -426,36 +426,37 @@ static void ScrollDialgram_Routine()
   */
 static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 {
-  static u8 displayProtocolCnt=PROTOCOL_DISPLAY_COUNT_MAX;
-  u8 displayedProtocolNum;
-  u8 length;
-  u8 pos;
+	static u8 displayProtocolCnt = PROTOCOL_DISPLAY_COUNT_MAX;
+	u8 displayedProtocolNum;
+	u8 length;
+	u8 pos;
 
-	if (FilteredMeterData.Voltage >= 10.0f)
-	{
-		sprintf(tempString, "%.2fV", FilteredMeterData.Voltage);
-	}
-	else
+	if (FilteredMeterData.Voltage >= 9.9999)
 	{
 		sprintf(tempString, "%.3fV", FilteredMeterData.Voltage);
 	}
-	OLED_ShowString(0, 0, tempString);
-	if (FilteredMeterData.Current > 0.1)
-		sprintf(tempString, "%.3fA", FilteredMeterData.Current);
 	else
-		sprintf(tempString, "%04.1fmA", FilteredMeterData.Current * 1000);
-	OLED_ShowString(80, 0, tempString);
-	if (FilteredMeterData.Power >= 10.0f)
 	{
-		sprintf(tempString, "%.2fW ", FilteredMeterData.Power);
+		sprintf(tempString, "%.4fV", FilteredMeterData.Voltage);
+	}
+	OLED_ShowString(0, 0, tempString);
+	if (FilteredMeterData.Current >=0.9999)
+		sprintf(tempString, "%.4fA", FilteredMeterData.Current);
+	else
+		sprintf(tempString, "%05.1fmA", FilteredMeterData.Current * 1000);
+	OLED_ShowString(72, 0, tempString);
+	if (FilteredMeterData.Power >= 9.9999)
+	{
+		sprintf(tempString, "%.3fW ", FilteredMeterData.Power);
 	}
 	else
 	{
-		sprintf(tempString, "%.3fW", FilteredMeterData.Power);
+		sprintf(tempString, "%.4fW", FilteredMeterData.Power);
 	}
 	OLED_ShowString(0, 16, tempString);
 	if (CurrentTemperatureSensor == Internal)
 	{
+    OLED_FillRect(72, 16, 127, 32, 0);
 		GenerateTempString(tempString, Internal);
 		if (firstEnter)
 			OLED_ShowString(80, 16, "-----C");
@@ -467,14 +468,15 @@ static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 	}
 	else
 	{
+    OLED_FillRect(72, 16, 127, 32, 0);
 		GenerateTempString(tempString, External);
-		OLED_ShowAnyString(80, 16, "Ex", NotOnSelect, 8);
+		OLED_ShowAnyString(73, 16, "Ext", NotOnSelect, 8);
 		if (firstEnter)
 			OLED_ShowAnyString(92, 16, "-----C", NotOnSelect, 8);
 		else
 			OLED_ShowAnyString(92, 16, tempString, NotOnSelect, 8);
 		GenerateTempString(tempString, Internal);
-		OLED_ShowAnyString(80, 24, "In", NotOnSelect, 8);
+		OLED_ShowAnyString(72, 24, "Int", NotOnSelect, 8);
 		if (firstEnter)
 			OLED_ShowAnyString(92, 24, "-----C", NotOnSelect, 8);
 		else
@@ -482,42 +484,42 @@ static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 	}
 	if (currentStatus == USBMETER_ONLY)
 	{
-    displayProtocolCnt--;
-    if(displayProtocolCnt==0) displayProtocolCnt=PROTOCOL_DISPLAY_COUNT_MAX;
+		displayProtocolCnt--;
+		if (displayProtocolCnt == 0) displayProtocolCnt = PROTOCOL_DISPLAY_COUNT_MAX;
 		GenerateRTCDateString(tempString);
 		OLED_ShowString(0, 32, tempString);
 		GenerateRTCTimeString(tempString);
 		OLED_ShowString(0, 48, tempString);
 		GenerateRTCWeekString(tempString);
 		OLED_ShowString(104, 32, tempString);
-    displayedProtocolNum=PossibleProtocolNum>2?2:PossibleProtocolNum;
-    if(displayProtocolCnt<PROTOCOL_DISPLAY_TIME&&PossibleProtocolNum>0)
-    {
-     OLED_FillRect(72,48,127,63,0);
-     length=GetStringGraphicalLength(ProtocolTab[PossibleProtocolTab[0]].DeviceName);
-     pos=104-length*3;
-     if(displayedProtocolNum==1) 
-     {
-      OLED_ShowAnyString(pos,50,ProtocolTab[PossibleProtocolTab[0]].DeviceName,NotOnSelect,12);
-     }
-     else
-     {
-      OLED_ShowAnyString(pos,48,ProtocolTab[PossibleProtocolTab[0]].DeviceName,NotOnSelect,8);
-     length=GetStringGraphicalLength(ProtocolTab[PossibleProtocolTab[1]].DeviceName);
-     pos=104-length*3;  
-OLED_ShowAnyString(pos,56,ProtocolTab[PossibleProtocolTab[1]].DeviceName,NotOnSelect,8);     
-     }
-    }
-else
-{
-OLED_FillRect(72,48,127,63,0);
-		sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDP);
-		OLED_ShowAnyString(92, 48, tempString, NotOnSelect, 8);
-		sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDM);
-		OLED_ShowAnyString(92, 56, tempString, NotOnSelect, 8);
-		OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
-		OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
-}
+		displayedProtocolNum = PossibleProtocolNum > 2 ? 2 : PossibleProtocolNum;
+		if (displayProtocolCnt < PROTOCOL_DISPLAY_TIME&&PossibleProtocolNum>0)
+		{
+			OLED_FillRect(72, 48, 127, 63, 0);
+			length = GetStringGraphicalLength(ProtocolTab[PossibleProtocolTab[0]].DeviceName);
+			pos = 104 - length * 3;
+			if (displayedProtocolNum == 1)
+			{
+				OLED_ShowAnyString(pos, 50, ProtocolTab[PossibleProtocolTab[0]].DeviceName, NotOnSelect, 12);
+			}
+			else
+			{
+				OLED_ShowAnyString(pos, 48, ProtocolTab[PossibleProtocolTab[0]].DeviceName, NotOnSelect, 8);
+				length = GetStringGraphicalLength(ProtocolTab[PossibleProtocolTab[1]].DeviceName);
+				pos = 104 - length * 3;
+				OLED_ShowAnyString(pos, 56, ProtocolTab[PossibleProtocolTab[1]].DeviceName, NotOnSelect, 8);
+			}
+		}
+		else
+		{
+			OLED_FillRect(72, 48, 127, 63, 0);
+			sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDP);
+			OLED_ShowAnyString(92, 48, tempString, NotOnSelect, 8);
+			sprintf(tempString, "%5.2fV", CurrentMeterData.VoltageDM);
+			OLED_ShowAnyString(92, 56, tempString, NotOnSelect, 8);
+			OLED_ShowAnyString(80, 48, "D+", NotOnSelect, 8);
+			OLED_ShowAnyString(80, 56, "D-", NotOnSelect, 8);
+		}
 	}
 }
 

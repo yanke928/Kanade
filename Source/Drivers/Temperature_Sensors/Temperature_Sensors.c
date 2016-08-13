@@ -19,6 +19,8 @@
 
 float InternalTemperature;
 
+float MOSTemperature;
+
 float ExternalTemperature;
 
 volatile u8 CurrentTemperatureSensor = Internal;
@@ -29,7 +31,7 @@ const u8 TempTab[TEMPTAB_LENGTH] = { 0,10,20,30,40,50,60,70,80,90,100,110,120
 const float ResistTab[TEMPTAB_LENGTH] = { 325,200,125,80,52,35.7,24.6,17.29,12.35,8.927,6.55,
 4.888,3.702,2.812,2.146,1.665,1.314,1.051,0.842,0.676,0.552 };
 
-void CalculateExtTemp(void);
+float CalculateNTCTemp(u8 adcIndex);
 
 void Temperature_Handler(void *pvParameters)
 {
@@ -49,7 +51,7 @@ void Temperature_Handler(void *pvParameters)
 		}
 	  if (CurrentTemperatureSensor == External)
 			{
-				CalculateExtTemp();
+				ExternalTemperature=CalculateNTCTemp(0);
 			}
 	}
 }
@@ -74,34 +76,36 @@ ADC result
 
   * @retval : None
   */
-void CalculateExtTemp(void)
+float CalculateNTCTemp(u8 adcIndex)
 {
 	float Vtemp, Rtemp;
+  float temperature;
 	float k;
 	u8 i;
 	/*Calculate the voltage that temperature sensor divided*/
-	Vtemp = 3.3 - ((float)FilteredADCValue[0] / 4096)*3.3;
+	Vtemp = 3.3 - ((float)FilteredADCValue[adcIndex] / 4096)*3.3;
 	/*Calculate the resistance of temperature sensor*/
 	Rtemp = (Vtemp / (3.3 - Vtemp))*TEMP_DIVIDER;
 	if (Rtemp >= ResistTab[0])
 	{
-		ExternalTemperature = TempTab[0];
-		return;
+		temperature = TempTab[0];
+		return temperature;
 	}
 	else if (Rtemp <= ResistTab[TEMPTAB_LENGTH - 1])
 	{
-		ExternalTemperature = TempTab[TEMPTAB_LENGTH - 1];
-		return;
+		temperature = TempTab[TEMPTAB_LENGTH - 1];
+		return temperature;
 	}
 	for (i = 0; i < TEMPTAB_LENGTH - 1; i++)
 	{
 		if (Rtemp > ResistTab[i + 1])
 		{
 			k = (float)(TempTab[i + 1] - TempTab[i]) / (ResistTab[i + 1] - ResistTab[i]);
-			ExternalTemperature = TempTab[i] - (k*(ResistTab[i] - Rtemp));
-			return;
+			temperature = TempTab[i] - (k*(ResistTab[i] - Rtemp));
+			return temperature;
 		}
 	}
+ return 0;
 }
 
 /**
