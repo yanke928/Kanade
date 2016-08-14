@@ -67,6 +67,7 @@ static void USBMeter(void *pvParameters)
 	Key_Message_Struct keyMessage;
 	u8 status = USBMETER_ONLY;
 	u8 reSendLoadCommandCnt = 0;
+	u8 updateBasicDataCnt = 5;
 	Legacy_Test_Param_Struct legacy_Test_Params;
 	ClearKeyEvent();
 	while (1)
@@ -74,14 +75,18 @@ static void USBMeter(void *pvParameters)
 	Refresh:
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
-		DisplayBasicData(tempString, status, firstEnter);
+		if (updateBasicDataCnt == 5)
+		{
+			updateBasicDataCnt = 0;
+			DisplayBasicData(tempString, status, firstEnter);
+		}
 		xSemaphoreGive(USBMeterState_Mutex);
 		if (status == USBMETER_RECORD || status == LEGACY_TEST)
 		{
 			DisplayRecordData(tempString);
 		}
 		xSemaphoreGive(OLEDRelatedMutex);
-		if ((InternalTemperature > CurrentSettings->InternalTemperature_Max ||
+		if ((MOSTemperature > CurrentSettings->InternalTemperature_Max ||
 			ExternalTemperature > CurrentSettings->ExternalTemperature_Max) &&
 			firstEnter == 0)
 		{
@@ -98,7 +103,7 @@ static void USBMeter(void *pvParameters)
 			if (legacy_Test_Params.TestMode == ConstantPower)
 			{
 				reSendLoadCommandCnt++;
-				if (reSendLoadCommandCnt == 5)
+				if (reSendLoadCommandCnt == 50)
 				{
 					if (CurrentMeterData.Current < 0.1)
 						Send_Digital_Load_Command((float)legacy_Test_Params.Power / CurrentMeterData.Voltage, Load_Start);
@@ -109,7 +114,7 @@ static void USBMeter(void *pvParameters)
 			}
 		}
 		if (firstEnter) firstEnter--;
-		if (xQueueReceive(Key_Message, &keyMessage, 500 / portTICK_RATE_MS) == pdPASS)
+		if (xQueueReceive(Key_Message, &keyMessage, 100 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (status == USBMETER_ONLY)
 			{
@@ -141,6 +146,7 @@ static void USBMeter(void *pvParameters)
 					(GetConfirmation(MountUSBMassStorageConfirm_Str[CurrentSettings->Language], ""))
 					MassStorage_App(); break;
 				}
+				updateBasicDataCnt = 5;
 				goto Refresh;
 			}
 			else
@@ -171,9 +177,11 @@ static void USBMeter(void *pvParameters)
 					OLED_Clear();
 					xSemaphoreGive(OLEDRelatedMutex);
 				}
+				updateBasicDataCnt = 5;
 				goto Refresh;
 			}
 		}
+		updateBasicDataCnt++;
 	}
 }
 
@@ -440,7 +448,7 @@ static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 		sprintf(tempString, "%.4fV", FilteredMeterData.Voltage);
 	}
 	OLED_ShowString(0, 0, tempString);
-	if (FilteredMeterData.Current >=0.9999)
+	if (FilteredMeterData.Current >= 0.9999)
 		sprintf(tempString, "%.4fA", FilteredMeterData.Current);
 	else
 		sprintf(tempString, "%05.1fmA", FilteredMeterData.Current * 1000);
@@ -456,8 +464,8 @@ static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 	OLED_ShowString(0, 16, tempString);
 	if (CurrentTemperatureSensor == Internal)
 	{
-    OLED_FillRect(72, 16, 127, 32, 0);
-		GenerateTempString(tempString, Internal);
+		OLED_FillRect(72, 16, 127, 32, 0);
+		GenerateTempString(tempString, MOS);
 		if (firstEnter)
 			OLED_ShowString(80, 16, "-----C");
 		else
@@ -468,14 +476,14 @@ static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 	}
 	else
 	{
-    OLED_FillRect(72, 16, 127, 32, 0);
+		OLED_FillRect(72, 16, 127, 32, 0);
 		GenerateTempString(tempString, External);
-		OLED_ShowAnyString(73, 16, "Ext", NotOnSelect, 8);
+		OLED_ShowAnyString(72, 16, "Ext", NotOnSelect, 8);
 		if (firstEnter)
 			OLED_ShowAnyString(92, 16, "-----C", NotOnSelect, 8);
 		else
 			OLED_ShowAnyString(92, 16, tempString, NotOnSelect, 8);
-		GenerateTempString(tempString, Internal);
+		GenerateTempString(tempString, MOS);
 		OLED_ShowAnyString(72, 24, "Int", NotOnSelect, 8);
 		if (firstEnter)
 			OLED_ShowAnyString(92, 24, "-----C", NotOnSelect, 8);
@@ -532,14 +540,14 @@ static void DisplayBasicData(char tempString[], u8 currentStatus, u8 firstEnter)
 static void DisplayRecordData(char tempString[])
 {
 	if (CurrentSumUpData.Capacity >= 10000)
-		sprintf(tempString, "%05.2fAh", CurrentSumUpData.Capacity);
+		sprintf(tempString, "%05.2fAh", FastUpdateCurrentSumUpData.Capacity);
 	else
-		sprintf(tempString, "%05.0fmAh", CurrentSumUpData.Capacity * 1000);
+		sprintf(tempString, "%05.0fmAh", FastUpdateCurrentSumUpData.Capacity * 1000);
 	OLED_ShowString(0, 32, tempString);
 	if (CurrentSumUpData.Work >= 10000)
-		sprintf(tempString, "%05.2fWh", CurrentSumUpData.Work);
+		sprintf(tempString, "%05.2fWh", FastUpdateCurrentSumUpData.Work);
 	else
-		sprintf(tempString, "%05.0fmWh", CurrentSumUpData.Work * 1000);
+		sprintf(tempString, "%05.0fmWh", FastUpdateCurrentSumUpData.Work * 1000);
 	OLED_ShowString(0, 48, tempString);
 	GenerateVirtualRTCString(tempString);
 	OLED_ShowAnyString(81, 51, tempString, NotOnSelect, 12);

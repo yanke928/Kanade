@@ -11,7 +11,7 @@
 
 #include "VirtualRTC.h"
 
-#define VIRTUAL_CLOCK_UPDATE_PRIORITY tskIDLE_PRIORITY+2
+#define VIRTUAL_CLOCK_UPDATE_PRIORITY tskIDLE_PRIORITY+5
 
 //see .h for details about variables
 
@@ -33,10 +33,17 @@ xTaskHandle VirtualRTCHandle = NULL;
   */
 static void UpdateRTCStruct(void)
 {
+  static u8 lstSec=0;
 	RTCCurrent.Sec = SecondNum % 60;
 	RTCCurrent.Day = SecondNum / 86400;
 	RTCCurrent.Hour = SecondNum / 3600 - RTCCurrent.Day * 24;
 	RTCCurrent.Min = SecondNum / 60 - RTCCurrent.Hour * 60 - RTCCurrent.Day * 1440;
+  if(RTCCurrent.SecDiv10+1<10) RTCCurrent.SecDiv10++;
+  if(lstSec!=RTCCurrent.Sec) 
+  {
+   lstSec=RTCCurrent.Sec;
+   RTCCurrent.SecDiv10=0;
+  }
 }
 
 /**
@@ -56,6 +63,7 @@ void GenerateVirtualRTCString(char string[])
   */
 static void VirtualRTC_Handler(void *pvParameters)
 {
+   
 	while (1)
 	{
 		SecondNumNow = RTC_GetCounter();

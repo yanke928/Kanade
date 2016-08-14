@@ -7,14 +7,19 @@
 
 #include "PWM_Ref.h"
 
+#include "Digital_Load.h"
+
+#include "SSD1306.h"
+
 #include "FastCharge_Trigger_Circuit.h"
 
 #define FAST_CHARGE_TRIGGER_SERVICE_PRIORITY tskIDLE_PRIORITY+5
 
 #define MTK_PE_HIGH_REF 1
-#define MTK_PE_LOW_REF 0.01
-#define MTK_PE_HIGH(ms) Set_RefVoltageTo(MTK_PE_HIGH_REF); vTaskDelay(ms/portTICK_RATE_MS)
-#define MTK_PE_LOW(ms) Set_RefVoltageTo(MTK_PE_LOW_REF); vTaskDelay(ms/portTICK_RATE_MS)
+
+#define MTK_PE_HIGH(ms) Digital_Load_Unlock(); vTaskDelay(ms/portTICK_RATE_MS)
+#define MTK_PE_LOW(ms) Digital_Load_Lock(); vTaskDelay(ms/portTICK_RATE_MS)
+#define MTK_PE_Init() Set_RefVoltageTo(MTK_PE_HIGH_REF);
 
 xQueueHandle FastCharge_Msg;
 
@@ -89,7 +94,8 @@ void FastCharge_Trigger_Release(void)
 {
 	FastCharge_Trigger_DP_Release();
 	FastCharge_Trigger_DM_Release();
-Set_RefVoltageTo(0); 
+  Set_RefVoltageTo(0); 
+  Digital_Load_Lock();
 }
 
 /**
@@ -172,8 +178,8 @@ void QC3_Increase_Voltage(u8 lastMode)
 		vTaskDelay(1500 / portTICK_RATE_MS);
 	}
 	FastCharge_Trigger_GPIO_Enable();
-	SetDM_0V6();
-	SetDP_0V6();
+	SetDM_3V3();
+	SetDP_3V3();
 	vTaskDelay(10 / portTICK_RATE_MS);
 	SetDM_3V3();
 	SetDP_0V6();
@@ -190,8 +196,8 @@ void QC3_Decrease_Voltage(u8 lastMode)
 		vTaskDelay(1500 / portTICK_RATE_MS);
 	}
 	FastCharge_Trigger_GPIO_Enable();
-	SetDM_3V3();
-	SetDP_3V3();
+	SetDM_0V6();
+	SetDP_0V6();
 	vTaskDelay(10 / portTICK_RATE_MS);
 	SetDM_3V3();
 	SetDP_0V6();
@@ -200,7 +206,10 @@ void QC3_Decrease_Voltage(u8 lastMode)
 void MTK_PE_Increase_Voltage(u8 lastMode)
 {
  if(lastMode!=MTK_Decrease&&lastMode!=MTK_Increase)
- MTK_PE_LOW(500);
+ {
+  MTK_PE_Init();
+  MTK_PE_LOW(1000);
+ }
 
  MTK_PE_HIGH(100);
  MTK_PE_LOW(100);
@@ -220,7 +229,10 @@ void MTK_PE_Increase_Voltage(u8 lastMode)
 void MTK_PE_Decrease_Voltage(u8 lastMode)
 {
  if(lastMode!=MTK_Decrease&&lastMode!=MTK_Increase)
- MTK_PE_LOW(500);
+ {
+  MTK_PE_Init();
+  MTK_PE_LOW(1000);
+ }
 
  MTK_PE_HIGH(300);
  MTK_PE_LOW(100);

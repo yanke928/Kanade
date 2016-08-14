@@ -140,7 +140,7 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowIcon(positions[1].x, positions[1].y, 0x01, DRAW);
 				xSemaphoreGive(OLEDRelatedMutex);
-				xQueueSend(FastCharge_Msg, &commandSet.Plus, 100 / portTICK_RATE_MS);
+				xQueueSend(FastCharge_Msg, &commandSet.Minus, 100 / portTICK_RATE_MS);
 			}
 			else if (RIGHT_KEY == KEY_ON)
 			{
@@ -155,7 +155,7 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowIcon(positions[0].x, positions[0].y, 0x00, DRAW);
 				xSemaphoreGive(OLEDRelatedMutex);
-				xQueueSend(FastCharge_Msg, &commandSet.Minus, 100 / portTICK_RATE_MS);
+				xQueueSend(FastCharge_Msg, &commandSet.Plus, 100 / portTICK_RATE_MS);
 			}
 			if (xQueueReceive(Key_Message, &keyMsg, 30/portTICK_RATE_MS) == pdPASS)
 			{

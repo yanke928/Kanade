@@ -7,6 +7,8 @@
 #include "sdcard.h"
 #include "sdcardff.h"
 
+#include "MCP3421.h"
+
 #define LEGACY_TEST 2
 
 extern xTaskHandle RecordHandle;
@@ -19,6 +21,8 @@ typedef struct {
 	int Power;
 	int TestMode;
 }Legacy_Test_Param_Struct;
+
+extern volatile SumupStruct FastUpdateCurrentSumUpData;
 
 void RunLegacyTest(u8* status,Legacy_Test_Param_Struct* test_Params);
 

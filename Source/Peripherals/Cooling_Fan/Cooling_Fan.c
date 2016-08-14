@@ -36,8 +36,8 @@ static void Cooling_Fan_Service(void *pvParameters)
 	{
 	 if(mode==Auto)
 	 {
-	 if(InternalTemperature>55)Cooling_fan_turn_on();
-	 if(InternalTemperature<50)Cooling_fan_turn_off();
+	 if(MOSTemperature>55)Cooling_fan_turn_on();
+	 if(MOSTemperature<50)Cooling_fan_turn_off();
 	 }
 	 if(xQueueReceive(CoolingFan_Command, &command, 500 / portTICK_RATE_MS) == pdPASS)
 	 {

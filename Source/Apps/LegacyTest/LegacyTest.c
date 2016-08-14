@@ -41,7 +41,7 @@
 
 #include "LegacyTest.h"
 
-#define RECORD_HANDLER_PRIORITY tskIDLE_PRIORITY+7
+#define RECORD_HANDLER_PRIORITY tskIDLE_PRIORITY+6
 #define LEGACY_TEST_CURRENT_MAX 4000
 #define LEGACY_TEST_POWER_MAX POWER_MAX 40000
 
@@ -53,6 +53,8 @@ bool IsRecording;
 
 xTaskHandle RecordHandle;
 
+volatile SumupStruct FastUpdateCurrentSumUpData;
+
 
 /**
   * @brief  Record task,update summary data and write
@@ -63,6 +65,7 @@ current data into sdcard
 void Record_Handler(void *pvParameters)
 {
 	u8 lastSec = RTCCurrent.Sec;
+  u8 lstSecDiv10;
 	u8 stringLength;
 	char tempString[50];
 	SecondNum = 0;
@@ -84,9 +87,19 @@ void Record_Handler(void *pvParameters)
 		CurrentSumUpData.Capacity += (FilteredMeterData.Current / 3600);
 		CurrentSumUpData.Work += (FilteredMeterData.Power / 3600);
 		CurrentSumUpData.PlatformVolt = FilteredMeterData.Power / FilteredMeterData.Current;
+    FastUpdateCurrentSumUpData.Capacity=CurrentSumUpData.Capacity;
+    FastUpdateCurrentSumUpData.Work=CurrentSumUpData.Work;
+    FastUpdateCurrentSumUpData.PlatformVolt=CurrentSumUpData.PlatformVolt;
 		/*Keep blocked until a new second reached*/
 		for (;;)
 		{
+      if(lstSecDiv10!=RTCCurrent.SecDiv10)
+      {
+		FastUpdateCurrentSumUpData.Capacity += (FilteredMeterData.Current / 36000);
+		FastUpdateCurrentSumUpData.Work += (FilteredMeterData.Power / 36000);
+		FastUpdateCurrentSumUpData.PlatformVolt = FilteredMeterData.Power / FilteredMeterData.Current;
+            lstSecDiv10=RTCCurrent.SecDiv10;
+      }
 			if (lastSec != RTCCurrent.Sec)
 			{
 				lastSec = RTCCurrent.Sec;
@@ -452,7 +465,6 @@ void ShowSummary(u8 reason)
 		SoundStart(Ichiban_no_takaramono);
 		LED_Animate_Init(LEDSummaryAnimate);
 	}
-
 	/*Show item strings*/
 	OLED_ShowAnyString(3, 14, SummaryCapacity_Str[CurrentSettings->Language], NotOnSelect, 12);
 	OLED_ShowAnyString(3, 26, SummaryWork_Str[CurrentSettings->Language], NotOnSelect, 12);
@@ -460,12 +472,12 @@ void ShowSummary(u8 reason)
 	OLED_ShowAnyString(3, 51, SummaryPlatVolt_Str[CurrentSettings->Language], NotOnSelect, 12);
 
 	/*Print summary*/
-	if (CurrentSumUpData.Capacity >= 10000)
+	if (CurrentSumUpData.Capacity >= 100)
 		sprintf(tempString, "%05.2fAh", CurrentSumUpData.Capacity);
 	else
 		sprintf(tempString, "%05.0fmAh", CurrentSumUpData.Capacity * 1000);
 	OLED_ShowAnyString(75, 14, tempString, NotOnSelect, 12);
-	if (CurrentSumUpData.Work >= 10000)
+	if (CurrentSumUpData.Work >= 100)
 		sprintf(tempString, "%05.2fWh", CurrentSumUpData.Work);
 	else
 		sprintf(tempString, "%05.0fmWh", CurrentSumUpData.Work * 1000);

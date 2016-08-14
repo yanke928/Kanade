@@ -21,8 +21,8 @@ void DataPins_Voltage_Handler(void *pvParameters)
  for(;;)
 	{
 	 vTaskDelay( 100/ portTICK_RATE_MS);
-	 CurrentMeterData.VoltageDP=(float)FilteredADCValue[2]/4096*PowerSourceVoltage;
-	 CurrentMeterData.VoltageDM=(float)FilteredADCValue[1]/4096*PowerSourceVoltage;
+	 CurrentMeterData.VoltageDP=(float)FilteredADCValue[3]/4096*PowerSourceVoltage;
+	 CurrentMeterData.VoltageDM=(float)FilteredADCValue[2]/4096*PowerSourceVoltage;
 	}
 }
 

@@ -38,10 +38,10 @@ void Temperature_Handler(void *pvParameters)
  for(;;)
 	{
 	 vTaskDelay( 100/ portTICK_RATE_MS);
-	 PowerSourceVoltage = (1.2 / (float)FilteredADCValue[4]) * 4096;
-	 InternalTemperature = (1.43 - (float)FilteredADCValue[3] *
+	 PowerSourceVoltage = (1.2 / (float)FilteredADCValue[5]) * 4096;
+	 InternalTemperature = (1.43 - (float)FilteredADCValue[4] *
 	 (PowerSourceVoltage / 4096)) * 1000 / 4.35 + 25;
-		if (FilteredADCValue[0] >= 200)
+		if (FilteredADCValue[1] >= 200)
 		{
 			CurrentTemperatureSensor = External;
 		}
@@ -49,9 +49,10 @@ void Temperature_Handler(void *pvParameters)
 		{
 			CurrentTemperatureSensor = Internal;
 		}
+    MOSTemperature=CalculateNTCTemp(0);
 	  if (CurrentTemperatureSensor == External)
 			{
-				ExternalTemperature=CalculateNTCTemp(0);
+				ExternalTemperature=CalculateNTCTemp(1);
 			}
 	}
 }
@@ -63,10 +64,12 @@ void Temperature_Handler(void *pvParameters)
   */
 void GenerateTempString(char string[], u8 sensorNo)
 {
-	if (sensorNo == Internal)
-		sprintf(string, "%5.1fC", InternalTemperature);
-	else
-		sprintf(string, "%5.1fC", ExternalTemperature);
+  switch(sensorNo)
+  {
+   case Internal:sprintf(string, "%5.1fC", InternalTemperature);break;
+   case External:sprintf(string, "%5.1fC", ExternalTemperature);break;
+   case MOS:sprintf(string, "%5.1fC", MOSTemperature);break;
+  }
 }
 
 

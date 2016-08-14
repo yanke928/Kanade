@@ -10,6 +10,7 @@ typedef struct {
 	unsigned char Hour;
 	unsigned char Min;
 	unsigned char Sec;
+  unsigned char SecDiv10;
 	unsigned char RTCUpdatedFlag;
 }RTCStructTypedef;
 

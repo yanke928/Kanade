@@ -343,6 +343,10 @@ void SystemStartup(void *pvParameters)
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
+  if(RIGHT_KEY==KEY_ON)
+  {
+   OSStatInit();
+  }
   //Flash_Test_Run();
 	USBMeter_Init(USBMETER_ONLY);
 	vTaskDelete(NULL);

@@ -92,7 +92,7 @@ void Show_OverHeat_Temperature(u8 sensor)
 	u8 length;
 	OLED_ShowAnyString(1, 42, "               ", NotOnSelect, 16);
 	if(sensor==0)
-	sprintf(tempString, "%.1fC>>%.1fC", InternalTemperature, 
+	sprintf(tempString, "%.1fC>>%.1fC", MOSTemperature, 
 	(float)CurrentSettings->InternalTemperature_Max-CurrentSettings->Protection_Resume_Gap);
 	else
 	sprintf(tempString, "%.1fC>>%.1fC", ExternalTemperature, 
@@ -115,7 +115,7 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
 	SoundStart(Alarm);
-	if(InternalTemperature > CurrentSettings->InternalTemperature_Max)
+	if(MOSTemperature > CurrentSettings->InternalTemperature_Max)
 	{
 	 sensor=0;
 	}
@@ -150,7 +150,7 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 	{
 		Show_OverHeat_Temperature(sensor);
 		vTaskDelay(500 / portTICK_RATE_MS);
-		if (((InternalTemperature < CurrentSettings->InternalTemperature_Max-CurrentSettings->Protection_Resume_Gap)
+		if (((MOSTemperature < CurrentSettings->InternalTemperature_Max-CurrentSettings->Protection_Resume_Gap)
 			  &&(sensor==0))||
 		   ((ExternalTemperature < CurrentSettings->ExternalTemperature_Max-CurrentSettings->Protection_Resume_Gap)
 			  &&(sensor==1)))

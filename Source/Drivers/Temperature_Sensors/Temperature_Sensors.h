@@ -9,13 +9,13 @@
 
 #define TEMP_DIVIDER 15
 
-enum { Internal = 1, External = 0 };
-
-//A public variable for the converted IntTemperature
-extern float InternalTemperature;
+enum { Internal = 1, External = 0 ,MOS = 2};
 
 //A public variable for the converted ExtTemperature
 extern float ExternalTemperature;
+
+//A public variable for the converted MOSTemperature
+extern float MOSTemperature;
 
 extern volatile u8 CurrentTemperatureSensor;
 
