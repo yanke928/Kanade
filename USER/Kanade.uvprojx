@@ -772,6 +772,11 @@
               <FileType>1</FileType>
               <FilePath>..\Source\UI\UI_Print.c</FilePath>
             </File>
+            <File>
+              <FileName>UI_Clock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\UI\UI_Clock.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
