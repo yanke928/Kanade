@@ -29,6 +29,7 @@
 #include "LegacyTest.h"
 #include "MassStorage.h"
 #include "ExceptionHandle.h"
+#include "Digital_Clock.h"
 
 #include "UI_Dialogue.h"
 #include "UI_Utilities.h"
@@ -54,6 +55,8 @@ static void DisplayRecordData(char tempString[]);
 
 static void ScrollDialgram_Routine(void);
 
+#define IDLE_TIME_SEC 60
+
 /**
   * @brief  USBMeter
 
@@ -68,6 +71,7 @@ static void USBMeter(void *pvParameters)
 	u8 status = USBMETER_ONLY;
 	u8 reSendLoadCommandCnt = 0;
 	u8 updateBasicDataCnt = 5;
+  u32 lastWakeTime=xTaskGetTickCount();
 	Legacy_Test_Param_Struct legacy_Test_Params;
 	ClearKeyEvent();
 	while (1)
@@ -91,6 +95,8 @@ static void USBMeter(void *pvParameters)
 			firstEnter == 0)
 		{
 			System_OverHeat_Exception_Handler(status, &legacy_Test_Params);
+      lastWakeTime=xTaskGetTickCount();
+      updateBasicDataCnt = 5;goto Refresh;
 		}
 		if (status == LEGACY_TEST)
 		{
@@ -98,6 +104,7 @@ static void USBMeter(void *pvParameters)
 				CurrentMeterData.Voltage < 0.5)
 			{
 				StopRecord(&status, 1);
+        updateBasicDataCnt = 5;
 				goto Refresh;
 			}
 			if (legacy_Test_Params.TestMode == ConstantPower)
@@ -146,6 +153,7 @@ static void USBMeter(void *pvParameters)
 					(GetConfirmation(MountUSBMassStorageConfirm_Str[CurrentSettings->Language], ""))
 					MassStorage_App(); break;
 				}
+        lastWakeTime=xTaskGetTickCount();
 				updateBasicDataCnt = 5;
 				goto Refresh;
 			}
@@ -177,10 +185,24 @@ static void USBMeter(void *pvParameters)
 					OLED_Clear();
 					xSemaphoreGive(OLEDRelatedMutex);
 				}
+        lastWakeTime=xTaskGetTickCount();
 				updateBasicDataCnt = 5;
 				goto Refresh;
 			}
 		}
+    if(status==USBMETER_RECORD||status==LEGACY_TEST)
+    {
+     lastWakeTime=xTaskGetTickCount();
+    }
+    if((xTaskGetTickCount()-lastWakeTime)*portTICK_RATE_MS/1000>IDLE_TIME_SEC)
+    {
+     Digital_Clock();
+		 xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+		 OLED_Clear();
+	   xSemaphoreGive(OLEDRelatedMutex);     
+     updateBasicDataCnt = 4;
+     lastWakeTime=xTaskGetTickCount();
+    }
 		updateBasicDataCnt++;
 	}
 }

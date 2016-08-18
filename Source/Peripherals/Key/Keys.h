@@ -16,6 +16,8 @@
 #define LEFT_KEY   GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_5)
 #define RIGHT_KEY  GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_3)
 
+#define ANY_KEY_PRESSED MIDDLE_KEY==KEY_ON||LEFT_KEY==KEY_ON||RIGHT_KEY==KEY_ON
+
 /**Define the time parameters which judge the key events
 
     *PRESSTIME:
