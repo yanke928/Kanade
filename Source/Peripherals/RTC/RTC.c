@@ -273,7 +273,7 @@ void Time_Set(void)
   */
 void GenerateRTCDateString(char string[])
 {
-	sprintf(string, "%04d.%02d.%02d", RTCTime.w_year, RTCTime.w_month, RTCTime.w_date);
+	sprintf(string, "%04d-%02d-%02d", RTCTime.w_year, RTCTime.w_month, RTCTime.w_date);
 }
 
 /**

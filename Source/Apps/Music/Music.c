@@ -1008,57 +1008,18 @@ const SingleToneStruct Only_My_Railgun[] =
 
 const SingleToneStruct Ichiban_no_takaramono[] =
 {
- {50,-7},
- // 
- // {M4,1},{L7|HALF_LOW,2},{M1,2},{M1,1},{M4,1},{M1,2},{M1,2},{M1,1},{M4,1},
- // {M4,1},{L6,2},{L1,2},{M1,1},{M4,1},{M4,1},{M4,1},{L7|HALF_LOW,1},{M1,1},
- // {M4,1},{L7|HALF_LOW,2},{M1,2},{M1,1},{M4,1},{M4,1},{M1,2},{M1,2},{M1,1},
- // {M4,1},{M4,1},{L6,2},{M1,2},{M1,1},{M4,1},{M4,1},{M4,1},{M1,1},
- // {M1,1},//pre
-
-  {M6,2},{M7 | HALF_LOW,2},{H1,1},{M7 | HALF_LOW,2},{H1,2},{H1,2},{M6,2},{M5,2},{M4,2},
-  {M4,1},{STOP,1},{M6 | HALF_LOW,2},{M7,2},{H1,1},{H1,2},{H1,2},{H1,2},{H4,2},
-  {H4,2},{H4,2},{H3,1},{STOP,1},{M6 | HALF_LOW,2},{M7,2},{H1,1},{M7 | HALF_LOW,2},{H1,2},
-  {H1,2},{M6,2},{M5,2},{M5,2},{M4,1},{M4,2},{M5,1},{M5,2},{M6,1},
-  {M6,1},{M6,2},{M6,1},{M6,1},{STOP,2},{M6,2},{M7 | HALF_LOW,2},{M6,2},//main1
-
-  {H1,1},{H2,2},{H1,1},{H3,1},{H4,2},{H4,2},{H1,1},{H4,1},{H5,1},
-  {H6,2},{H6,2},{H7 | HALF_LOW,1},{H6,1},{H4,1},{H1,2},{H1,2},{H4,2},{H4,1},
-  {H4,2},{H6,2},{H7 | HALF_LOW,1},{HH1,1},{H5,2},{H4,1},{H2,1},{H1,1},{H1,2},
-  {H4,2},{H4,1},{H4,2},{H6,2},{H7 | HALF_LOW,1},{HH1,1},{H5,2},{H4,1},{H3 | HALF_LOW,1},
-  {H4,2},{H4,2},{H6,2},{H7 | HALF_LOW,1},{H6,2},{H7 | HALF_LOW,1},//main2
-
-  {HH1,1},{HH1,1},{HH1,1},{HH1,1},{STOP,1},{STOP,1},{STOP,1},{STOP,1},
-  //{STOP,1},{STOP,1},{STOP,1},{STOP,1},{STOP,1},{STOP,1},{STOP,2},
-  {H6,1},{H5 | HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1 | HALF_HIGH,1},
-  {HH1 | HALF_HIGH,1},{H6,1},{H5 | HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},
-  {HH1 | HALF_HIGH,1},{HH1 | HALF_HIGH,1},{H6,1},{H5 | HALF_HIGH,2},//main3
-
-  {H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1 | HALF_HIGH,1},{HH1 | HALF_HIGH,2},{H6,2},
-  {H7,1},{H6,2},{H6,2},{H2,1},{H1 | HALF_HIGH,1},{M7,1},{M7,2},{M7,2},{M6,2},
-  {M6,1},{STOP,2},{H6,1},{H5 | HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},
-  {H7,2},{HH1 | HALF_HIGH,1},{HH1 | HALF_HIGH,1},{H6,1},{H5 | HALF_HIGH,2},//main4
-
-  {H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1 | HALF_HIGH,2},{H6,1},{STOP,2},
-  {H6,1},{H5 | HALF_HIGH,2},{H6,1},{H3,2},{H2,1},{H6,1},{H7,2},{H7,2},{HH1 | HALF_HIGH,1},
-  {HH1 | HALF_HIGH,2},{H6,2},{H7,1},{H6,2},{H6,2},{H2,1},{H1 | HALF_HIGH,1},
-  {M7,1},{M7,2},{M7,2},{M6,2},{M6,1},{M6,1},{STOP,1},//main5
-
- // {H7,1},{H4|HALF_HIGH,2},{H3,1},{H7,1},{HH1|HALF_HIGH,2},{HH1|HALF_HIGH,2},
- // {HH2|HALF_HIGH,2},{HH2|HALF_HIGH,2},{H7,1},{H6|HALF_HIGH,2},//main6
-
+  {1000,100},
   {0,0}
 };
 
 const SingleToneStruct Alarm[] =
 {
- {75,0},
- {M7,8},
- {STOP,8},
- {M7,8},
- {STOP,8},
- {M7,8},
- {STOP,8}, {STOP,1}, {STOP,1}, {STOP,1}, {STOP,1}, {STOP,1}, {STOP,1},
+ {1000,100},
+ {0,100},
+ {1000,100},
+ {0,100},
+ {1000,100},
+ {0,5000},
  {0,0}
 };
 

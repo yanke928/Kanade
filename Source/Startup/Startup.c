@@ -343,6 +343,7 @@ void SystemStartup(void *pvParameters)
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
+  Digital_Clock();
   if(RIGHT_KEY==KEY_ON)
   {
    OSStatInit();
