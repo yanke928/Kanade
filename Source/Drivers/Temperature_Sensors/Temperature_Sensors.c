@@ -148,6 +148,6 @@ void QuickGet_Enviroment_Temperature(void)
 {
 	Quick_ADC_Collect();
 	vTaskDelay(2 / portTICK_RATE_MS);
-	MOSTemperature = CalculateNTCTemp(0);
+	MOSTemperature = CalculateNTCTemp(0)-1.5;
 }
 
