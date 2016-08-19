@@ -23,6 +23,9 @@ extern const char* const NoSD_Str[LanguageNum];
 extern const char* const WaitingForEBD_Str[LanguageNum];
 extern const char* const EBDConnected_Str[LanguageNum];
 
+/*Language Names*/
+extern const char* const LanguageItem_Str[LanguageNum];
+
 /*Time settings related*/
 extern const char* const SetYear_Str[LanguageNum];
 extern const char* const SetYearUnit_Str[LanguageNum];
@@ -121,6 +124,7 @@ extern const char* const SettingsItemFormatInternal_Str[LanguageNum];
 extern const char* const SettingsItemFirmwareUpdate_Str[LanguageNum];
 extern const char* const SettingsItemSystemScan_Str[LanguageNum];
 extern const char* const SettingsItemCalibration_Str[LanguageNum];
+extern const char* const SettingsItemIdleClockSettings_Str[LanguageNum];
 
 /*Legacy test mode items*/
 extern const char* const SelectLeagcyTestModeButtonCC_Str[LanguageNum];
@@ -142,7 +146,9 @@ extern const char* const ConfirmationConfirm_Str[LanguageNum];
 extern const char* const ConfirmationCancel_Str[LanguageNum];
 extern const char* const Confirmation_Str[LanguageNum];
 extern const char* const Hint_Str[LanguageNum];
-extern const char* const Saved_Str[LanguageNum] ;
+extern const char* const Saved_Str[LanguageNum];
+extern const char* const Enabled_Str[LanguageNum];
+extern const char* const Disabled_Str[LanguageNum] ;
 
 /*Calibration*/
 extern const char* const CalibrationItemAmpfilierSelfCalibration_Str[LanguageNum];
@@ -159,6 +165,12 @@ extern const char* const AbortConfirmation_Str[LanguageNum];
 extern const char* const FirmwareUpdateConfirm_Str[LanguageNum];
 
 extern const char* const DontSave_Str[LanguageNum];
+
+/*Idle Clock Settings related*/
+extern const char* const IdleClockSettingsDisableIdleClock_Str[LanguageNum];
+extern const char* const IdleClockSettingsEnableIdleClock_Str[LanguageNum];
+extern const char* const IdleClockSettingsIdleClockTime_Str[LanguageNum];
+extern const char* const IdleClockSettingsPleaseEnable_Str_Str[LanguageNum];
 
 /*Confirmation positions*/
 extern const OLED_PositionStruct  ComfirmationPositions[LanguageNum][2];

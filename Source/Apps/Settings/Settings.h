@@ -16,7 +16,7 @@ typedef struct
 {
  bool ClockEnable;
  u16 IdleTime;
-}Clock_Settings_Struct;
+}Idle_Clock_Settings_Struct;
 
 typedef struct 
 {
@@ -29,10 +29,15 @@ typedef struct
 {
  u8 Language;
  Protect_Settings_Struct Protect_Settings;
+ Idle_Clock_Settings_Struct Idle_Clock_Settings;
 }Settings_Struct;
 
 extern Settings_Struct* CurrentSettings;
 
+extern Settings_Struct SettingsBkp;
+
 void GetNecessarySettings(void);
+
+void SaveSettings(void);
 
 #endif /* __SETTINGS_H */

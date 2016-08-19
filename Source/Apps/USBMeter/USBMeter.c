@@ -72,7 +72,7 @@ static void USBMeter(void *pvParameters)
 	u8 status = USBMETER_ONLY;
 	u8 reSendLoadCommandCnt = 0;
 	u8 updateBasicDataCnt = 5;
-  u32 lastWakeTime=xTaskGetTickCount();
+	u32 lastWakeTime = xTaskGetTickCount();
 	Legacy_Test_Param_Struct legacy_Test_Params;
 	ClearKeyEvent();
 	while (1)
@@ -96,8 +96,8 @@ static void USBMeter(void *pvParameters)
 			firstEnter == 0)
 		{
 			System_OverHeat_Exception_Handler(status, &legacy_Test_Params);
-      lastWakeTime=xTaskGetTickCount();
-      updateBasicDataCnt = 5;goto Refresh;
+			lastWakeTime = xTaskGetTickCount();
+			updateBasicDataCnt = 5; goto Refresh;
 		}
 		if (status == LEGACY_TEST)
 		{
@@ -105,7 +105,7 @@ static void USBMeter(void *pvParameters)
 				CurrentMeterData.Voltage < 0.5)
 			{
 				StopRecord(&status, 1);
-        updateBasicDataCnt = 5;
+				updateBasicDataCnt = 5;
 				goto Refresh;
 			}
 			if (legacy_Test_Params.TestMode == ConstantPower)
@@ -122,8 +122,8 @@ static void USBMeter(void *pvParameters)
 			}
 		}
 		if (firstEnter) firstEnter--;
-//    sprintf(tempString,"%d",ADCConvertedValue[3]);
-//    OLED_ShowAnyString(0,0,tempString,NotOnSelect,16);
+		//    sprintf(tempString,"%d",ADCConvertedValue[3]);
+		//    OLED_ShowAnyString(0,0,tempString,NotOnSelect,16);
 		if (xQueueReceive(Key_Message, &keyMessage, 100 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (status == USBMETER_ONLY)
@@ -156,13 +156,13 @@ static void USBMeter(void *pvParameters)
 					(GetConfirmation(MountUSBMassStorageConfirm_Str[CurrentSettings->Language], ""))
 					MassStorage_App(); break;
 				}
-        lastWakeTime=xTaskGetTickCount();
+				lastWakeTime = xTaskGetTickCount();
 				updateBasicDataCnt = 5;
 				goto Refresh;
 			}
 			else
 			{
-        OLED_Clear_With_Mutex_TakeGive();
+				OLED_Clear_With_Mutex_TakeGive();
 				if (keyMessage.KeyEvent == MidDouble)
 				{
 					if (GetConfirmation(RecordStopConfirm_Str[CurrentSettings->Language], ""))
@@ -184,22 +184,23 @@ static void USBMeter(void *pvParameters)
 					vTaskDelay(1000 / portTICK_RATE_MS);
 					OLED_Clear_With_Mutex_TakeGive();
 				}
-        lastWakeTime=xTaskGetTickCount();
+				lastWakeTime = xTaskGetTickCount();
 				updateBasicDataCnt = 5;
 				goto Refresh;
 			}
 		}
-    if(status==USBMETER_RECORD||status==LEGACY_TEST||FilteredMeterData.Current>0.01)
-    {
-     lastWakeTime=xTaskGetTickCount();
-    }
-    if((xTaskGetTickCount()-lastWakeTime)*portTICK_RATE_MS/1000>IDLE_TIME_SEC)
-    {
-     Digital_Clock();
-		 OLED_Clear_With_Mutex_TakeGive();  
-     updateBasicDataCnt = 4;
-     lastWakeTime=xTaskGetTickCount();
-    }
+		if (status == USBMETER_RECORD || status == LEGACY_TEST || FilteredMeterData.Current > 0.01)
+		{
+			lastWakeTime = xTaskGetTickCount();
+		}
+		if ((xTaskGetTickCount() - lastWakeTime)*portTICK_RATE_MS / 1000 > CurrentSettings->Idle_Clock_Settings.IdleTime
+			&&CurrentSettings->Idle_Clock_Settings.ClockEnable == true)
+		{
+			Digital_Clock();
+			OLED_Clear_With_Mutex_TakeGive();
+			updateBasicDataCnt = 4;
+			lastWakeTime = xTaskGetTickCount();
+		}
 		updateBasicDataCnt++;
 	}
 }

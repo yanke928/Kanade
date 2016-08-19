@@ -1,6 +1,8 @@
 //File Name   Digital_Clock.c
 //Description Digital_Clock
 
+#include <string.h>
+
 #include "stm32f10x.h"
 #include "stm32f10x_flash.h"
 #include "stm32f10x_exti.h"
@@ -15,8 +17,16 @@
 #include "FreeRTOS_Standard_Include.h"
 
 #include "UI_Clock.h"
+#include "UI_Adjust.h"
+#include "UI_Confirmation.h"
+#include "UI_Dialogue.h"
+#include "UI_Menu.h"
+
+#include "MultiLanguageStrings.h"
 
 #include "Digital_Clock.h"
+
+#include "Settings.h"
 
 //Update rate of the temperature
 #define TEMPERATURE_UPDATE_RATE_SEC_PER_UPDATE 10
@@ -46,7 +56,7 @@ void Digital_Clock()
 		Time_Get();
 		if (updateTempCnt == 0)
 		{
-      Restart_ADC_And_DMA();
+			Restart_ADC_And_DMA();
 			QuickGet_Enviroment_Temperature();
 			updateTempCnt = TEMPERATURE_UPDATE_RATE_SEC_PER_UPDATE;
 		}
@@ -56,10 +66,10 @@ void Digital_Clock()
 		ShowTemperature();
 		Refresh_Gram();
 		Set_STOP_MODE_With_Second_Wake();
-    STM32_Init();
+		STM32_Init();
 		if (ANY_KEY_PRESSED)
 		{
-      Restart_ADC_And_DMA();
+			Restart_ADC_And_DMA();
 			Keys_Wakeup_DeInit();
 			IgnoreNextKeyEvent();
 			return;
@@ -133,6 +143,108 @@ void Keys_WakeUp_Config(bool enable)
 	EXTI_ClearITPendingBit(EXTI_Line5);
 	EXTI_InitStructure.EXTI_Line = EXTI_Line5;
 	EXTI_Init(&EXTI_InitStructure);
+}
+
+int Get_Idle_Time()
+{
+	int t;
+	UI_Adjust_Param_Struct adjust_params;
+retry:
+	OLED_Clear_With_Mutex_TakeGive();
+	adjust_params.AskString = IdleClockSettingsIdleClockTime_Str[CurrentSettings->Language];
+	adjust_params.Min = 15;
+	adjust_params.Max = 300;
+	adjust_params.Step = 15;
+	adjust_params.DefaultValue = SettingsBkp.Idle_Clock_Settings.IdleTime;
+	adjust_params.UnitString = SetSecUnit_Str[CurrentSettings->Language];
+	adjust_params.FastSpeed = 10;
+	adjust_params.Pos_y = 33;
+	UI_Adjust_Init(&adjust_params);
+	xQueueReceive(UI_AdjustMsg, &t, portMAX_DELAY);
+	UI_Adjust_DeInit();
+	if (t < 15)
+	{
+		if (GetConfirmation(AbortConfirmation_Str[CurrentSettings->Language], ""))
+		{
+			return -1;
+		}
+		goto retry;
+	}
+	return t;
+}
+
+void Idle_Clock_Settings()
+{
+	UI_Menu_Param_Struct clock;
+	u8 selection;
+	const char *selections[2];
+	int idleTime;
+retry:
+	if (CurrentSettings->Idle_Clock_Settings.ClockEnable)
+		selections[0] = IdleClockSettingsDisableIdleClock_Str[CurrentSettings->Language];
+	else
+		selections[0] = IdleClockSettingsEnableIdleClock_Str[CurrentSettings->Language];
+	selections[1] = IdleClockSettingsIdleClockTime_Str[CurrentSettings->Language];
+
+	clock.ItemStrings = selections;
+	clock.DefaultPos = 0;
+	clock.ItemNum = 2;
+	clock.FastSpeed = 5;
+
+	UI_Menu_Init(&clock);
+
+	memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
+	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
+	UI_Menu_DeInit();
+
+	if (selection == 255)
+	{
+		goto done;
+	}
+
+	if (selection == 0)
+	{
+		if (CurrentSettings->Idle_Clock_Settings.ClockEnable == true)
+		{
+			SettingsBkp.Idle_Clock_Settings.ClockEnable = false;
+			SaveSettings();
+			ShowSmallDialogue(Disabled_Str[CurrentSettings->Language], 1000, true);
+			goto done;
+		}
+		else
+		{
+			SettingsBkp.Idle_Clock_Settings.ClockEnable = true;
+			SettingsBkp.Idle_Clock_Settings.IdleTime =
+				SettingsBkp.Idle_Clock_Settings.IdleTime < 15 ? 15 : SettingsBkp.Idle_Clock_Settings.IdleTime;
+			SettingsBkp.Idle_Clock_Settings.IdleTime =
+				SettingsBkp.Idle_Clock_Settings.IdleTime > 300 ? 300 : SettingsBkp.Idle_Clock_Settings.IdleTime;
+			SaveSettings();
+			ShowSmallDialogue(Enabled_Str[CurrentSettings->Language], 1000, true);
+			goto retry;
+		}
+	}
+	else
+	{
+		if (CurrentSettings->Idle_Clock_Settings.ClockEnable == true)
+		{
+			idleTime = Get_Idle_Time();
+			if (idleTime == -1) goto done;
+			else
+			{
+				SettingsBkp.Idle_Clock_Settings.IdleTime = idleTime;
+				SaveSettings();
+				ShowSmallDialogue(Saved_Str[CurrentSettings->Language], 1000, true);
+				goto done;
+			}
+		}
+		else
+		{
+			ShowSmallDialogue(IdleClockSettingsPleaseEnable_Str_Str[CurrentSettings->Language], 1000, true);
+			goto retry;
+		}
+	}
+done:
+	OLED_Clear();
 }
 
 /**

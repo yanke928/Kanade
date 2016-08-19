@@ -1,4 +1,4 @@
-﻿//File Name   Settings.c
+//File Name   Settings.c
 //Description Settings UI
 
 //#pragma diag_suppress 870
@@ -31,6 +31,7 @@
 #include "About.h"
 #include "SelfTest.h"
 #include "Calibrate.h"
+#include "Digital_Clock.h"
 #include "Ripple_Test.h"
 
 #include "Settings.h"
@@ -39,7 +40,7 @@ Settings_Struct* CurrentSettings = (Settings_Struct*)0x0803b800;
 
 Settings_Struct SettingsBkp;
 
-const Settings_Struct DefaultSettings = { 0 ,{75 ,120 ,5}, };
+const Settings_Struct DefaultSettings = { 0 ,{75 ,120 ,5},{true,60}};
 
 typedef  void(*pFunction)(void);
 
@@ -68,7 +69,7 @@ void Settings()
 {
 	UI_Menu_Param_Struct menuParams;
 	u8 selection;
-	const char* stringTab[10];
+	const char* stringTab[11];
 
 	if (SDCardMountStatus)
 		stringTab[0] = SettingsItemUnmountDisk_Str[CurrentSettings->Language];
@@ -76,18 +77,19 @@ void Settings()
 		stringTab[0] = SettingsItemMountDisk_Str[CurrentSettings->Language];
 
 	stringTab[1] = SettingsItemClockSettings_Str[CurrentSettings->Language];
-	stringTab[2] = SettingsItemOverHeatControl_Str[CurrentSettings->Language];
-	stringTab[3] = SettingsItemLanguage_Str[CurrentSettings->Language];
-	stringTab[4] = SettingsItemFormatDisks_Str[CurrentSettings->Language];
-	stringTab[5] = SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
-	stringTab[6] = SettingsItemSystemInfo_Str[CurrentSettings->Language];
-	stringTab[7] = SettingsItemSystemScan_Str[CurrentSettings->Language];
-	stringTab[8] = SettingsItemCalibration_Str[CurrentSettings->Language];
-	stringTab[9] = "Ripple Test";
+  stringTab[2] = SettingsItemIdleClockSettings_Str[CurrentSettings->Language];
+	stringTab[3] = SettingsItemOverHeatControl_Str[CurrentSettings->Language];
+	stringTab[4] = SettingsItemLanguage_Str[CurrentSettings->Language];
+	stringTab[5] = SettingsItemFormatDisks_Str[CurrentSettings->Language];
+	stringTab[6] = SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
+	stringTab[7] = SettingsItemSystemInfo_Str[CurrentSettings->Language];
+	stringTab[8] = SettingsItemSystemScan_Str[CurrentSettings->Language];
+	stringTab[9] = SettingsItemCalibration_Str[CurrentSettings->Language];
+	stringTab[10] = "Ripple Test";
 
 	menuParams.ItemStrings = stringTab;
 	menuParams.DefaultPos = 0;
-	menuParams.ItemNum = 10;
+	menuParams.ItemNum = 11;
 	menuParams.FastSpeed = 10;
 	OLED_Clear_With_Mutex_TakeGive();
 
@@ -102,14 +104,15 @@ void Settings()
 	{
 	case 0:MountOrUnMountDisk(); break;
 	case 1:TimeSettings(); break;
-	case 2:OverHeatSettings(); break;
-	case 3:SetLanguage(); break;
-	case 4:FormatDisks(); break;
-	case 5:FirmwareUpdate(); break;
-	case 6:About(); break;
-	case 7:SelfTest(); break;
-	case 8:CalibrateSelect(); break;
-	case 9:Run_Ripple_Test(); break;
+  case 2:Idle_Clock_Settings();break;
+	case 3:OverHeatSettings(); break;
+	case 4:SetLanguage(); break;
+	case 5:FormatDisks(); break;
+	case 6:FirmwareUpdate(); break;
+	case 7:About(); break;
+	case 8:SelfTest(); break;
+	case 9:CalibrateSelect(); break;
+	case 10:Run_Ripple_Test(); break;
 	}
 }
 
@@ -194,10 +197,10 @@ void SetLanguage()
 	u8 selection;
 	const char *languageTab[4];
 
-	languageTab[0] = "English";
-	languageTab[1] = "日本語";
-	languageTab[2] = "日本语(华式)";
-	languageTab[3] = "台灣語";
+	languageTab[0] = LanguageItem_Str[0];
+	languageTab[1] = LanguageItem_Str[1];
+	languageTab[2] = LanguageItem_Str[2];
+	languageTab[3] = LanguageItem_Str[3];
 
 	menuParams.ItemStrings = languageTab;
 	menuParams.DefaultPos = 0;
@@ -240,6 +243,14 @@ bool CheckSettings()
 
 	if (CurrentSettings->Protect_Settings.Protection_Resume_Gap > 20 ||
 		CurrentSettings->Protect_Settings.Protection_Resume_Gap < 5) return false;
+  
+  if(CurrentSettings->Idle_Clock_Settings.ClockEnable!=true&&
+    CurrentSettings->Idle_Clock_Settings.ClockEnable!=false) return false;
+
+  if(CurrentSettings->Idle_Clock_Settings.ClockEnable!=true&&
+    (CurrentSettings->Idle_Clock_Settings.IdleTime<15||
+     CurrentSettings->Idle_Clock_Settings.IdleTime>300)) return false;
+
 	return true;
 }
 

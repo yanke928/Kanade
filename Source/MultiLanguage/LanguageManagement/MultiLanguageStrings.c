@@ -93,7 +93,7 @@ const char SettingsItemUnmountDisk_CN[] = "安全弹出存储卡" ;
 const char SettingsItemUnmountDisk_JP[] ="トメモリイジェク";
 const char* const SettingsItemUnmountDisk_Str[] = { SettingsItemUnmountDisk_EN,SettingsItemUnmountDisk_TW,SettingsItemUnmountDisk_CN,SettingsItemUnmountDisk_JP };
 
-const char SettingsItemClockSettings_EN[]="Clock Settings";
+const char SettingsItemClockSettings_EN[]="Time Settings";
 const char SettingsItemClockSettings_TW[]="時間設置";
 const char SettingsItemClockSettings_CN[] = "时间设置" ;
 const char SettingsItemClockSettings_JP[] ="時刻の設定";
@@ -220,8 +220,8 @@ const char SetSec_JP[] ="秒を設定します";
 const char* const SetSec_Str[] = { SetSec_EN,SetSec_TW,SetSec_CN,SetSec_JP };
 
 const char SetSecUnit_EN[] ="";
-const char SetSecUnit_TW[] ="分";
-const char SetSecUnit_CN[] ="分" ;
+const char SetSecUnit_TW[] ="秒";
+const char SetSecUnit_CN[] ="秒" ;
 const char SetSecUnit_JP[] ="秒";
 const char* const SetSecUnit_Str[] = { SetSecUnit_EN,SetSecUnit_TW,SetSecUnit_CN,SetSecUnit_JP };
 	
@@ -704,6 +704,54 @@ const char DontSave_TW[] ="不保存";
 const char DontSave_CN[] ="不保存";
 const char DontSave_JP[] ="保存しないでください";
 const char* const DontSave_Str[] = { DontSave_EN,DontSave_TW,DontSave_CN,DontSave_JP };
+
+const char LanguageItem_EN[] ="English";
+const char LanguageItem_TW[] ="日本語";
+const char LanguageItem_CN[] ="日本语(华式)";
+const char LanguageItem_JP[] ="台灣語";
+const char* const LanguageItem_Str[] = { LanguageItem_EN,LanguageItem_TW,LanguageItem_CN,LanguageItem_JP };
+
+const char SettingsItemIdleClockSettings_EN[] ="Idle Clock Settings";
+const char SettingsItemIdleClockSettings_TW[] ="待機時鐘設置";
+const char SettingsItemIdleClockSettings_CN[] ="待机时钟设置";
+const char SettingsItemIdleClockSettings_JP[] ="クロック設定";
+const char* const SettingsItemIdleClockSettings_Str[] = { SettingsItemIdleClockSettings_EN,SettingsItemIdleClockSettings_TW,SettingsItemIdleClockSettings_CN,SettingsItemIdleClockSettings_JP };
+
+const char IdleClockSettingsDisableIdleClock_EN[] ="Disable Idle Clock";
+const char IdleClockSettingsDisableIdleClock_TW[] ="禁用待機時鐘";
+const char IdleClockSettingsDisableIdleClock_CN[] ="禁用待机时钟";
+const char IdleClockSettingsDisableIdleClock_JP[] ="クロッククローズ";
+const char* const IdleClockSettingsDisableIdleClock_Str[] = { IdleClockSettingsDisableIdleClock_EN,IdleClockSettingsDisableIdleClock_TW,IdleClockSettingsDisableIdleClock_CN,IdleClockSettingsDisableIdleClock_JP };
+
+const char IdleClockSettingsEnableIdleClock_EN[] ="Enable Idle Clock";
+const char IdleClockSettingsEnableIdleClock_TW[] ="啟用待機時鐘";
+const char IdleClockSettingsEnableIdleClock_CN[] ="启用待机时钟";
+const char IdleClockSettingsEnableIdleClock_JP[] ="クロック有効にします";
+const char* const IdleClockSettingsEnableIdleClock_Str[] = { IdleClockSettingsEnableIdleClock_EN,IdleClockSettingsEnableIdleClock_TW,IdleClockSettingsEnableIdleClock_CN,IdleClockSettingsEnableIdleClock_JP };
+
+const char IdleClockSettingsIdleClockTime_EN[] ="Idle Time";
+const char IdleClockSettingsIdleClockTime_TW[] ="待機時間";
+const char IdleClockSettingsIdleClockTime_CN[] ="待机时间";
+const char IdleClockSettingsIdleClockTime_JP[] ="時間待機する";
+const char* const IdleClockSettingsIdleClockTime_Str[] = { IdleClockSettingsIdleClockTime_EN,IdleClockSettingsIdleClockTime_TW,IdleClockSettingsIdleClockTime_CN,IdleClockSettingsIdleClockTime_JP };
+
+const char Enabled_EN[] ="Enabled";
+const char Enabled_TW[] ="已啟用";
+const char Enabled_CN[] ="已启用";
+const char Enabled_JP[] ="使用可能";
+const char* const Enabled_Str[] = { Enabled_EN,Enabled_TW,Enabled_CN,Enabled_JP };
+
+const char Disabled_EN[] ="Disabled";
+const char Disabled_TW[] ="已禁用";
+const char Disabled_CN[] ="已禁用";
+const char Disabled_JP[] ="使用禁止";
+const char* const Disabled_Str[] = { Disabled_EN,Disabled_TW,Disabled_CN,Disabled_JP };
+
+const char IdleClockSettingsPleaseEnable_Str_EN[] ="Not Enabled";
+const char IdleClockSettingsPleaseEnable_Str_TW[] ="請先啟用時鐘";
+const char IdleClockSettingsPleaseEnable_Str_CN[] ="请先启用时钟";
+const char IdleClockSettingsPleaseEnable_Str_JP[] ="有効にしてく";
+const char* const IdleClockSettingsPleaseEnable_Str_Str[] = { IdleClockSettingsPleaseEnable_Str_EN,IdleClockSettingsPleaseEnable_Str_TW,IdleClockSettingsPleaseEnable_Str_CN,IdleClockSettingsPleaseEnable_Str_JP };
 
 const OLED_PositionStruct ComfirmationPositions[LanguageNum][2] =
 {

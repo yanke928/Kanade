@@ -5,4 +5,6 @@
 
 void Digital_Clock(void);
 
+void Idle_Clock_Settings(void);
+
 #endif /* __DIGITAL_CLOCK_H */
