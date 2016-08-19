@@ -19,6 +19,8 @@
 
 #define RTC_UPDATE_PRIORITY tskIDLE_PRIORITY+2
 
+xSemaphoreHandle RTCStructMutex = NULL;
+
 volatile struct Data_Time RTCTime;  //定义一个时间结构体变量
 
 void(*RTCUpdateFunctions[3])(void);
@@ -34,28 +36,27 @@ bool RTCUpdateExecute[3] = { false,false };
   */
 u8 RTC_Hardware_Init(void)
 {
-	NVIC_InitTypeDef NVIC_InitStructure;
-	u16 countDown=1000; 
+	u16 countDown = 1000;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
- 
-	PWR_BackupAccessCmd(ENABLE);						
+
+	PWR_BackupAccessCmd(ENABLE);
 
 	//BKP_DeInit();
-	
+
 	if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A5)						//从指定的后备寄存器中读出数据，判断是否为第一次配置
-	{														
+	{
 		BKP_DeInit();												//将外设BKP的全部寄存器重设为缺省值 	
 		RCC_LSEConfig(RCC_LSE_ON);									//使能外部低速时钟 32.768KHz
 		while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET)			//检查指定的RCC标志位设置与否,等待低速晶振就绪
 		{
-     vTaskDelay(2/portTICK_RATE_MS);
-     countDown--;
-     if(countDown==0)
-      {
-       ShowDialogue("Hardware Error","LSE crystal","not ready!",false,true);
-       OLED_Refresh_Gram();
-       while(1);
-      }
+			vTaskDelay(2 / portTICK_RATE_MS);
+			countDown--;
+			if (countDown == 0)
+			{
+				ShowDialogue("Hardware Error", "LSE crystal", "not ready!", false, true);
+				OLED_Refresh_Gram();
+				while (1);
+			}
 		}
 		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);						//设置RTC时钟(RTCCLK),选择LSE作为RTC时钟    
 		RCC_RTCCLKCmd(ENABLE);										//使能RTC时钟  
@@ -80,21 +81,21 @@ u8 RTC_Hardware_Init(void)
 		}
 		RCC_ClearFlag();
 
-		NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);		//先占优先级1位,从优先级3位
+		//		NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);		//先占优先级1位,从优先级3位
 
-		NVIC_InitStructure.NVIC_IRQChannel = RTC_IRQn;		//RTC全局中断
-		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;	//先占优先级1位,从优先级3位
-		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;	//先占优先级0位,从优先级4位
-		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;		//使能该通道中断
-		NVIC_Init(&NVIC_InitStructure);		//根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器
+		//		NVIC_InitStructure.NVIC_IRQChannel = RTC_IRQn;		//RTC全局中断
+		//		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;	//先占优先级1位,从优先级3位
+		//		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;	//先占优先级0位,从优先级4位
+		//		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;		//使能该通道中断
+		//		NVIC_Init(&NVIC_InitStructure);		//根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器
 
 		RTC_WaitForSynchro();										//等待最近一次对RTC寄存器的写操作完成
 
-		RTC_ITConfig(RTC_IT_SEC, ENABLE);							//使能RTC秒中断
+//		RTC_ITConfig(RTC_IT_SEC, ENABLE);							//使能RTC秒中断
 
 		RTC_WaitForLastTask();										//等待最近一次对RTC寄存器的写操作完成
 	}
-	Time_Get();														//更新时间 
+	//Time_Get();														//更新时间 
 
 	RCC_ClearFlag();												//清除RCC的复位标志位
 
@@ -102,9 +103,9 @@ u8 RTC_Hardware_Init(void)
 }
 
 
-u8 const table_week[12] = { 0,3,3,6,1,4,6,2,5,0,3,5 }; 			
+u8 const table_week[12] = { 0,3,3,6,1,4,6,2,5,0,3,5 };
 
-const u8 mon_table[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };	
+const u8 mon_table[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
 
 
 /**
@@ -148,6 +149,7 @@ u8 Time_Get(void)
 	u32 timecount = 0;
 	u32 temp = 0;
 	u16 temp1 = 0;
+	xSemaphoreTake(RTCStructMutex, portMAX_DELAY);
 
 	timecount = RTC_GetCounter();  //获得 RTC 计数器值(秒钟数)											 
 	temp = timecount / 86400;   //得到天数(秒钟数对应的)
@@ -189,6 +191,7 @@ u8 Time_Get(void)
 	RTCTime.min = (temp % 3600) / 60; //分钟	
 	RTCTime.sec = (temp % 3600) % 60; //秒钟
 	RTCTime.week = RTC_Get_Week(RTCTime.w_year, RTCTime.w_month, RTCTime.w_date);//获取星期   
+	xSemaphoreGive(RTCStructMutex);
 	return 0;
 }
 
@@ -235,22 +238,22 @@ u8 Is_Leap_Year(u16 year)
 	else return 0;
 }
 
-/**
-  * @brief  RTC ISR
+///**
+//  * @brief  RTC ISR
 
-  * @param  none
+//  * @param  none
 
-  * @retval None
-  */
-void RTC_IRQHandler(void)
-{
-	if (RTC_GetITStatus(RTC_IT_ALR))			//Alarm interrupt		
-	{
-		RTC_ClearITPendingBit(RTC_IT_ALR);//Clear alarm interrupt						 				
-	}
-	RTC_ClearITPendingBit(RTC_IT_SEC);
-	RTC_WaitForLastTask();//Wait for RTC register operation
-}
+//  * @retval None
+//  */
+//void RTC_IRQHandler(void)
+//{
+//	if (RTC_GetITStatus(RTC_IT_ALR))			//Alarm interrupt		
+//	{
+//		RTC_ClearITPendingBit(RTC_IT_ALR);//Clear alarm interrupt						 				
+//	}
+//	RTC_ClearITPendingBit(RTC_IT_SEC);
+//	RTC_WaitForLastTask();//Wait for RTC register operation
+//}
 
 /**
   * @brief  Set default time
@@ -351,6 +354,7 @@ void RTCUpdateHandler(void *pvParameters)
 void RTC_Init(void)
 {
 	RTC_Hardware_Init();
+	RTCStructMutex = xSemaphoreCreateMutex();
 	xTaskCreate(RTCUpdateHandler, "RTC Update Handler",
 		128, NULL, RTC_UPDATE_PRIORITY, NULL);
 }

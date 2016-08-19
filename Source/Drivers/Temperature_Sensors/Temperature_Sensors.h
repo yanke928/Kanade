@@ -25,4 +25,6 @@ void GenerateTempString(char string[], u8 sensorNo);
 
 void TemperatureSensors_Init(void);
 
+void QuickGet_Enviroment_Temperature(void);
+
 #endif /* __TEMPERATURE_SENSORS_H */

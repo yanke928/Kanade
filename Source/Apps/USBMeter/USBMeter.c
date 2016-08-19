@@ -55,7 +55,7 @@ static void DisplayRecordData(char tempString[]);
 
 static void ScrollDialgram_Routine(void);
 
-#define IDLE_TIME_SEC 60
+#define IDLE_TIME_SEC 5
 
 /**
   * @brief  USBMeter
@@ -186,16 +186,14 @@ static void USBMeter(void *pvParameters)
 				goto Refresh;
 			}
 		}
-    if(status==USBMETER_RECORD||status==LEGACY_TEST)
+    if(status==USBMETER_RECORD||status==LEGACY_TEST||FilteredMeterData.Current>0.01)
     {
      lastWakeTime=xTaskGetTickCount();
     }
     if((xTaskGetTickCount()-lastWakeTime)*portTICK_RATE_MS/1000>IDLE_TIME_SEC)
     {
      Digital_Clock();
-		 xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-		 OLED_Clear();
-	   xSemaphoreGive(OLEDRelatedMutex);     
+		 OLED_Clear_With_Mutex_TakeGive();  
      updateBasicDataCnt = 4;
      lastWakeTime=xTaskGetTickCount();
     }

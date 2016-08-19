@@ -35,12 +35,12 @@ float CalculateNTCTemp(u8 adcIndex);
 
 void Temperature_Handler(void *pvParameters)
 {
- for(;;)
+	for (;;)
 	{
-	 vTaskDelay( 100/ portTICK_RATE_MS);
-	 PowerSourceVoltage = (1.2 / (float)FilteredADCValue[5]) * 4096;
-	 InternalTemperature = (1.43 - (float)FilteredADCValue[4] *
-	 (PowerSourceVoltage / 4096)) * 1000 / 4.35 + 25;
+		vTaskDelay(100 / portTICK_RATE_MS);
+		PowerSourceVoltage = (1.2 / (float)FilteredADCValue[5]) * 4096;
+		InternalTemperature = (1.43 - (float)FilteredADCValue[4] *
+			(PowerSourceVoltage / 4096)) * 1000 / 4.35 + 25;
 		if (FilteredADCValue[1] >= 200)
 		{
 			CurrentTemperatureSensor = External;
@@ -49,11 +49,11 @@ void Temperature_Handler(void *pvParameters)
 		{
 			CurrentTemperatureSensor = Internal;
 		}
-    MOSTemperature=CalculateNTCTemp(0);
-	  if (CurrentTemperatureSensor == External)
-			{
-				ExternalTemperature=CalculateNTCTemp(1);
-			}
+		MOSTemperature = CalculateNTCTemp(0);
+		if (CurrentTemperatureSensor == External)
+		{
+			ExternalTemperature = CalculateNTCTemp(1);
+		}
 	}
 }
 
@@ -64,12 +64,12 @@ void Temperature_Handler(void *pvParameters)
   */
 void GenerateTempString(char string[], u8 sensorNo)
 {
-  switch(sensorNo)
-  {
-   case Internal:sprintf(string, "%5.1fC", InternalTemperature);break;
-   case External:sprintf(string, "%5.1fC", ExternalTemperature);break;
-   case MOS:sprintf(string, "%5.1fC", MOSTemperature);break;
-  }
+	switch (sensorNo)
+	{
+	case Internal:sprintf(string, "%5.1fC", InternalTemperature); break;
+	case External:sprintf(string, "%5.1fC", ExternalTemperature); break;
+	case MOS:sprintf(string, "%5.1fC", MOSTemperature); break;
+	}
 }
 
 
@@ -82,7 +82,7 @@ ADC result
 float CalculateNTCTemp(u8 adcIndex)
 {
 	float Vtemp, Rtemp;
-  float temperature;
+	float temperature;
 	float k;
 	u8 i;
 	/*Calculate the voltage that temperature sensor divided*/
@@ -108,7 +108,7 @@ float CalculateNTCTemp(u8 adcIndex)
 			return temperature;
 		}
 	}
- return 0;
+	return 0;
 }
 
 /**
@@ -137,5 +137,17 @@ void TemperatureSensors_Init(void)
 {
 	xTaskCreate(Temperature_Handler, "Temperature_Handler",
 		160, NULL, TEMPERATURE_UPDATE_HANDLER_PRIORITY, NULL);
+}
+
+/**
+  * @brief   Get current enviroment temperature quickly
+
+  * @retval : None
+  */
+void QuickGet_Enviroment_Temperature(void)
+{
+	Quick_ADC_Collect();
+	vTaskDelay(2 / portTICK_RATE_MS);
+	MOSTemperature = CalculateNTCTemp(0);
 }
 

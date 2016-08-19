@@ -3,6 +3,7 @@
 
 #include "stm32f10x.h"
 #include "stm32f10x_flash.h"
+#include "misc.h"
 
 #include "SSD1306.h"
 #include "Temperature_Sensors.h"
@@ -15,44 +16,99 @@
 
 #include "Digital_Clock.h"
 
-void ShowTime(void);
-void ShowDate(void);
+#define TEMPERATURE_UPDATE_RATE_SEC_PER_UPDATE 10
+
+static void ShowTime(void);
+static void ShowDate(void);
+static void ShowTemperature(void);
+static void Refresh_Gram(void);
+static void Set_STOP_MODE_With_Second_Wake(void);
 
 void Digital_Clock()
 {
- u8 lstSec;
- OLED_Clear_With_Mutex_TakeGive();
- for(;;)
- {
-  ShowTime();
-  ShowDate();
-  lstSec=RTCTime.sec;
-  for(;;)
-  {
-   if(RTCTime.sec!=lstSec) break;
-   if(ANY_KEY_PRESSED)
-    {
-     IgnoreNextKeyEvent();return;
-    }
-   vTaskDelay(20/portTICK_RATE_MS);
-  }
- }
+	u8 updateTempCnt = 0;
+	OLED_Clear_With_Mutex_TakeGive();
+	for (;;)
+	{
+		Time_Get();
+		if (updateTempCnt == 0)
+		{
+			QuickGet_Enviroment_Temperature();
+			updateTempCnt = TEMPERATURE_UPDATE_RATE_SEC_PER_UPDATE;
+		}
+		updateTempCnt--;
+		ShowTime();
+		ShowDate();
+		ShowTemperature();
+		Refresh_Gram();
+		Set_STOP_MODE_With_Second_Wake();
+		if (ANY_KEY_PRESSED)
+		{
+			IgnoreNextKeyEvent(); return;
+		}
+	}
 }
 
-void ShowTime()
+void Set_STOP_MODE_With_Second_Wake(void)
 {
- char timeString[20];
-  GenerateRTCTimeString(timeString);
+	NVIC_InitTypeDef NVIC_InitStructure;
+	EXTI_InitTypeDef EXTI_InitStructure;
+
+	EXTI_ClearITPendingBit(EXTI_Line17);
+	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+	EXTI_InitStructure.EXTI_Line = EXTI_Line17;
+	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
+	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+	EXTI_Init(&EXTI_InitStructure);
+
+	NVIC_InitStructure.NVIC_IRQChannel = RTCAlarm_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+
+	RTC_SetAlarm(RTC_GetCounter());
+	RTC_WaitForLastTask();
+	RTC_ITConfig(RTC_FLAG_ALR, ENABLE);
+	PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
+}
+
+void RTCAlarm_IRQHandler(void)
+{
+	EXTI_ClearITPendingBit(EXTI_Line17);
+	STM32_Init();
+}
+
+static void ShowTime()
+{
+	char timeString[20];
+	GenerateRTCTimeString(timeString);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Show1624String(0,0,timeString);
+	OLED_Show1624String(0, 0, timeString);
 	xSemaphoreGive(OLEDRelatedMutex);
 }
 
-void ShowDate()
+static void ShowDate()
 {
-char timeString[20];
-  GenerateRTCDateString(timeString);
+	char dateString[20];
+	GenerateRTCDateString(dateString);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Show1216String(4,32,timeString);
+	OLED_Show1216String(4, 28, dateString);
+	xSemaphoreGive(OLEDRelatedMutex);
+}
+
+static void ShowTemperature()
+{
+	char tempString[20];
+	GenerateTempString(tempString, MOS);
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Show1216String(4, 48, tempString + 1);
+	xSemaphoreGive(OLEDRelatedMutex);
+}
+
+static void Refresh_Gram()
+{
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Refresh_Gram();
 	xSemaphoreGive(OLEDRelatedMutex);
 }

@@ -19,4 +19,6 @@ extern float PowerSourceVoltage;
 
 void ADC_Hardware_Init(void);
 
+void Quick_ADC_Collect(void);
+
 #endif /* __ADC_H */
