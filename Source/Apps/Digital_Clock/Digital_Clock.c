@@ -39,7 +39,7 @@ void Digital_Clock()
 {
 	u8 updateTempCnt = 0;
 	OLED_Clear_With_Mutex_TakeGive();
-  Keys_Wakeup_Init();
+	Keys_Wakeup_Init();
 	for (;;)
 	{
 		Time_Get();
@@ -56,9 +56,9 @@ void Digital_Clock()
 		Set_STOP_MODE_With_Second_Wake();
 		if (ANY_KEY_PRESSED)
 		{
-      Keys_Wakeup_DeInit();
-			//IgnoreNextKeyEvent(); 
-      return;
+			Keys_Wakeup_DeInit();
+			IgnoreNextKeyEvent();
+			return;
 		}
 	}
 }
@@ -94,32 +94,41 @@ static void Set_STOP_MODE_With_Second_Wake(void)
 
 void Keys_WakeUp_Config(bool enable)
 {
-  EXTI_InitTypeDef EXTI_InitStructure;
-  GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource3);
-  GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource4);
-  GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource5);
+	EXTI_InitTypeDef EXTI_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
 
-  /* Configure EXTI Line3,4,5 to generate an interrupt on falling edge */
-  EXTI_ClearITPendingBit(EXTI_Line3);
-  EXTI_InitStructure.EXTI_Line = EXTI_Line3;
-  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
-  EXTI_InitStructure.EXTI_LineCmd = enable?ENABLE:DISABLE;
-  EXTI_Init(&EXTI_InitStructure);
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource3);
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource4);
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource5);
 
-  EXTI_ClearITPendingBit(EXTI_Line4);
-  EXTI_InitStructure.EXTI_Line = EXTI_Line4;
-  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
-  EXTI_InitStructure.EXTI_LineCmd = enable?ENABLE:DISABLE;
-  EXTI_Init(&EXTI_InitStructure);
+	/* Register EXTI Line3,4,5 to NVIC*/
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = enable ? ENABLE : DISABLE;
+	NVIC_Init(&NVIC_InitStructure);
 
-  EXTI_ClearITPendingBit(EXTI_Line5);
-  EXTI_InitStructure.EXTI_Line = EXTI_Line5;
-  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
-  EXTI_InitStructure.EXTI_LineCmd = enable?ENABLE:DISABLE;
-  EXTI_Init(&EXTI_InitStructure);
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;
+	NVIC_Init(&NVIC_InitStructure);
+
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn;
+	NVIC_Init(&NVIC_InitStructure);
+
+	/* Configure EXTI Line3,4,5 to generate an interrupt on falling edge */
+	EXTI_ClearITPendingBit(EXTI_Line3);
+	EXTI_InitStructure.EXTI_Line = EXTI_Line3;
+	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+	EXTI_InitStructure.EXTI_LineCmd = enable ? ENABLE : DISABLE;
+	EXTI_Init(&EXTI_InitStructure);
+
+	EXTI_ClearITPendingBit(EXTI_Line4);
+	EXTI_InitStructure.EXTI_Line = EXTI_Line4;
+	EXTI_Init(&EXTI_InitStructure);
+
+	EXTI_ClearITPendingBit(EXTI_Line5);
+	EXTI_InitStructure.EXTI_Line = EXTI_Line5;
+	EXTI_Init(&EXTI_InitStructure);
 }
 
 /**
@@ -129,8 +138,8 @@ void Keys_WakeUp_Config(bool enable)
   */
 void EXTI3_IRQHandler()
 {
- EXTI_ClearITPendingBit(EXTI_Line4);
- STM32_Init();
+	STM32_Init();
+	EXTI_ClearITPendingBit(EXTI_Line3);
 }
 
 /**
@@ -140,8 +149,8 @@ void EXTI3_IRQHandler()
   */
 void EXTI4_IRQHandler()
 {
- EXTI_ClearITPendingBit(EXTI_Line4);
- STM32_Init();
+	STM32_Init();
+	EXTI_ClearITPendingBit(EXTI_Line4);
 }
 
 /**
@@ -151,8 +160,8 @@ void EXTI4_IRQHandler()
   */
 void EXTI9_5_IRQHandler()
 {
- EXTI_ClearITPendingBit(EXTI_Line4);
- STM32_Init();
+	STM32_Init();
+	EXTI_ClearITPendingBit(EXTI_Line5);
 }
 
 /**
@@ -162,8 +171,8 @@ void EXTI9_5_IRQHandler()
   */
 void RTCAlarm_IRQHandler(void)
 {
-	EXTI_ClearITPendingBit(EXTI_Line17);
 	STM32_Init();
+	EXTI_ClearITPendingBit(EXTI_Line17);
 }
 
 /**
