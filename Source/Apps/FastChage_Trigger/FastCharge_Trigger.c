@@ -217,9 +217,7 @@ void FastChargeTriggerUI(bool* fastchargeTriggeredFlag)
 	menu_params.DefaultPos = 0;
 	menu_params.ItemNum = 3;
 	menu_params.FastSpeed = 5;
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 
 	UI_Menu_Init(&menu_params);
 

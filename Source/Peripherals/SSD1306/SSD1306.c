@@ -159,6 +159,13 @@ void OLED_Clear(void)
 #endif
 }
 
+void OLED_Clear_With_Mutex_TakeGive()
+{
+ xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+ OLED_Clear();
+ xSemaphoreGive(OLEDRelatedMutex); 
+}
+
 /**
   * @brief  Set position
 

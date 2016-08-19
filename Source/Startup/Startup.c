@@ -341,9 +341,7 @@ void SystemStartup(void *pvParameters)
 	LED_Animate_DeInit();
 	LogoWithInitStatus_DeInit();
 	UpdateOLEDJustNow = false;
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
   if(RIGHT_KEY==KEY_ON)
   {
    OSStatInit();

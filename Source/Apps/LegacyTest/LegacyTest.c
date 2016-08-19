@@ -166,9 +166,7 @@ u8 SelectLegacyTestMode()
 	selectModeButtonParams.DefaultValue = 0;
 	selectModeButtonParams.Positions = SelectLegacyTestModePositions[CurrentSettings->Language];
 
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 
 	ShowDialogue(SelectLeagcyTestMode_Str[CurrentSettings->Language],
 		SelectLeagcyTestModeSubString_Str[CurrentSettings->Language], "", false, false);
@@ -254,9 +252,7 @@ char SelectStorage()
 	menuParams.ItemNum = ++cnt;
 	menuParams.FastSpeed = 10;
 
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 
 	UI_Menu_Init(&menuParams);
 
@@ -294,9 +290,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 		if (test_Params->Current < 0)
 		{
 			*status = USBMETER_ONLY;
-			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-			OLED_Clear();
-			xSemaphoreGive(OLEDRelatedMutex);
+			OLED_Clear_With_Mutex_TakeGive();
 			return;
 		}
 	}
@@ -309,9 +303,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 		if (test_Params->Power < 0)
 		{
 			*status = USBMETER_ONLY;
-			xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-			OLED_Clear();
-			xSemaphoreGive(OLEDRelatedMutex);
+			OLED_Clear_With_Mutex_TakeGive();
 			return;
 		}
 	}
@@ -322,9 +314,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	if (test_Params->ProtectVolt < 0)
 	{
 		*status = USBMETER_ONLY;
-		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-		OLED_Clear();
-		xSemaphoreGive(OLEDRelatedMutex);
+		OLED_Clear_With_Mutex_TakeGive();
 		return;
 	}
 	/*Warn user of the unmounted sdcard*/
@@ -561,9 +551,7 @@ void StopRecord(u8* status, u8 reason)
 	ShowSummary(reason);
 
 	/*Wipe your ass*/
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 
 	/*Reset status flag*/
 	*status = USBMETER_ONLY;

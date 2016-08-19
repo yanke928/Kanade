@@ -26,7 +26,7 @@ void Flash_Test_Run()
  bool tempered=false;
  FLASH_Unlock();
  FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_PGERR | FLASH_FLAG_WRPRTERR);
- OLED_Clear();
+ OLED_Clear_With_Mutex_TakeGive();
  ShowDialogue("Flash Test","","",false,false);
  for(;;)
  {

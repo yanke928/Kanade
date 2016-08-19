@@ -99,9 +99,7 @@ void MassStorage_App()
 	}
   vTaskDelay(50 / portTICK_RATE_MS);
   ClearKeyEvent();
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 	LED_Animate_DeInit();
 	PowerOff();
 	UI_Button_DeInit();

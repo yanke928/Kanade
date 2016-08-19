@@ -229,9 +229,7 @@ int GetTestParam(const char askString[], int min, int max, int defaultValue, int
 	int t;
 	UI_Adjust_Param_Struct adjust_params;
   retry:
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 	adjust_params.AskString = (char *)askString;
 	adjust_params.Min = min;
 	adjust_params.Max = max;
@@ -434,9 +432,7 @@ void RunAStepUpTest()
 	testTime = ((test_Params.StopCurrent - test_Params.StartCurrent) / test_Params.Step + 1)*test_Params.TimeInterval;
 
 	/*Clear the screen*/
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 
 	/*Init StepUpTest Tasks*/
 	StepUpTest_Init(&test_Params);

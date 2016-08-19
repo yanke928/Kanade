@@ -5,6 +5,7 @@
 #include "stm32f10x_flash.h"
 
 #include "SSD1306.h"
+#include "Temperature_Sensors.h"
 #include "RTC.h"
 #include "Keys.h"
 
@@ -14,23 +15,17 @@
 
 #include "Digital_Clock.h"
 
+void ShowTime(void);
+void ShowDate(void);
+
 void Digital_Clock()
 {
- char timeString[20];
  u8 lstSec;
- xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
- OLED_Clear();
- xSemaphoreGive(OLEDRelatedMutex); 
+ OLED_Clear_With_Mutex_TakeGive();
  for(;;)
  {
-  GenerateRTCTimeString(timeString);
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Show1624String(0,0,timeString);
-	xSemaphoreGive(OLEDRelatedMutex);
-  GenerateRTCDateString(timeString);
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Show1216String(4,32,timeString);
-	xSemaphoreGive(OLEDRelatedMutex);
+  ShowTime();
+  ShowDate();
   lstSec=RTCTime.sec;
   for(;;)
   {
@@ -42,4 +37,22 @@ void Digital_Clock()
    vTaskDelay(20/portTICK_RATE_MS);
   }
  }
+}
+
+void ShowTime()
+{
+ char timeString[20];
+  GenerateRTCTimeString(timeString);
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Show1624String(0,0,timeString);
+	xSemaphoreGive(OLEDRelatedMutex);
+}
+
+void ShowDate()
+{
+char timeString[20];
+  GenerateRTCDateString(timeString);
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Show1216String(4,32,timeString);
+	xSemaphoreGive(OLEDRelatedMutex);
 }

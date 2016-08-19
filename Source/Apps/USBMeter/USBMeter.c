@@ -159,9 +159,7 @@ static void USBMeter(void *pvParameters)
 			}
 			else
 			{
-				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-				OLED_Clear();
-				xSemaphoreGive(OLEDRelatedMutex);
+        OLED_Clear_With_Mutex_TakeGive();
 				if (keyMessage.KeyEvent == MidDouble)
 				{
 					if (GetConfirmation(RecordStopConfirm_Str[CurrentSettings->Language], ""))
@@ -181,9 +179,7 @@ static void USBMeter(void *pvParameters)
 						RecordIsRunningHint1_Str[CurrentSettings->Language],
 						RecordIsRunningHint2_Str[CurrentSettings->Language], false, false);
 					vTaskDelay(1000 / portTICK_RATE_MS);
-					xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-					OLED_Clear();
-					xSemaphoreGive(OLEDRelatedMutex);
+					OLED_Clear_With_Mutex_TakeGive();
 				}
         lastWakeTime=xTaskGetTickCount();
 				updateBasicDataCnt = 5;
@@ -418,9 +414,7 @@ static void ScrollDialgram_Routine()
 		{
 			if (keyMessage.KeyEvent == MidClick)
 			{
-				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-				OLED_Clear();
-				xSemaphoreGive(OLEDRelatedMutex);
+				OLED_Clear_With_Mutex_TakeGive();
 				return;
 			}
 			else if (keyMessage.KeyEvent == MidLong)

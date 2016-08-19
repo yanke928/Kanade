@@ -73,6 +73,6 @@ void About()
 		xQueueReceive(Key_Message, & keyMessage, portMAX_DELAY );
 		if(keyMessage.KeyEvent==MidDouble) break;
 	}
- OLED_Clear();
+ OLED_Clear_With_Mutex_TakeGive();
 }
 

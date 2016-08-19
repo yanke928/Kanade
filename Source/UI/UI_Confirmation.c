@@ -33,9 +33,8 @@ bool GetConfirmation(const char subString0[], const char subString1[])
 	buttonParams.DefaultValue = 0;
 	buttonParams.Positions = (OLED_PositionStruct *)ComfirmationPositions[CurrentSettings->Language];
 	
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
+
 	ShowDialogue(Confirmation_Str[CurrentSettings->Language], subString0, subString1,false,false);
 	
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);

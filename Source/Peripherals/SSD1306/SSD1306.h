@@ -64,6 +64,7 @@ void OLED_Refresh_Gram(void);
 //see .c for details
 void OLED_Init(void);
 void OLED_Clear(void);
+void OLED_Clear_With_Mutex_TakeGive(void);
 void OLED_DrawPoint(unsigned char  x, unsigned char  y, unsigned char  t);
 void OLED_Fill(unsigned char  x1, unsigned char  y1, unsigned char  x2, unsigned char  y2, unsigned char  dot);
 void OLED_ShowIcon(unsigned char  x, unsigned char  y, unsigned char  no, unsigned char drawOrUnDraw);

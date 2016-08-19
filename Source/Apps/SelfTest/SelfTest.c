@@ -47,7 +47,7 @@ void SelfTest()
 	char* termialBuff = pvPortMalloc(200);
 	u8 i;
 	if (termialBuff == NULL) ShowFault("A Malloc Err");
-	OLED_Clear();
+	OLED_Clear_With_Mutex_TakeGive();
 	termialBuff[0] = 0;
 	for (i = 0;; i++)
 	{

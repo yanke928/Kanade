@@ -291,7 +291,7 @@ void KeyDebugHandler(void *pvParameters)
 	while (1)
 	{
 		while (xQueueReceive(Key_Message, &message, portMAX_DELAY) != pdPASS);
-		OLED_Clear();
+		OLED_Clear_With_Mutex_TakeGive();
 		if (message.KeyEvent != 0)
 		{
 			switch (message.KeyEvent)

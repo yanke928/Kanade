@@ -277,9 +277,7 @@ void CalibrateSelect()
 	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
 	UI_Menu_DeInit();
 
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 
 	switch (selection)
 	{

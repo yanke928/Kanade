@@ -89,18 +89,15 @@ void Settings()
 	menuParams.DefaultPos = 0;
 	menuParams.ItemNum = 10;
 	menuParams.FastSpeed = 10;
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 
 	UI_Menu_Init(&menuParams);
 
 	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
 	UI_Menu_DeInit();
 
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
+
 	switch (selection)
 	{
 	case 0:MountOrUnMountDisk(); break;
@@ -214,9 +211,8 @@ void SetLanguage()
 	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
 	UI_Menu_DeInit();
 
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
+
 	switch (selection)
 	{
 	case 0:SettingsBkp.Language = 0; break;
@@ -279,9 +275,9 @@ int GetTimeParam(const char *askString, const char *unitString, int min, int max
 	int tmp;
 	UI_Adjust_Param_Struct timeAdjustParams;
 retry:
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+
+	OLED_Clear_With_Mutex_TakeGive();
+
 	timeAdjustParams.AskString = askString;
 	timeAdjustParams.Min = min;
 	timeAdjustParams.Max = max;
@@ -350,9 +346,9 @@ void TimeSettings()
 		newTime.hour, newTime.min, newTime.sec);
 	ShowSmallDialogue(TimeSetting_Str[CurrentSettings->Language], 1000, true);
 clear:
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+
+	OLED_Clear_With_Mutex_TakeGive();
+
 }
 
 /**
@@ -379,9 +375,7 @@ void OverHeatSettings(void)
 	SaveSettings();
 	ShowSmallDialogue(Saved_Str[CurrentSettings->Language], 1000, true);
 clear:
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 }
 
 /**
@@ -445,7 +439,7 @@ void FormatDisks(void)
 	if (res == FR_OK)  ShowSmallDialogue(FormatSuccess_Str[CurrentSettings->Language], 1000, true);
 	else ShowDiskIOStatus(res);
 Done:
-	OLED_Clear();
+	OLED_Clear_With_Mutex_TakeGive();
 }
 
 /**
@@ -500,7 +494,7 @@ void FirmwareUpdate()
 		SetFirmwareUpdateFlag();
 		SystemReset();
 	}
-	OLED_Clear();
+	OLED_Clear_With_Mutex_TakeGive();
 }
 
 /**
