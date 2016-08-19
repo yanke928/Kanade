@@ -12,6 +12,7 @@
 #include "Temperature_Sensors.h"
 #include "SSD1306.h"
 #include "RTC.h"
+#include "ADC.h"
 #include "MCP3421.h"
 #include "VirtualRTC.h"
 #include "UI_Confirmation.h"
@@ -90,8 +91,8 @@ static void USBMeter(void *pvParameters)
 			DisplayRecordData(tempString);
 		}
 		xSemaphoreGive(OLEDRelatedMutex);
-		if ((MOSTemperature > CurrentSettings->InternalTemperature_Max ||
-			ExternalTemperature > CurrentSettings->ExternalTemperature_Max) &&
+		if ((MOSTemperature > CurrentSettings->Protect_Settings.InternalTemperature_Max ||
+			ExternalTemperature > CurrentSettings->Protect_Settings.ExternalTemperature_Max) &&
 			firstEnter == 0)
 		{
 			System_OverHeat_Exception_Handler(status, &legacy_Test_Params);
@@ -121,6 +122,8 @@ static void USBMeter(void *pvParameters)
 			}
 		}
 		if (firstEnter) firstEnter--;
+//    sprintf(tempString,"%d",ADCConvertedValue[3]);
+//    OLED_ShowAnyString(0,0,tempString,NotOnSelect,16);
 		if (xQueueReceive(Key_Message, &keyMessage, 100 / portTICK_RATE_MS) == pdPASS)
 		{
 			if (status == USBMETER_ONLY)

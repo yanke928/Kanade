@@ -10,6 +10,7 @@
 #include "Temperature_Sensors.h"
 #include "RTC.h"
 #include "Keys.h"
+#include "ADC.h"
 
 #include "FreeRTOS_Standard_Include.h"
 
@@ -45,6 +46,7 @@ void Digital_Clock()
 		Time_Get();
 		if (updateTempCnt == 0)
 		{
+      Restart_ADC_And_DMA();
 			QuickGet_Enviroment_Temperature();
 			updateTempCnt = TEMPERATURE_UPDATE_RATE_SEC_PER_UPDATE;
 		}
@@ -54,8 +56,10 @@ void Digital_Clock()
 		ShowTemperature();
 		Refresh_Gram();
 		Set_STOP_MODE_With_Second_Wake();
+    STM32_Init();
 		if (ANY_KEY_PRESSED)
 		{
+      Restart_ADC_And_DMA();
 			Keys_Wakeup_DeInit();
 			IgnoreNextKeyEvent();
 			return;
@@ -138,7 +142,6 @@ void Keys_WakeUp_Config(bool enable)
   */
 void EXTI3_IRQHandler()
 {
-	STM32_Init();
 	EXTI_ClearITPendingBit(EXTI_Line3);
 }
 
@@ -149,7 +152,6 @@ void EXTI3_IRQHandler()
   */
 void EXTI4_IRQHandler()
 {
-	STM32_Init();
 	EXTI_ClearITPendingBit(EXTI_Line4);
 }
 
@@ -160,7 +162,6 @@ void EXTI4_IRQHandler()
   */
 void EXTI9_5_IRQHandler()
 {
-	STM32_Init();
 	EXTI_ClearITPendingBit(EXTI_Line5);
 }
 
@@ -171,7 +172,6 @@ void EXTI9_5_IRQHandler()
   */
 void RTCAlarm_IRQHandler(void)
 {
-	STM32_Init();
 	EXTI_ClearITPendingBit(EXTI_Line17);
 }
 

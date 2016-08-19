@@ -59,6 +59,7 @@ static void ADC_And_DMA_Init(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
 	DMA_DeInit(DMA1_Channel1);
+  ADC_DeInit(ADC1);
 	DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
 	DMA_InitStructure.DMA_MemoryBaseAddr = (u32)&ADCConvertedValue;//Set DMA memory to ADCConvertedValue
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
@@ -149,6 +150,8 @@ static void ADC_Filter(void *pvParameters)
 			}
 		} while (quickCollectCnt > 0);
 
+    if(quickCollectCnt>QUICK_ADC_FILTER_COLLECT_CYCLE) quickCollectCnt=0;
+
 		if (xQueueReceive(ADC_Quick_Collect_Msg, &t, 2 / portTICK_RATE_MS) == pdPASS)
 		{
 			quickCollectCnt = QUICK_ADC_FILTER_COLLECT_CYCLE;
@@ -184,4 +187,13 @@ void ADC_Hardware_Init()
 	ADC_And_DMA_Init();
 	ADC_Quick_Collect_Msg = xQueueCreate(1, sizeof(u8));
 	xTaskCreate(ADC_Filter, "ADC_Filter", 128, NULL, ADC_FILTER_PRIORITY, &ADC_Filter_Handle);
+}
+
+void Restart_ADC_And_DMA()
+{
+ u32 cnt=10000;
+ vPortEnterCritical();
+ ADC_And_DMA_Init();
+ while(cnt--);
+ vPortExitCritical();
 }

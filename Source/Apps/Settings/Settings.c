@@ -39,7 +39,7 @@ Settings_Struct* CurrentSettings = (Settings_Struct*)0x0803b800;
 
 Settings_Struct SettingsBkp;
 
-const Settings_Struct DefaultSettings = { 0 , 2 ,75 ,120 ,5 };
+const Settings_Struct DefaultSettings = { 0 ,{75 ,120 ,5}, };
 
 typedef  void(*pFunction)(void);
 
@@ -83,7 +83,7 @@ void Settings()
 	stringTab[6] = SettingsItemSystemInfo_Str[CurrentSettings->Language];
 	stringTab[7] = SettingsItemSystemScan_Str[CurrentSettings->Language];
 	stringTab[8] = SettingsItemCalibration_Str[CurrentSettings->Language];
-  stringTab[9] = "Ripple Test";
+	stringTab[9] = "Ripple Test";
 
 	menuParams.ItemStrings = stringTab;
 	menuParams.DefaultPos = 0;
@@ -109,7 +109,7 @@ void Settings()
 	case 6:About(); break;
 	case 7:SelfTest(); break;
 	case 8:CalibrateSelect(); break;
- 	case 9:Run_Ripple_Test(); break;
+	case 9:Run_Ripple_Test(); break;
 	}
 }
 
@@ -232,14 +232,14 @@ void SetLanguage()
   */
 bool CheckSettings()
 {
-	if (CurrentSettings->InternalTemperature_Max > 130 ||
-		CurrentSettings->InternalTemperature_Max < 55) return false;
+	if (CurrentSettings->Protect_Settings.InternalTemperature_Max > 130 ||
+		CurrentSettings->Protect_Settings.InternalTemperature_Max < 55) return false;
 
-	if (CurrentSettings->ExternalTemperature_Max > 200 ||
-		CurrentSettings->ExternalTemperature_Max < 40) return false;
+	if (CurrentSettings->Protect_Settings.ExternalTemperature_Max > 200 ||
+		CurrentSettings->Protect_Settings.ExternalTemperature_Max < 40) return false;
 
-	if (CurrentSettings->Protection_Resume_Gap > 20 ||
-		CurrentSettings->Protection_Resume_Gap < 5) return false;
+	if (CurrentSettings->Protect_Settings.Protection_Resume_Gap > 20 ||
+		CurrentSettings->Protect_Settings.Protection_Resume_Gap < 5) return false;
 	return true;
 }
 
@@ -360,18 +360,18 @@ clear:
 void OverHeatSettings(void)
 {
 	memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
-	SettingsBkp.InternalTemperature_Max = GetTimeParam(SetInternalTemp_Max_Str[CurrentSettings->Language],
+	SettingsBkp.Protect_Settings.InternalTemperature_Max = GetTimeParam(SetInternalTemp_Max_Str[CurrentSettings->Language],
 		Temperature_Unit_Str[CurrentSettings->Language],
-		55, 130, CurrentSettings->InternalTemperature_Max);
-	if (SettingsBkp.InternalTemperature_Max == 255) goto clear;
-	SettingsBkp.ExternalTemperature_Max = GetTimeParam(SetExternalTemp_Max_Str[CurrentSettings->Language],
+		55, 130, CurrentSettings->Protect_Settings.InternalTemperature_Max);
+	if (SettingsBkp.Protect_Settings.InternalTemperature_Max == 255) goto clear;
+	SettingsBkp.Protect_Settings.ExternalTemperature_Max = GetTimeParam(SetExternalTemp_Max_Str[CurrentSettings->Language],
 		Temperature_Unit_Str[CurrentSettings->Language],
-		40, 200, CurrentSettings->ExternalTemperature_Max);
-	if (SettingsBkp.ExternalTemperature_Max == 255) goto clear;
-	SettingsBkp.Protection_Resume_Gap = GetTimeParam(SetTempProtectResumeGap_Str[CurrentSettings->Language],
+		40, 200, CurrentSettings->Protect_Settings.ExternalTemperature_Max);
+	if (SettingsBkp.Protect_Settings.ExternalTemperature_Max == 255) goto clear;
+	SettingsBkp.Protect_Settings.Protection_Resume_Gap = GetTimeParam(SetTempProtectResumeGap_Str[CurrentSettings->Language],
 		Temperature_Unit_Str[CurrentSettings->Language],
-		5, 20, CurrentSettings->Protection_Resume_Gap);
-	if (SettingsBkp.Protection_Resume_Gap == 255) goto clear;
+		5, 20, CurrentSettings->Protect_Settings.Protection_Resume_Gap);
+	if (SettingsBkp.Protect_Settings.Protection_Resume_Gap == 255) goto clear;
 	SaveSettings();
 	ShowSmallDialogue(Saved_Str[CurrentSettings->Language], 1000, true);
 clear:
@@ -455,14 +455,14 @@ void SetFirmwareUpdateFlag()
 
 __asm void SystemReset(void)
 {
-  MOV R0, #1           //; 
-  MSR FAULTMASK, R0    //; 清除FAULTMASK 禁止一切中断产生
-  LDR R0, =0xE000ED0C  //;
-  LDR R1, =0x05FA0004  //; 
-  STR R1, [R0]         //; 系统软件复位   
+	MOV R0, #1           //; 
+		MSR FAULTMASK, R0    //; 清除FAULTMASK 禁止一切中断产生
+		LDR R0, =0xE000ED0C  //;
+		LDR R1, =0x05FA0004  //; 
+		STR R1, [R0]         //; 系统软件复位   
 
 deadloop
-  B deadloop        //; 死循环使程序运行不到下面的代码
+		B deadloop        //; 死循环使程序运行不到下面的代码
 }
 
 void Jump2Addr(u32 addr)

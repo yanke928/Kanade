@@ -21,4 +21,6 @@ void ADC_Hardware_Init(void);
 
 void Quick_ADC_Collect(void);
 
+void Restart_ADC_And_DMA(void);
+
 #endif /* __ADC_H */
