@@ -31,6 +31,7 @@
 #include "About.h"
 #include "SelfTest.h"
 #include "Calibrate.h"
+#include "Ripple_Test.h"
 
 #include "Settings.h"
 
@@ -82,10 +83,11 @@ void Settings()
 	stringTab[6] = SettingsItemSystemInfo_Str[CurrentSettings->Language];
 	stringTab[7] = SettingsItemSystemScan_Str[CurrentSettings->Language];
 	stringTab[8] = SettingsItemCalibration_Str[CurrentSettings->Language];
+  stringTab[9] = "Ripple Test";
 
 	menuParams.ItemStrings = stringTab;
 	menuParams.DefaultPos = 0;
-	menuParams.ItemNum = 9;
+	menuParams.ItemNum = 10;
 	menuParams.FastSpeed = 10;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
@@ -110,6 +112,7 @@ void Settings()
 	case 6:About(); break;
 	case 7:SelfTest(); break;
 	case 8:CalibrateSelect(); break;
+ 	case 9:Run_Ripple_Test(); break;
 	}
 }
 

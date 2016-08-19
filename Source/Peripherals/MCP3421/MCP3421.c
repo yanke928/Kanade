@@ -41,6 +41,8 @@ xQueueHandle MCP3421_Current_Updated_Msg;
 
 enum{I2C_1,I2C_2};
 
+bool VoltageSampleSpeedUp=false;
+
 void I2C_GPIO_Configuration()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -399,4 +401,9 @@ bool MCP3421_Init(void)
  CreateTaskWithExceptionControl(MCP3421_MeterData_Update_Service, "MCP3421_Update_Service",
 		128,NULL, MCP3421_UPDATE_SERVICE_PRIORITY, NULL);
  return true;
+}
+
+void SpeedUpVoltageCollect()
+{
+ 
 }

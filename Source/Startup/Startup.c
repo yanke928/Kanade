@@ -28,6 +28,7 @@
 #include "Digital_Load.h"
 #include "SDCardff.h"
 #include "DataPin2Protocol.h"
+#include "Ripple_Test.h"
 
 #include "system_stm32f10x.h"
 
