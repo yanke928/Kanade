@@ -34,6 +34,7 @@
 static void ShowTime(void);
 static void ShowDate(void);
 static void ShowTemperature(void);
+static void ShowWeek(void);
 static void Refresh_Gram(void);
 static void Set_STOP_MODE_With_Second_Wake(void);
 static void Keys_WakeUp_Config(bool enable);
@@ -64,6 +65,7 @@ void Digital_Clock()
 		ShowTime();
 		ShowDate();
 		ShowTemperature();
+    ShowWeek();
 		Refresh_Gram();
 		Set_STOP_MODE_With_Second_Wake();
 		STM32_Init();
@@ -326,7 +328,21 @@ static void ShowTemperature()
 	char tempString[20];
 	GenerateTempString(tempString, MOS);
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Show1216String(4, 48, tempString + 1);
+	OLED_Show1216String(64, 48, tempString + 1);
+	xSemaphoreGive(OLEDRelatedMutex);
+}
+
+/**
+  * @brief  Show clock week
+
+	  @retval None
+  */
+static void ShowWeek()
+{
+	char tempString[20];
+	GenerateRTCWeekString(tempString);
+	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
+	OLED_Show1216String(4, 48, tempString);
 	xSemaphoreGive(OLEDRelatedMutex);
 }
 
