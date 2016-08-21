@@ -9,6 +9,8 @@
 
 #include "Calibrate.h"
 
+#include "Temperature_Sensors.h"
+
 #include "MCP3421.h"
 
 #define I2C1_SDA_HIGH()  GPIO_SetBits(GPIOB, GPIO_Pin_11)
@@ -29,6 +31,9 @@
 #define VOLTAGE_GAIN 11
 #define CURRENT_SENSOR_RESISTANCE 15
 
+#define TEMPERATURE_COEFICIENT_PPM 25
+#define DELTA_CPU_CORE_TO_RESISTOR 15
+
 USBMeterStruct CurrentMeterData;
 
 USBMeterStruct FilteredMeterData;
@@ -39,179 +44,181 @@ xSemaphoreHandle USBMeterState_Mutex = NULL;
 
 xQueueHandle MCP3421_Current_Updated_Msg;
 
-enum{I2C_1,I2C_2};
+xQueueHandle MCP3421_High_Voltage_Update_Rate_Msg;
 
-bool VoltageSampleSpeedUp=false;
+enum { I2C_1, I2C_2 };
+
+bool VoltageSampleSpeedUp = false;
 
 void I2C_GPIO_Configuration()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
-	
+
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
-	
-	GPIO_Init(GPIOB, &GPIO_InitStructure); 
+
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
-  GPIO_Init(GPIOA, &GPIO_InitStructure); 
-	
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
-	
- 	GPIO_Init(GPIOB, &GPIO_InitStructure); 
+
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
 }
 
 static void I2C_SDA_HIGH(u8 num)
 {
- switch(num)
- {
-  case I2C_1:I2C1_SDA_HIGH();break;
-  case I2C_2:I2C2_SDA_HIGH();break;
- }
+	switch (num)
+	{
+	case I2C_1:I2C1_SDA_HIGH(); break;
+	case I2C_2:I2C2_SDA_HIGH(); break;
+	}
 }
 
 static void I2C_SDA_LOW(u8 num)
 {
- switch(num)
- {
-  case I2C_1:I2C1_SDA_LOW();break;
-  case I2C_2:I2C2_SDA_LOW();break;
- }
+	switch (num)
+	{
+	case I2C_1:I2C1_SDA_LOW(); break;
+	case I2C_2:I2C2_SDA_LOW(); break;
+	}
 }
 
 static u8 I2C_SDA_READ(u8 num)
-{ 
- u8 status;
- switch(num)
- {
-  case I2C_1:status=I2C1_SDA_READ();break;
-  case I2C_2:status=I2C2_SDA_READ();break;
- }
- return status;
+{
+	u8 status;
+	switch (num)
+	{
+	case I2C_1:status = I2C1_SDA_READ(); break;
+	case I2C_2:status = I2C2_SDA_READ(); break;
+	}
+	return status;
 }
 
 static void Delayxus(u16 time)
-{    
-   u16 i=0;  
-   while(time--)
-   {
-      i=10; 
-      while(i--) ;    
-   }
+{
+	u16 i = 0;
+	while (time--)
+	{
+		i = 10;
+		while (i--);
+	}
 }
 #define I2C_delay() Delayxus(1)
 
 static bool I2C_Start(u8 num)
 {
- I2C_SDA_HIGH(num);
- I2C_SCL_HIGH();
- I2C_delay(); 
- if(!I2C_SDA_READ(num))return false;
- I2C_SDA_LOW(num);
- I2C_delay(); 
- if(I2C_SDA_READ(num))return false;
- I2C_SDA_LOW(num);
- I2C_delay();
- return true;
+	I2C_SDA_HIGH(num);
+	I2C_SCL_HIGH();
+	I2C_delay();
+	if (!I2C_SDA_READ(num))return false;
+	I2C_SDA_LOW(num);
+	I2C_delay();
+	if (I2C_SDA_READ(num))return false;
+	I2C_SDA_LOW(num);
+	I2C_delay();
+	return true;
 }
 
 static void I2C_Ack(u8 num)
-{ 
- I2C_SCL_LOW();
- I2C_delay();
- I2C_SDA_LOW(num);
- I2C_delay();
- I2C_SCL_HIGH();
- I2C_delay();
- I2C_SCL_LOW();
- I2C_delay();
+{
+	I2C_SCL_LOW();
+	I2C_delay();
+	I2C_SDA_LOW(num);
+	I2C_delay();
+	I2C_SCL_HIGH();
+	I2C_delay();
+	I2C_SCL_LOW();
+	I2C_delay();
 }
 
 static void I2C_Stop(u8 num)
 {
- I2C_SCL_LOW();
- I2C_delay();
- I2C_SDA_LOW(num);
- I2C_delay();
- I2C_SCL_HIGH();
- I2C_delay();
- I2C_SDA_HIGH(num);
- I2C_delay();
+	I2C_SCL_LOW();
+	I2C_delay();
+	I2C_SDA_LOW(num);
+	I2C_delay();
+	I2C_SCL_HIGH();
+	I2C_delay();
+	I2C_SDA_HIGH(num);
+	I2C_delay();
 }
 
 static void I2C_NoAck(u8 num)
-{ 
- I2C_SCL_LOW();
- I2C_delay();
- I2C_SDA_HIGH(num);
- I2C_delay();
- I2C_SCL_HIGH();
- I2C_delay();
- I2C_SCL_LOW();
- I2C_delay();
-}
-
-static bool I2C_WaitAck(u8 num)  
 {
- I2C_SCL_LOW();
- I2C_delay();
- I2C_SDA_HIGH(num);
- I2C_delay();
- I2C_SCL_HIGH();
- I2C_delay();
- if(I2C_SDA_READ(num))
- {
-   I2C_SCL_LOW();
-   return false;
- }
- I2C_SCL_LOW();
- return true;
+	I2C_SCL_LOW();
+	I2C_delay();
+	I2C_SDA_HIGH(num);
+	I2C_delay();
+	I2C_SCL_HIGH();
+	I2C_delay();
+	I2C_SCL_LOW();
+	I2C_delay();
 }
 
-static void I2C_SendByte(u8 SendByte,u8 num)
+static bool I2C_WaitAck(u8 num)
 {
-    u8 i=8;
-    while(i--)
-    {
-       I2C_SCL_LOW();
-       I2C_delay();
-       if(SendByte&0x80)
-         I2C_SDA_HIGH(num);
-       else 
-       I2C_SDA_LOW(num);   
-       SendByte<<=1;
-       I2C_delay();
-       I2C_SCL_HIGH();
-       I2C_delay();
-    }
-    I2C_SCL_LOW();
+	I2C_SCL_LOW();
+	I2C_delay();
+	I2C_SDA_HIGH(num);
+	I2C_delay();
+	I2C_SCL_HIGH();
+	I2C_delay();
+	if (I2C_SDA_READ(num))
+	{
+		I2C_SCL_LOW();
+		return false;
+	}
+	I2C_SCL_LOW();
+	return true;
 }
 
-static u8 I2C_ReceiveByte(u8 num) 
-{ 
-    u8 i=8;
-    u8 ReceiveByte=0;
-    I2C_SDA_HIGH(num); 
-    while(i--)
-    {
-      ReceiveByte<<=1;      
-      I2C_SCL_LOW();
-      I2C_delay();
-      I2C_SCL_HIGH();
-      I2C_delay(); 
-      if(I2C_SDA_READ(num))
-      {
-       ReceiveByte|=0x01;
-      }
-    }
-    I2C_SCL_LOW();
-    return ReceiveByte;
+static void I2C_SendByte(u8 SendByte, u8 num)
+{
+	u8 i = 8;
+	while (i--)
+	{
+		I2C_SCL_LOW();
+		I2C_delay();
+		if (SendByte & 0x80)
+			I2C_SDA_HIGH(num);
+		else
+			I2C_SDA_LOW(num);
+		SendByte <<= 1;
+		I2C_delay();
+		I2C_SCL_HIGH();
+		I2C_delay();
+	}
+	I2C_SCL_LOW();
+}
+
+static u8 I2C_ReceiveByte(u8 num)
+{
+	u8 i = 8;
+	u8 ReceiveByte = 0;
+	I2C_SDA_HIGH(num);
+	while (i--)
+	{
+		ReceiveByte <<= 1;
+		I2C_SCL_LOW();
+		I2C_delay();
+		I2C_SCL_HIGH();
+		I2C_delay();
+		if (I2C_SDA_READ(num))
+		{
+			ReceiveByte |= 0x01;
+		}
+	}
+	I2C_SCL_LOW();
+	return ReceiveByte;
 }
 
 //static bool I2C_WriteByte(u8 SendByte, u16 WriteAddress, u8 DeviceAddress,u8 num)
@@ -262,148 +269,222 @@ static u8 I2C_ReceiveByte(u8 num)
 //    return temp;
 //}
 
-static u32 GetResultFromMCP3421(unsigned char address,u8 num)
+static u32 GetResultFromMCP3421(unsigned char address, u8 num, u8 byteCount)
 {
 	unsigned char byte1, byte2, byte3;
 	u32 mcp3421result;
 	I2C_Start(num);
-	I2C_SendByte(address,num);
+	I2C_SendByte(address, num);
 	I2C_WaitAck(num);
-	byte1=I2C_ReceiveByte(num);
+	byte1 = I2C_ReceiveByte(num);
 	I2C_Ack(num);
-	byte2=I2C_ReceiveByte(num);
-	I2C_Ack(num);
-	byte3=I2C_ReceiveByte(num);
-	I2C_NoAck(num);
-	I2C_Stop(num);
-	mcp3421result = byte1;
-	mcp3421result = mcp3421result << 8;
-	mcp3421result = mcp3421result | byte2;
-	mcp3421result = mcp3421result << 8;
-	mcp3421result = mcp3421result | byte3;
+	byte2 = I2C_ReceiveByte(num);
+	if (byteCount == 2)
+	{
+		I2C_NoAck(num);
+		I2C_Stop(num);
+	}
+	else
+	{
+		I2C_Ack(num);
+		byte3 = I2C_ReceiveByte(num);
+		I2C_NoAck(num);
+		I2C_Stop(num);
+	}
+	if (byteCount == 2)
+	{
+		mcp3421result = byte1;
+		mcp3421result = mcp3421result << 8;
+		mcp3421result = mcp3421result | byte2;
+	}
+	else
+	{
+		mcp3421result = byte1;
+		mcp3421result = mcp3421result << 8;
+		mcp3421result = mcp3421result | byte2;
+		mcp3421result = mcp3421result << 8;
+		mcp3421result = mcp3421result | byte3;
+	}
 	return mcp3421result;
 }
 
-static void WriteMCP3421(u8 dat,u8 add,u8 num)
+static void WriteMCP3421(u8 dat, u8 add, u8 num)
 {
- I2C_Start(num);
- I2C_SendByte(add,num);
- I2C_WaitAck(num);
- I2C_SendByte(dat,num);
- I2C_WaitAck(num);
- I2C_Stop(num);
+	I2C_Start(num);
+	I2C_SendByte(add, num);
+	I2C_WaitAck(num);
+	I2C_SendByte(dat, num);
+	I2C_WaitAck(num);
+	I2C_Stop(num);
 }
 
-void Volatile_Coeficient_Filter(float *lstCoeficient[],bool* lstTrend[],float* lstData[],float * newData[],u16 num,float baseCoeficient)
+void Volatile_Coeficient_Filter(float *lstCoeficient[], bool* lstTrend[], float* lstData[], float * newData[], u16 num, float baseCoeficient)
 {
- u16 m;
- float delta;
- bool newTrend;
- for(m=0;m<num;m++)
- {
-  if((*newData[m])==*(lstData[m])) continue;
-  if((*(newData[m]))-(*(lstData[m]))>0) newTrend=true;
-  else newTrend=false;
-  if(newTrend==(*lstTrend[m]))
-   {
-    (*lstCoeficient[m])=(*lstCoeficient[m])*2;
-   }
-  else (*lstCoeficient[m])=baseCoeficient;
-  (*lstTrend[m])=newTrend;
-  (*lstCoeficient[m])=(*lstCoeficient[m])<0.005?0.005:(*lstCoeficient[m]);
-  (*lstCoeficient[m])=(*lstCoeficient[m])>1?1:(*lstCoeficient[m]);
-  delta=(*newData[m])-(*lstData[m]);
-  (*lstData[m])=(*lstData[m])+delta*(*lstCoeficient[m]);
- }
+	u16 m;
+	float delta;
+	bool newTrend;
+	for (m = 0; m < num; m++)
+	{
+		if ((*newData[m]) == *(lstData[m])) continue;
+		if ((*(newData[m])) - (*(lstData[m])) > 0) newTrend = true;
+		else newTrend = false;
+		if (newTrend == (*lstTrend[m]))
+		{
+			(*lstCoeficient[m]) = (*lstCoeficient[m]) * 2;
+		}
+		else (*lstCoeficient[m]) = baseCoeficient;
+		(*lstTrend[m]) = newTrend;
+		(*lstCoeficient[m]) = (*lstCoeficient[m]) < 0.005 ? 0.005 : (*lstCoeficient[m]);
+		(*lstCoeficient[m]) = (*lstCoeficient[m]) > 1 ? 1 : (*lstCoeficient[m]);
+		delta = (*newData[m]) - (*lstData[m]);
+		(*lstData[m]) = (*lstData[m]) + delta*(*lstCoeficient[m]);
+	}
 }
-	
+
 void MCP3421_MeterData_Update_Service(void *pvParameters)
 {
- u32 voltRAW,curtRAW; 
- u32 lstCurrent;
- u8 m;
- float lstCoeficient[2]={0.2,0.2};
- float lstVoltageAndCurrent[2]={0,0};
- bool lstTrend[2]={true,true};
+	u32 voltRAW, curtRAW;
+	u32 lstCurrent;
+	u8 m;
+	float lstCoeficient[2] = { 0.2,0.2 };
+	float lstVoltageAndCurrent[2] = { 0,0 };
+	bool lstTrend[2] = { true,true };
 
- float* lstCoeficient_p[2];
- float* lstVoltageAndCurrent_p[2];
- float *newVoltageAndCurrent_p[2];
- bool* lstTrend_p[2];
+	u8 voltageSampleSpeed = NormalSpeed;
 
- lstCoeficient_p[0]=&lstCoeficient[0];
- lstCoeficient_p[1]=&lstCoeficient[1];
+	u32 voltageMaxValue;
 
- lstTrend_p[0]=&lstTrend[0];
- lstTrend_p[1]=&lstTrend[1];
+	float* lstCoeficient_p[2];
+	float* lstVoltageAndCurrent_p[2];
+	float *newVoltageAndCurrent_p[2];
+	bool* lstTrend_p[2];
 
- lstVoltageAndCurrent_p[0]=&lstVoltageAndCurrent[0];
- lstVoltageAndCurrent_p[1]=&lstVoltageAndCurrent[1]; 
+	 double temperatureCoeficient;
 
- newVoltageAndCurrent_p[0]=&CurrentMeterData.Voltage;
- newVoltageAndCurrent_p[1]=&CurrentMeterData.Current;
+	lstCoeficient_p[0] = &lstCoeficient[0];
+	lstCoeficient_p[1] = &lstCoeficient[1];
 
- for(;;)
+	lstTrend_p[0] = &lstTrend[0];
+	lstTrend_p[1] = &lstTrend[1];
+
+	lstVoltageAndCurrent_p[0] = &lstVoltageAndCurrent[0];
+	lstVoltageAndCurrent_p[1] = &lstVoltageAndCurrent[1];
+
+	newVoltageAndCurrent_p[0] = &CurrentMeterData.Voltage;
+	newVoltageAndCurrent_p[1] = &CurrentMeterData.Current;
+
+	for (;;)
 	{
-	 voltRAW=GetResultFromMCP3421(0xd1,I2C_2);
-	 voltRAW=voltRAW&0x03ffff;
-		
-	 if (voltRAW&0x020000)
-	 {
-	  voltRAW=0;
-	 }
+		switch (voltageSampleSpeed)
+		{
+		case NormalSpeed:
+			voltRAW=GetResultFromMCP3421(0xd1, I2C_2, 3);
+			voltRAW = voltRAW & 0x03ffff;
 
-	 curtRAW=GetResultFromMCP3421(0xd1,I2C_1);
-	 curtRAW=curtRAW&0x03ffff;
-		
-	 if (curtRAW&0x020000)
-	 {
-	  curtRAW=0;
-	 }
-	 
-	 xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
-	 CurrentMeterData.Current=(double)(*(int32_t*)(&curtRAW))/(0x20000/2048*8)/CURRENT_SENSOR_RESISTANCE*Calibration_Data->CurrentCoeficient;
-	 CurrentMeterData.Voltage=(double)(*(int32_t*)(&voltRAW))/0x20000*2.048*VOLTAGE_GAIN*Calibration_Data->VoltageCoeficient;
-   CurrentMeterData.Power=CurrentMeterData.Current* CurrentMeterData.Voltage;
-	 xSemaphoreGive(USBMeterState_Mutex);
-   
-   Volatile_Coeficient_Filter(lstCoeficient_p,lstTrend_p,lstVoltageAndCurrent_p,newVoltageAndCurrent_p,2,0.005);
+			if (voltRAW & 0x020000)
+			{
+				voltRAW = 0;
+			}break;
+		case HighSpeed:
+			voltRAW=GetResultFromMCP3421(0xd1, I2C_2, 2);
+			voltRAW = voltRAW & 0xffff;
 
-	 xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
-	 FilteredMeterData.Current=lstVoltageAndCurrent[1];
-	 FilteredMeterData.Voltage=lstVoltageAndCurrent[0];
-   FilteredMeterData.Power=FilteredMeterData.Current* FilteredMeterData.Voltage;
-	 xSemaphoreGive(USBMeterState_Mutex);
+			if (voltRAW & 0x8000)
+			{
+				voltRAW = 0;
+			}break;
+		case UltraHighSpeed:
+			voltRAW=GetResultFromMCP3421(0xd1, I2C_2, 2);
+			voltRAW = voltRAW & 0x3fff;
 
-   if(curtRAW!=lstCurrent)
-   {
-     xQueueSend(MCP3421_Current_Updated_Msg,&m, 0);
-     lstCurrent=curtRAW;
-   }
+			if (voltRAW & 0x2000)
+			{
+				voltRAW = 0;
+			}break;
+		}
 
-	 vTaskDelay(100 / portTICK_RATE_MS);
+		curtRAW = GetResultFromMCP3421(0xd1, I2C_1, 3);
+		curtRAW = curtRAW & 0x03ffff;
+
+		if (curtRAW & 0x020000)
+		{
+			curtRAW = 0;
+		}
+
+		  if(xTaskGetTickCount()>20000/portTICK_RATE_MS)
+		   temperatureCoeficient=1-(double)(InternalTemperature-DELTA_CPU_CORE_TO_RESISTOR-25)*TEMPERATURE_COEFICIENT_PPM/1000000;
+		   else temperatureCoeficient=1;
+
+		   temperatureCoeficient=temperatureCoeficient>1.005?1.005:temperatureCoeficient;
+		   temperatureCoeficient=temperatureCoeficient<0.995?0.995:temperatureCoeficient;
+
+		switch (voltageSampleSpeed)
+		{
+		case NormalSpeed:voltageMaxValue = 0x20000; break;
+		case HighSpeed:voltageMaxValue = 0x8000; break;
+		case UltraHighSpeed:voltageMaxValue = 0x2000;
+		}
+
+		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
+		CurrentMeterData.Current = (double)(*(int32_t*)(&curtRAW)) / (0x20000 / 2048 * 8) / CURRENT_SENSOR_RESISTANCE*Calibration_Data->CurrentCoeficient*
+    temperatureCoeficient;
+		CurrentMeterData.Voltage = (double)(*(int32_t*)(&voltRAW)) / voltageMaxValue*2.048*VOLTAGE_GAIN*Calibration_Data->VoltageCoeficient;
+		CurrentMeterData.Power = CurrentMeterData.Current* CurrentMeterData.Voltage;
+		xSemaphoreGive(USBMeterState_Mutex);
+
+		Volatile_Coeficient_Filter(lstCoeficient_p, lstTrend_p, lstVoltageAndCurrent_p, newVoltageAndCurrent_p, 2, 0.005);
+
+		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
+		FilteredMeterData.Current = lstVoltageAndCurrent[1];
+		FilteredMeterData.Voltage = lstVoltageAndCurrent[0];
+		FilteredMeterData.Power = FilteredMeterData.Current* FilteredMeterData.Voltage;
+		xSemaphoreGive(USBMeterState_Mutex);
+
+		if (curtRAW != lstCurrent)
+		{
+			xQueueSend(MCP3421_Current_Updated_Msg, &m, 0);
+			lstCurrent = curtRAW;
+		}
+
+		if (xQueueReceive(MCP3421_High_Voltage_Update_Rate_Msg, &voltageSampleSpeed, 16 / portTICK_RATE_MS) == pdPASS)
+		{
+			switch (voltageSampleSpeed)
+			{
+			case NormalSpeed:WriteMCP3421(0x9f, 0xd0, I2C_2); break;
+			case HighSpeed:WriteMCP3421(0x98, 0xd0, I2C_2); break;
+			case UltraHighSpeed:WriteMCP3421(0x94, 0xd0, I2C_2);
+			}
+		}
+		switch (voltageSampleSpeed)
+		{
+		case NormalSpeed:vTaskDelay(84 / portTICK_RATE_MS); break;
+		case HighSpeed:vTaskDelay(44 / portTICK_RATE_MS); break;
+		case UltraHighSpeed:break;
+		}
 	}
 }
 
 bool MCP3421_Init(void)
 {
- I2C_GPIO_Configuration();
+	I2C_GPIO_Configuration();
 
- /*Current sensor configuration*/
- WriteMCP3421(0x9f,0xd0,I2C_1); 
-	
- /*Voltage sensor configuration*/
- WriteMCP3421(0x9c,0xd0,I2C_2); 
-	
- USBMeterState_Mutex = xSemaphoreCreateMutex();
-	
- MCP3421_Current_Updated_Msg=xQueueCreate(1,sizeof(u8));
- CreateTaskWithExceptionControl(MCP3421_MeterData_Update_Service, "MCP3421_Update_Service",
-		128,NULL, MCP3421_UPDATE_SERVICE_PRIORITY, NULL);
- return true;
+	/*Current sensor configuration*/
+	WriteMCP3421(0x9f, 0xd0, I2C_1);
+
+	/*Voltage sensor configuration*/
+	WriteMCP3421(0x9c, 0xd0, I2C_2);
+
+	USBMeterState_Mutex = xSemaphoreCreateMutex();
+
+	MCP3421_Current_Updated_Msg = xQueueCreate(1, sizeof(u8));
+	MCP3421_High_Voltage_Update_Rate_Msg = xQueueCreate(1, sizeof(bool));
+
+	CreateTaskWithExceptionControl(MCP3421_MeterData_Update_Service, "MCP3421_Update_Service",
+		128, NULL, MCP3421_UPDATE_SERVICE_PRIORITY, NULL);
+	return true;
 }
 
-void SpeedUpVoltageCollect()
+void SetMCP3421VoltageSampleSpeed(u8 speed)
 {
- 
+	xQueueSend(MCP3421_High_Voltage_Update_Rate_Msg, &speed, 100 / portTICK_RATE_MS);
 }

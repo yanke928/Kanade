@@ -168,13 +168,11 @@ static void USBMeter(void *pvParameters)
 					if (GetConfirmation(RecordStopConfirm_Str[CurrentSettings->Language], ""))
 					{
 						StopRecord(&status, 0);
-						goto Refresh;
 					}
 				}
 				else if (keyMessage.KeyEvent == MidClick)
 				{
 					ScrollDialgram_Routine();
-					goto Refresh;
 				}
 				else
 				{

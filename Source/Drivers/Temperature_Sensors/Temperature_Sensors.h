@@ -17,6 +17,8 @@ extern float ExternalTemperature;
 //A public variable for the converted MOSTemperature
 extern float MOSTemperature;
 
+extern float InternalTemperature;
+
 extern volatile u8 CurrentTemperatureSensor;
 
 void CalculateExtTemp(void);

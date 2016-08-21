@@ -26,6 +26,11 @@ typedef struct {
 	float PlatformVolt;
 }SumupStruct;
 
+enum
+{
+ NormalSpeed,HighSpeed,UltraHighSpeed
+};
+
 extern USBMeterStruct CurrentMeterData;
 
 extern USBMeterStruct FilteredMeterData;
@@ -38,6 +43,8 @@ extern xQueueHandle MCP3421_Current_Updated_Msg;
 
 bool MCP3421_Init(void);
 
-u32 GetResultFromMCP3421(unsigned char address,u8 num);
+u32 GetResultFromMCP3421(unsigned char address,u8 num,u8 byteCount);
+
+void SetMCP3421VoltageSampleSpeed(u8 speed);
 
 #endif /* __MCP3421_H */

@@ -346,6 +346,7 @@ void SystemStartup(void *pvParameters)
   {
    OSStatInit();
   }
+//SetMCP3421VoltageSampleSpeed(UltraHighSpeed);
   //Flash_Test_Run();
 	USBMeter_Init(USBMETER_ONLY);
 	vTaskDelete(NULL);

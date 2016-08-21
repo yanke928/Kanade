@@ -55,11 +55,12 @@ void Run_Ripple_Test()
 	char tempString[20];
 	ShowDialogue("Ripple Test", "Waiting...", "", false, false);
 	Send_Digital_Load_Command(2000, Load_Start);
+  SetMCP3421VoltageSampleSpeed(HighSpeed);
 	vTaskDelay(2000 / portTICK_RATE_MS);
 	for (;;)
 	{
 		WriteCurrentData2VoltBuff();
-		vTaskDelay(250 / portTICK_RATE_MS);
+		vTaskDelay(50 / portTICK_RATE_MS);
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		sprintf(tempString, "%.4fA", FilteredMeterData.Current);
 		OLED_ShowAnyString(4, 42, tempString, NotOnSelect, 16);
