@@ -14,4 +14,6 @@ void ShowFault(char * string);
 
 void System_OverHeat_Exception_Handler(u8 status,Legacy_Test_Param_Struct* params);
 
+void ShowDetailedFault(char* string);
+
 #endif /* __EXCEPTIONHANDLE_H */

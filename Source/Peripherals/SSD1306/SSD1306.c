@@ -265,6 +265,17 @@ void OLED_InvertPoint(u8 x, u8 y)
 #endif
 }
 
+bool OLED_ReadPoint(u8 x, u8 y)
+{
+ u8  pos, bx, temp = 0;
+ if (x > 127 || y > 63)return false;
+	pos = 7 - y / 8;
+	bx = y % 8;
+	temp = 1 << (7 - bx);
+if ((OLED_GRAM[x][pos] & temp) > 0) return true;
+ else return false;
+}
+
 /**
   * @brief  Draw a vertical line
 

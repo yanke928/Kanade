@@ -131,7 +131,7 @@ static void USBMeter(void *pvParameters)
 				switch (keyMessage.KeyEvent)
 				{
 				case MidClick: ScrollDialgram_Routine(); break;
-				case MidDouble:if (GetConfirmation(RecordConfirm_Str[CurrentSettings->Language], ""))
+				case MidDouble:TakeAScreenShot();if (GetConfirmation(RecordConfirm_Str[CurrentSettings->Language], ""))
 					StartRecord(&status); break;
 				case MidLong:Settings(); break;
 				case LeftClick:if (GetConfirmation(StepUpConfirm_Str[CurrentSettings->Language], ""))

@@ -247,6 +247,7 @@ void KeyEventHandler(void *pvParameters)
 		/*If a key event takes place*/
 		if ((KeyEvent != 0 && AdvancedKeyEvent == 0) || (AdvancedKeyEvent != 0 && ContinousPressBeats != 0))
 		{
+      
 			/*Handle advanced key event priorly*/
 			if (AdvancedKeyEvent != 0)
 			{
@@ -271,6 +272,7 @@ void KeyEventHandler(void *pvParameters)
 				/*Try to send a new message to the queue,at least 100ms is given for the receiver to handle the last event*/
 				if (xQueueSend(Key_Message, &message, 100 / portTICK_RATE_MS) != pdPASS)
 				{
+           
 					/*Clear the queue and resend the message*/
 					xQueueReceive(Key_Message, &outOfDateMessage, 10);
 					xQueueSend(Key_Message, &message, 100 / portTICK_RATE_MS);

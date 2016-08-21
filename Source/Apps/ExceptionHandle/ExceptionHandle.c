@@ -85,6 +85,17 @@ void ShowFault(char * string)
 	for (;;);
 }
 
+void ShowDetailedFault(char* string)
+{
+	char tempString[60];
+	xSemaphoreGive(OLEDRelatedMutex);
+	taskENTER_CRITICAL();
+	OLED_Clear();
+ UI_PrintMultiLineString(0, 0, 127, 63, string, NotOnSelect, 12);
+	OLED_Refresh_Gram();
+	for (;;);
+}
+
 void Show_OverHeat_Temperature(u8 sensor)
 {
 	char tempString[20];
