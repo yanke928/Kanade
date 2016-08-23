@@ -212,6 +212,7 @@ void MTKTrigger_Init(void)
 	USBTriggerAdjustUI("MTK-PE Mode", commandSet, positions);
 	MTKWaitForNewLoad();
   ReleaseFastCharge(&t);
+  IgnoreNextKeyEvent();
 }
 
 /**

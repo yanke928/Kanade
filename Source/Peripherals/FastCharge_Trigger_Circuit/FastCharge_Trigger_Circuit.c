@@ -15,7 +15,7 @@
 
 #define FAST_CHARGE_TRIGGER_SERVICE_PRIORITY tskIDLE_PRIORITY+5
 
-#define MTK_PE_HIGH_REF 1
+#define MTK_PE_HIGH_REF 0.5
 
 #define MTK_PE_HIGH(ms) Digital_Load_Unlock(); vTaskDelay(ms/portTICK_RATE_MS)
 #define MTK_PE_LOW(ms) Digital_Load_Lock(); vTaskDelay(ms/portTICK_RATE_MS)
@@ -176,6 +176,13 @@ void QC3_Increase_Voltage(u8 lastMode)
 		SetDP_0V6();
 		FastCharge_Trigger_DM_Release();
 		vTaskDelay(1500 / portTICK_RATE_MS);
+	  FastCharge_Trigger_GPIO_Enable();
+	  SetDM_3V3();
+	  SetDP_3V3();
+	  vTaskDelay(10 / portTICK_RATE_MS);
+	  SetDM_3V3();
+	  SetDP_0V6();
+    vTaskDelay(200 / portTICK_RATE_MS);
 	}
 	FastCharge_Trigger_GPIO_Enable();
 	SetDM_3V3();
@@ -194,6 +201,13 @@ void QC3_Decrease_Voltage(u8 lastMode)
 		SetDP_0V6();
 		FastCharge_Trigger_DM_Release();
 		vTaskDelay(1500 / portTICK_RATE_MS);
+	  FastCharge_Trigger_GPIO_Enable();
+	  SetDM_0V6();
+	  SetDP_0V6();
+	  vTaskDelay(10 / portTICK_RATE_MS);
+  	SetDM_3V3();
+	  SetDP_0V6();
+    vTaskDelay(200 / portTICK_RATE_MS);
 	}
 	FastCharge_Trigger_GPIO_Enable();
 	SetDM_0V6();
@@ -210,7 +224,7 @@ void MTK_PE_Increase_Voltage(u8 lastMode)
   MTK_PE_Init();
   MTK_PE_LOW(1000);
  }
-
+ MTK_PE_LOW(100);
  MTK_PE_HIGH(100);
  MTK_PE_LOW(100);
  MTK_PE_HIGH(100);
@@ -233,7 +247,7 @@ void MTK_PE_Decrease_Voltage(u8 lastMode)
   MTK_PE_Init();
   MTK_PE_LOW(1000);
  }
-
+ MTK_PE_LOW(100);
  MTK_PE_HIGH(300);
  MTK_PE_LOW(100);
  MTK_PE_HIGH(300);
