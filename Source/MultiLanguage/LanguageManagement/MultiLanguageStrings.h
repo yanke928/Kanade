@@ -172,6 +172,11 @@ extern const char* const IdleClockSettingsEnableIdleClock_Str[LanguageNum];
 extern const char* const IdleClockSettingsIdleClockTime_Str[LanguageNum];
 extern const char* const IdleClockSettingsPleaseEnable_Str_Str[LanguageNum];
 
+/*MTK-PE Trigger related*/
+extern const char* const IvePlugged_Str[LanguageNum];
+extern const char* const PlugInLoad_Str[LanguageNum];
+extern const OLED_PositionStruct  IvePluggedInPositions[LanguageNum][1];
+
 /*Confirmation positions*/
 extern const OLED_PositionStruct  ComfirmationPositions[LanguageNum][2];
 extern const OLED_PositionStruct  SelectLegacyTestModePositions[LanguageNum][2];

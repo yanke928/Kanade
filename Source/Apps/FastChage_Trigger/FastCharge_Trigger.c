@@ -18,12 +18,18 @@
 
 #include "FastCharge_Trigger_Circuit.h"
 
+#include "MultiLanguageStrings.h"
+
+#include "Settings.h"
+
 #include "FastCharge_Trigger.h"
 
 typedef struct {
 	u8 Plus;
 	u8 Minus;
 }FastChargeAdjustCommandSetStruct;
+
+void ReleaseFastCharge(bool* fastchargeTriggeredFlag);
 
 /**
   * @brief  Show current voltage and current
@@ -61,19 +67,19 @@ void QC2Trigger_Init(void)
 {
 	u8 i;
 	u8 mode;
-	
+
 	Key_Message_Struct keyMsg;
 	UI_Button_Param_Struct button_params;
 	const char* voltStrings[4];
 	OLED_PositionStruct voltagesPositions[4] = { {10,22},{36,22},{10,42},{36,42} };
-	
-	voltStrings[0]="5V";
-	voltStrings[1]="9V";
-	voltStrings[2]="12V";
-	voltStrings[3]="20V";
-	
-	/*Set the positions for the voltage options*/	
-	ShowDialogue("QC2.0 Mode", "", "",false,false);
+
+	voltStrings[0] = "5V";
+	voltStrings[1] = "9V";
+	voltStrings[2] = "12V";
+	voltStrings[3] = "20V";
+
+	/*Set the positions for the voltage options*/
+	ShowDialogue("QC2.0 Mode", "", "", false, false);
 	button_params.ButtonStrings = voltStrings;
 	button_params.ButtonNum = 4;
 	button_params.DefaultValue = 0;
@@ -92,10 +98,10 @@ void QC2Trigger_Init(void)
 		button_params.DefaultValue = i;
 		switch (i)
 		{
-		case 0:mode=QC2_Normal;xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
-		case 1:mode=QC2_9V;xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
-		case 2:mode=QC2_12V;xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
-		case 3:mode=QC2_20V;xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
+		case 0:mode = QC2_Normal; xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
+		case 1:mode = QC2_9V; xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
+		case 2:mode = QC2_12V; xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
+		case 3:mode = QC2_20V; xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS); break;
 		}
 		vTaskDelay(200 / portTICK_RATE_MS);
 		if (xQueueReceive(Key_Message, &keyMsg, 0) == pdPASS)
@@ -114,7 +120,7 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 {
 	Key_Message_Struct keyMsg;
 	//SetUpdateOLEDJustNow();
-	ShowDialogue(titleString, "", "",false,false);
+	ShowDialogue(titleString, "", "", false, false);
 	/*Draw a button set with "LiveMode",get the timerNo allocated*/
 	OLED_DrawRect(positions[0].x - 2, positions[0].y - 2, positions[0].x + 17, positions[0].y + 17, DRAW);
 	OLED_DrawRect(positions[1].x - 2, positions[1].y - 2, positions[1].x + 17, positions[1].y + 17, DRAW);
@@ -134,8 +140,8 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 				xSemaphoreGive(OLEDRelatedMutex);
 				while (LEFT_KEY == KEY_ON)
 				{
-				 vTaskDelay(20/portTICK_RATE_MS);
-				 ShowCurrentVoltCurt();
+					vTaskDelay(20 / portTICK_RATE_MS);
+					ShowCurrentVoltCurt();
 				}
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowIcon(positions[1].x, positions[1].y, 0x01, DRAW);
@@ -149,15 +155,15 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 				xSemaphoreGive(OLEDRelatedMutex);
 				while (RIGHT_KEY == KEY_ON)
 				{
-				 vTaskDelay(20/portTICK_RATE_MS);
-				 ShowCurrentVoltCurt();
+					vTaskDelay(20 / portTICK_RATE_MS);
+					ShowCurrentVoltCurt();
 				}
 				xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 				OLED_ShowIcon(positions[0].x, positions[0].y, 0x00, DRAW);
 				xSemaphoreGive(OLEDRelatedMutex);
 				xQueueSend(FastCharge_Msg, &commandSet.Plus, 100 / portTICK_RATE_MS);
 			}
-			if (xQueueReceive(Key_Message, &keyMsg, 30/portTICK_RATE_MS) == pdPASS)
+			if (xQueueReceive(Key_Message, &keyMsg, 30 / portTICK_RATE_MS) == pdPASS)
 			{
 				if (keyMsg.KeyEvent == MidDouble)
 				{
@@ -170,17 +176,42 @@ void USBTriggerAdjustUI(char titleString[], FastChargeAdjustCommandSetStruct com
 }
 
 /**
+  * @brief  Wait for insertion of the new load
+
+  * @retval None
+  */
+void MTKWaitForNewLoad()
+{
+	u8 i;
+	UI_Button_Param_Struct button_params;
+	const char* stringTab[1];
+	OLED_Clear_With_Mutex_TakeGive();
+	ShowDialogue(Hint_Str[CurrentSettings->Language], PlugInLoad_Str[CurrentSettings->Language], "", false, false);
+	stringTab[0] = IvePlugged_Str[CurrentSettings->Language];
+
+	button_params.ButtonStrings = stringTab;
+	button_params.ButtonNum = 1;
+	button_params.DefaultValue = 0;
+	button_params.Positions = IvePluggedInPositions[CurrentSettings->Language];
+	UI_Button_Init(&button_params);
+	xQueueReceive(UI_ButtonMsg, &i, portMAX_DELAY);
+}
+
+/**
   * @brief  UserInterface of MTK-PE trigger
 
   * @retval None
   */
 void MTKTrigger_Init(void)
 {
+  bool t; 
 	OLED_PositionStruct positions[2] = { {40,28},{10,28} };
 	FastChargeAdjustCommandSetStruct commandSet;
 	commandSet.Minus = MTK_Decrease;
 	commandSet.Plus = MTK_Increase;
 	USBTriggerAdjustUI("MTK-PE Mode", commandSet, positions);
+	MTKWaitForNewLoad();
+  ReleaseFastCharge(&t);
 }
 
 /**
@@ -208,11 +239,11 @@ void FastChargeTriggerUI(bool* fastchargeTriggeredFlag)
 	u8 selection;
 	const char* protocolTab[3];
 	UI_Menu_Param_Struct menu_params;
-	
-	protocolTab[0]="QC2.0";
-	protocolTab[1]="QC3.0";
-	protocolTab[2]="MTK-PE";
-	
+
+	protocolTab[0] = "QC2.0";
+	protocolTab[1] = "QC3.0";
+	protocolTab[2] = "MTK-PE";
+
 	menu_params.ItemStrings = protocolTab;
 	menu_params.DefaultPos = 0;
 	menu_params.ItemNum = 3;
@@ -228,13 +259,13 @@ void FastChargeTriggerUI(bool* fastchargeTriggeredFlag)
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
 
-  *fastchargeTriggeredFlag=true;
+	*fastchargeTriggeredFlag = true;
 	switch (selection)
 	{
 	case 0:QC2Trigger_Init(); break;
 	case 1:QC3Trigger_Init(); break;
-	case 2:MTKTrigger_Init();break;
-  default:*fastchargeTriggeredFlag=false;
+	case 2:MTKTrigger_Init();*fastchargeTriggeredFlag = false; break;
+	default:*fastchargeTriggeredFlag = false;
 	}
 	UpdateOLEDJustNow = false;
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
@@ -244,7 +275,7 @@ void FastChargeTriggerUI(bool* fastchargeTriggeredFlag)
 
 void ReleaseFastCharge(bool* fastchargeTriggeredFlag)
 {
- u8 mode=Release;
- xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS);
- *fastchargeTriggeredFlag=false;
+	u8 mode = Release;
+	xQueueSend(FastCharge_Msg, &mode, 100 / portTICK_RATE_MS);
+	*fastchargeTriggeredFlag = false;
 }
