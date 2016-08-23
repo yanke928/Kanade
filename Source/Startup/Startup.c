@@ -28,7 +28,6 @@
 #include "Digital_Load.h"
 #include "SDCardff.h"
 #include "DataPin2Protocol.h"
-#include "Ripple_Test.h"
 
 #include "system_stm32f10x.h"
 
@@ -342,12 +341,6 @@ void SystemStartup(void *pvParameters)
 	LogoWithInitStatus_DeInit();
 	UpdateOLEDJustNow = false;
 	OLED_Clear_With_Mutex_TakeGive();
-  if(RIGHT_KEY==KEY_ON)
-  {
-   OSStatInit();
-  }
-//SetMCP3421VoltageSampleSpeed(UltraHighSpeed);
-  //Flash_Test_Run();
 	USBMeter_Init(USBMETER_ONLY);
 	vTaskDelete(NULL);
 }

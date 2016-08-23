@@ -106,6 +106,7 @@ static void USBMeter(void *pvParameters)
 			{
 				StopRecord(&status, 1);
 				updateBasicDataCnt = 5;
+        lastWakeTime = xTaskGetTickCount();
 				goto Refresh;
 			}
 			if (legacy_Test_Params.TestMode == ConstantPower)

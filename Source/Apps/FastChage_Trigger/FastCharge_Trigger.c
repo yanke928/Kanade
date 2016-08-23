@@ -17,6 +17,7 @@
 #include "UI_Menu.h"
 
 #include "FastCharge_Trigger_Circuit.h"
+#include "Cooling_Fan.h"
 
 #include "MultiLanguageStrings.h"
 
@@ -209,9 +210,11 @@ void MTKTrigger_Init(void)
 	FastChargeAdjustCommandSetStruct commandSet;
 	commandSet.Minus = MTK_Decrease;
 	commandSet.Plus = MTK_Increase;
+  Fan_Send_Command(Turn_On);
 	USBTriggerAdjustUI("MTK-PE Mode", commandSet, positions);
 	MTKWaitForNewLoad();
   ReleaseFastCharge(&t);
+  Fan_Send_Command(Auto);
   IgnoreNextKeyEvent();
 }
 

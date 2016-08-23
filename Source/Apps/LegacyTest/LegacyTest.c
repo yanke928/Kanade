@@ -19,6 +19,7 @@
 #include "W25Q64ff.h"
 #include "LED_Animate.h"
 #include "Keys.h"
+#include "Cooling_Fan.h"
 #include "Temperature_Sensors.h"
 
 #include "UI_Adjust.h"
@@ -193,6 +194,7 @@ void StartOrRecoverLoad(Legacy_Test_Param_Struct* test_Params, bool *protectedFl
 		Send_Digital_Load_Command(test_Params->Current, Load_Start);
 	else
 		Send_Digital_Load_Command((float)test_Params->Power / CurrentMeterData.Voltage, Load_Start);
+  Fan_Send_Command(Turn_On);
 	for (;;)
 	{
 		/*If protection triggered,undo the legacy test*/
@@ -380,6 +382,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	}
 	else
 	{
+    Fan_Send_Command(Auto);
 		ShowSmallDialogue(LegacyTestVoltLow_Str[CurrentSettings->Language], 1000, true);
 		if (IsRecording) f_close(&RecordFile);
 		*status = USBMETER_ONLY;
@@ -452,7 +455,7 @@ void ShowSummary(u8 reason)
 	user*/
 	if (reason)
 	{
-		SoundStart(Ichiban_no_takaramono);
+		SoundStart(Tori_No_Uta);
 		LED_Animate_Init(LEDSummaryAnimate);
 	}
 	/*Show item strings*/
@@ -535,8 +538,12 @@ void StopRecord(u8* status, u8 reason)
 			ShowSmallDialogue(SaveFailed_Str[CurrentSettings->Language], 1000, true);
 	}
 
-	/*If it is a record with load,stop EBD*/
-	if (*status == LEGACY_TEST) Send_Digital_Load_Command(0, Load_Stop);
+	/*If it is a record with load,stop load*/
+	if (*status == LEGACY_TEST) 
+     {
+       Send_Digital_Load_Command(0, Load_Stop);
+       Fan_Send_Command(Auto);
+     }
 
 	/*DeInit virtual RTC*/
 	VirtualRTC_DeInit();

@@ -359,7 +359,7 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
 	float *newVoltageAndCurrent_p[2];
 	bool* lstTrend_p[2];
 
-	 double temperatureCoeficient;
+	double temperatureCoeficient;
 
 	lstCoeficient_p[0] = &lstCoeficient[0];
 	lstCoeficient_p[1] = &lstCoeficient[1];
@@ -378,7 +378,7 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
 		switch (voltageSampleSpeed)
 		{
 		case NormalSpeed:
-			voltRAW=GetResultFromMCP3421(0xd1, I2C_2, 3);
+			voltRAW = GetResultFromMCP3421(0xd1, I2C_2, 3);
 			voltRAW = voltRAW & 0x03ffff;
 
 			if (voltRAW & 0x020000)
@@ -386,7 +386,7 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
 				voltRAW = 0;
 			}break;
 		case HighSpeed:
-			voltRAW=GetResultFromMCP3421(0xd1, I2C_2, 2);
+			voltRAW = GetResultFromMCP3421(0xd1, I2C_2, 2);
 			voltRAW = voltRAW & 0xffff;
 
 			if (voltRAW & 0x8000)
@@ -394,7 +394,7 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
 				voltRAW = 0;
 			}break;
 		case UltraHighSpeed:
-			voltRAW=GetResultFromMCP3421(0xd1, I2C_2, 2);
+			voltRAW = GetResultFromMCP3421(0xd1, I2C_2, 2);
 			voltRAW = voltRAW & 0x3fff;
 
 			if (voltRAW & 0x2000)
@@ -411,12 +411,12 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
 			curtRAW = 0;
 		}
 
-		  if(xTaskGetTickCount()>20000/portTICK_RATE_MS)
-		   temperatureCoeficient=1-(double)(InternalTemperature-DELTA_CPU_CORE_TO_RESISTOR-25)*TEMPERATURE_COEFICIENT_PPM/1000000;
-		   else temperatureCoeficient=1;
+		if (xTaskGetTickCount() > 20000 / portTICK_RATE_MS)
+			temperatureCoeficient = 1 - (double)(InternalTemperature - DELTA_CPU_CORE_TO_RESISTOR - 25)*TEMPERATURE_COEFICIENT_PPM / 1000000;
+		else temperatureCoeficient = 1;
 
-		   temperatureCoeficient=temperatureCoeficient>1.005?1.005:temperatureCoeficient;
-		   temperatureCoeficient=temperatureCoeficient<0.995?0.995:temperatureCoeficient;
+		temperatureCoeficient = temperatureCoeficient > 1.005 ? 1.005 : temperatureCoeficient;
+		temperatureCoeficient = temperatureCoeficient < 0.995 ? 0.995 : temperatureCoeficient;
 
 		switch (voltageSampleSpeed)
 		{
@@ -427,7 +427,7 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
 
 		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);
 		CurrentMeterData.Current = (double)(*(int32_t*)(&curtRAW)) / (0x20000 / 2048 * 8) / CURRENT_SENSOR_RESISTANCE*Calibration_Data->CurrentCoeficient*
-    temperatureCoeficient;
+			temperatureCoeficient;
 		CurrentMeterData.Voltage = (double)(*(int32_t*)(&voltRAW)) / voltageMaxValue*2.048*VOLTAGE_GAIN*Calibration_Data->VoltageCoeficient;
 		CurrentMeterData.Power = CurrentMeterData.Current* CurrentMeterData.Voltage;
 		xSemaphoreGive(USBMeterState_Mutex);

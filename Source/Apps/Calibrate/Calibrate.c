@@ -15,6 +15,7 @@
 #include "UI_Confirmation.h"
 #include "Settings.h"
 #include "PWM_Ref.h"
+#include "Cooling_Fan.h"
 
 #include "Calibrate.h"
 
@@ -88,12 +89,14 @@ void Digital_Load_Calibrate()
 	u8 t;
 	char tempString[20];
 	ShowSmallDialogue(AmpfilierSelfCalibrationRunning_Str[CurrentSettings->Language], 1000, false);
+  Fan_Send_Command(Turn_On);
 	Send_Digital_Load_Command(500, Load_Start);
 	vTaskDelay(6000 / portTICK_RATE_MS);
 	for (t = 0; t < 20; t++)
 	{
 		if (CurrentMeterData.Current<0.498 || CurrentMeterData.Current>0.502)
 		{
+      Fan_Send_Command(Auto);
 			Send_Digital_Load_Command(0, Load_Stop);
 			ShowSmallDialogue(AmpfilierSelfCalibrationFailed_Str[CurrentSettings->Language], 1000, true);
 			return;
@@ -107,6 +110,7 @@ void Digital_Load_Calibrate()
 	{
 		if (CurrentMeterData.Current<1.998 || CurrentMeterData.Current>2.002)
 		{
+      Fan_Send_Command(Auto);
 			Send_Digital_Load_Command(0, Load_Stop);
 			ShowSmallDialogue(AmpfilierSelfCalibrationFailed_Str[CurrentSettings->Language], 1000, true);
 			return;
@@ -115,6 +119,7 @@ void Digital_Load_Calibrate()
 		vRef2A0 += CurrentRefVoltage*0.05;
 	}
 	Send_Digital_Load_Command(0, Load_Stop);
+  Fan_Send_Command(Auto);
 	k = (vRef2A0 - vRef0A5) / 1.5;
 	b = vRef0A5 - k*0.5;
 	memcpy(&Calibration_Backup, Calibration_Data, sizeof(Calibration_t));
@@ -204,6 +209,7 @@ void Current_Calibrate()
 	SetKeyBeatRate(20);
   Digital_Load_Unlock();
 	Set_RefVoltageTo(2.16);
+  Fan_Send_Command(Turn_On);
 	for (;;)
 	{
 		sprintf(tempString, "%7.4fA", FilteredMeterData.Current*coeficient);
@@ -233,6 +239,7 @@ void Current_Calibrate()
       {
         if(GetConfirmation(CalibrationAbort_Str[CurrentSettings->Language],""))
          {
+          Fan_Send_Command(Auto);
          	Set_RefVoltageTo(0);
           Digital_Load_Lock();
           return;
@@ -242,6 +249,7 @@ void Current_Calibrate()
 		}
 	}
 Done:
+  Fan_Send_Command(Auto);
 	Set_RefVoltageTo(0);
   Digital_Load_Lock();
 	coeficient = coeficient*Calibration_Data->CurrentCoeficient;

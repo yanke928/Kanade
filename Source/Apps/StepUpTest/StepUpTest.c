@@ -21,6 +21,8 @@
 #include "UI_Confirmation.h"
 #include "UI_ProgressBar.h"
 
+#include "Cooling_Fan.h"
+
 #include "MultiLanguageStrings.h"
 
 #include "Settings.h"
@@ -434,6 +436,8 @@ void RunAStepUpTest()
 	/*Clear the screen*/
 	OLED_Clear_With_Mutex_TakeGive();
 
+  Fan_Send_Command(Turn_On);
+
 	/*Init StepUpTest Tasks*/
 	StepUpTest_Init(&test_Params);
 	StepUpTest_UI_Init(&testTime);
@@ -449,6 +453,8 @@ void RunAStepUpTest()
 	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 	OLED_Clear();
 	xSemaphoreGive(OLEDRelatedMutex);
+
+  Fan_Send_Command(Auto);
 
 	/*Show the reason for the end of the test*/
 	if (testInfo.TestOverFlag == 1)

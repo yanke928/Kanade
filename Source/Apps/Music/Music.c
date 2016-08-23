@@ -1006,12 +1006,6 @@ const SingleToneStruct Only_My_Railgun[] =
 {0,0}
 };
 
-const SingleToneStruct Ichiban_no_takaramono[] =
-{
-  {1000,100},
-  {0,0}
-};
-
 const SingleToneStruct Alarm[] =
 {
  {1000,100},
