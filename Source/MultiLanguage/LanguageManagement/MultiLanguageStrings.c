@@ -707,8 +707,8 @@ const char* const DontSave_Str[] = { DontSave_EN,DontSave_TW,DontSave_CN,DontSav
 
 const char LanguageItem_EN[] = "English";
 const char LanguageItem_TW[] = "日本語";
-const char LanguageItem_CN[] = "日本语(华式)";
-const char LanguageItem_JP[] = "台灣語";
+const char LanguageItem_CN[] = "简体中文";
+const char LanguageItem_JP[] = "繁體中文";
 const char* const LanguageItem_Str[] = { LanguageItem_EN,LanguageItem_TW,LanguageItem_CN,LanguageItem_JP };
 
 const char SettingsItemIdleClockSettings_EN[] = "Idle Clock Settings";

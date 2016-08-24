@@ -55,6 +55,7 @@ void Digital_Clock()
 	for (;;)
 	{
 		Time_Get();
+    //TakeAScreenShot();
 		if (updateTempCnt == 0)
 		{
 			Restart_ADC_And_DMA();
