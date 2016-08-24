@@ -412,10 +412,12 @@ To help with translations, just make a pull request, put up an issue or get in t
 - 量程 0 – 22 V
 - 分辨率 0.1 mV
 - 精度 0.1% ± 2字
+
 #### 电流
 - 量程 0 – 5 A
 - 分辨率 0.1 mA
-- 精度0.1%±2字
+- 精度0.1% ± 2字
+
 #### D+ D- 电压
 - 量程 0 - 3.3V
 - 分辨率 10 mV
