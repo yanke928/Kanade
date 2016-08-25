@@ -18,28 +18,6 @@
 
 #define ANY_KEY_PRESSED MIDDLE_KEY==KEY_ON||LEFT_KEY==KEY_ON||RIGHT_KEY==KEY_ON
 
-/**Define the time parameters which judge the key events
-
-    *PRESSTIME:
-	 The minimum time of every single click,
-     the clicks that shorter than PRESSTIME will be ignored
-
-	*LONGPRESSTIME:
-	 The minimum time of every long click,
-	 the clicks that shorter than LONGPRESSTIME will be treated
-	 as single click
-
-	*DOUBLECLICKTIMEINTERVAL:
-	 The maximum time interval between two clicks,two clicks
-	 with a interval more than DOUBLECLICKTIMEINTERVAL will
-	 be treated as two single click events
-
-	*Unit(ms)
- */
-#define PRESSTIME (30/10)
-#define LONGPRESSTIME (1000/10)
-#define DOUBLECLICKTIMEINTERVAL (200/10)
-
  //KeyEvents enum
 enum {
 	MidDouble = 1,

@@ -15,6 +15,30 @@
 
 #define KEY_EVENT_HANDLER_PRIORITY tskIDLE_PRIORITY+3
 
+#define KEY_EVENT_HANDLER_TIME_PER_SAMPLE_MS 2
+
+/**Define the time parameters which judge the key events
+
+    *PRESSTIME:
+	 The minimum time of every single click,
+     the clicks that shorter than PRESSTIME will be ignored
+
+	*LONGPRESSTIME:
+	 The minimum time of every long click,
+	 the clicks that shorter than LONGPRESSTIME will be treated
+	 as single click
+
+	*DOUBLECLICKTIMEINTERVAL:
+	 The maximum time interval between two clicks,two clicks
+	 with a interval more than DOUBLECLICKTIMEINTERVAL will
+	 be treated as two single click events
+
+	*Unit(ms)
+ */
+#define PRESSTIME (30/KEY_EVENT_HANDLER_TIME_PER_SAMPLE_MS)
+#define LONGPRESSTIME (1000/KEY_EVENT_HANDLER_TIME_PER_SAMPLE_MS)
+#define DOUBLECLICKTIMEINTERVAL (200/KEY_EVENT_HANDLER_TIME_PER_SAMPLE_MS)
+
 /**The variables that KeyEvents() uses
 
  *KeyEvent :
@@ -279,7 +303,7 @@ void KeyEventHandler(void *pvParameters)
 				}
 			}
 		}
-		vTaskDelay(10 / portTICK_RATE_MS);
+		vTaskDelay(KEY_EVENT_HANDLER_TIME_PER_SAMPLE_MS / portTICK_RATE_MS);
 	}
 }
 
