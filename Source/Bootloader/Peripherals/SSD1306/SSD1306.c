@@ -315,6 +315,17 @@ void OLED_DrawRect(unsigned char x1, unsigned char y1, unsigned char x2, unsigne
 	OLED_DrawVerticalLine(x2, y1, y2, drawOrUnDraw);
 }
 
+bool OLED_ReadPoint(u8 x, u8 y)
+{
+ u8  pos, bx, temp = 0;
+ if (x > 127 || y > 63)return false;
+	pos = 7 - y / 8;
+	bx = y % 8;
+	temp = 1 << (7 - bx);
+if ((OLED_GRAM[x][pos] & temp) > 0) return true;
+ else return false;
+}
+
 /**
   * @brief  Show a char withgiven size
 
