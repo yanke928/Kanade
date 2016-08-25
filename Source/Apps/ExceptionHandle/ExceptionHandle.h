@@ -10,6 +10,8 @@
 
 void ApplicationNewFailed(const char * appName);
 
+void ApplicationFatalError(const char* appName,const char* errorString);
+
 void ShowFault(char * string);
 
 void System_OverHeat_Exception_Handler(u8 status,Legacy_Test_Param_Struct* params);

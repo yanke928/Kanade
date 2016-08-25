@@ -247,7 +247,7 @@ void KeyEventHandler(void *pvParameters)
 		/*If a key event takes place*/
 		if ((KeyEvent != 0 && AdvancedKeyEvent == 0) || (AdvancedKeyEvent != 0 && ContinousPressBeats != 0))
 		{
-      TakeAScreenShot();
+       //TakeAScreenShot();
 			/*Handle advanced key event priorly*/
 			if (AdvancedKeyEvent != 0)
 			{

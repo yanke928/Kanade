@@ -67,6 +67,19 @@ void ApplicationNewFailed(const char * appName)
 	for (;;);
 }
 
+void ApplicationFatalError(const char* appName,const char* errorString)
+{
+  char tempString[128];
+	xSemaphoreGive(OLEDRelatedMutex);
+	taskENTER_CRITICAL();
+	OLED_Clear();
+  ShowDialogue("App Fatal Error", "", "",false,false);
+  sprintf(tempString, "An error occurred in app \"%s\":%s", appName,errorString);
+  UI_PrintMultiLineString(4, 15, 125, 63, tempString, NotOnSelect, 12);
+	OLED_Refresh_Gram();
+	for (;;);
+}
+
 /**
   * @brief Show xx Fault occurred
 
@@ -85,13 +98,17 @@ void ShowFault(char * string)
 	for (;;);
 }
 
+/**
+  * @brief Show app fault 
+
+  * @retval None
+  */
 void ShowDetailedFault(char* string)
 {
-	char tempString[60];
 	xSemaphoreGive(OLEDRelatedMutex);
 	taskENTER_CRITICAL();
 	OLED_Clear();
- UI_PrintMultiLineString(0, 0, 127, 63, string, NotOnSelect, 12);
+  UI_PrintMultiLineString(0, 0, 127, 63, string, NotOnSelect, 12);
 	OLED_Refresh_Gram();
 	for (;;);
 }

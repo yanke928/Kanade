@@ -157,6 +157,7 @@ static void USBMeter(void *pvParameters)
 					(GetConfirmation(MountUSBMassStorageConfirm_Str[CurrentSettings->Language], ""))
 					MassStorage_App(); break;
 				}
+        ClearKeyEvent();
 				lastWakeTime = xTaskGetTickCount();
 				updateBasicDataCnt = 5;
 				goto Refresh;
@@ -184,6 +185,7 @@ static void USBMeter(void *pvParameters)
 					vTaskDelay(1000 / portTICK_RATE_MS);
 					OLED_Clear_With_Mutex_TakeGive();
 				}
+        ClearKeyEvent();
 				lastWakeTime = xTaskGetTickCount();
 				updateBasicDataCnt = 5;
 				goto Refresh;

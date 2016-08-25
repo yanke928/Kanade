@@ -410,26 +410,26 @@ void RunAStepUpTest()
 	/*Get neccesary params*/
 	test_Params.StartCurrent =
 		GetTestParam(StartCurrentGet_Str[CurrentSettings->Language], 100, 
-	  CURRENT_MAX,
+	  CURRENT_MAX-100,
 			1000, 100, "mA", 20);
   if(test_Params.StartCurrent<0) goto clear;
-	test_Params.StopCurrent =
-		GetTestParam(EndCurrentGet_Str[CurrentSettings->Language], test_Params.StartCurrent + 100, 
-	  CURRENT_MAX,
-			test_Params.StartCurrent < 2000 ? 2000 : test_Params.StartCurrent + 100, 100, "mA", 20);
-  if(test_Params.StopCurrent<0) goto clear;
 	test_Params.Step = GetTestParam(StepCurrentGet_Str[CurrentSettings->Language], 100,
-		test_Params.StopCurrent - test_Params.StartCurrent > 500 ? 500 : test_Params.StopCurrent - test_Params.StartCurrent,
+		CURRENT_MAX-test_Params.StartCurrent>500?500:CURRENT_MAX-test_Params.StartCurrent,
 		100, 100, "mA", 10);
   if(test_Params.Step<0) goto clear;
+	test_Params.StopCurrent =
+		GetTestParam(EndCurrentGet_Str[CurrentSettings->Language], test_Params.StartCurrent + test_Params.Step , 
+	  CURRENT_MAX,
+		test_Params.StartCurrent + test_Params.Step, test_Params.Step, "mA", 20);
+  if(test_Params.StopCurrent<0) goto clear;
 	test_Params.TimeInterval =
 		GetTestParam(TimeIntervalGet_Str[CurrentSettings->Language], 2, 30,
 			4, 2, "s", 10);
   if(test_Params.TimeInterval<0) goto clear;
 	test_Params.ProtectVolt =
 		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0,
-		(int)(1000 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (1000 * CurrentMeterData.Voltage) / 10 * 10 : 100,
-			(int)(900 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (900 * CurrentMeterData.Voltage) / 10 * 10 : 100, 10, "mV", 25);
+		(int)(100 * CurrentMeterData.Voltage) * 10 > 0 ? (int)(100 * CurrentMeterData.Voltage) * 10 : 100,
+			(int)(90 * CurrentMeterData.Voltage) * 10 > 0 ? (int)(90 * CurrentMeterData.Voltage) * 10 : 100, 10, "mV", 25);
   if(test_Params.ProtectVolt<0) goto clear;
 	testTime = ((test_Params.StopCurrent - test_Params.StartCurrent) / test_Params.Step + 1)*test_Params.TimeInterval;
 

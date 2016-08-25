@@ -20,6 +20,12 @@ xQueueHandle UI_AdjustMsg;
 
 xTaskHandle UI_Adjust_Handle=NULL;
 
+/**
+  * @brief  Pad left with '0'
+
+  * @param  String,Formatted char num
+
+  */
 void ReFormatNumString(char string[], u8 targetCharNum)
 {
 	u8 i, p;
@@ -43,6 +49,32 @@ void ReFormatNumString(char string[], u8 targetCharNum)
 	string[targetCharNum] = 0;
 }
 
+/**
+  * @brief  Get num of digits of a int32 value
+
+  * @param  Int32 value
+
+  * @rtval  Digit num
+
+  */
+u8 GetDigitNumOfInt32(int num)
+{
+ u8 digitNum=0;
+ for(;;)
+ {
+  num=num/10;
+  if(num>=1) digitNum++;
+  else break;
+ }
+ return digitNum+1;
+}
+
+/**
+  * @brief  UI_Adjust handler
+
+  * @param  Pointer to UI_Adjust_Param_Struct
+
+  */
 void UI_Adjust_Handler(void *pvParameters)
 {
 	UI_Adjust_Param_Struct* adjustParams = (UI_Adjust_Param_Struct*)pvParameters;
@@ -53,23 +85,13 @@ void UI_Adjust_Handler(void *pvParameters)
 	char value[7];
 	OLED_PositionStruct positions[4];
 	int currentValue = adjustParams->DefaultValue;
+
+  /*Check params*/
+  if(adjustParams->DefaultValue<adjustParams->Min || adjustParams->DefaultValue>adjustParams->Max)
+  ApplicationFatalError("UI_Adjust","Default value out of range");
+
 	/*Get length of maxValue*/
-	if (adjustParams->Max / 10 >= 1)
-	{
-		digitNum = 2;
-		if (adjustParams->Max / 100 >= 1)
-		{
-			digitNum = 3;
-			if (adjustParams->Max / 1000 >= 1)
-			{
-				digitNum = 4;
-				if (adjustParams->Max / 10000 >= 1)
-				{
-					digitNum = 5;
-				}
-			}
-		}
-	}
+	digitNum=GetDigitNumOfInt32(adjustParams->Max);
 	/*Get length of unitString*/
 	for (i = 0; adjustParams->UnitString[i] != 0; i++);
 	unitCharNum = i;
@@ -146,12 +168,12 @@ void UI_Adjust_Handler(void *pvParameters)
 				if (keyMsg.KeyEvent == LeftClick || keyMsg.AdvancedKeyEvent == LeftContinous)
 				{
 					currentValue = currentValue - adjustParams->Step;
-					if (currentValue < adjustParams->Min) currentValue = adjustParams->Min;
+					if (currentValue < adjustParams->Min) currentValue = currentValue + adjustParams->Step;
 				}
 				else if (keyMsg.KeyEvent == RightClick || keyMsg.AdvancedKeyEvent == RightContinous)
 				{
 					currentValue = currentValue + adjustParams->Step;
-					if (currentValue > adjustParams->Max) currentValue = adjustParams->Max;
+					if (currentValue > adjustParams->Max) currentValue = currentValue - adjustParams->Step;
 				}
 				else if (keyMsg.KeyEvent == MidClick)
 				{
