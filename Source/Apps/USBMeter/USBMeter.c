@@ -1,4 +1,4 @@
-//File Name   USBMeterUI.c
+////File Name   USBMeterUI.c
 //Description Main UI
 
 #include <stdio.h>
@@ -58,6 +58,8 @@ static void ScrollDialgram_Routine(void);
 
 #define IDLE_TIME_SEC 5
 
+#define DIGITAL_LOAD_POWER_MAX  Digital_Load_Params[CurrentSettings->Digital_Load_Params_Mode]->PowerMax
+
 /**
   * @brief  USBMeter
 
@@ -67,6 +69,8 @@ static void USBMeter(void *pvParameters)
 {
 	char tempString[20];
 	bool fastChargeStatus = false;
+	bool overPowerExceptionHandledFlag = false;
+	bool exceptionHandleRtval;
 	u8 firstEnter = 1;
 	Key_Message_Struct keyMessage;
 	u8 status = USBMETER_ONLY;
@@ -99,6 +103,39 @@ static void USBMeter(void *pvParameters)
 			lastWakeTime = xTaskGetTickCount();
 			updateBasicDataCnt = 5; goto Refresh;
 		}
+		if (status == LEGACY_TEST
+			&& ((FilteredMeterData.Power*1000 > DIGITAL_LOAD_POWER_MAX + 500 && overPowerExceptionHandledFlag == false)
+				|| (FilteredMeterData.Power*1000 > DIGITAL_LOAD_POWER_MAX + 5000 && overPowerExceptionHandledFlag == true)))
+		{
+			if (overPowerExceptionHandledFlag == true)
+			{
+				System_OverPower_Exception_Handler(status, &legacy_Test_Params);
+				ClearKeyEvent();
+        StopRecord(&status, 0);
+				lastWakeTime = xTaskGetTickCount();
+				updateBasicDataCnt = 5;
+				overPowerExceptionHandledFlag = false;
+				goto Refresh;
+			}
+			exceptionHandleRtval = System_OverPower_Exception_Handler(status, &legacy_Test_Params);
+			overPowerExceptionHandledFlag = true;
+			if (exceptionHandleRtval)
+			{
+				ClearKeyEvent();
+				lastWakeTime = xTaskGetTickCount();
+				updateBasicDataCnt = 5;
+				goto Refresh;
+			}
+			else
+			{
+				StopRecord(&status, 0);
+        overPowerExceptionHandledFlag = false;
+				ClearKeyEvent();
+				lastWakeTime = xTaskGetTickCount();
+				updateBasicDataCnt = 5;
+				goto Refresh;
+			}
+		}
 		if (status == LEGACY_TEST)
 		{
 			if (CurrentMeterData.Voltage * 1000 < legacy_Test_Params.ProtectVolt ||
@@ -106,7 +143,7 @@ static void USBMeter(void *pvParameters)
 			{
 				StopRecord(&status, 1);
 				updateBasicDataCnt = 5;
-        lastWakeTime = xTaskGetTickCount();
+				lastWakeTime = xTaskGetTickCount();
 				goto Refresh;
 			}
 			if (legacy_Test_Params.TestMode == ConstantPower)
@@ -157,7 +194,7 @@ static void USBMeter(void *pvParameters)
 					(GetConfirmation(MountUSBMassStorageConfirm_Str[CurrentSettings->Language], ""))
 					MassStorage_App(); break;
 				}
-        ClearKeyEvent();
+				ClearKeyEvent();
 				lastWakeTime = xTaskGetTickCount();
 				updateBasicDataCnt = 5;
 				goto Refresh;
@@ -173,10 +210,10 @@ static void USBMeter(void *pvParameters)
 						StopRecord(&status, 0);
 					}
 				}
-				else if (keyMessage.KeyEvent == MidClick)
-				{
-					ScrollDialgram_Routine();
-				}
+				//				else if (keyMessage.KeyEvent == MidClick)
+				//				{
+				//					ScrollDialgram_Routine();
+				//				}
 				else
 				{
 					ShowDialogue(Hint_Str[CurrentSettings->Language],
@@ -185,7 +222,7 @@ static void USBMeter(void *pvParameters)
 					vTaskDelay(1000 / portTICK_RATE_MS);
 					OLED_Clear_With_Mutex_TakeGive();
 				}
-        ClearKeyEvent();
+				ClearKeyEvent();
 				lastWakeTime = xTaskGetTickCount();
 				updateBasicDataCnt = 5;
 				goto Refresh;
@@ -443,7 +480,6 @@ static void ScrollDialgram_Routine()
 
 #define PROTOCOL_DISPLAY_TIME 3
 #define PROTOCOL_DISPLAY_COUNT_MAX 6
-
 
 /**
   * @brief  Display Volt,Cureent,Power and Temperature

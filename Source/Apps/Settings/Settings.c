@@ -32,7 +32,9 @@
 #include "SelfTest.h"
 #include "Calibrate.h"
 #include "Digital_Clock.h"
+#include "Digital_Load.h"
 #include "Ripple_Test.h"
+#include "Developer_Options.h"
 
 #include "Settings.h"
 
@@ -40,7 +42,7 @@ Settings_Struct* CurrentSettings = (Settings_Struct*)0x0803b800;
 
 Settings_Struct SettingsBkp;
 
-const Settings_Struct DefaultSettings = { 0 ,{75 ,120 ,5},{true,60}};
+const Settings_Struct DefaultSettings = { 0 ,{75 ,120 ,5},{true,60},NORMAL_MODE};
 
 typedef  void(*pFunction)(void);
 
@@ -69,7 +71,7 @@ void Settings()
 {
 	UI_Menu_Param_Struct menuParams;
 	u8 selection;
-	const char* stringTab[10];
+	const char* stringTab[11];
 
 	if (SDCardMountStatus)
 		stringTab[0] = SettingsItemUnmountDisk_Str[CurrentSettings->Language];
@@ -84,11 +86,12 @@ void Settings()
 	stringTab[6] = SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
 	stringTab[7] = SettingsItemSystemInfo_Str[CurrentSettings->Language];
 	stringTab[8] = SettingsItemSystemScan_Str[CurrentSettings->Language];
-	stringTab[9] = SettingsItemCalibration_Str[CurrentSettings->Language];
+	stringTab[9] = SettingsItemCalibration_Str[CurrentSettings->Language]; 
+  stringTab[10]="Developer Options";
 
 	menuParams.ItemStrings = stringTab;
 	menuParams.DefaultPos = 0;
-	menuParams.ItemNum = 10;
+	menuParams.ItemNum = 11;
 	menuParams.FastSpeed = 10;
 	OLED_Clear_With_Mutex_TakeGive();
 
@@ -111,6 +114,7 @@ void Settings()
 	case 7:About(); break;
 	case 8:SelfTest(); break;
 	case 9:CalibrateSelect(); break;
+  case 10:Developer_Options();break;
 	}
 }
 
@@ -248,6 +252,9 @@ bool CheckSettings()
   if(CurrentSettings->Idle_Clock_Settings.ClockEnable!=true&&
     (CurrentSettings->Idle_Clock_Settings.IdleTime<15||
      CurrentSettings->Idle_Clock_Settings.IdleTime>300)) return false;
+
+  if(CurrentSettings->Digital_Load_Params_Mode!=DEVELOPER_MODE&&
+     CurrentSettings->Digital_Load_Params_Mode!=NORMAL_MODE) return false;
 
 	return true;
 }

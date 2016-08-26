@@ -5,7 +5,6 @@
 #include <stdbool.h>
 
 #define FLASH_SETTINGS_BLOCK 0x0803b800
-
 #define FLASH_SETTINGS_ADDR 0x0803b800
 
 void Settings(void);
@@ -30,6 +29,7 @@ typedef struct
  u8 Language;
  Protect_Settings_Struct Protect_Settings;
  Idle_Clock_Settings_Struct Idle_Clock_Settings;
+ u8 Digital_Load_Params_Mode;
 }Settings_Struct;
 
 extern Settings_Struct* CurrentSettings;

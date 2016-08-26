@@ -25,6 +25,11 @@
 
 xQueueHandle Digital_Load_Command;
 
+const Digital_Load_Params_t Normal={40000,4000,"Normal Mode"};
+const Digital_Load_Params_t Developer={80000,4500,"Developer Mode"};
+
+const Digital_Load_Params_t* const Digital_Load_Params[DIGITAL_LOAD_PARAMS_NUM]={&Normal,&Developer};
+
 float CurrentRefVoltage;
 
 void SaveCalibration(void);
@@ -75,7 +80,7 @@ void Digital_Load_Handler(void *pvParameters)
 		}
 		for (;;)
 		{
-			if (current < 0 || current> 4.1)
+			if (current < 0 || current> 4.6)
 			{
 				Set_RefVoltageTo(0); 
         Digital_Load_Lock();break;

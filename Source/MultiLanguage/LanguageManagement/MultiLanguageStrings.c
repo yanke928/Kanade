@@ -765,6 +765,41 @@ const char PlugInLoad_Str_CN[] = "请接入负载";
 const char PlugInLoad_Str_JP[] = "Plug in load";
 const char* const PlugInLoad_Str[] = { PlugInLoad_Str_EN,PlugInLoad_Str_TW,PlugInLoad_Str_CN,PlugInLoad_Str_JP };
 
+const char OverPowerLimit_Str_EN[] = "Over power";
+const char OverPowerLimit_Str_TW[] = "超過功率限制";
+const char OverPowerLimit_Str_CN[] = "超过功率限制";
+const char OverPowerLimit_Str_JP[] = "Over power";
+const char* const OverPowerLimit_Str[] = { OverPowerLimit_Str_EN,OverPowerLimit_Str_TW,OverPowerLimit_Str_CN,OverPowerLimit_Str_JP };
+
+const char Continue_Str_EN[] = " Continue ";
+const char Continue_Str_TW[] = " 繼續 ";
+const char Continue_Str_CN[] = " 继续 ";
+const char Continue_Str_JP[] = " 続けます ";
+const char* const Continue_Str[] = { Continue_Str_EN,Continue_Str_TW,Continue_Str_CN,Continue_Str_JP };
+
+const char Stop_Str_EN[] = " Stop ";
+const char Stop_Str_TW[] = " 停止 ";
+const char Stop_Str_CN[] = " 停止 ";
+const char Stop_Str_JP[] = " 停止 ";
+const char* const Stop_Str[] = { Stop_Str_EN,Stop_Str_TW,Stop_Str_CN,Stop_Str_JP };
+
+const OLED_PositionStruct ContinueAndStopPositions[LanguageNum][2] =
+{
+{8,45,64,45},
+{36,45,84,45},
+{36,45,84,45},
+{8 ,45,60,45}
+};
+
+const OLED_PositionStruct StopPositions[LanguageNum][2] =
+{
+{68,45},
+{68,45},
+{68,45},
+{68,45}
+};
+
+
 const OLED_PositionStruct IvePluggedInPositions[LanguageNum][1] =
 {
 {28,45},

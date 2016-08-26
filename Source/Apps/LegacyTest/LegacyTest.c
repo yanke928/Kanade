@@ -43,8 +43,8 @@
 #include "LegacyTest.h"
 
 #define RECORD_HANDLER_PRIORITY tskIDLE_PRIORITY+6
-#define LEGACY_TEST_CURRENT_MAX 4000
-#define LEGACY_TEST_POWER_MAX POWER_MAX 40000
+//#define LEGACY_TEST_CURRENT_MAX 4000
+//#define LEGACY_TEST_POWER_MAX POWER_MAX 40000
 
 FIL RecordFile;
 
@@ -272,6 +272,9 @@ char SelectStorage()
 	else return 'N';
 }
 
+#define DIGITAL_LOAD_CURRENT_MAX  Digital_Load_Params[CurrentSettings->Digital_Load_Params_Mode]->CurrentMax
+#define DIGITAL_LOAD_POWER_MAX  Digital_Load_Params[CurrentSettings->Digital_Load_Params_Mode]->PowerMax
+
 /**
   * @brief  Run a legacy test with params from user
   */
@@ -287,7 +290,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	if (test_Params->TestMode == ConstantCurrent)
 	{
 		test_Params->Current = GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language], 100,
-			LEGACY_TEST_CURRENT_MAX,
+			DIGITAL_LOAD_CURRENT_MAX,
 			1000, 100, "mA", 20);
 		if (test_Params->Current < 0)
 		{
@@ -300,7 +303,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	{
 		test_Params->Power =
 			GetTestParam(LegacyTestSetPower_Str[CurrentSettings->Language], 500,
-				40000,
+				DIGITAL_LOAD_POWER_MAX,
 				10000, 500, "mW", 20);
 		if (test_Params->Power < 0)
 		{
@@ -563,4 +566,3 @@ void StopRecord(u8* status, u8 reason)
 	/*Reset status flag*/
 	*status = USBMETER_ONLY;
 }
-

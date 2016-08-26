@@ -38,7 +38,7 @@
 #define FLASH_DATAEND_ADDR  FLASH_CACHE_START_ADDR+12288
 #define UPDATE_RATE_TIME_PER_RECORD 1
 
-#define CURRENT_MAX 4000
+//#define CURRENT_MAX 4000
 
 /*Step-up test params*/
 //#define STEP_UP_TEST_INTERVAL_MAX 30
@@ -403,6 +403,9 @@ void ShowStepUpTestResult(u16 time)
 	}
 }
 
+#define DIGITAL_LOAD_CURRENT_MAX  Digital_Load_Params[CurrentSettings->Digital_Load_Params_Mode]->CurrentMax
+#define DIGITAL_LOAD_POWER_MAX  Digital_Load_Params[CurrentSettings->Digital_Load_Params_Mode]->PowerMax
+
 void RunAStepUpTest()
 {
 	StepUpTestParamsStruct test_Params;
@@ -412,16 +415,16 @@ void RunAStepUpTest()
 	/*Get neccesary params*/
 	test_Params.StartCurrent =
 		GetTestParam(StartCurrentGet_Str[CurrentSettings->Language], 100, 
-	  CURRENT_MAX-100,
+	  DIGITAL_LOAD_CURRENT_MAX-100,
 			1000, 100, "mA", 20);
   if(test_Params.StartCurrent<0) goto clear;
 	test_Params.Step = GetTestParam(StepCurrentGet_Str[CurrentSettings->Language], 100,
-		CURRENT_MAX-test_Params.StartCurrent>500?500:CURRENT_MAX-test_Params.StartCurrent,
+		DIGITAL_LOAD_CURRENT_MAX-test_Params.StartCurrent>500?500:DIGITAL_LOAD_CURRENT_MAX-test_Params.StartCurrent,
 		100, 100, "mA", 10);
   if(test_Params.Step<0) goto clear;
 	test_Params.StopCurrent =
 		GetTestParam(EndCurrentGet_Str[CurrentSettings->Language], test_Params.StartCurrent + test_Params.Step , 
-	  CURRENT_MAX,
+	  DIGITAL_LOAD_CURRENT_MAX,
 		test_Params.StartCurrent + test_Params.Step, test_Params.Step, "mA", 20);
   if(test_Params.StopCurrent<0) goto clear;
 	test_Params.TimeInterval =

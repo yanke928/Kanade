@@ -177,6 +177,13 @@ extern const char* const IvePlugged_Str[LanguageNum];
 extern const char* const PlugInLoad_Str[LanguageNum];
 extern const OLED_PositionStruct  IvePluggedInPositions[LanguageNum][1];
 
+/*Over Power Control*/
+extern const char* const Continue_Str[LanguageNum];
+extern const char* const Stop_Str[LanguageNum];
+extern const char* const OverPowerLimit_Str[LanguageNum];
+extern const OLED_PositionStruct  ContinueAndStopPositions[LanguageNum][2];
+extern const OLED_PositionStruct  StopPositions[LanguageNum][2];
+
 /*Confirmation positions*/
 extern const OLED_PositionStruct  ComfirmationPositions[LanguageNum][2];
 extern const OLED_PositionStruct  SelectLegacyTestModePositions[LanguageNum][2];

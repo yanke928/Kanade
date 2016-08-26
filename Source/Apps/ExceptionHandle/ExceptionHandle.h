@@ -18,4 +18,6 @@ void System_OverHeat_Exception_Handler(u8 status,Legacy_Test_Param_Struct* param
 
 void ShowDetailedFault(char* string);
 
+bool System_OverPower_Exception_Handler(u8 status, Legacy_Test_Param_Struct* params);
+
 #endif /* __EXCEPTIONHANDLE_H */

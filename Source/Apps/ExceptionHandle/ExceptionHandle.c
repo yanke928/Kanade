@@ -16,9 +16,12 @@
 #include "Music.h"
 #include "Digital_Load.h"
 #include "VirtualRTC.h"
+#include "Cooling_Fan.h"
 
 #include "USBMeter.h"
 #include "LegacyTest.h"
+
+#include "UI_Button.h"
 
 #include "Settings.h"
 #include "MultiLanguageStrings.h"
@@ -39,7 +42,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask,
 	xSemaphoreGive(OLEDRelatedMutex);
 	SetUpdateOLEDJustNow();
 	OLED_Clear();
-	ShowDialogue("StackOverFlow", "", "",false,false);
+	ShowDialogue("StackOverFlow", "", "", false, false);
 	OLED_ShowAnyString(4, 16, "StackOverFlow in", NotOnSelect, 12);
 	OLED_ShowAnyString(4, 28, "\"", NotOnSelect, 12);
 	OLED_ShowAnyString(10, 28, (char *)pcTaskName, NotOnSelect, 12);
@@ -60,22 +63,27 @@ void ApplicationNewFailed(const char * appName)
 	xSemaphoreGive(OLEDRelatedMutex);
 	taskENTER_CRITICAL();
 	OLED_Clear();
-	ShowDialogue("App Create Failure", "", "",false,false);
+	ShowDialogue("App Create Failure", "", "", false, false);
 	sprintf(tempString, "RAM full while creating task \"%s\"", appName);
 	UI_PrintMultiLineString(4, 15, 125, 63, tempString, NotOnSelect, 12);
 	OLED_Refresh_Gram();
 	for (;;);
 }
 
-void ApplicationFatalError(const char* appName,const char* errorString)
+/**
+  * @brief Application fatal error handler
+
+  * @retval None
+  */
+void ApplicationFatalError(const char* appName, const char* errorString)
 {
-  char tempString[128];
+	char tempString[128];
 	xSemaphoreGive(OLEDRelatedMutex);
 	taskENTER_CRITICAL();
 	OLED_Clear();
-  ShowDialogue("App Fatal Error", "", "",false,false);
-  sprintf(tempString, "An error occurred in app \"%s\":%s", appName,errorString);
-  UI_PrintMultiLineString(4, 15, 125, 63, tempString, NotOnSelect, 12);
+	ShowDialogue("App Fatal Error", "", "", false, false);
+	sprintf(tempString, "An error occurred in app \"%s\":%s", appName, errorString);
+	UI_PrintMultiLineString(4, 15, 125, 63, tempString, NotOnSelect, 12);
 	OLED_Refresh_Gram();
 	for (;;);
 }
@@ -91,7 +99,7 @@ void ShowFault(char * string)
 	taskENTER_CRITICAL();
 	//SetUpdateOLEDJustNow();
 	OLED_Clear();
-	ShowDialogue("System Fault", "", "",false,false);
+	ShowDialogue("System Fault", "", "", false, false);
 	OLED_ShowAnyString(4, 16, string, NotOnSelect, 16);
 	OLED_ShowAnyString(4, 42, "Occurred!!", NotOnSelect, 16);
 	OLED_Refresh_Gram();
@@ -99,7 +107,7 @@ void ShowFault(char * string)
 }
 
 /**
-  * @brief Show app fault 
+  * @brief Show app fault
 
   * @retval None
   */
@@ -108,7 +116,7 @@ void ShowDetailedFault(char* string)
 	xSemaphoreGive(OLEDRelatedMutex);
 	taskENTER_CRITICAL();
 	OLED_Clear();
-  UI_PrintMultiLineString(0, 0, 127, 63, string, NotOnSelect, 12);
+	UI_PrintMultiLineString(0, 0, 127, 63, string, NotOnSelect, 12);
 	OLED_Refresh_Gram();
 	for (;;);
 }
@@ -119,12 +127,12 @@ void Show_OverHeat_Temperature(u8 sensor)
 	u8 addr;
 	u8 length;
 	OLED_ShowAnyString(1, 42, "               ", NotOnSelect, 16);
-	if(sensor==0)
-	sprintf(tempString, "%.1fC>>%.1fC", MOSTemperature, 
-	(float)CurrentSettings->Protect_Settings.InternalTemperature_Max-CurrentSettings->Protect_Settings.Protection_Resume_Gap);
+	if (sensor == 0)
+		sprintf(tempString, "%.1fC>>%.1fC", MOSTemperature,
+		(float)CurrentSettings->Protect_Settings.InternalTemperature_Max - CurrentSettings->Protect_Settings.Protection_Resume_Gap);
 	else
-	sprintf(tempString, "%.1fC>>%.1fC", ExternalTemperature, 
-	(float)CurrentSettings->Protect_Settings.ExternalTemperature_Max-CurrentSettings->Protect_Settings.Protection_Resume_Gap);		
+		sprintf(tempString, "%.1fC>>%.1fC", ExternalTemperature,
+		(float)CurrentSettings->Protect_Settings.ExternalTemperature_Max - CurrentSettings->Protect_Settings.Protection_Resume_Gap);
 	length = GetStringGraphicalLength(tempString);
 	addr = 63 - length * 4;
 	OLED_ShowAnyString(addr, 42, tempString, NotOnSelect, 16);
@@ -139,49 +147,47 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 {
 	bool i;
 	u8 sensor;
-	xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
-	OLED_Clear();
-	xSemaphoreGive(OLEDRelatedMutex);
+	OLED_Clear_With_Mutex_TakeGive();
 	SoundStart(Alarm);
-	if(MOSTemperature > CurrentSettings->Protect_Settings.InternalTemperature_Max)
+	if (MOSTemperature > CurrentSettings->Protect_Settings.InternalTemperature_Max)
 	{
-	 sensor=0;
+		sensor = 0;
 	}
-	else sensor=1;
+	else sensor = 1;
 	Show_OverHeat_Temperature(sensor);
 	if (status != USBMETER_ONLY)
 	{
-	  if(sensor==0)
-		ShowDialogue(SystemOverHeat_Str[CurrentSettings->Language],
-			TestPaused_Str[CurrentSettings->Language], "",false,false);
+		if (sensor == 0)
+			ShowDialogue(SystemOverHeat_Str[CurrentSettings->Language],
+				TestPaused_Str[CurrentSettings->Language], "", false, false);
 		else
-		ShowDialogue(ExternalOverHeat_Str[CurrentSettings->Language],
-			TestPaused_Str[CurrentSettings->Language], "",false,false);			
+			ShowDialogue(ExternalOverHeat_Str[CurrentSettings->Language],
+				TestPaused_Str[CurrentSettings->Language], "", false, false);
 		vTaskSuspend(RecordHandle);
 		VirtualRTC_Pause();
 		if (status == LEGACY_TEST)
 		{
-      Send_Digital_Load_Command(0,Load_Stop);
-			vTaskDelay(200/portTICK_RATE_MS);
+			Send_Digital_Load_Command(0, Load_Stop);
+			vTaskDelay(200 / portTICK_RATE_MS);
 		}
 	}
 	else
 	{
-		if(sensor==0)
-		ShowDialogue(SystemOverHeat_Str[CurrentSettings->Language],
-			SystemOverHeat_Str[CurrentSettings->Language], "",false,false);
+		if (sensor == 0)
+			ShowDialogue(SystemOverHeat_Str[CurrentSettings->Language],
+				SystemOverHeat_Str[CurrentSettings->Language], "", false, false);
 		else
-		ShowDialogue(ExternalOverHeat_Str[CurrentSettings->Language],
-			ExternalOverHeat_Str[CurrentSettings->Language], "",false,false);			
+			ShowDialogue(ExternalOverHeat_Str[CurrentSettings->Language],
+				ExternalOverHeat_Str[CurrentSettings->Language], "", false, false);
 	}
 	for (;;)
 	{
 		Show_OverHeat_Temperature(sensor);
 		vTaskDelay(500 / portTICK_RATE_MS);
-		if (((MOSTemperature < CurrentSettings->Protect_Settings.InternalTemperature_Max-CurrentSettings->Protect_Settings.Protection_Resume_Gap)
-			  &&(sensor==0))||
-		   ((ExternalTemperature < CurrentSettings->Protect_Settings.ExternalTemperature_Max-CurrentSettings->Protect_Settings.Protection_Resume_Gap)
-			  &&(sensor==1)))
+		if (((MOSTemperature < CurrentSettings->Protect_Settings.InternalTemperature_Max - CurrentSettings->Protect_Settings.Protection_Resume_Gap)
+			&& (sensor == 0)) ||
+			((ExternalTemperature < CurrentSettings->Protect_Settings.ExternalTemperature_Max - CurrentSettings->Protect_Settings.Protection_Resume_Gap)
+				&& (sensor == 1)))
 		{
 			if (status == LEGACY_TEST)
 			{
@@ -199,6 +205,76 @@ void System_OverHeat_Exception_Handler(u8 status, Legacy_Test_Param_Struct* para
 		vTaskResume(RecordHandle);
 		VirtualRTC_Resume();
 	}
+}
+
+/**
+  * @brief  This function helps to deal with overPower exception
+
+  * @retval None
+  */
+bool System_OverPower_Exception_Handler(u8 status, Legacy_Test_Param_Struct* params)
+{
+	float power;
+	u8 selection;
+	const char* stopOrContinusStrings[2];
+  bool testContinue;
+  bool protectedFlag;
+
+	UI_Button_Param_Struct buttonParams;
+	OLED_Clear_With_Mutex_TakeGive();
+  Fan_Send_Command(Auto);
+
+	power = CurrentMeterData.Power;
+
+	stopOrContinusStrings[0] = Stop_Str[CurrentSettings->Language];
+	buttonParams.DefaultValue = 0;
+
+	if (power > 45)
+	{
+    buttonParams.Positions = StopPositions[CurrentSettings->Language];
+		buttonParams.ButtonNum = 1;
+	}
+	else
+	{
+	  buttonParams.Positions = ContinueAndStopPositions[CurrentSettings->Language];
+		stopOrContinusStrings[1] = Continue_Str[CurrentSettings->Language];
+		buttonParams.ButtonNum = 2;
+	}
+
+	buttonParams.ButtonStrings = stopOrContinusStrings;
+
+	SoundStart(Alarm);
+	Send_Digital_Load_Command(0, Load_Stop);
+	ShowDialogue(OverPowerLimit_Str[CurrentSettings->Language],
+		OverPowerLimit_Str[CurrentSettings->Language], "", false, false);
+	vTaskSuspend(RecordHandle);
+	VirtualRTC_Pause();
+
+	UI_Button_Init(&buttonParams);
+
+	xQueueReceive(UI_ButtonMsg, &selection, portMAX_DELAY);
+	UI_Button_DeInit();
+
+	if (power > 45) testContinue=false;
+	else if (selection == 1) testContinue=true;
+	else testContinue=false;
+
+  SoundStop();
+
+  if(testContinue)
+  {
+   StartOrRecoverLoad(params, &protectedFlag);
+   if(!protectedFlag)
+   {
+ 		vTaskResume(RecordHandle);
+		VirtualRTC_Resume();   
+   }
+   else testContinue=false;
+  }
+
+ OLED_Clear_With_Mutex_TakeGive();
+
+ return testContinue;
 }
 
 /**
