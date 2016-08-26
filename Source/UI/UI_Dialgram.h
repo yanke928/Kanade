@@ -19,6 +19,7 @@ typedef struct
 	float *DataPointers[2];
 	u8 Item1AutoNumStart;
 	u8 Item1AutoNumStep;
+  u8 FastSpeed;
 }Dialgram_Param_Struct;
 
 extern xQueueHandle UI_DialogueMsg; 

@@ -264,7 +264,7 @@ void KeyEventHandler(void *pvParameters)
 {
 	Key_Message_Struct message;
 	Key_Message_Struct outOfDateMessage;
-	while (1)
+	for(;;)
 	{
 		/*Get status of keys*/
 		KeyEvents();
@@ -371,5 +371,5 @@ void Key_Debug_Init(void)
   */
 void SetKeyBeatRate(u8 freq)
 {
-	ContinousPressBeatTime = 100 / freq;
+	ContinousPressBeatTime = 1000/KEY_EVENT_HANDLER_TIME_PER_SAMPLE_MS / freq;
 }

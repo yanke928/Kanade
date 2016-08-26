@@ -346,7 +346,7 @@ void Dialgram_Broswer(void *pvParameters)
 	// while(1) OLED_Refresh_Gram();
 	xSemaphoreGive(OLEDRelatedMutex);
 	/*Set the rate of longPress-FastMoving to 20 sets per second*/
-	SetKeyBeatRate(20);
+	SetKeyBeatRate(dialgram_Params->FastSpeed);
 	ClearKeyEvent();
 	for (;;)
 	{

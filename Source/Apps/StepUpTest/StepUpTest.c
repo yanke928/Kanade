@@ -279,7 +279,7 @@ bool ShowStepUpTestResultInListView(u16 time)
 	listView_Params.ItemPositions[2] = 81;
 	listView_Params.ItemPositions[3] = 127;
 	listView_Params.DefaultPos = 0;
-	listView_Params.FastSpeed = 25;
+	listView_Params.FastSpeed = time*0.1>10?time*0.1:10;
 	listView_Params.Item1AutoNum = true;
 	listView_Params.Item1AutoNumStart = 0;
 	listView_Params.Item1AutoNumStep = UPDATE_RATE_TIME_PER_RECORD;
@@ -360,6 +360,8 @@ bool ShowStepUpTestResultInDialgram(u16 time)
 		time / 1);
 	dialgram_Params.Item1AutoNumStart = 0;
 	dialgram_Params.Item1AutoNumStep = 1;
+
+  dialgram_Params.FastSpeed=time*0.1>10?time*0.1:10;
 
 	/*Calculate the premium max/min values for display*/
 	for (i = 0; i < 2; i++)

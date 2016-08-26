@@ -311,8 +311,8 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	}
 	test_Params->ProtectVolt =
 		GetTestParam(ProtVoltageGet_Str[CurrentSettings->Language], 0,
-		(int)(1000 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (1000 * CurrentMeterData.Voltage) / 10 * 10 : 100,
-			(int)(900 * CurrentMeterData.Voltage) / 10 * 10 > 0 ? (900 * CurrentMeterData.Voltage) / 10 * 10 : 100, 10, "mV", 25);
+		(int)(100 * CurrentMeterData.Voltage) * 10 > 0 ? (int)(100 * CurrentMeterData.Voltage) * 10 : 100,
+			(int)(90 * CurrentMeterData.Voltage) * 10 > 0 ? (int)(90 * CurrentMeterData.Voltage) * 10 : 100, 10, "mV", 25);
 	if (test_Params->ProtectVolt < 0)
 	{
 		*status = USBMETER_ONLY;
