@@ -96,6 +96,7 @@ int MemTest(char volume)
 	res = f_open(&testFile, (char*)buff, FA_WRITE | FA_OPEN_ALWAYS);
 	if (res != FR_OK)
 	{
+    ShowDiskIOStatus(res);
 		return(File_Create_Failure);
 	}
 

@@ -17,6 +17,8 @@
 
 #define TEMPERATURE_UPDATE_HANDLER_PRIORITY tskIDLE_PRIORITY
 
+#define DELTA_SENSOR_TO_ENVIRONMENT 0.2
+
 float InternalTemperature;
 
 float MOSTemperature;
@@ -86,9 +88,9 @@ float CalculateNTCTemp(u8 adcIndex)
 	float k;
 	u8 i;
 	/*Calculate the voltage that temperature sensor divided*/
-	Vtemp = 3.3 - ((float)FilteredADCValue[adcIndex] / 4096)*3.3;
+	Vtemp = PowerSourceVoltage - ((float)FilteredADCValue[adcIndex] / 4096)*PowerSourceVoltage;
 	/*Calculate the resistance of temperature sensor*/
-	Rtemp = (Vtemp / (3.3 - Vtemp))*TEMP_DIVIDER;
+	Rtemp = (Vtemp / (PowerSourceVoltage - Vtemp))*TEMP_DIVIDER;
 	if (Rtemp >= ResistTab[0])
 	{
 		temperature = TempTab[0];
@@ -148,6 +150,6 @@ void QuickGet_Enviroment_Temperature(void)
 {
 	Quick_ADC_Collect();
 	vTaskDelay(2 / portTICK_RATE_MS);
-	MOSTemperature = CalculateNTCTemp(0)-1.5;
+	MOSTemperature = CalculateNTCTemp(0)-DELTA_SENSOR_TO_ENVIRONMENT;
 }
 

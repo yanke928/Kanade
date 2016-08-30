@@ -42,7 +42,7 @@ Settings_Struct* CurrentSettings = (Settings_Struct*)0x0803b800;
 
 Settings_Struct SettingsBkp;
 
-const Settings_Struct DefaultSettings = { 0 ,{75 ,120 ,5},{true,60},NORMAL_MODE};
+const Settings_Struct DefaultSettings = { 0 ,{80 ,120 ,5},{true,60},NORMAL_MODE};
 
 typedef  void(*pFunction)(void);
 

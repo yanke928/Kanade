@@ -2227,8 +2227,8 @@ bool CheckAndMakeDir(const char* dir)
 	res = f_mkdir(dir);
 	if (res != FR_EXIST)
 	{
-		if (res != FR_OK);
-		//ShowDiskIOStatus(res);
+		if (res != FR_OK)
+		ShowDiskIOStatus(res);
 		return(false);
 	}
 	return true;
@@ -2239,7 +2239,7 @@ bool CheckAndMakeDir(const char* dir)
 
 	  @retval None
   */
-bool MakeEBDDirectories(void)
+bool MakeKanadeDirectories(void)
 {
 	if (SDCardMountStatus)
 	{
@@ -2261,20 +2261,5 @@ bool MakeEBDDirectories(void)
   */
 void CheckEBDDirectories(bool withGUI)
 {
-	if (SDCardMountStatus)
-	{
-		bool success;
-		success = MakeEBDDirectories();
-		if (withGUI)
-		{
-			if (success)
-			{
-				//xQueueSend(InitStatusMsg, "Directories made", 0);
-			}
-			else
-			{
-				//xQueueSend(InitStatusMsg, "mkdir failed", 0);
-			}
-		}
-	}
+	MakeKanadeDirectories();
 }
