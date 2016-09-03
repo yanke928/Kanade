@@ -9,8 +9,8 @@
 #define Emergency_Stop() PWMRef_SetToGND()
 
 #define DIGITAL_LOAD_PARAMS_NUM 2
-#define DEVELOPER_MODE 0
-#define NORMAL_MODE 1
+#define DEVELOPER_MODE 1
+#define NORMAL_MODE 0
 
 typedef struct
 {
