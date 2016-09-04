@@ -92,6 +92,9 @@ void FastCharge_Trigger_DM_Release(void)
   */
 void FastCharge_Trigger_Release(void)
 {
+  SetDP_0V6();
+	SetDM_GND(); 
+  vTaskDelay(200/portTICK_RATE_MS);
 	FastCharge_Trigger_DP_Release();
 	FastCharge_Trigger_DM_Release();
   Set_RefVoltageTo(0); 
