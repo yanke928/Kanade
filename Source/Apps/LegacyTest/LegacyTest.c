@@ -291,7 +291,7 @@ void RunLegacyTest(u8* status, Legacy_Test_Param_Struct* test_Params)
 	{
 		test_Params->Current = GetTestParam(LegacyTestSetCurrent_Str[CurrentSettings->Language], 100,
 			DIGITAL_LOAD_CURRENT_MAX,
-			1000, 100, "mA", 20);
+			1000, 50, "mA", 20);
 		if (test_Params->Current < 0)
 		{
 			*status = USBMETER_ONLY;

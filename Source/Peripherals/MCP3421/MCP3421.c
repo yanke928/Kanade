@@ -430,6 +430,7 @@ void MCP3421_MeterData_Update_Service(void *pvParameters)
 			temperatureCoeficient;
 		CurrentMeterData.Voltage = (double)(*(int32_t*)(&voltRAW)) / voltageMaxValue*2.048*VOLTAGE_GAIN*Calibration_Data->VoltageCoeficient;
 		CurrentMeterData.Power = CurrentMeterData.Current* CurrentMeterData.Voltage;
+    CurrentMeterData.Voltage=CurrentMeterData.Voltage>0.05?CurrentMeterData.Voltage:0;
 		xSemaphoreGive(USBMeterState_Mutex);
 
 		Volatile_Coeficient_Filter(lstCoeficient_p, lstTrend_p, lstVoltageAndCurrent_p, newVoltageAndCurrent_p, 2, 0.005);
