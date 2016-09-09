@@ -37,13 +37,17 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported define -----------------------------------------------------------*/
 #define MASS_SIZ_DEVICE_DESC              18
-#define MASS_SIZ_CONFIG_DESC              32
+#define MASS_SIZ_CONFIG_DESC              81
 
 #define MASS_SIZ_STRING_LANGID            4
 #define MASS_SIZ_STRING_VENDOR            38
 #define MASS_SIZ_STRING_PRODUCT           38
 #define MASS_SIZ_STRING_SERIAL            26
 #define MASS_SIZ_STRING_INTERFACE         16
+
+//#define VIRTUAL_COM_PORT_DATA_SIZE              64
+
+#define VIRTUAL_COM_PORT_DATA_SIZE              81
 
 /* Exported functions ------------------------------------------------------- */
 extern const uint8_t MASS_DeviceDescriptor[MASS_SIZ_DEVICE_DESC];

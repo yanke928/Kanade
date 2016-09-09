@@ -30,8 +30,19 @@
 #ifndef __USB_PROP_H
 #define __USB_PROP_H
 
+#include "usb_core.h"
+
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
+typedef struct
+{
+  uint32_t bitrate;
+  uint8_t format;
+  uint8_t paritytype;
+  uint8_t datatype;
+}LINE_CODING;
+
+extern LINE_CODING linecoding;
 
 /* Exported constants --------------------------------------------------------*/
 #define Mass_Storage_GetConfiguration          NOP_Process
@@ -48,6 +59,16 @@
 #define GET_MAX_LUN                0xFE
 #define MASS_STORAGE_RESET         0xFF
 #define LUN_DATA_LENGTH            1
+
+#define SEND_ENCAPSULATED_COMMAND   0x00
+#define GET_ENCAPSULATED_RESPONSE   0x01
+#define SET_COMM_FEATURE            0x02
+#define GET_COMM_FEATURE            0x03
+#define CLEAR_COMM_FEATURE          0x04
+#define SET_LINE_CODING             0x20
+#define GET_LINE_CODING             0x21
+#define SET_CONTROL_LINE_STATE      0x22
+#define SEND_BREAK                  0x23
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
@@ -66,6 +87,8 @@ uint8_t *MASS_GetConfigDescriptor(uint16_t);
 uint8_t *MASS_GetStringDescriptor(uint16_t);
 uint8_t *Get_Max_Lun(uint16_t Length);
 
+uint8_t *Virtual_Com_Port_GetLineCoding(uint16_t Length);
+uint8_t *Virtual_Com_Port_SetLineCoding(uint16_t Length);
 
 #endif /* __USB_PROP_H */
 

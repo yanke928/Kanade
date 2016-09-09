@@ -48,6 +48,16 @@
 
 uint32_t Max_Lun = 1;
 
+uint8_t Request = 0;
+
+LINE_CODING linecoding =
+  {
+    115200, /* baud rate*/
+    0x00,   /* stop bits-1*/
+    0x00,   /* parity - none*/
+    0x08    /* no. of bits 8*/
+  };
+
 DEVICE Device_Table =
   {
     EP_NUM,
@@ -174,9 +184,36 @@ void MASS_Reset()
   SetEPRxStatus(ENDP2, EP_RX_VALID);
   SetEPTxStatus(ENDP2, EP_TX_DIS);
 
-
   SetEPRxCount(ENDP0, Device_Property.MaxPacketSize);
   SetEPRxValid(ENDP0);
+
+//  /* Initialize Endpoint 3 */
+//  SetEPType(ENDP3, EP_CONTROL);
+//  SetEPTxStatus(ENDP3, EP_TX_STALL);
+//  SetEPRxAddr(ENDP3, ENDP3_RXADDR);
+//  SetEPTxAddr(ENDP3, ENDP3_TXADDR);
+//  Clear_Status_Out(ENDP3);
+//  SetEPRxCount(ENDP3, Device_Property.MaxPacketSize);
+//  SetEPRxValid(ENDP3);
+
+ /* Initialize Endpoint 4 */
+  SetEPType(ENDP4, EP_BULK);
+  SetEPTxAddr(ENDP4, ENDP4_TXADDR);
+  SetEPTxStatus(ENDP4, EP_TX_NAK);
+  SetEPRxStatus(ENDP4, EP_RX_DIS);
+
+  /* Initialize Endpoint 5 */
+  SetEPType(ENDP5, EP_INTERRUPT);
+  SetEPTxAddr(ENDP5, ENDP5_TXADDR);
+  SetEPRxStatus(ENDP5, EP_RX_DIS);
+  SetEPTxStatus(ENDP5, EP_TX_NAK);
+
+  /* Initialize Endpoint 6 */
+  SetEPType(ENDP6, EP_BULK);
+  SetEPRxAddr(ENDP6, ENDP6_RXADDR);
+  SetEPRxCount(ENDP6, 64);
+  SetEPRxStatus(ENDP6, EP_RX_VALID);
+  SetEPTxStatus(ENDP6, EP_TX_DIS);
 
   /* Set the device to response on default address */
   SetDeviceAddress(0);
@@ -269,18 +306,48 @@ void MASS_Status_Out(void)
 *******************************************************************************/
 RESULT MASS_Data_Setup(uint8_t RequestNo)
 {
-  uint8_t    *(*CopyRoutine)(uint16_t);
+//  uint8_t    *(*CopyRoutine)(uint16_t);
+
+//  CopyRoutine = NULL;
+//  if ((Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
+//      && (RequestNo == GET_MAX_LUN) && (pInformation->USBwValue == 0)
+//      && (pInformation->USBwIndex == 0) && (pInformation->USBwLength == 0x01))
+//  {
+//    CopyRoutine = Get_Max_Lun;
+//  }
+//  else
+//  {
+//    return USB_UNSUPPORT;
+//  }
+
+//  if (CopyRoutine == NULL)
+//  {
+//    return USB_UNSUPPORT;
+//  }
+
+//  pInformation->Ctrl_Info.CopyData = CopyRoutine;
+//  pInformation->Ctrl_Info.Usb_wOffset = 0;
+//  (*CopyRoutine)(0);
+
+//  return USB_SUCCESS;
+uint8_t    *(*CopyRoutine)(uint16_t);
 
   CopyRoutine = NULL;
-  if ((Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
-      && (RequestNo == GET_MAX_LUN) && (pInformation->USBwValue == 0)
-      && (pInformation->USBwIndex == 0) && (pInformation->USBwLength == 0x01))
+
+  if (RequestNo == GET_LINE_CODING)
   {
-    CopyRoutine = Get_Max_Lun;
+    if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
+    {
+      CopyRoutine = Virtual_Com_Port_GetLineCoding;
+    }
   }
-  else
+  else if (RequestNo == SET_LINE_CODING)
   {
-    return USB_UNSUPPORT;
+    if (Type_Recipient == (CLASS_REQUEST | INTERFACE_RECIPIENT))
+    {
+      CopyRoutine = Virtual_Com_Port_SetLineCoding;
+    }
+    Request = SET_LINE_CODING;
   }
 
   if (CopyRoutine == NULL)
@@ -291,9 +358,7 @@ RESULT MASS_Data_Setup(uint8_t RequestNo)
   pInformation->Ctrl_Info.CopyData = CopyRoutine;
   pInformation->Ctrl_Info.Usb_wOffset = 0;
   (*CopyRoutine)(0);
-
   return USB_SUCCESS;
-
 }
 
 /*******************************************************************************
@@ -408,6 +473,27 @@ uint8_t *Get_Max_Lun(uint16_t Length)
   {
     return((uint8_t*)(&Max_Lun));
   }
+}
+
+uint8_t *Virtual_Com_Port_GetLineCoding(uint16_t Length)
+{
+  if (Length == 0)
+  {
+    pInformation->Ctrl_Info.Usb_wLength = sizeof(linecoding);
+    return NULL;
+  }
+  return(uint8_t *)&linecoding;
+}
+
+
+uint8_t *Virtual_Com_Port_SetLineCoding(uint16_t Length)
+{
+  if (Length == 0)
+  {
+    pInformation->Ctrl_Info.Usb_wLength = sizeof(linecoding);
+    return NULL;
+  }
+  return(uint8_t *)&linecoding;
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

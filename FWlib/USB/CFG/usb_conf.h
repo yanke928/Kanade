@@ -20,7 +20,8 @@
 /* EP_NUM */
 /* defines how many endpoints are used by the device */
 /*-------------------------------------------------------------*/
-#define EP_NUM                          (3)
+//#define EP_NUM                          (3)
+#define EP_NUM                          (7)
 
 /*-------------------------------------------------------------*/
 /* --------------   Buffer Description Table  -----------------*/
@@ -31,30 +32,49 @@
 
 /* EP0  */
 /* rx/tx buffer base address */
-#define ENDP0_RXADDR        (0x18)
-#define ENDP0_TXADDR        (0x58)
+#define ENDP0_RXADDR        (0x40)
+#define ENDP0_TXADDR        (0x80)
 
 /* EP1  */
 /* tx buffer base address */
-#define ENDP1_TXADDR        (0x98)
+#define ENDP1_TXADDR        (0xC0)
 
 /* EP2  */
 /* Rx buffer base address */
-#define ENDP2_RXADDR        (0xD8)
+#define ENDP2_RXADDR        (0x100)
+
+///* EP3  */
+///* rx/tx buffer base address */
+//#define ENDP3_RXADDR        (0x140)
+//#define ENDP3_TXADDR        (0x180)
+
+///* EP4  */
+///* tx buffer base address */
+//#define ENDP4_TXADDR        (0x1C0)
+//#define ENDP5_TXADDR        (0x200)
+//#define ENDP6_RXADDR        (0x210)
+
+#define ENDP3_RXADDR        (0x110)
+
+#define ENDP4_TXADDR        (0x150)
+#define ENDP5_TXADDR        (0x190)
+#define ENDP6_RXADDR        (0x1D0)
 
 
 /* ISTR events */
 /* IMR_MSK */
 /* mask defining which events has to be handled */
 /* by the device application software */
-#define IMR_MSK (CNTR_CTRM  | CNTR_RESETM)
+#define IMR_MSK (CNTR_CTRM  | CNTR_SOFM  | CNTR_RESETM )
+
+#define SOF_CALLBACK
 
 /* CTR service routines */
 /* associated to defined endpoints */
 //#define  EP1_IN_Callback   NOP_Process
 #define  EP2_IN_Callback   NOP_Process
 #define  EP3_IN_Callback   NOP_Process
-#define  EP4_IN_Callback   NOP_Process
+//#define  EP4_IN_Callback   NOP_Process
 #define  EP5_IN_Callback   NOP_Process
 #define  EP6_IN_Callback   NOP_Process
 #define  EP7_IN_Callback   NOP_Process
@@ -65,7 +85,7 @@
 #define  EP3_OUT_Callback  NOP_Process
 #define  EP4_OUT_Callback   NOP_Process
 #define  EP5_OUT_Callback   NOP_Process
-#define  EP6_OUT_Callback   NOP_Process
+//#define  EP6_OUT_Callback   NOP_Process
 #define  EP7_OUT_Callback   NOP_Process
 
 #endif /* __USB_CONF_H */

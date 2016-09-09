@@ -34,6 +34,17 @@
 
 #include "platform_config.h"
 
+#define USART_RX_DATA_SIZE   512
+#define USART_TX_DATA_SIZE   512
+
+extern uint8_t  USART_Rx_Buffer [USART_RX_DATA_SIZE]; 
+extern uint32_t USART_Rx_ptr_in;
+extern uint32_t USART_Rx_ptr_out;
+
+extern uint8_t  USART_Tx_Buffer [USART_TX_DATA_SIZE]; 
+extern uint32_t USART_Tx_ptr_in;
+extern uint32_t USART_Tx_ptr_out;
+
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
@@ -57,6 +68,10 @@ void MAL_Config(void);
 #if !defined (USE_STM32L152_EVAL) 
 void USB_Disconnect_Config(void);
 #endif /* (USE_STM32L152_EVAL) */
+
+void USB_To_USART_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes);
+void Handle_USBAsynchXfer (void);
+
 /* External variables --------------------------------------------------------*/
 
 #endif  /*__HW_CONFIG_H*/

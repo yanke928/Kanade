@@ -67,7 +67,7 @@ void MassStorage_App()
 	button_params.Positions = position;
 	UI_Button_Init(&button_params);
 	for (;;)
-	{
+	{   
 		if (exitFlag && (!Usb_Status_Reg)) break;
 		if (xQueueReceive(UI_ButtonMsg, &i, 0) == pdPASS) exitFlag = true;
 		if (status != Usb_Status_Reg)

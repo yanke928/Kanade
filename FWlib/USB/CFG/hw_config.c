@@ -32,9 +32,23 @@
 #include "stm32f10x_it.h"
 #include "mass_mal.h"
 #include "usb_desc.h"
+#include "usb_prop.h"
 #include "usb_pwr.h"
 #include "usb_lib.h"
 
+uint32_t USART_Rx_length  = 0;
+uint8_t  USB_Tx_State = 0;
+
+uint8_t  USART_Rx_Buffer [USART_RX_DATA_SIZE]; 
+uint32_t USART_Rx_ptr_in = 0;
+uint32_t USART_Rx_ptr_out = 0;
+
+uint8_t  USART_Tx_Buffer [USART_TX_DATA_SIZE]; 
+uint32_t USART_Tx_ptr_in = 0;
+uint32_t USART_Tx_ptr_out = 0;
+
+static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len);
+extern LINE_CODING linecoding;
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -468,5 +482,79 @@ void USB_Disconnect_Config(void)
 }
 #endif /* USE_STM3210B_EVAL or USE_STM3210E_EVAL */
 
+void USB_To_USART_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes)
+{
+  uint32_t i;
+  
+  for (i = 0; i < Nb_bytes; i++)
+  {
+    USART_Tx_Buffer[USART_Tx_ptr_in] = *(data_buffer + i);
+    USART_Tx_ptr_in++;
+    if(USART_Tx_ptr_in >= USART_TX_DATA_SIZE) 
+        USART_Tx_ptr_in = 0;
+  }  
+}
+
+/*******************************************************************************
+* Function Name  : Handle_USBAsynchXfer.
+* Description    : send data to USB.
+* Input          : None.
+* Return         : none.
+*******************************************************************************/
+void Handle_USBAsynchXfer (void)
+{
+  
+  uint16_t USB_Tx_ptr;
+  uint16_t USB_Tx_length;
+  if(USB_Tx_State != 1)
+  {
+    if (USART_Rx_ptr_out == USART_RX_DATA_SIZE)
+    {
+      USART_Rx_ptr_out = 0;
+    }
+    
+    if(USART_Rx_ptr_out == USART_Rx_ptr_in) 
+    {
+      USB_Tx_State = 0; 
+      return;
+    }
+    
+    if(USART_Rx_ptr_out > USART_Rx_ptr_in) /* rollback */
+    { 
+      USART_Rx_length = USART_RX_DATA_SIZE - USART_Rx_ptr_out;
+    }
+    else 
+    {
+      USART_Rx_length = USART_Rx_ptr_in - USART_Rx_ptr_out;
+    }
+    
+    if (USART_Rx_length > VIRTUAL_COM_PORT_DATA_SIZE)
+    {
+      USB_Tx_ptr = USART_Rx_ptr_out;
+      USB_Tx_length = VIRTUAL_COM_PORT_DATA_SIZE;
+      
+      USART_Rx_ptr_out += VIRTUAL_COM_PORT_DATA_SIZE;	
+      USART_Rx_length -= VIRTUAL_COM_PORT_DATA_SIZE;	
+    }
+    else
+    {
+      USB_Tx_ptr = USART_Rx_ptr_out;
+      USB_Tx_length = USART_Rx_length;
+      
+      USART_Rx_ptr_out += USART_Rx_length;
+      USART_Rx_length = 0;
+    }
+    USB_Tx_State = 1; 
+    
+#ifdef STM32F10X_CL
+    USB_SIL_Write(EP4_IN, &USART_Rx_Buffer[USB_Tx_ptr], USB_Tx_length);  
+#else
+    UserToPMABufferCopy(&USART_Rx_Buffer[USB_Tx_ptr], ENDP4_TXADDR, USB_Tx_length);
+    SetEPTxCount(ENDP4, USB_Tx_length);
+    SetEPTxValid(ENDP4); 
+#endif
+  }  
+  
+}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

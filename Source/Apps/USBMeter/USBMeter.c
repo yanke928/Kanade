@@ -31,6 +31,7 @@
 #include "MassStorage.h"
 #include "ExceptionHandle.h"
 #include "Digital_Clock.h"
+#include "VirtualSerial.h"
 
 #include "UI_Dialogue.h"
 #include "UI_Utilities.h"
