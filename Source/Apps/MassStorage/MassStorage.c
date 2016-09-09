@@ -12,8 +12,6 @@
 
 #include "mass_mal.h"
 #include "Keys.h"
-#include "usb_pwr.h"
-#include "usb_lib.h"
 #include "LED_Animate.h"
 #include "SSD1306.h"
 
@@ -66,6 +64,7 @@ void MassStorage_App()
 	button_params.DefaultValue = 0;
 	button_params.Positions = position;
 	UI_Button_Init(&button_params);
+
 	for (;;)
 	{   
 		if (exitFlag && (!Usb_Status_Reg)) break;
@@ -100,7 +99,7 @@ void MassStorage_App()
   ClearKeyEvent();
 	OLED_Clear_With_Mutex_TakeGive();
 	LED_Animate_DeInit();
-	PowerOff();
 	UI_Button_DeInit();
+  MAL_Umount();
 }
 

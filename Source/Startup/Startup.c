@@ -28,6 +28,7 @@
 #include "Digital_Load.h"
 #include "SDCardff.h"
 #include "DataPin2Protocol.h"
+#include "VirtualSerial.h"
 
 #include "system_stm32f10x.h"
 
@@ -336,6 +337,7 @@ void SystemStartup(void *pvParameters)
 	CheckEBDDirectories(true);
 	USB_Interrupts_Config();
 	Set_USBClock();
+  VirtualSerial_Init();
 	FastCharge_Trigger_Service_Init();
 	LED_Animate_DeInit();
 	LogoWithInitStatus_DeInit();

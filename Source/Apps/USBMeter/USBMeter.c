@@ -21,6 +21,7 @@
 #include "sdcard.h"
 #include "sdcardff.h"
 #include "DataPin2Protocol.h"
+#include "VirtualSerial.h"
 
 #include "mass_mal.h"
 
@@ -73,6 +74,7 @@ static void USBMeter(void *pvParameters)
 	bool overPowerExceptionHandledFlag = false;
 	bool exceptionHandleRtval;
 	u8 firstEnter = 1;
+  u8 i;
 	Key_Message_Struct keyMessage;
 	u8 status = USBMETER_ONLY;
 	u8 reSendLoadCommandCnt = 0;
@@ -82,6 +84,10 @@ static void USBMeter(void *pvParameters)
 	ClearKeyEvent();
 	while (1)
 	{
+    if(xQueueReceive(Virtual_Serial_Packet_Received_Msg,&i,0)==pdPASS)
+    {
+     ShowSmallDialogue((char*)ReceivedPacket,100,true);
+    }
 	Refresh:
 		xSemaphoreTake(OLEDRelatedMutex, portMAX_DELAY);
 		xSemaphoreTake(USBMeterState_Mutex, portMAX_DELAY);

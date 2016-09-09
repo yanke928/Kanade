@@ -28,10 +28,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "platform_config.h"  	
 
+#include "FreeRTOS_Standard_Include.h"
+
 #include "stm32f10x_sdio.h"
 
 #include "mass_mal.h"
 #include "usb_lib.h"
+#include "usb_pwr.h"
 #include "sdcard.h"
 #include "sdcardff.h"
 #include "W25Q64.h"
@@ -45,6 +48,8 @@ extern uint32_t Max_Lun;
 
 u8 Usb_Status_Reg = 0;
 
+bool MassStorageEnable=false;
+
 /*******************************************************************************
 * Function Name  : MAL_Init
 * Description    : Initializes the Media on the STM32
@@ -55,6 +60,7 @@ u8 Usb_Status_Reg = 0;
 u16 MAL_Init(u8 lun)
 {
 	u16 Status = MAL_OK;
+  if(MassStorageEnable==false) return MAL_FAIL;
 	switch (lun)
 	{
 	case 0:
@@ -80,6 +86,8 @@ u16 MAL_Write(u8 lun, u32 Memory_Offset, u32 *Writebuff, u16 Transfer_Length)
 {
 	u8 STA;
 	u8 NbrOfBlock;
+  
+  if(MassStorageEnable==false) return MAL_FAIL;
 	
 	switch (lun)
 	{
@@ -119,7 +127,7 @@ u16 MAL_Read(u8 lun, u32 Memory_Offset, u32 *Readbuff, u16 Transfer_Length)
 {
 	u8 STA;
 	u8 NbrOfBlock;
-	
+	if(MassStorageEnable==false) return MAL_FAIL;
 	switch (lun)
 	{
 	case 0:
@@ -154,6 +162,7 @@ u16 MAL_GetStatus(u8 lun)
 {
 	uint32_t DeviceSizeMul = 0, NumberOfBlocks = 0;
 	SD_Error Status;
+  if(MassStorageEnable==false) return MAL_FAIL;
 	if (lun == 0)
 	{
 		if(1)
@@ -219,10 +228,18 @@ u16 MAL_GetStatus(u8 lun)
 
 bool MAL_Mount()
 {
-  if(!SDCard_Exist()) Max_Lun=0;
-  else Max_Lun=1;
+  PowerOff();
+  MassStorageEnable=true;
 	USB_Init();
 	return true;
+}
+
+bool MAL_Umount()
+{
+ PowerOff();
+ MassStorageEnable=false;
+ USB_Init();
+ return true;
 }
 
 
