@@ -57,8 +57,7 @@ u8 RTC_Hardware_Init(void)
 				OLED_Refresh_Gram();
 				while (1);
 			}
-		}
-		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);						//设置RTC时钟(RTCCLK),选择LSE作为RTC时钟    
+		}		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);						//设置RTC时钟(RTCCLK),选择LSE作为RTC时钟    
 		RCC_RTCCLKCmd(ENABLE);										//使能RTC时钟  
 		RTC_WaitForSynchro();										//等待RTC寄存器(RTC_CNT,RTC_ALR和RTC_PRL)与RTC APB时钟同步
 		RTC_WaitForLastTask();										//等待最近一次对RTC寄存器的写操作完成
