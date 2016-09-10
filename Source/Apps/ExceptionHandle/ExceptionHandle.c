@@ -39,15 +39,14 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask,
 	signed char *pcTaskName)
 {
 	u8 t;
+  char tempString[128];
 	xSemaphoreGive(OLEDRelatedMutex);
 	SetUpdateOLEDJustNow();
 	OLED_Clear();
 	ShowDialogue("StackOverFlow", "", "", false, false);
-	OLED_ShowAnyString(4, 16, "StackOverFlow in", NotOnSelect, 12);
-	OLED_ShowAnyString(4, 28, "\"", NotOnSelect, 12);
-	OLED_ShowAnyString(10, 28, (char *)pcTaskName, NotOnSelect, 12);
-	t = GetStringGraphicalLength((char *)pcTaskName);
-	OLED_ShowAnyString(10 + t * 6, 28, "\"", NotOnSelect, 12);
+  sprintf(tempString,"StackOverFlow in \"%s\"",pcTaskName);
+  UI_PrintMultiLineString(4,16,126,59,tempString,NotOnSelect,12); 
+  OLED_Refresh_Gram();
 	taskENTER_CRITICAL();
 	while (1);
 }

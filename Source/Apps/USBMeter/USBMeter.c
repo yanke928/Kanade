@@ -33,6 +33,7 @@
 #include "ExceptionHandle.h"
 #include "Digital_Clock.h"
 #include "VirtualSerial.h"
+#include "SerialControl.h"
 
 #include "UI_Dialogue.h"
 #include "UI_Utilities.h"
@@ -82,6 +83,7 @@ static void USBMeter(void *pvParameters)
 	u32 lastWakeTime = xTaskGetTickCount();
 	Legacy_Test_Param_Struct legacy_Test_Params;
 	ClearKeyEvent();
+  //SerialControlMode();
 	while (1)
 	{
     if(xQueueReceive(Virtual_Serial_Packet_Received_Msg,&i,0)==pdPASS)
