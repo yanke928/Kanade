@@ -23,7 +23,7 @@ void Virtual_Serial_Upload_Service(void *pvParameters)
  for(;;)
  {
   sprintf(tempString,"%.4f,%.4f\n",FilteredMeterData.Voltage,FilteredMeterData.Current);
-  VirtualSerial_SendString(tempString);
+  testMohaPacket();
   vTaskDelay(500/portTICK_RATE_MS);
  }
 }

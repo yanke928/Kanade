@@ -29,6 +29,7 @@
 #include "SDCardff.h"
 #include "DataPin2Protocol.h"
 #include "VirtualSerial.h"
+#include "moha_SerialProtocol.h"
 
 #include "system_stm32f10x.h"
 
@@ -338,6 +339,7 @@ void SystemStartup(void *pvParameters)
 	USB_Interrupts_Config();
 	Set_USBClock();
   VirtualSerial_Init();
+  testMohaPacket();
   Virtual_Serial_Upload_Service_Init();
 	FastCharge_Trigger_Service_Init();
 	LED_Animate_DeInit();
