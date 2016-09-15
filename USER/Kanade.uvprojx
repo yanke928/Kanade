@@ -573,11 +573,6 @@
               <FilePath>..\Source\Peripherals\PWM_Ref\PWM_Ref.c</FilePath>
             </File>
             <File>
-              <FileName>MCP3421.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Source\Peripherals\MCP3421\MCP3421.c</FilePath>
-            </File>
-            <File>
               <FileName>FastCharge_Trigger_Circuit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Peripherals\FastCharge_Trigger_Circuit\FastCharge_Trigger_Circuit.c</FilePath>
@@ -586,6 +581,11 @@
               <FileName>Cooling_Fan.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\Peripherals\Cooling_Fan\Cooling_Fan.c</FilePath>
+            </File>
+            <File>
+              <FileName>MCP3421.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\Peripherals\MCP3421\MCP3421.c</FilePath>
             </File>
             <File>
               <FileName>ADC.c</FileName>

@@ -24,7 +24,7 @@
 
 #define I2C1_SDA_READ()  GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_11)
 #define I2C2_SDA_READ()  GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3)
-#define I2C_SCL_READ()  GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_10)
+//#define I2C_SCL_READ()  GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_10)
 
 #define MCP3421_UPDATE_SERVICE_PRIORITY tskIDLE_PRIORITY+7
 
