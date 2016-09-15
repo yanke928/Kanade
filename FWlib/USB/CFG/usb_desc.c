@@ -123,10 +123,10 @@ const uint8_t MASS_DeviceDescriptor[MASS_SIZ_DEVICE_DESC] =  {
     
     0x40,   // bMaxPacketSize0 0x40 = 64
     
-    0x83,   // idVendor     (0283)
-    0x02,
-    0x20,   // idProduct
-    0x57,
+    0x64,   // idVendor     (8964)
+    0x89,
+    0x01,   // idProduct
+    0x00,
     
     0x00,   // bcdDevice 2.00*/
     0x02,
@@ -139,7 +139,7 @@ const uint8_t MASS_DeviceDescriptor[MASS_SIZ_DEVICE_DESC] =  {
 const uint8_t MASS_ConfigDescriptor[MASS_SIZ_CONFIG_DESC] =  {
 
     0x09,   // bLength: Configuation Descriptor size
-    0x02,   // bDescriptorType: Configuration
+    0x02,   // bDescriptorType: ConfiguidVendorration
     MASS_SIZ_CONFIG_DESC,
     0x00,
     0x02,   // bNumInterfaces: 2 interface
