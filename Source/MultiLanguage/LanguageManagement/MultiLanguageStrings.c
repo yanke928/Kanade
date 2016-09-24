@@ -783,6 +783,30 @@ const char Stop_Str_CN[] = " 停止 ";
 const char Stop_Str_JP[] = " 停止 ";
 const char* const Stop_Str[] = { Stop_Str_EN,Stop_Str_TW,Stop_Str_CN,Stop_Str_JP };
 
+const char EnableBuzzerAlarm_EN[] = "Enable Buzzer";
+const char EnableBuzzerAlarm_TW[] = "啟用蜂鳴器";
+const char EnableBuzzerAlarm_CN[] = "启用蜂鸣器";
+const char EnableBuzzerAlarm_JP[] = "Enable Buzzer";
+const char* const EnableBuzzerAlarm[] = { EnableBuzzerAlarm_EN,EnableBuzzerAlarm_TW,EnableBuzzerAlarm_CN,EnableBuzzerAlarm_JP };
+
+const char DisableBuzzerAlarm_EN[] = "Enable Buzzer";
+const char DisableBuzzerAlarm_TW[] = "禁用蜂鳴器";
+const char DisableBuzzerAlarm_CN[] = "禁用蜂鸣器";
+const char DisableBuzzerAlarm_JP[] = "Enable Buzzer";
+const char* const DisableBuzzerAlarm[] = { DisableBuzzerAlarm_EN,DisableBuzzerAlarm_TW,DisableBuzzerAlarm_CN,DisableBuzzerAlarm_JP };
+
+const char EnableLEDAlarm_EN[] = "Enable LED";
+const char EnableLEDAlarm_TW[] = "啟用LED";
+const char EnableLEDAlarm_CN[] = "启用LED";
+const char EnableLEDAlarm_JP[] = "Enable LED";
+const char* const EnableLEDAlarm[] = { EnableLEDAlarm_EN,EnableLEDAlarm_TW,EnableLEDAlarm_CN,EnableLEDAlarm_JP };
+
+const char DisableLEDAlarm_EN[] = "Disable LED";
+const char DisableLEDAlarm_TW[] = "禁用LED";
+const char DisableLEDAlarm_CN[] = "禁用LED";
+const char DisableLEDAlarm_JP[] = "Disable LED";
+const char* const DisableLEDAlarm[] = { DisableLEDAlarm_EN,DisableLEDAlarm_TW,DisableLEDAlarm_CN,DisableLEDAlarm_JP };
+
 const OLED_PositionStruct ContinueAndStopPositions[LanguageNum][2] =
 {
 {8,45,64,45},

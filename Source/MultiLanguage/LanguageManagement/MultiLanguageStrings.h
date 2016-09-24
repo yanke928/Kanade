@@ -172,6 +172,12 @@ extern const char* const IdleClockSettingsEnableIdleClock_Str[LanguageNum];
 extern const char* const IdleClockSettingsIdleClockTime_Str[LanguageNum];
 extern const char* const IdleClockSettingsPleaseEnable_Str_Str[LanguageNum];
 
+/*Alarm Settings related*/
+extern const char* const EnableBuzzerAlarm[LanguageNum];
+extern const char* const DisableBuzzerAlarm[LanguageNum];
+extern const char* const EnableLEDAlarm[LanguageNum];
+extern const char* const DisableLEDAlarm[LanguageNum];
+
 /*MTK-PE Trigger related*/
 extern const char* const IvePlugged_Str[LanguageNum];
 extern const char* const PlugInLoad_Str[LanguageNum];

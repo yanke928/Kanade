@@ -181,12 +181,12 @@ void AlarmSettings()
 retry:
 
 	if (CurrentSettings->Alarm_Settings.Buzzer_Alarm_Enable)
-		selectionTab[0] = "Disable Buzzer";
-	else selectionTab[0] = "Enable Buzzer";
+		selectionTab[0] = DisableBuzzerAlarm[CurrentSettings->Language];
+	else selectionTab[0] = EnableBuzzerAlarm[CurrentSettings->Language];
 
 	if (CurrentSettings->Alarm_Settings.LED_Alarm_Enable)
-		selectionTab[0] = "Disable LED";
-	else selectionTab[0] = "Enable LED";
+		selectionTab[1] = DisableLEDAlarm[CurrentSettings->Language];
+	else selectionTab[1] = EnableLEDAlarm[CurrentSettings->Language];
 
 	menuParams.ItemStrings = selectionTab;
 	menuParams.DefaultPos = 0;
