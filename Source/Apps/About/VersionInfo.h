@@ -13,10 +13,10 @@ const char ProductName_CN[]="Kanade";
 const char ProductName_JP[]="Kanade";
 const char* const ProductName_Str[] = { ProductName_EN,ProductName_TW,ProductName_CN,ProductName_JP };
 
-const char ProductVersion_EN[]="V1.1";
-const char ProductVersion_TW[]="V1.1";
-const char ProductVersion_CN[]="V1.1";
-const char ProductVersion_JP[]="V1.1";
+const char ProductVersion_EN[]="V1.2";
+const char ProductVersion_TW[]="V1.2";
+const char ProductVersion_CN[]="V1.2";
+const char ProductVersion_JP[]="V1.2";
 const char* const ProductVersion_Str[] = { ProductVersion_EN,ProductVersion_TW,ProductVersion_CN,ProductVersion_JP };
 
 const char ProductDesigner_EN[]="Design: yanke928";
