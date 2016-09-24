@@ -125,6 +125,7 @@ extern const char* const SettingsItemFirmwareUpdate_Str[LanguageNum];
 extern const char* const SettingsItemSystemScan_Str[LanguageNum];
 extern const char* const SettingsItemCalibration_Str[LanguageNum];
 extern const char* const SettingsItemIdleClockSettings_Str[LanguageNum];
+extern const char* const SettingsItemAlarmSettings[LanguageNum];
 
 /*Legacy test mode items*/
 extern const char* const SelectLeagcyTestModeButtonCC_Str[LanguageNum];

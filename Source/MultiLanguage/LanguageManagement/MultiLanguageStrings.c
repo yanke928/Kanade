@@ -796,16 +796,22 @@ const char DisableBuzzerAlarm_JP[] = "Enable Buzzer";
 const char* const DisableBuzzerAlarm[] = { DisableBuzzerAlarm_EN,DisableBuzzerAlarm_TW,DisableBuzzerAlarm_CN,DisableBuzzerAlarm_JP };
 
 const char EnableLEDAlarm_EN[] = "Enable LED";
-const char EnableLEDAlarm_TW[] = "啟用LED";
-const char EnableLEDAlarm_CN[] = "启用LED";
+const char EnableLEDAlarm_TW[] = "啟用 LED";
+const char EnableLEDAlarm_CN[] = "启用 LED";
 const char EnableLEDAlarm_JP[] = "Enable LED";
 const char* const EnableLEDAlarm[] = { EnableLEDAlarm_EN,EnableLEDAlarm_TW,EnableLEDAlarm_CN,EnableLEDAlarm_JP };
 
 const char DisableLEDAlarm_EN[] = "Disable LED";
-const char DisableLEDAlarm_TW[] = "禁用LED";
-const char DisableLEDAlarm_CN[] = "禁用LED";
+const char DisableLEDAlarm_TW[] = "禁用 LED";
+const char DisableLEDAlarm_CN[] = "禁用 LED";
 const char DisableLEDAlarm_JP[] = "Disable LED";
 const char* const DisableLEDAlarm[] = { DisableLEDAlarm_EN,DisableLEDAlarm_TW,DisableLEDAlarm_CN,DisableLEDAlarm_JP };
+
+const char SettingsItemAlarmSettings_EN[] = "Alarm Settings";
+const char SettingsItemAlarmSettings_TW[] = "警報設置";
+const char SettingsItemAlarmSettings_CN[] = "警报设置";
+const char SettingsItemAlarmSettings_JP[] = "Alarm Settings";
+const char* const SettingsItemAlarmSettings[] = { SettingsItemAlarmSettings_EN,SettingsItemAlarmSettings_TW,SettingsItemAlarmSettings_CN,SettingsItemAlarmSettings_JP };
 
 const OLED_PositionStruct ContinueAndStopPositions[LanguageNum][2] =
 {

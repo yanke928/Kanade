@@ -83,7 +83,7 @@ void Settings()
 	stringTab[1] = SettingsItemClockSettings_Str[CurrentSettings->Language];
 	stringTab[2] = SettingsItemIdleClockSettings_Str[CurrentSettings->Language];
 	stringTab[3] = SettingsItemOverHeatControl_Str[CurrentSettings->Language];
-	stringTab[4] = "Alarm Settings";
+	stringTab[4] = SettingsItemAlarmSettings[CurrentSettings->Language];
 	stringTab[5] = SettingsItemLanguage_Str[CurrentSettings->Language];
 	stringTab[6] = SettingsItemFormatDisks_Str[CurrentSettings->Language];
 	stringTab[7] = SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
@@ -176,7 +176,7 @@ void AlarmSettings()
 	u8 selection;
 
 	const char *selectionTab[2];
-	bool enabledOrDisabled;
+  bool * thingToModify;
 
 retry:
 
@@ -200,28 +200,20 @@ retry:
 
 	if (selection > 2)
 	{
+    OLED_Clear_With_Mutex_TakeGive();
 		return;
 	}
 
 	memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
-	if (selection == 0)
-		SettingsBkp.Alarm_Settings.Buzzer_Alarm_Enable = !SettingsBkp.Alarm_Settings.Buzzer_Alarm_Enable;
-	else
-		SettingsBkp.Alarm_Settings.LED_Alarm_Enable = !SettingsBkp.Alarm_Settings.LED_Alarm_Enable;
-	SaveSettings();
-	if (selection == 0)
-	{
-		if (SettingsBkp.Alarm_Settings.Buzzer_Alarm_Enable == true) enabledOrDisabled = true;
-		else enabledOrDisabled = false;
-	}
-	else
-	{
-		if (SettingsBkp.Alarm_Settings.LED_Alarm_Enable == true) enabledOrDisabled = true;
-		else enabledOrDisabled = false;
-	}
 
-	if (enabledOrDisabled) ShowSmallDialogue(Enabled_Str[CurrentSettings->Language], 1000, true);
-	else ShowSmallDialogue(Enabled_Str[CurrentSettings->Language], 1000, true);
+  thingToModify = selection == 0 ? &SettingsBkp.Alarm_Settings.Buzzer_Alarm_Enable : &SettingsBkp.Alarm_Settings.LED_Alarm_Enable;
+
+  *thingToModify=!(*thingToModify);
+	
+	SaveSettings();
+
+	if (*thingToModify) ShowSmallDialogue(Enabled_Str[CurrentSettings->Language], 1000, true);
+	else ShowSmallDialogue(Disabled_Str[CurrentSettings->Language], 1000, true);
 
 	goto retry;
 }
