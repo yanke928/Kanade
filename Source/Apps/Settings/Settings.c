@@ -42,7 +42,7 @@ Settings_Struct* CurrentSettings = (Settings_Struct*)0x0803b800;
 
 Settings_Struct SettingsBkp;
 
-const Settings_Struct DefaultSettings = { 0 ,{85 ,120 ,5},{true,15},NORMAL_MODE};
+const Settings_Struct DefaultSettings = { 0 ,{85 ,120 ,5},{true,15},NORMAL_MODE };
 
 typedef  void(*pFunction)(void);
 
@@ -61,6 +61,8 @@ void FormatDisks(void);
 
 void FirmwareUpdate(void);
 
+void AlarmSettings(void);
+
 /**
   * @brief  Settings
 
@@ -71,7 +73,7 @@ void Settings()
 {
 	UI_Menu_Param_Struct menuParams;
 	u8 selection;
-	const char* stringTab[11];
+	const char* stringTab[12];
 
 	if (SDCardMountStatus)
 		stringTab[0] = SettingsItemUnmountDisk_Str[CurrentSettings->Language];
@@ -79,15 +81,16 @@ void Settings()
 		stringTab[0] = SettingsItemMountDisk_Str[CurrentSettings->Language];
 
 	stringTab[1] = SettingsItemClockSettings_Str[CurrentSettings->Language];
-  stringTab[2] = SettingsItemIdleClockSettings_Str[CurrentSettings->Language];
+	stringTab[2] = SettingsItemIdleClockSettings_Str[CurrentSettings->Language];
 	stringTab[3] = SettingsItemOverHeatControl_Str[CurrentSettings->Language];
-	stringTab[4] = SettingsItemLanguage_Str[CurrentSettings->Language];
-	stringTab[5] = SettingsItemFormatDisks_Str[CurrentSettings->Language];
-	stringTab[6] = SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
-	stringTab[7] = SettingsItemSystemInfo_Str[CurrentSettings->Language];
-	stringTab[8] = SettingsItemSystemScan_Str[CurrentSettings->Language];
-	stringTab[9] = SettingsItemCalibration_Str[CurrentSettings->Language]; 
-  stringTab[10]="Developer Options";
+	stringTab[4] = "Alarm Settings";
+	stringTab[5] = SettingsItemLanguage_Str[CurrentSettings->Language];
+	stringTab[6] = SettingsItemFormatDisks_Str[CurrentSettings->Language];
+	stringTab[7] = SettingsItemFirmwareUpdate_Str[CurrentSettings->Language];
+	stringTab[8] = SettingsItemSystemInfo_Str[CurrentSettings->Language];
+	stringTab[9] = SettingsItemSystemScan_Str[CurrentSettings->Language];
+	stringTab[10] = SettingsItemCalibration_Str[CurrentSettings->Language];
+	stringTab[11] = "Developer Options";
 
 	menuParams.ItemStrings = stringTab;
 	menuParams.DefaultPos = 0;
@@ -106,15 +109,16 @@ void Settings()
 	{
 	case 0:MountOrUnMountDisk(); break;
 	case 1:TimeSettings(); break;
-  case 2:Idle_Clock_Settings();break;
+	case 2:Idle_Clock_Settings(); break;
 	case 3:OverHeatSettings(); break;
-	case 4:SetLanguage(); break;
-	case 5:FormatDisks(); break;
-	case 6:FirmwareUpdate(); break;
-	case 7:About(); break;
-	case 8:SelfTest(); break;
-	case 9:CalibrateSelect(); break;
-  case 10:Developer_Options();break;
+	case 4:AlarmSettings(); break;
+	case 5:SetLanguage(); break;
+	case 6:FormatDisks(); break;
+	case 7:FirmwareUpdate(); break;
+	case 8:About(); break;
+	case 9:SelfTest(); break;
+	case 10:CalibrateSelect(); break;
+	case 11:Developer_Options(); break;
 	}
 }
 
@@ -159,6 +163,67 @@ void MountOrUnMountDisk()
 			ShowSmallDialogue(SettingsMountFailed_Str[CurrentSettings->Language], 1000, true);
 		}
 	}
+}
+
+/**
+  * @brief  Alarm settings
+
+  * @param  None
+  */
+void AlarmSettings()
+{
+	UI_Menu_Param_Struct menuParams;
+	u8 selection;
+
+	const char *selectionTab[2];
+	bool enabledOrDisabled;
+
+retry:
+
+	if (CurrentSettings->Alarm_Settings.Buzzer_Alarm_Enable)
+		selectionTab[0] = "Disable Buzzer";
+	else selectionTab[0] = "Enable Buzzer";
+
+	if (CurrentSettings->Alarm_Settings.LED_Alarm_Enable)
+		selectionTab[0] = "Disable LED";
+	else selectionTab[0] = "Enable LED";
+
+	menuParams.ItemStrings = selectionTab;
+	menuParams.DefaultPos = 0;
+	menuParams.ItemNum = 2;
+	menuParams.FastSpeed = 5;
+
+	UI_Menu_Init(&menuParams);
+
+	xQueueReceive(UI_MenuMsg, &selection, portMAX_DELAY);
+	UI_Menu_DeInit();
+
+	if (selection > 2)
+	{
+		return;
+	}
+
+	memcpy(&SettingsBkp, CurrentSettings, sizeof(Settings_Struct));
+	if (selection == 0)
+		SettingsBkp.Alarm_Settings.Buzzer_Alarm_Enable = !SettingsBkp.Alarm_Settings.Buzzer_Alarm_Enable;
+	else
+		SettingsBkp.Alarm_Settings.LED_Alarm_Enable = !SettingsBkp.Alarm_Settings.LED_Alarm_Enable;
+	SaveSettings();
+	if (selection == 0)
+	{
+		if (SettingsBkp.Alarm_Settings.Buzzer_Alarm_Enable == true) enabledOrDisabled = true;
+		else enabledOrDisabled = false;
+	}
+	else
+	{
+		if (SettingsBkp.Alarm_Settings.LED_Alarm_Enable == true) enabledOrDisabled = true;
+		else enabledOrDisabled = false;
+	}
+
+	if (enabledOrDisabled) ShowSmallDialogue(Enabled_Str[CurrentSettings->Language], 1000, true);
+	else ShowSmallDialogue(Enabled_Str[CurrentSettings->Language], 1000, true);
+
+	goto retry;
 }
 
 /**
@@ -245,16 +310,16 @@ bool CheckSettings()
 
 	if (CurrentSettings->Protect_Settings.Protection_Resume_Gap > 20 ||
 		CurrentSettings->Protect_Settings.Protection_Resume_Gap < 5) return false;
-  
-  if(CurrentSettings->Idle_Clock_Settings.ClockEnable!=true&&
-    CurrentSettings->Idle_Clock_Settings.ClockEnable!=false) return false;
 
-  if(CurrentSettings->Idle_Clock_Settings.ClockEnable!=true&&
-    (CurrentSettings->Idle_Clock_Settings.IdleTime<15||
-     CurrentSettings->Idle_Clock_Settings.IdleTime>300)) return false;
+	if (CurrentSettings->Idle_Clock_Settings.ClockEnable != true &&
+		CurrentSettings->Idle_Clock_Settings.ClockEnable != false) return false;
 
-  if(CurrentSettings->Digital_Load_Params_Mode!=DEVELOPER_MODE&&
-     CurrentSettings->Digital_Load_Params_Mode!=NORMAL_MODE) return false;
+	if (CurrentSettings->Idle_Clock_Settings.ClockEnable != true &&
+		(CurrentSettings->Idle_Clock_Settings.IdleTime < 15 ||
+			CurrentSettings->Idle_Clock_Settings.IdleTime>300)) return false;
+
+	if (CurrentSettings->Digital_Load_Params_Mode != DEVELOPER_MODE&&
+		CurrentSettings->Digital_Load_Params_Mode != NORMAL_MODE) return false;
 
 	return true;
 }

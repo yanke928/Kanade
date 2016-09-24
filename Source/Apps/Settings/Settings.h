@@ -26,10 +26,17 @@ typedef struct
 
 typedef struct
 {
+ bool LED_Alarm_Enable;
+ bool Buzzer_Alarm_Enable;
+}Alarm_Settings_Struct;
+
+typedef struct
+{
  u8 Language;
  Protect_Settings_Struct Protect_Settings;
  Idle_Clock_Settings_Struct Idle_Clock_Settings;
  u8 Digital_Load_Params_Mode;
+ Alarm_Settings_Struct Alarm_Settings; 
 }Settings_Struct;
 
 extern Settings_Struct* CurrentSettings;

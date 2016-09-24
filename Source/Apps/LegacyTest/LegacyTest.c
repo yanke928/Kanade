@@ -458,7 +458,9 @@ void ShowSummary(u8 reason)
 	user*/
 	if (reason)
 	{
+    if(CurrentSettings->Alarm_Settings.Buzzer_Alarm_Enable)
 		SoundStart(Tori_No_Uta);
+    if(CurrentSettings->Alarm_Settings.LED_Alarm_Enable)
 		LED_Animate_Init(LEDSummaryAnimate);
 	}
 	/*Show item strings*/
